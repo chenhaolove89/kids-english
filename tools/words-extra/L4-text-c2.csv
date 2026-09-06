@@ -1,0 +1,224 @@
+prep-behind,behind,在……后面,/bɪˈhaɪnd/,prepositions,,behind
+prep-beside,beside,在……旁边,/bɪˈsaɪd/,prepositions,,beside
+prep-between,between,在……之间,/bɪˈtwiːn/,prepositions,,between
+prep-next to,next to,在……旁边,/nekst tuː/,prepositions,,next to
+prep-in front of,in front of,在……前面,/ɪn frʌnt əv/,prepositions,,in front of
+prep-through,through,穿过,/θruː/,prepositions,,through
+prep-across,across,横过,/əˈkrɒs/,prepositions,,across
+prep-along,along,沿着,/əˈlɒŋ/,prepositions,,along
+prep-toward,toward,朝向,/təˈwɔːd/,prepositions,,toward
+prep-against,against,靠着,/əˈɡenst/,prepositions,,against
+prep-among,among,在……之中,/əˈmʌŋ/,prepositions,,among
+prep-beyond,beyond,超出,/bɪˈjɒnd/,prepositions,,beyond
+prep-during,during,在……期间,/ˈdjʊərɪŋ/,prepositions,,during
+prep-without,without,没有,/wɪˈðaʊt/,prepositions,,without
+prep-out of,out of,从……出去,/aʊt əv/,prepositions,,out of
+prep-underneath,underneath,在……底下,/ˌʌndəˈniːθ/,prepositions,,underneath
+prep-instead of,instead of,代替,/ɪnˈsted əv/,prepositions,,instead of
+prep-on top of,on top of,在……上面,/ɒn tɒp əv/,prepositions,,on top of
+prep-in the middle of,in the middle of,在……中间,/ɪn ðə ˈmɪdl əv/,prepositions,,in the middle of
+prep-at the back of,at the back of,在……后部,/æt ðə bæk əv/,prepositions,,at the back of
+ord-second,second,第二,/ˈsekənd/,ordinals,,second
+ord-third,third,第三,/θɜːd/,ordinals,,third
+ord-fourth,fourth,第四,/fɔːθ/,ordinals,,fourth
+ord-fifth,fifth,第五,/fɪfθ/,ordinals,,fifth
+ord-sixth,sixth,第六,/sɪksθ/,ordinals,,sixth
+ord-seventh,seventh,第七,/ˈsevnθ/,ordinals,,seventh
+ord-eighth,eighth,第八,/eɪtθ/,ordinals,,eighth
+ord-ninth,ninth,第九,/naɪnθ/,ordinals,,ninth
+ord-tenth,tenth,第十,/tenθ/,ordinals,,tenth
+ord-eleventh,eleventh,第十一,/ɪˈlevnθ/,ordinals,,eleventh
+ord-twelfth,twelfth,第十二,/twelfθ/,ordinals,,twelfth
+ord-thirteenth,thirteenth,第十三,/ˌθɜːˈtiːnθ/,ordinals,,thirteenth
+ord-fourteenth,fourteenth,第十四,/ˌfɔːˈtiːnθ/,ordinals,,fourteenth
+ord-fifteenth,fifteenth,第十五,/ˌfɪfˈtiːnθ/,ordinals,,fifteenth
+ord-sixteenth,sixteenth,第十六,/ˌsɪksˈtiːnθ/,ordinals,,sixteenth
+ord-seventeenth,seventeenth,第十七,/ˌsevnˈtiːnθ/,ordinals,,seventeenth
+ord-eighteenth,eighteenth,第十八,/ˌeɪˈtiːnθ/,ordinals,,eighteenth
+ord-nineteenth,nineteenth,第十九,/ˌnaɪnˈtiːnθ/,ordinals,,nineteenth
+ord-twentieth,twentieth,第二十,/ˈtwentiəθ/,ordinals,,twentieth
+subj-math,math,数学,/mæθ/,subjects,,math
+subj-Chinese,Chinese,语文,/ˌtʃaɪˈniːz/,subjects,,Chinese
+subj-English,English,英语,/ˈɪŋɡlɪʃ/,subjects,,English
+subj-art,art,美术,/ɑːt/,subjects,,art
+subj-science,science,科学,/ˈsaɪəns/,subjects,,science
+subj-PE,PE,体育,/ˌpiː ˈiː/,subjects,,PE
+subj-history,history,历史,/ˈhɪstri/,subjects,,history
+subj-geography,geography,地理,/dʒiˈɒɡrəfi/,subjects,,geography
+subj-coding,coding,编程,/ˈkəʊdɪŋ/,subjects,,coding
+subj-spelling,spelling,拼写,/ˈspelɪŋ/,subjects,,spelling
+subj-grammar,grammar,语法,/ˈɡræmə/,subjects,,grammar
+subj-phonics,phonics,自然拼读,/ˈfɒnɪks/,subjects,,phonics
+subj-calligraphy,calligraphy,书法,/kəˈlɪɡrəfi/,subjects,,calligraphy
+subj-physics,physics,物理,/ˈfɪzɪks/,subjects,,physics
+subj-chemistry,chemistry,化学,/ˈkemɪstri/,subjects,,chemistry
+subj-biology,biology,生物,/baɪˈɒlədʒi/,subjects,,biology
+subj-drama,drama,戏剧,/ˈdrɑːmə/,subjects,,drama
+subj-moral,moral,品德,/ˈmɒrəl/,subjects,,moral
+mw-plus,plus,加,/plʌs/,mathwords,,plus
+mw-minus,minus,减,/ˈmaɪnəs/,mathwords,,minus
+mw-times,times,乘,/taɪmz/,mathwords,,times
+mw-divided by,divided by,除以,/dɪˈvaɪdɪd baɪ/,mathwords,,divided by
+mw-equals,equals,等于,/ˈiːkwəlz/,mathwords,,equals
+mw-half,half,一半,/hɑːf/,mathwords,,half
+mw-quarter,quarter,四分之一,/ˈkwɔːtə/,mathwords,,quarter
+mw-odd,odd,奇数,/ɒd/,mathwords,,odd
+mw-even,even,偶数,/ˈiːvn/,mathwords,,even
+mw-double,double,两倍,/ˈdʌbl/,mathwords,,double
+mw-dozen,dozen,一打,/ˈdʌzn/,mathwords,,dozen
+mw-sum,sum,总和,/sʌm/,mathwords,,sum
+mw-total,total,总数,/ˈtəʊtl/,mathwords,,total
+mw-number,number,数字,/ˈnʌmbə/,mathwords,,number
+mw-digit,digit,数位,/ˈdɪdʒɪt/,mathwords,,digit
+mw-shape,shape,形状,/ʃeɪp/,mathwords,,shape
+mw-pattern,pattern,规律,/ˈpætn/,mathwords,,pattern
+mw-measure,measure,测量,/ˈmeʒə/,mathwords,,measure
+mw-group,group,分组,/ɡruːp/,mathwords,,group
+mw-subtract,subtract,减去,/səbˈtrækt/,mathwords,,subtract
+mw-multiply,multiply,乘以,/ˈmʌltɪplaɪ/,mathwords,,multiply
+mw-divide,divide,平均分,/dɪˈvaɪd/,mathwords,,divide
+rt-get up,get up,起床,/ɡet ʌp/,routine,,get up
+rt-brush my teeth,brush my teeth,刷牙,/brʌʃ maɪ tiːθ/,routine,,brush my teeth
+rt-wash my face,wash my face,洗脸,/wɒʃ maɪ feɪs/,routine,,wash my face
+rt-comb my hair,comb my hair,梳头,/kəʊm maɪ heə/,routine,,comb my hair
+rt-get dressed,get dressed,穿衣服,/ɡet drest/,routine,,get dressed
+rt-have breakfast,have breakfast,吃早饭,/hæv ˈbrekfəst/,routine,,have breakfast
+rt-go to school,go to school,去上学,/ɡəʊ tə skuːl/,routine,,go to school
+rt-have lunch,have lunch,吃午饭,/hæv lʌntʃ/,routine,,have lunch
+rt-do homework,do homework,做作业,/duː ˈhəʊmwɜːk/,routine,,do homework
+rt-play games,play games,玩游戏,/pleɪ ɡeɪmz/,routine,,play games
+rt-take a nap,take a nap,睡午觉,/teɪk ə næp/,routine,,take a nap
+rt-have dinner,have dinner,吃晚饭,/hæv ˈdɪnə/,routine,,have dinner
+rt-take a shower,take a shower,洗澡,/teɪk ə ˈʃaʊə/,routine,,take a shower
+rt-watch TV,watch TV,看电视,/wɒtʃ ˌtiː ˈviː/,routine,,watch TV
+rt-go to bed,go to bed,上床睡觉,/ɡəʊ tə bed/,routine,,go to bed
+rt-say goodnight,say goodnight,说晚安,/seɪ ˈɡʊdnaɪt/,routine,,say goodnight
+rt-tidy my room,tidy my room,整理房间,/ˈtaɪdi maɪ ruːm/,routine,,tidy my room
+rt-water the plants,water the plants,浇花,/ˈwɔːtə ðə plɑːnts/,routine,,water the plants
+rt-feed the fish,feed the fish,喂鱼,/fiːd ðə fɪʃ/,routine,,feed the fish
+rt-walk the dog,walk the dog,遛狗,/wɔːk ðə dɒɡ/,routine,,walk the dog
+rt-set the table,set the table,摆餐具,/set ðə ˈteɪbl/,routine,,set the table
+rt-clear the table,clear the table,收桌子,/klɪə ðə ˈteɪbl/,routine,,clear the table
+rt-dry my hair,dry my hair,吹干头发,/draɪ maɪ heə/,routine,,dry my hair
+rt-pack my bag,pack my bag,收拾书包,/pæk maɪ bæɡ/,routine,,pack my bag
+st-story,story,故事,/ˈstɔːri/,story,,story
+st-hero,hero,英雄,/ˈhɪərəʊ/,story,,hero
+st-magic,magic,魔法,/ˈmædʒɪk/,story,,magic
+st-dream,dream,梦,/driːm/,story,,dream
+st-wish,wish,愿望,/wɪʃ/,story,,wish
+st-knight,knight,骑士,/naɪt/,story,,knight
+st-adventure,adventure,冒险,/ədˈventʃə/,story,,adventure
+st-treasure,treasure,宝藏,/ˈtreʒə/,story,,treasure
+st-journey,journey,旅程,/ˈdʒɜːni/,story,,journey
+st-map,map,地图,/mæp/,story,,map
+st-pirate,pirate,海盗,/ˈpaɪrət/,story,,pirate
+st-castle,castle,童话城堡,/ˈkɑːsl/,story,,castle
+st-witch,witch,女巫,/wɪtʃ/,story,,witch
+st-potion,potion,魔药,/ˈpəʊʃn/,story,,potion
+st-sword,sword,宝剑,/sɔːd/,story,,sword
+st-shield,shield,盾牌,/ʃiːld/,story,,shield
+st-crown,crown,王冠,/kraʊn/,story,,crown
+st-king,king,国王,/kɪŋ/,story,,king
+st-fairy tale,fairy tale,童话故事,/ˈfeəri teɪl/,story,,fairy tale
+st-once upon a time,once upon a time,从前,/wʌns əˌpɒn ə ˈtaɪm/,story,,once upon a time
+st-happily ever after,happily ever after,从此幸福生活,/ˈhæpɪli ˈevə ˈɑːftə/,story,,happily ever after
+st-magic spell,magic spell,魔法咒语,/ˈmædʒɪk spel/,story,,magic spell
+st-myth,myth,神话,/mɪθ/,story,,myth
+st-legend,legend,传说,/ˈledʒənd/,story,,legend
+st-fable,fable,寓言,/ˈfeɪbl/,story,,fable
+gr-hello,hello,你好,/həˈləʊ/,greetings,,hello
+gr-hi,hi,嗨,/haɪ/,greetings,,hi
+gr-goodbye,goodbye,再见,/ˌɡʊdˈbaɪ/,greetings,,goodbye
+gr-bye-bye,bye-bye,拜拜,/ˌbaɪˈbaɪ/,greetings,,bye-bye
+gr-thank you,thank you,谢谢你,/ˈθæŋk juː/,greetings,,thank you
+gr-you're welcome,you're welcome,不客气,/jʊə ˈwelkəm/,greetings,,you're welcome
+gr-sorry,sorry,对不起,/ˈsɒri/,greetings,,sorry
+gr-excuse me,excuse me,打扰一下,/ɪkˈskjuːz miː/,greetings,,excuse me
+gr-good morning,good morning,早上好,/ɡʊd ˈmɔːnɪŋ/,greetings,,good morning
+gr-good afternoon,good afternoon,下午好,/ɡʊd ˌɑːftəˈnuːn/,greetings,,good afternoon
+gr-good evening,good evening,晚上好,/ɡʊd ˈiːvnɪŋ/,greetings,,good evening
+gr-good night,good night,晚安,/ɡʊd naɪt/,greetings,,good night
+gr-see you,see you,回头见,/siː juː/,greetings,,see you
+gr-see you tomorrow,see you tomorrow,明天见,/siː juː təˈmɒrəʊ/,greetings,,see you tomorrow
+gr-see you later,see you later,一会儿见,/siː juː ˈleɪtə/,greetings,,see you later
+gr-nice to meet you,nice to meet you,很高兴认识你,/naɪs tə miːt juː/,greetings,,nice to meet you
+gr-nice to meet you too,nice to meet you too,我也是,/naɪs tə miːt juː tuː/,greetings,,nice to meet you too
+gr-how are you,how are you,你好吗,/haʊ ɑː juː/,greetings,,how are you
+gr-I'm fine,I'm fine,我很好,/aɪm faɪn/,greetings,,I'm fine
+gr-what's your name,what's your name,你叫什么名字,/wɒts jɔː neɪm/,greetings,,what's your name
+gr-my name is,my name is,我叫……,/maɪ neɪm ɪz/,greetings,,my name is
+gr-how old are you,how old are you,你几岁了,/haʊ əʊld ɑː juː/,greetings,,how old are you
+gr-where are you from,where are you from,你来自哪里,/weə ɑː juː frɒm/,greetings,,where are you from
+gr-I'm from China,I'm from China,我来自中国,/aɪm frɒm ˈtʃaɪnə/,greetings,,I'm from China
+gr-happy birthday,happy birthday,生日快乐,/ˈhæpi ˈbɜːθdeɪ/,greetings,,happy birthday
+gr-merry Christmas,merry Christmas,圣诞快乐,/ˈmeri ˈkrɪsməs/,greetings,,merry Christmas
+gr-happy new year,happy new year,新年快乐,/ˈhæpi njuː jɪə/,greetings,,happy new year
+gr-good luck,good luck,祝你好运,/ɡʊd lʌk/,greetings,,good luck
+gr-congratulations,congratulations,祝贺你,/kənˌɡrætʃʊˈleɪʃnz/,greetings,,congratulations
+gr-well done,well done,做得好,/wel dʌn/,greetings,,well done
+gr-good job,good job,干得好,/ɡʊd dʒɒb/,greetings,,good job
+gr-let's go,let's go,我们走吧,/lets ɡəʊ/,greetings,,let's go
+gr-let's play,let's play,一起玩吧,/lets pleɪ/,greetings,,let's play
+gr-time to eat,time to eat,吃饭时间到啦,/taɪm tuː iːt/,greetings,,time to eat
+gr-wash your hands,wash your hands,去洗手,/wɒʃ jɔː hændz/,greetings,,wash your hands
+gr-brush your teeth,brush your teeth,去刷牙,/brʌʃ jɔː tiːθ/,greetings,,brush your teeth
+gr-tidy your room,tidy your room,收拾房间,/ˈtaɪdi jɔː ruːm/,greetings,,tidy your room
+gr-be quiet,be quiet,请安静,/biː ˈkwaɪət/,greetings,,be quiet
+gr-be careful,be careful,当心,/biː ˈkeəfl/,greetings,,be careful
+gr-line up,line up,排队,/laɪn ʌp/,greetings,,line up
+gr-raise your hand,raise your hand,举手,/reɪz jɔː hænd/,greetings,,raise your hand
+gr-may I come in,may I come in,我可以进来吗,/meɪ aɪ kʌm ɪn/,greetings,,may I come in
+gr-can you help me,can you help me,你能帮我吗,/kæn juː help miː/,greetings,,can you help me
+gr-I don't know,I don't know,我不知道,/aɪ dəʊnt nəʊ/,greetings,,I don't know
+gr-I love you,I love you,我爱你,/aɪ lʌv juː/,greetings,,I love you
+gr-I'm sorry,I'm sorry,我很抱歉,/aɪm ˈsɒri/,greetings,,I'm sorry
+gr-of course,of course,当然,/əv kɔːs/,greetings,,of course
+gr-wait a moment,wait a moment,等一下,/weɪt ə ˈməʊmənt/,greetings,,wait a moment
+gr-after you,after you,您先请,/ˈɑːftə juː/,greetings,,after you
+gr-bless you,bless you,保佑你（回应喷嚏）,/bles juː/,greetings,,bless you
+gr-good to see you,good to see you,很高兴见到你,/ɡʊd tə siː juː/,greetings,,good to see you
+gr-long time no see,long time no see,好久不见,/lɒŋ taɪm nəʊ siː/,greetings,,long time no see
+gr-take care,take care,保重,/teɪk keə/,greetings,,take care
+gr-have fun,have fun,玩得开心,/hæv fʌn/,greetings,,have fun
+gr-sweet dreams,sweet dreams,做个好梦,/swiːt driːmz/,greetings,,sweet dreams
+gr-get well soon,get well soon,早日康复,/ɡet wel suːn/,greetings,,get well soon
+gr-welcome back,welcome back,欢迎回来,/ˈwelkəm bæk/,greetings,,welcome back
+gr-come in please,come in please,请进,/kʌm ɪn pliːz/,greetings,,come in please
+cv-what's this,what's this,这是什么,/wɒts ðɪs/,conversation,,what's this
+cv-it's a cat,it's a cat,它是一只猫,/ɪts ə kæt/,conversation,,it's a cat
+cv-what color is it,what color is it,它是什么颜色,/wɒt ˈkʌlə ɪz ɪt/,conversation,,what color is it
+cv-what day is it today,what day is it today,今天星期几,/wɒt deɪ ɪz ɪt təˈdeɪ/,conversation,,what day is it today
+cv-what time is it,what time is it,现在几点了,/wɒt taɪm ɪz ɪt/,conversation,,what time is it
+cv-what's the weather like,what's the weather like,天气怎么样,/wɒts ðə ˈweðə laɪk/,conversation,,what's the weather like
+cv-how many apples,how many apples,有几个苹果,/haʊ ˈmeni ˈæplz/,conversation,,how many apples
+cv-how much is it,how much is it,多少钱,/haʊ mʌtʃ ɪz ɪt/,conversation,,how much is it
+cv-whose bag is this,whose bag is this,这是谁的包,/huːz bæɡ ɪz ðɪs/,conversation,,whose bag is this
+cv-it's my turn,it's my turn,轮到我了,/ɪts maɪ tɜːn/,conversation,,it's my turn
+cv-it's your turn,it's your turn,轮到你了,/ɪts jɔː tɜːn/,conversation,,it's your turn
+cv-can you swim,can you swim,你会游泳吗,/kæn juː swɪm/,conversation,,can you swim
+cv-yes I can,yes I can,是的我会,/jes aɪ kæn/,conversation,,yes I can
+cv-no I can't,no I can't,不我不会,/nəʊ aɪ kɑːnt/,conversation,,no I can't
+cv-do you like apples,do you like apples,你喜欢苹果吗,/duː juː laɪk ˈæplz/,conversation,,do you like apples
+cv-yes I do,yes I do,是的喜欢,/jes aɪ duː/,conversation,,yes I do
+cv-no I don't,no I don't,不不喜欢,/nəʊ aɪ dəʊnt/,conversation,,no I don't
+cv-where is the cat,where is the cat,小猫在哪里,/weə ɪz ðə kæt/,conversation,,where is the cat
+cv-here it is,here it is,在这里,/hɪər ɪt ɪz/,conversation,,here it is
+cv-I found it,I found it,我找到啦,/aɪ faʊnd ɪt/,conversation,,I found it
+cv-let me try,let me try,让我试试,/let miː traɪ/,conversation,,let me try
+cv-my turn first,my turn first,我先来,/maɪ tɜːn fɜːst/,conversation,,my turn first
+cv-you are next,you are next,该你了,/juː ɑː nekst/,conversation,,you are next
+cv-try your best,try your best,尽你最大努力,/traɪ jɔː best/,conversation,,try your best
+cv-don't give up,don't give up,别放弃,/dəʊnt ɡɪv ʌp/,conversation,,don't give up
+cv-almost done,almost done,快完成啦,/ˈɔːlməʊst dʌn/,conversation,,almost done
+cv-all done,all done,全部完成,/ɔːl dʌn/,conversation,,all done
+cv-good idea,good idea,好主意,/ɡʊd aɪˈdɪə/,conversation,,good idea
+cv-sounds great,sounds great,听起来棒极了,/saʊndz ɡreɪt/,conversation,,sounds great
+cv-me too,me too,我也是,/miː tuː/,conversation,,me too
+cv-what do you like,what do you like,你喜欢什么,/wɒt duː juː laɪk/,conversation,,what do you like
+cv-I like apples,I like apples,我喜欢苹果,/aɪ laɪk ˈæplz/,conversation,,I like apples
+cv-can I help you,can I help you,需要帮忙吗,/kæn aɪ help juː/,conversation,,can I help you
+cv-are you OK,are you OK,你还好吗,/ɑː juː ˌəʊˈkeɪ/,conversation,,are you OK
+cv-where are you going,where are you going,你要去哪里,/weə ɑː juː ˈɡəʊɪŋ/,conversation,,where are you going
+cv-I'm going home,I'm going home,我要回家,/aɪm ˈɡəʊɪŋ həʊm/,conversation,,I'm going home
+cv-what are you doing,what are you doing,你在做什么,/wɒt ɑː juː ˈduːɪŋ/,conversation,,what are you doing
+cv-I'm reading,I'm reading,我在看书,/aɪm ˈriːdɪŋ/,conversation,,I'm reading

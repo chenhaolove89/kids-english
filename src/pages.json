@@ -1,8 +1,24 @@
 {
   "pages": [
     {
+      "path": "pages/home/home",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
       "path": "pages/index/index",
       "style": { "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/chinese/chinese",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/math/math",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/math/practice",
+      "style": { "navigationStyle": "custom", "disableScroll": true }
     },
     {
       "path": "pages/learn/learn",
@@ -15,7 +31,7 @@
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "快乐学单词",
+    "navigationBarTitleText": "快乐学园",
     "navigationBarBackgroundColor": "#FFF8EC",
     "backgroundColor": "#FFF8EC"
   }

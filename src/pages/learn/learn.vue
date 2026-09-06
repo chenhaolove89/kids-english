@@ -1,25 +1,40 @@
 <template>
-  <view class="page" :style="{ background: cat.bg }">
+  <view class="page" :style="{ background: theme.bg }">
     <view class="topbar">
       <view class="back" @tap="goBack">
         <text class="back-icon">←</text>
       </view>
-      <text class="cat-title">{{ cat.zh }} · {{ cat.en }}</text>
-      <text class="progress">{{ current + 1 }}/{{ words.length }}</text>
+      <text class="cat-title">{{ title }}</text>
+      <text class="progress">{{ current + 1 }}/{{ items.length }}</text>
     </view>
 
     <swiper class="swiper" :current="current" duration="250" @change="onChange">
-      <swiper-item v-for="w in words" :key="w.id">
-        <view class="card" @tap="speakCurrent">
-          <view class="img-wrap">
-            <image class="word-img" :src="w.image" mode="aspectFit" />
-          </view>
-          <text class="word-en" :style="{ color: cat.color }">{{ w.en }}</text>
-          <text class="word-phonetic">{{ w.phonetic }}</text>
-          <text class="word-zh">{{ w.zh }}</text>
-          <view class="tap-hint">
-            <text class="tap-hint-text">点一点卡片再听一次 🔊</text>
-          </view>
+      <swiper-item v-for="(it, idx) in items" :key="it.id">
+        <view class="card" @tap="speakIdx(idx)">
+          <template v-if="subject === 'en'">
+            <view class="img-wrap">
+              <image class="word-img" :src="it.image" mode="aspectFit" />
+            </view>
+            <text class="word-en" :style="{ color: theme.color }">{{ it.main }}</text>
+            <text class="word-phonetic">{{ it.phon }}</text>
+            <text class="word-zh">{{ it.sub }}</text>
+            <view class="tap-hint">
+              <text class="tap-hint-text">点一点卡片再听一次 🔊</text>
+            </view>
+          </template>
+          <template v-else>
+            <view class="char-wrap">
+              <text class="char-big" :style="{ color: theme.color }">{{ it.main }}</text>
+            </view>
+            <text class="word-pinyin">{{ it.phon }}</text>
+            <view class="word-row" @tap.stop="speakExtra(idx)">
+              <text class="word-zh">{{ it.sub }}</text>
+              <text class="word-speaker">🔊</text>
+            </view>
+            <view class="tap-hint">
+              <text class="tap-hint-text">点字卡听发音，点词语听例词</text>
+            </view>
+          </template>
         </view>
       </swiper-item>
     </swiper>
@@ -28,16 +43,7 @@
       <view class="nav-btn" @tap="prev">
         <text class="nav-text">←</text>
       </view>
-      <view class="dots" v-if="words.length <= 20">
-        <view
-          v-for="(w, i) in words"
-          :key="w.id"
-          class="dot"
-          :class="{ active: i === current }"
-          :style="i === current ? { background: cat.color } : {}"
-        />
-      </view>
-      <text v-else class="page-num">{{ current + 1 }} / {{ words.length }}</text>
+      <text class="page-num">{{ current + 1 }} / {{ items.length }}</text>
       <view class="nav-btn" @tap="next">
         <text class="nav-text">→</text>
       </view>
@@ -46,30 +52,45 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import data from '@/data/words.json'
+import enData from '@/data/words.json'
+import zhData from '@/data/hanzi.json'
 import { play, preload } from '@/utils/player.js'
 
-const cat = ref({ zh: '', en: '', bg: '#FFF8EC', color: '#FF8C42' })
-const words = ref([])
+const subject = ref('en')
+const title = ref('')
+const theme = ref({ bg: '#FFF8EC', color: '#FF8C42' })
+const items = ref([])
 const current = ref(0)
 
 onLoad((query) => {
-  const c = data.categories.find((x) => x.id === query.cat) || data.categories[0]
-  cat.value = c
-  words.value = c.words
-  preload(c.words.map((w) => w.audio))
-  // 进页先播第一个词（用户点卡片进来时已经有过手势，iOS 可正常发声）
+  subject.value = query.subject || 'en'
+  if (subject.value === 'en') {
+    const c = enData.categories.find((x) => x.id === query.cat) || enData.categories[0]
+    const lv = enData.levels.find((l) => l.id === c.level)
+    theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
+    title.value = `${c.zh} · ${c.en}`
+    items.value = c.words.map((w) => ({ id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio }))
+    preload(items.value.map((i) => i.audio))
+  } else {
+    const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
+    theme.value = { bg: lv.bg, color: lv.color }
+    title.value = `识字 · ${lv.zh}`
+    items.value = lv.chars.map((h) => ({ id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio }))
+    preload(items.value.flatMap((i) => [i.audio, i.extraAudio]))
+  }
+  // 进页先播第一个（用户点卡片进来时已有点击手势，iOS 可正常发声）
   setTimeout(() => speakIdx(0), 400)
 })
 
 function speakIdx(i) {
-  const w = words.value[i]
-  if (w) play(w.audio)
+  const it = items.value[i]
+  if (it) play(it.audio)
 }
-function speakCurrent() {
-  speakIdx(current.value)
+function speakExtra(i) {
+  const it = items.value[i]
+  if (it && it.extraAudio) play(it.extraAudio)
 }
 function onChange(e) {
   current.value = e.detail.current
@@ -79,7 +100,7 @@ function prev() {
   if (current.value > 0) current.value--
 }
 function next() {
-  if (current.value < words.value.length - 1) current.value++
+  if (current.value < items.value.length - 1) current.value++
 }
 function goBack() {
   uni.navigateBack()
@@ -160,10 +181,29 @@ function goBack() {
   width: 100%;
   height: 100%;
 }
+.char-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.char-big {
+  font-size: 360rpx;
+  font-weight: 800;
+  line-height: 1;
+}
 .word-en {
   margin-top: 30rpx;
   font-size: 88rpx;
   font-weight: 800;
+}
+.word-pinyin {
+  margin-top: 20rpx;
+  font-size: 60rpx;
+  color: #8a8073;
+  font-weight: 700;
 }
 .word-phonetic {
   margin-top: 12rpx;
@@ -171,11 +211,22 @@ function goBack() {
   color: #a2917d;
   font-family: 'Doulos SIL', 'Charis SIL', Georgia, serif;
 }
-.word-zh {
+.word-row {
   margin-top: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 10rpx 34rpx;
+  border-radius: 40rpx;
+  background: #f7f3ec;
+}
+.word-zh {
   font-size: 46rpx;
   color: #4a3f35;
   font-weight: 600;
+}
+.word-speaker {
+  font-size: 34rpx;
 }
 .tap-hint {
   margin-top: 34rpx;
@@ -210,26 +261,6 @@ function goBack() {
   font-size: 48rpx;
   font-weight: 700;
   color: #4a3f35;
-}
-.dots {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8rpx;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  padding: 0 20rpx;
-}
-.dot {
-  flex: 0 0 auto;
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 6rpx;
-  background: rgba(74, 63, 53, 0.18);
-}
-.dot.active {
-  width: 32rpx;
 }
 .page-num {
   flex: 1;

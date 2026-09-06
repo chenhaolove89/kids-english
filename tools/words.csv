@@ -198,10 +198,10 @@ ring,ring,戒指,/rɪŋ/,clothes,1f48d,
 watch,watch,手表,/wɒtʃ/,clothes,231a,
 backpack,backpack,书包,/ˈbækpæk/,clothes,1f392,
 slippers,slippers,拖鞋,/ˈslɪpəz/,clothes,1f97f,
-book,book,书,/bʊk/,home,1f4d6,
-pencil,pencil,铅笔,/ˈpensl/,home,270f_fe0f,
-crayon,crayon,蜡笔,/ˈkreɪən/,home,1f58d_fe0f,
-scissors,scissors,剪刀,/ˈsɪzəz/,home,2702_fe0f,
+book,book,书,/bʊk/,school,1f4d6,
+pencil,pencil,铅笔,/ˈpensl/,school,270f_fe0f,
+crayon,crayon,蜡笔,/ˈkreɪən/,school,1f58d_fe0f,
+scissors,scissors,剪刀,/ˈsɪzəz/,school,2702_fe0f,
 key,key,钥匙,/kiː/,home,1f511,
 lock,lock,锁,/lɒk/,home,1f512,
 hammer,hammer,锤子,/ˈhæmər/,home,1f528,
@@ -244,7 +244,7 @@ bowling,bowling,保龄球,/ˈbəʊlɪŋ/,sports,1f3b3,
 golf,golf,高尔夫球,/ɡɒlf/,sports,1f3cc_fe0f,
 archery,archery,射箭,/ˈɑːtʃəri/,sports,1f3f9,
 dart,dart,飞镖,/dɑːt/,sports,1f3af,
-kite,kite,风筝,/kaɪt/,sports,1fa81,
+kite,kite,风筝,/kaɪt/,toys,1fa81,
 medal,medal,奖牌,/ˈmedl/,sports,1f947,
 trophy,trophy,奖杯,/ˈtrəʊfi/,sports,1f3c6,
 swimming,swimming,游泳,/ˈswɪmɪŋ/,sports,1f3ca,
@@ -299,3 +299,1703 @@ sleepy,sleepy,困了,/ˈsliːpi/,emotions,1f634,
 love,love,爱,/lʌv/,emotions,1f60d,
 think,think,思考,/θɪŋk/,emotions,1f914,
 silly,silly,傻乎乎,/ˈsɪli/,emotions,1f92a,
+zero,zero,零,/ˈzɪərəʊ/,numbers,,0
+eleven,eleven,十一,/ɪˈlevn/,numbers,,11
+twelve,twelve,十二,/twelv/,numbers,,12
+thirteen,thirteen,十三,/ˌθɜːˈtiːn/,numbers,,13
+fourteen,fourteen,十四,/ˌfɔːˈtiːn/,numbers,,14
+fifteen,fifteen,十五,/ˌfɪfˈtiːn/,numbers,,15
+sixteen,sixteen,十六,/ˌsɪksˈtiːn/,numbers,,16
+seventeen,seventeen,十七,/ˌsevnˈtiːn/,numbers,,17
+eighteen,eighteen,十八,/ˌeɪˈtiːn/,numbers,,18
+nineteen,nineteen,十九,/ˌnaɪnˈtiːn/,numbers,,19
+twenty,twenty,二十,/ˈtwenti/,numbers,,20
+a,A,字母A,/eɪ/,alphabet,,A
+b,B,字母B,/biː/,alphabet,,B
+c,C,字母C,/siː/,alphabet,,C
+d,D,字母D,/diː/,alphabet,,D
+e,E,字母E,/iː/,alphabet,,E
+f,F,字母F,/ef/,alphabet,,F
+g,G,字母G,/dʒiː/,alphabet,,G
+h,H,字母H,/eɪtʃ/,alphabet,,H
+i,I,字母I,/aɪ/,alphabet,,I
+j,J,字母J,/dʒeɪ/,alphabet,,J
+k,K,字母K,/keɪ/,alphabet,,K
+l,L,字母L,/el/,alphabet,,L
+m,M,字母M,/em/,alphabet,,M
+n,N,字母N,/en/,alphabet,,N
+o,O,字母O,/əʊ/,alphabet,,O
+p,P,字母P,/piː/,alphabet,,P
+q,Q,字母Q,/kjuː/,alphabet,,Q
+r,R,字母R,/ɑː/,alphabet,,R
+s,S,字母S,/es/,alphabet,,S
+t,T,字母T,/tiː/,alphabet,,T
+u,U,字母U,/juː/,alphabet,,U
+v,V,字母V,/viː/,alphabet,,V
+w,W,字母W,/ˈdʌbljuː/,alphabet,,W
+x,X,字母X,/eks/,alphabet,,X
+y,Y,字母Y,/waɪ/,alphabet,,Y
+z,Z,字母Z,/zed/,alphabet,,Z
+circle,circle,圆形,/ˈsɜːkl/,shapes,,circle
+square,square,正方形,/skweə/,shapes,,square
+triangle,triangle,三角形,/ˈtraɪæŋɡl/,shapes,,triangle
+rectangle,rectangle,长方形,/ˈrektæŋɡl/,shapes,,rectangle
+oval,oval,椭圆形,/ˈəʊvl/,shapes,,oval
+diamond,diamond,菱形,/ˈdaɪmənd/,shapes,,diamond
+pentagon,pentagon,五边形,/ˈpentəɡən/,shapes,,pentagon
+hexagon,hexagon,六边形,/ˈheksəɡən/,shapes,,hexagon
+cross,cross,十字形,/krɒs/,shapes,,cross
+arrow,arrow,箭头,/ˈærəʊ/,shapes,,arrow
+line,line,线条,/laɪn/,shapes,,line
+crescent,crescent,月牙形,/ˈkresnt/,shapes,,crescent
+bone,bone,骨头,/bəʊn/,body,1f9b4,
+heart,heart,心脏,/hɑːt/,body,1fac0,
+lungs,lungs,肺,/lʌŋz/,body,1fac1,
+hair,hair,头发,/heə/,body,,hair
+finger,finger,手指,/ˈfɪŋɡə/,body,,finger
+arm,arm,手臂,/ɑːm/,body,,arm
+knee,knee,膝盖,/niː/,body,,knee
+shoulder,shoulder,肩膀,/ˈʃəʊldə/,body,,shoulder
+face,face,脸,/feɪs/,body,,face
+back,back,后背,/bæk/,body,,back
+leopard,leopard,豹子,/ˈlepəd/,animals,1f406,
+otter,otter,水獭,/ˈɒtə/,animals,1f9a6,
+skunk,skunk,臭鼬,/skʌŋk/,animals,1f9a8,
+badger,badger,獾,/ˈbædʒə/,animals,1f9a1,
+beaver,beaver,河狸,/ˈbiːvə/,animals,1f9ab,
+raccoon,raccoon,浣熊,/rəˈkuːn/,animals,1f99d,
+bison,bison,野牛,/ˈbaɪsn/,animals,1f9ac,
+llama,llama,羊驼,/ˈlɑːmə/,animals,1f999,
+bat,bat,蝙蝠,/bæt/,animals,1f987,
+rat,rat,大老鼠,/ræt/,animals,1f400,
+tangerine,tangerine,橘子,/ˈtændʒəriːn/,fruits,1f34a,
+plum,plum,李子,/plʌm/,fruits,,plum
+magicwand,magic wand,魔法棒,/ˈmædʒɪk wɒnd/,toys,1fa84,
+crystalball,crystal ball,水晶球,/ˈkrɪstl bɔːl/,toys,1f52e,
+puppet,puppet,套娃,/ˈpʌpɪt/,toys,1fa86,
+blocks,blocks,积木,/blɒks/,toys,,blocks
+slide,slide,滑梯,/slaɪd/,toys,,slide
+swing,swing,秋千,/swɪŋ/,toys,,swing
+seesaw,seesaw,跷跷板,/ˈsiːsɔː/,toys,,seesaw
+trampoline,trampoline,蹦床,/ˈtræmpəliːn/,toys,,trampoline
+bacon,bacon,培根,/ˈbeɪkən/,food,1f953,
+steak,steak,牛排,/steɪk/,food,1f969,
+salad,salad,沙拉,/ˈsæləd/,food,1f957,
+soup,soup,汤,/suːp/,food,1f372,
+sandwich,sandwich,三明治,/ˈsænwɪdʒ/,food,1f96a,
+taco,taco,墨西哥卷饼,/ˈtækəʊ/,food,1f32e,
+burrito,burrito,墨西哥饭卷,/bəˈriːtəʊ/,food,1f32f,
+pancake,pancake,煎饼,/ˈpænkæk/,food,1f95e,
+croissant,croissant,牛角面包,/ˈkrwɑːsəʊ/,food,1f950,
+bagel,bagel,贝果,/ˈbeɪɡl/,food,1f96f,
+pretzel,pretzel,椒盐卷饼,/ˈpretsl/,food,1f968,
+popcorn,popcorn,爆米花,/ˈpɒpkɔːn/,food,1f37f,
+butter,butter,黄油,/ˈbʌtə/,food,1f9c8,
+dumpling,dumpling,饺子,/ˈdʌmplɪŋ/,food,1f95f,
+bento,bento,便当,/ˈbentəʊ/,food,1f371,
+curry,curry,咖喱饭,/ˈkʌri/,food,1f35b,
+toast,toast,吐司,/təʊst/,food,,toast
+cereal,cereal,麦片,/ˈsɪəriəl/,food,,cereal
+porridge,porridge,粥,/ˈpɒrɪdʒ/,food,,porridge
+tofu,tofu,豆腐,/ˈtəʊfuː/,food,,tofu
+jam,jam,果酱,/dʒæm/,food,,jam
+yogurt,yogurt,酸奶,/ˈjɒɡət/,food,,yogurt
+sausage,sausage,香肠,/ˈsɒsɪdʒ/,food,,sausage
+meatball,meatball,肉丸子,/ˈmiːtbɔːl/,food,,meatball
+sugar,sugar,糖,/ˈʃʊɡə/,food,,sugar
+flour,flour,面粉,/ˈflaʊə/,food,,flour
+snack,snack,零食,/snæk/,food,,snack
+breakfast,breakfast,早餐,/ˈbrekfəst/,food,,breakfast
+lunch,lunch,午餐,/lʌntʃ/,food,,lunch
+dinner,dinner,晚餐,/ˈdɪnə/,food,,dinner
+cabbage,cabbage,卷心菜,/ˈkæbɪdʒ/,vegetables,1f96c,
+beans,beans,豆子,/biːnz/,vegetables,,beans
+peas,peas,豌豆,/piːz/,vegetables,,peas
+ginger,ginger,姜,/ˈdʒɪndʒə/,vegetables,,ginger
+lotusroot,lotus root,莲藕,/ˈləʊtəs ruːt/,vegetables,,lotus root
+beansprout,bean sprout,豆芽,/biːn spraʊt/,vegetables,,bean sprout
+cupcake,cupcake,纸杯蛋糕,/ˈkʌpkeɪk/,desserts,1f9c1,
+pie,pie,馅饼,/paɪ/,desserts,1f967,
+lollipop,lollipop,棒棒糖,/ˈlɒlipɒp/,desserts,1f36d,
+birthdaycake,birthday cake,生日蛋糕,/ˈbɜːθdeɪ keɪk/,desserts,1f382,
+pudding,pudding,布丁,/ˈpʊdɪŋ/,desserts,1f36e,
+shavedice,shaved ice,刨冰,/ʃeɪvd aɪs/,desserts,1f367,
+sundae,sundae,圣代冰淇淋,/ˈsʌndeɪ/,desserts,1f368,
+jelly,jelly,果冻,/ˈdʒeli/,desserts,,jelly
+marshmallow,marshmallow,棉花糖,/ˌmɑːʃˈmæləʊ/,desserts,,marshmallow
+bubblegum,bubble gum,泡泡糖,/ˈbʌbl ɡʌm/,desserts,,bubble gum
+milkshake,milkshake,奶昔,/ˈmɪlkʃeɪk/,desserts,,milkshake
+brownie,brownie,布朗尼,/ˈbraʊni/,desserts,,brownie
+muffin,muffin,玛芬蛋糕,/ˈmʌfɪn/,desserts,,muffin
+macaron,macaron,马卡龙,/ˌmækəˈrɒn/,desserts,,macaron
+cheesecake,cheesecake,芝士蛋糕,/ˈtʃiːzkeɪk/,desserts,,cheesecake
+icepop,ice pop,冰棍,/aɪs pɒp/,desserts,,ice pop
+gummy,gummy,软糖,/ˈɡʌmi/,desserts,,gummy
+juice,juice,果汁,/dʒuːs/,drinks,1f9c3,
+soda,soda,汽水,/ˈsəʊdə/,drinks,1f964,
+tea,tea,茶,/tiː/,drinks,1f375,
+bubbletea,bubble tea,珍珠奶茶,/ˈbʌbl tiː/,drinks,1f9cb,
+water,water,水,/ˈwɔːtə/,drinks,1f4a7,
+coffee,coffee,咖啡,/ˈkɒfi/,drinks,,coffee
+cocoa,cocoa,可可,/ˈkəʊkəʊ/,drinks,,cocoa
+lemonade,lemonade,柠檬水,/ˌleməˈneɪd/,drinks,,lemonade
+soymilk,soy milk,豆浆,/sɔɪ mɪlk/,drinks,,soy milk
+smoothie,smoothie,思慕雪,/ˈsmuːði/,drinks,,smoothie
+shorts,shorts,短裤,/ʃɔːts/,clothes,1fa73,
+swimsuit,swimsuit,泳衣,/ˈswɪmsuːt/,clothes,1fa71,
+goggles,goggles,泳镜,/ˈɡɒɡlz/,clothes,1f97d,
+kimono,kimono,和服,/kɪˈməʊnəʊ/,clothes,1f458,
+sandals,sandals,凉鞋,/ˈsændlz/,clothes,1fa74,
+highheels,high heels,高跟鞋,/haɪ hiːlz/,clothes,1f460,
+purse,purse,零钱包,/pɜːs/,clothes,1f45b,
+handbag,handbag,手提包,/ˈhændbæɡ/,clothes,1f45c,
+graduationcap,graduation cap,学士帽,/ˌɡrædʒuˈeɪʃn kæp/,clothes,1f393,
+labcoat,lab coat,白大褂,/læb kəʊt/,clothes,1f97c,
+balletshoes,ballet shoes,芭蕾舞鞋,/ˈbæleɪ ʃuːz/,clothes,1fa70,
+sofa,sofa,沙发,/ˈsəʊfə/,home,1f6cb_fe0f,
+bathtub,bathtub,浴缸,/ˈbɑːθtʌb/,home,1f6c1,
+shower,shower,淋浴,/ˈʃaʊə/,home,1f6bf,
+toilet,toilet,马桶,/ˈtɔɪlət/,home,1f6bd,
+soap,soap,肥皂,/səʊp/,home,1f9fc,
+broom,broom,扫把,/bruːm/,home,1f9f9,
+bucket,bucket,水桶,/ˈbʌkɪt/,home,1faa3,
+basket,basket,篮子,/ˈbɑːskɪt/,home,1f9fa,
+mirror,mirror,镜子,/ˈmɪrə/,home,1fa9e,
+vase,vase,花瓶,/vɑːz/,home,1f3fa,
+candle,candle,蜡烛,/ˈkændl/,home,1f56f_fe0f,
+package,package,包裹,/ˈpækɪdʒ/,home,1f4e6,
+lotion,lotion,润肤露,/ˈləʊʃn/,home,1f9f4,
+toothbrush,toothbrush,牙刷,/ˈtuːθbrʌʃ/,home,1faa5,
+tissue,tissue,纸巾,/ˈtɪʃuː/,home,1f9fb,
+pictureframe,picture frame,相框,/ˈpɪktʃə freɪm/,home,1f5bc_fe0f,
+table,table,桌子,/ˈteɪbl/,home,,table
+pillow,pillow,枕头,/ˈpɪləʊ/,home,,pillow
+blanket,blanket,毯子,/ˈblæŋkɪt/,home,,blanket
+curtain,curtain,窗帘,/ˈkɜːtn/,home,,curtain
+stairs,stairs,楼梯,/steəz/,home,,stairs
+garage,garage,车库,/ˈɡærɑːʒ/,home,,garage
+garden,garden,花园,/ˈɡɑːdn/,home,,garden
+fence,fence,栅栏,/fens/,home,,fence
+gate,gate,大门,/ɡeɪt/,home,,gate
+roof,roof,屋顶,/ruːf/,home,,roof
+floor,floor,地板,/flɔː/,home,,floor
+wall,wall,墙壁,/wɔːl/,home,,wall
+ceiling,ceiling,天花板,/ˈsiːlɪŋ/,home,,ceiling
+balcony,balcony,阳台,/ˈbælkəni/,home,,balcony
+chimney,chimney,烟囱,/ˈtʃɪmni/,home,,chimney
+spoon,spoon,勺子,/spuːn/,kitchen,1f944,
+fork,fork,叉子,/fɔːk/,kitchen,1f374,
+knife,knife,刀,/naɪf/,kitchen,1f52a,
+plate,plate,盘子,/pleɪt/,kitchen,1f37d_fe0f,
+bowl,bowl,碗,/bəʊl/,kitchen,1f963,
+teapot,teapot,茶壶,/ˈtiːpɒt/,kitchen,1fad6,
+chopsticks,chopsticks,筷子,/ˈtʃɒpstɪks/,kitchen,1f962,
+pan,pan,平底锅,/pæn/,kitchen,1f373,
+salt,salt,盐,/sɔːlt/,kitchen,1f9c2,
+jar,jar,罐子,/dʒɑː/,kitchen,1fad7,
+fridge,fridge,冰箱,/frɪdʒ/,kitchen,,fridge
+oven,oven,烤箱,/ˈʌvn/,kitchen,,oven
+pot,pot,锅,/pɒt/,kitchen,,pot
+kettle,kettle,水壶,/ˈketl/,kitchen,,kettle
+spatula,spatula,锅铲,/ˈspætʃələ/,kitchen,,spatula
+tray,tray,托盘,/treɪ/,kitchen,,tray
+strainer,strainer,滤网,/ˈstreɪnə/,kitchen,,strainer
+napkin,napkin,餐巾,/ˈnæpkɪn/,kitchen,,napkin
+straw,straw,吸管,/strɔː/,kitchen,,straw
+lid,lid,盖子,/lɪd/,kitchen,,lid
+cupboard,cupboard,橱柜,/ˈkʌbəd/,kitchen,,cupboard
+drawer,drawer,抽屉,/drɔː/,kitchen,,drawer
+ruler,ruler,尺子,/ˈruːlə/,school,1f4cf,
+notebook,notebook,笔记本,/ˈnəʊtbʊk/,school,1f4d3,
+paper,paper,纸张,/ˈpeɪpə/,school,1f4c4,
+calculator,calculator,计算器,/ˈkælkjuleɪtə/,school,1f9ee,
+paintbrush,paintbrush,画笔,/ˈpeɪntbrʌʃ/,school,1f58c_fe0f,
+books,books,一摞书,/bʊks/,school,1f4da,
+bookmark,bookmark,书签,/ˈbʊkmɑːk/,school,1f516,
+clipboard,clipboard,写字板,/ˈklɪpbɔːd/,school,1f4cb,
+pen,pen,钢笔,/pen/,school,1f58a_fe0f,
+eraser,eraser,橡皮,/ɪˈreɪzə/,school,,eraser
+glue,glue,胶水,/ɡluː/,school,,glue
+chalk,chalk,粉笔,/tʃɔːk/,school,,chalk
+blackboard,blackboard,黑板,/ˈblækbɔːd/,school,,blackboard
+desk,desk,课桌,/desk/,school,,desk
+marker,marker,记号笔,/ˈmɑːkə/,school,,marker
+classroom,classroom,教室,/ˈklɑːsruːm/,school,,classroom
+homework,homework,作业,/ˈhəʊmwɜːk/,school,,homework
+lesson,lesson,课程,/ˈlesn/,school,,lesson
+mother,mother,妈妈,/ˈmʌðə/,family,1f469,
+father,father,爸爸,/ˈfɑːðə/,family,1f468,
+brother,brother,哥哥或弟弟,/ˈbrʌðə/,family,1f466,
+sister,sister,姐姐或妹妹,/ˈsɪstə/,family,1f467,
+grandma,grandma,奶奶,/ˈɡrænmɑː/,family,1f475,
+grandpa,grandpa,爷爷,/ˈɡrænpɑː/,family,1f474,
+baby,baby,宝宝,/ˈbeɪbi/,family,1f476,
+family,family,家人,/ˈfæməli/,family,,family
+uncle,uncle,叔叔,/ˈʌŋkl/,family,,uncle
+aunt,aunt,阿姨,/ɑːnt/,family,,aunt
+cousin,cousin,堂表兄弟姐妹,/ˈkʌzn/,family,,cousin
+twins,twins,双胞胎,/twɪnz/,family,,twins
+mom,mom,母亲,/mɒm/,family,,mom
+dad,dad,父亲,/dæd/,family,,dad
+son,son,儿子,/sʌn/,family,,son
+daughter,daughter,女儿,/ˈdɔːtə/,family,,daughter
+grin,grin,咧嘴笑,/ɡrɪn/,emotions,1f606,
+wink,wink,眨眼笑,/wɪŋk/,emotions,1f609,
+excited,excited,兴奋,/ɪkˈsaɪtɪd/,emotions,1f929,
+tired,tired,累了,/ˈtaɪəd/,emotions,1f971,
+sick,sick,生病,/sɪk/,emotions,1f912,
+surprised,surprised,惊讶,/səˈpraɪzd/,emotions,1f632,
+confused,confused,困惑,/kənˈfjuːzd/,emotions,1f615,
+nervous,nervous,紧张,/ˈnɜːvəs/,emotions,1f62c,
+minibus,minibus,小巴士,/ˈmɪnibʌs/,vehicles,1f68d,
+tuktuk,tuk-tuk,嘟嘟车,/ˈtʊktʊk/,vehicles,1f6fa,
+parachute,parachute,降落伞,/ˈpærəʃuːt/,vehicles,1fa82,
+glider,glider,滑翔机,/ˈɡlaɪdə/,vehicles,1f6e9_fe0f,
+monorail,monorail,单轨列车,/ˈmɒnəʊreɪl/,vehicles,1f69d,
+mountainrailway,mountain railway,登山火车,/ˈmaʊntən ˈreɪlweɪ/,vehicles,1f69e,
+trolleybus,trolleybus,无轨电车,/ˈtrɒlibʌs/,vehicles,1f68e,
+railcar,railway car,火车车厢,/ˈreɪlweɪ kɑː/,vehicles,1f683,
+skateboard,skateboard,滑板,/ˈskeɪtbɔːd/,vehicles,1f6f9,
+rollerskate,roller skate,轮滑鞋,/ˈrəʊlə skeɪt/,vehicles,1f6fc,
+seedling,seedling,幼苗,/ˈsiːdlɪŋ/,nature,1f331,
+herb,herb,香草,/hɜːb/,nature,1f33f,
+clover,clover,三叶草,/ˈkləʊvə/,nature,1f340,
+leaf,leaf,树叶,/liːf/,nature,1f343,
+fallenleaf,fallen leaf,落叶,/ˈfɔːlən liːf/,nature,1f342,
+mapleleaf,maple leaf,枫叶,/ˈmeɪpl liːf/,nature,1f341,
+bouquet,bouquet,花束,/buːˈkeɪ/,nature,1f490,
+tulip,tulip,郁金香,/ˈtjuːlɪp/,nature,1f337,
+rose,rose,玫瑰,/rəʊz/,nature,1f339,
+sunflower,sunflower,向日葵,/ˈsʌnflaʊə/,nature,1f33b,
+blossom,blossom,小雏菊,/ˈblɒsəm/,nature,1f33c,
+hibiscus,hibiscus,木槿花,/hɪˈbɪskəs/,nature,1f33a,
+chestnut,chestnut,栗子,/ˈtʃesnʌt/,nature,1f330,
+palmtree,palm tree,椰子树,/pɑːm triː/,nature,1f334,
+evergreen,evergreen,松树,/ˈevəɡriːn/,nature,1f332,
+desert,desert,沙漠,/ˈdezət/,nature,1f3dc_fe0f,
+island,island,海岛,/ˈaɪlənd/,nature,1f3dd_fe0f,
+nationalpark,national park,国家公园,/ˈnæʃnəl pɑːk/,nature,1f3de_fe0f,
+rock,rock,岩石,/rɒk/,nature,1faa8,
+fish,fish,鱼,/fɪʃ/,ocean,1f41f,
+tropicalfish,tropical fish,热带鱼,/ˈtrɒpɪkl fɪʃ/,ocean,1f420,
+blowfish,blowfish,河豚,/ˈbləʊfɪʃ/,ocean,1f421,
+squid,squid,鱿鱼,/skwɪd/,ocean,1f991,
+lobster,lobster,大龙虾,/ˈlɒbstə/,ocean,1f99e,
+shrimp,shrimp,虾,/ʃrɪmp/,ocean,1f990,
+oyster,oyster,生蚝,/ˈɔɪstə/,ocean,1f9aa,
+shell,shell,贝壳,/ʃel/,ocean,1f41a,
+coral,coral,珊瑚,/ˈkɒrəl/,ocean,1fab8,
+anchor,anchor,船锚,/ˈæŋkə/,ocean,2693,
+starfish,starfish,海星,/ˈstɑːfɪʃ/,ocean,,starfish
+jellyfish,jellyfish,水母,/ˈdʒelifɪʃ/,ocean,,jellyfish
+seahorse,seahorse,海马,/ˈsiːhɔːs/,ocean,,seahorse
+walrus,walrus,海象,/ˈwɔːlrəs/,ocean,,walrus
+orca,orca,虎鲸,/ˈɔːkə/,ocean,,orca
+eel,eel,鳗鱼,/iːl/,ocean,,eel
+seaweed,seaweed,海草,/ˈsiːwiːd/,ocean,,seaweed
+narwhal,narwhal,独角鲸,/ˈnɑːwəl/,ocean,,narwhal
+bug,bug,毛毛虫,/bʌɡ/,insects,1f41b,
+ant,ant,蚂蚁,/ænt/,insects,1f41c,
+cricket,cricket,蟋蟀,/ˈkrɪkɪt/,insects,1f997,
+beetle,beetle,甲虫,/ˈbiːtl/,insects,1fab2,
+fly,fly,苍蝇,/flaɪ/,insects,1fab0,
+cockroach,cockroach,蟑螂,/ˈkɒkrəʊtʃ/,insects,1fab3,
+scorpion,scorpion,蝎子,/ˈskɔːpiən/,insects,1f982,
+mosquito,mosquito,蚊子,/məˈskiːtəʊ/,insects,1f99f,
+spider,spider,蜘蛛,/ˈspaɪdə/,insects,1f577_fe0f,
+web,web,蜘蛛网,/web/,insects,1f578_fe0f,
+worm,worm,蚯蚓,/wɜːm/,insects,,worm
+firefly,firefly,萤火虫,/ˈfaɪəflaɪ/,insects,,firefly
+dragonfly,dragonfly,蜻蜓,/ˈdræɡənflaɪ/,insects,,dragonfly
+grasshopper,grasshopper,蚂蚱,/ˈɡrɑːshɒpə/,insects,,grasshopper
+mantis,mantis,螳螂,/ˈmæntɪs/,insects,,mantis
+cicada,cicada,知了,/sɪˈkɑːdə/,insects,,cicada
+bird,bird,小鸟,/bɜːd/,birds,1f426,
+eagle,eagle,老鹰,/ˈiːɡl/,birds,1f985,
+peacock,peacock,孔雀,/ˈpiːkɒk/,birds,1f99a,
+dove,dove,鸽子,/dʌv/,birds,1f54a_fe0f,
+dodo,dodo,渡渡鸟,/ˈdəʊdəʊ/,birds,1f9a4,
+chick,chick,雏鸟,/tʃɪk/,birds,1f424,
+sparrow,sparrow,麻雀,/ˈspærəʊ/,birds,,sparrow
+woodpecker,woodpecker,啄木鸟,/ˈwʊdˌpekə/,birds,,woodpecker
+kingfisher,kingfisher,翠鸟,/ˈkɪŋfɪʃə/,birds,,kingfisher
+magpie,magpie,喜鹊,/ˈmæɡpaɪ/,birds,,magpie
+crane,crane,仙鹤,/kreɪn/,birds,,crane
+crow,crow,乌鸦,/krəʊ/,birds,,crow
+ostrich,ostrich,鸵鸟,/ˈɒstrɪtʃ/,birds,,ostrich
+nightingale,nightingale,夜莺,/ˈnaɪtɪŋɡeɪl/,birds,,nightingale
+swallow,swallow,燕子,/ˈswɒləʊ/,birds,,swallow
+seagull,seagull,海鸥,/ˈsiːɡʌl/,birds,,seagull
+bank,bank,银行,/bæŋk/,places,1f3e6,
+church,church,教堂,/tʃɜːtʃ/,places,26ea,
+mosque,mosque,清真寺,/mɒsk/,places,1f54c,
+gasstation,gas station,加油站,/ɡæs ˈsteɪʃn/,places,26fd,
+tower,tower,高塔,/ˈtaʊə/,places,1f5fc,
+statue,statue,雕像,/ˈstætʃuː/,places,1f5fd,
+stadium,stadium,体育场,/ˈsteɪdiəm/,places,1f3df_fe0f,
+postbox,postbox,邮筒,/ˈpəʊstbɒks/,places,1f4ee,
+airport,airport,机场,/ˈeəpɔːt/,places,,airport
+trainstation,train station,火车站,/treɪn ˈsteɪʃn/,places,,train station
+park,park,公园,/pɑːk/,places,,park
+zoo,zoo,动物园,/zuː/,places,,zoo
+cinema,cinema,电影院,/ˈsɪnəmə/,places,,cinema
+museum,museum,博物馆,/mjuˈziːəm/,places,,museum
+library,library,图书馆,/ˈlaɪbrəri/,places,,library
+playground,playground,游乐场,/ˈpleɪɡraʊnd/,places,,playground
+temple,temple,寺庙,/ˈtempl/,places,,temple
+stopwatch,stopwatch,秒表,/ˈstɒpwɒtʃ/,time,23f1_fe0f,
+hourglass,hourglass,沙漏,/ˈaʊəɡlɑːs/,time,231b,
+sandtimer,sand timer,计时沙漏,/sænd ˈtaɪmə/,time,23f3,
+calendar,calendar,日历,/ˈkælɪndə/,time,1f4c5,
+spiralcalendar,spiral calendar,挂历,/ˈspaɪrəl ˈkælɪndə/,time,1f5d3_fe0f,
+sunrise,sunrise,日出,/ˈsʌnraɪz/,time,1f305,
+sunset,sunset,日落,/ˈsʌnset/,time,1f307,
+dusk,dusk,黄昏,/dʌsk/,time,1f306,
+night,night,夜晚,/naɪt/,time,1f303,
+today,today,今天,/təˈdeɪ/,time,,today
+tomorrow,tomorrow,明天,/təˈmɒrəʊ/,time,,tomorrow
+yesterday,yesterday,昨天,/ˈjestədeɪ/,time,,yesterday
+morning,morning,早晨,/ˈmɔːnɪŋ/,time,,morning
+afternoon,afternoon,下午,/ˌɑːftəˈnuːn/,time,,afternoon
+evening,evening,傍晚,/ˈiːvnɪŋ/,time,,evening
+day,day,白天,/deɪ/,time,,day
+week,week,星期,/wiːk/,time,,week
+month,month,月份,/mʌnθ/,time,,month
+year,year,年,/jɪə/,time,,year
+weekend,weekend,周末,/ˌwiːkˈend/,time,,weekend
+China,China,中国,/ˈtʃaɪnə/,countries,1f1e8_1f1f3,
+theUSA,the USA,美国,/ðə juː es eɪ/,countries,1f1fa_1f1f8,
+theUK,the UK,英国,/ðə juː keɪ/,countries,1f1ec_1f1e7,
+Japan,Japan,日本,/dʒəˈpæn/,countries,1f1ef_1f1f5,
+Korea,Korea,韩国,/kəˈriːə/,countries,1f1f0_1f1f7,
+France,France,法国,/frɑːns/,countries,1f1eb_1f1f7,
+Germany,Germany,德国,/ˈdʒɜːməni/,countries,1f1e9_1f1ea,
+Italy,Italy,意大利,/ˈɪtəli/,countries,1f1ee_1f1f9,
+Spain,Spain,西班牙,/speɪn/,countries,1f1ea_1f1f8,
+Russia,Russia,俄罗斯,/ˈrʌʃə/,countries,1f1f7_1f1fa,
+Canada,Canada,加拿大,/ˈkænədə/,countries,1f1e8_1f1e6,
+Australia,Australia,澳大利亚,/ɒˈstreɪliə/,countries,1f1e6_1f1fa,
+Brazil,Brazil,巴西,/brəˈzɪl/,countries,1f1e7_1f1f7,
+India,India,印度,/ˈɪndiə/,countries,1f1ee_1f1f3,
+Mexico,Mexico,墨西哥,/ˈmeksɪkəʊ/,countries,1f1f2_1f1fd,
+Egypt,Egypt,埃及,/ˈiːdʒɪpt/,countries,1f1ea_1f1ec,
+Thailand,Thailand,泰国,/ˈtaɪlænd/,countries,1f1f9_1f1ed,
+Singapore,Singapore,新加坡,/ˌsɪŋəˈpɔː/,countries,1f1f8_1f1ec,
+NewZealand,New Zealand,新西兰,/ˌnjuː ˈziːlənd/,countries,1f1f3_1f1ff,
+Netherlands,Netherlands,荷兰,/ˈneðələndz/,countries,1f1f3_1f1f1,
+Switzerland,Switzerland,瑞士,/ˈswɪtsələnd/,countries,1f1e8_1f1ed,
+Sweden,Sweden,瑞典,/ˈswiːdn/,countries,1f1f8_1f1ea,
+Norway,Norway,挪威,/ˈnɔːweɪ/,countries,1f1f3_1f1f4,
+Denmark,Denmark,丹麦,/ˈdenmɑːk/,countries,1f1e9_1f1f0,
+Finland,Finland,芬兰,/ˈfɪnlənd/,countries,1f1eb_1f1ee,
+Portugal,Portugal,葡萄牙,/ˈpɔːtʃʊɡl/,countries,1f1f5_1f1f9,
+Greece,Greece,希腊,/ɡriːs/,countries,1f1ec_1f1f7,
+Turkey,Turkey,土耳其,/ˈtɜːki/,countries,1f1f9_1f1f7,
+Argentina,Argentina,阿根廷,/ˌɑːdʒənˈtiːnə/,countries,1f1e6_1f1f7,
+SouthAfrica,South Africa,南非,/saʊθ ˈæfrɪkə/,countries,1f1ff_1f1e6,
+Kenya,Kenya,肯尼亚,/ˈkenjə/,countries,1f1f0_1f1ea,
+Ireland,Ireland,爱尔兰,/ˈaɪələnd/,countries,1f1ee_1f1ea,
+Belgium,Belgium,比利时,/ˈbeldʒəm/,countries,1f1e7_1f1ea,
+Austria,Austria,奥地利,/ˈɒstriə/,countries,1f1e6_1f1f9,
+Poland,Poland,波兰,/ˈpəʊlənd/,countries,1f1f5_1f1f1,
+Ukraine,Ukraine,乌克兰,/juːˈkreɪn/,countries,1f1fa_1f1e6,
+Iceland,Iceland,冰岛,/ˈaɪslənd/,countries,1f1ee_1f1f8,
+Malaysia,Malaysia,马来西亚,/məˈleɪʒə/,countries,1f1f2_1f1fe,
+Philippines,Philippines,菲律宾,/ˈfɪlɪpiːnz/,countries,1f1f5_1f1ed,
+Vietnam,Vietnam,越南,/ˌvjetˈnæm/,countries,1f1fb_1f1f3,
+Indonesia,Indonesia,印度尼西亚,/ˌɪndəˈniːʒə/,countries,1f1ee_1f1e9,
+Nepal,Nepal,尼泊尔,/nəˈpɔːl/,countries,1f1f3_1f1f5,
+Pakistan,Pakistan,巴基斯坦,/ˌpɑːkɪˈstɑːn/,countries,1f1f5_1f1f0,
+Bangladesh,Bangladesh,孟加拉国,/ˌbɑːŋɡləˈdeʃ/,countries,1f1e7_1f1e9,
+SriLanka,Sri Lanka,斯里兰卡,/ˌsriː ˈlæŋkə/,countries,1f1f1_1f1f0,
+Myanmar,Myanmar,缅甸,/ˈmjænmɑː/,countries,1f1f2_1f1f2,
+Cambodia,Cambodia,柬埔寨,/kæmˈbəʊdiə/,countries,1f1f0_1f1ed,
+Laos,Laos,老挝,/laʊs/,countries,1f1f1_1f1e6,
+Mongolia,Mongolia,蒙古,/mɒŋˈɡəʊliə/,countries,1f1f2_1f1f3,
+Kazakhstan,Kazakhstan,哈萨克斯坦,/ˌkæzəkˈstɑːn/,countries,1f1f0_1f1ff,
+SaudiArabia,Saudi Arabia,沙特阿拉伯,/ˌsaʊdi əˈreɪbiə/,countries,1f1f8_1f1e6,
+theUAE,the UAE,阿联酋,/ðə juː eɪ iː/,countries,1f1e6_1f1ea,
+Qatar,Qatar,卡塔尔,/ˈkʌtɑː/,countries,1f1f6_1f1e6,
+Morocco,Morocco,摩洛哥,/məˈrɒkəʊ/,countries,1f1f2_1f1e6,
+Algeria,Algeria,阿尔及利亚,/ælˈdʒɪəriə/,countries,1f1e9_1f1ff,
+Nigeria,Nigeria,尼日利亚,/naɪˈdʒɪəriə/,countries,1f1f3_1f1ec,
+Ghana,Ghana,加纳,/ˈɡɑːnə/,countries,1f1ec_1f1ed,
+Tanzania,Tanzania,坦桑尼亚,/ˌtænzəˈniːə/,countries,1f1f9_1f1ff,
+Ethiopia,Ethiopia,埃塞俄比亚,/ˌiːθiˈəʊpiə/,countries,1f1ea_1f1f9,
+Uganda,Uganda,乌干达,/juːˈɡændə/,countries,1f1fa_1f1ec,
+Chile,Chile,智利,/ˈtʃɪli/,countries,1f1e8_1f1f1,
+Colombia,Colombia,哥伦比亚,/kəˈlʌmbiə/,countries,1f1e8_1f1f4,
+Peru,Peru,秘鲁,/pəˈruː/,countries,1f1f5_1f1ea,
+Venezuela,Venezuela,委内瑞拉,/ˌvenəˈzweɪlə/,countries,1f1fb_1f1ea,
+Cuba,Cuba,古巴,/ˈkjuːbə/,countries,1f1e8_1f1fa,
+Jamaica,Jamaica,牙买加,/dʒəˈmeɪkə/,countries,1f1ef_1f1f2,
+CostaRica,Costa Rica,哥斯达黎加,/ˈkɒstə ˈriːkə/,countries,1f1e8_1f1f7,
+Croatia,Croatia,克罗地亚,/krəʊˈeɪʃiə/,countries,1f1ed_1f1f7,
+Hungary,Hungary,匈牙利,/ˈhʌŋɡəri/,countries,1f1ed_1f1fa,
+Czechia,Czechia,捷克,/ˈtʃekiə/,countries,1f1e8_1f1ff,
+Romania,Romania,罗马尼亚,/rəˈmeɪniə/,countries,1f1f7_1f1f4,
+Bulgaria,Bulgaria,保加利亚,/bʌlˈɡeəriə/,countries,1f1e7_1f1ec,
+Slovakia,Slovakia,斯洛伐克,/sləˈvækiə/,countries,1f1f8_1f1f0,
+Slovenia,Slovenia,斯洛文尼亚,/sləˈviːniə/,countries,1f1f8_1f1ee,
+Estonia,Estonia,爱沙尼亚,/eˈstəʊniə/,countries,1f1ea_1f1ea,
+Latvia,Latvia,拉脱维亚,/ˈlætviə/,countries,1f1f1_1f1fb,
+Lithuania,Lithuania,立陶宛,/ˌlɪθjuˈeɪniə/,countries,1f1f1_1f1f9,
+Belarus,Belarus,白俄罗斯,/ˌbeləˈruːs/,countries,1f1e7_1f1fe,
+Georgia,Georgia,格鲁吉亚,/ˈdʒɔːdʒiə/,countries,1f1ec_1f1ea,
+Armenia,Armenia,亚美尼亚,/ɑːˈmiːniə/,countries,1f1e6_1f1f2,
+Azerbaijan,Azerbaijan,阿塞拜疆,/ˌæzəbaɪˈdʒɑːn/,countries,1f1e6_1f1ff,
+Luxembourg,Luxembourg,卢森堡,/ˈlʌksəmbɜːɡ/,countries,1f1f1_1f1fa,
+Malta,Malta,马耳他,/ˈmɔːltə/,countries,1f1f2_1f1f9,
+Cyprus,Cyprus,塞浦路斯,/ˈsaɪprəs/,countries,1f1e8_1f1fe,
+Monaco,Monaco,摩纳哥,/ˈmɒnəkəʊ/,countries,1f1f2_1f1e8,
+Albania,Albania,阿尔巴尼亚,/ælˈbeɪniə/,countries,1f1e6_1f1f1,
+Jordan,Jordan,约旦,/ˈdʒɔːdn/,countries,1f1ef_1f1f4,
+Lebanon,Lebanon,黎巴嫩,/ˈlebənən/,countries,1f1f1_1f1e7,
+Kuwait,Kuwait,科威特,/kuˈweɪt/,countries,1f1f0_1f1fc,
+Oman,Oman,阿曼,/əʊˈmɑːn/,countries,1f1f4_1f1f2,
+Afghanistan,Afghanistan,阿富汗,/æfˈɡænɪstɑːn/,countries,1f1e6_1f1eb,
+Uzbekistan,Uzbekistan,乌兹别克斯坦,/ʊzˌbekɪˈstɑːn/,countries,1f1fa_1f1ff,
+Fiji,Fiji,斐济,/ˈfiːdʒiː/,countries,1f1eb_1f1ef,
+PapuaNewGuinea,Papua New Guinea,巴布亚新几内亚,/pəˈpuːə njuː ˈɡɪni/,countries,1f1f5_1f1ec,
+barn,barn,谷仓,/bɑːn/,farm,,barn
+hay,hay,干草,/heɪ/,farm,,hay
+scarecrow,scarecrow,稻草人,/ˈskeəkrəʊ/,farm,,scarecrow
+crop,crop,庄稼,/krɒp/,farm,,crop
+field,field,田地,/fiːld/,farm,,field
+seed,seed,种子,/siːd/,farm,,seed
+harvest,harvest,丰收,/ˈhɑːvɪst/,farm,,harvest
+plow,plow,犁,/plaʊ/,farm,,plow
+farmer,farmer,农民,/ˈfɑːmə/,farm,,farmer
+coop,coop,鸡舍,/kuːp/,farm,,coop
+stable,stable,马厩,/ˈsteɪbl/,farm,,stable
+farming,farming,务农,/ˈfɑːmɪŋ/,farm,,farming
+woods,woods,树林,/wʊdz/,forest,,woods
+path,path,小路,/pɑːθ/,forest,,path
+stream,stream,小溪,/striːm/,forest,,stream
+pond,pond,池塘,/pɒnd/,forest,,pond
+cave,cave,山洞,/keɪv/,forest,,cave
+moss,moss,苔藓,/mɒs/,forest,,moss
+fern,fern,蕨类,/fɜːn/,forest,,fern
+twig,twig,细枝,/twɪɡ/,forest,,twig
+branch,branch,树枝,/brɑːntʃ/,forest,,branch
+root,root,树根,/ruːt/,forest,,root
+pinecone,pinecone,松果,/ˈpaɪnkəʊn/,forest,,pinecone
+cabin,cabin,小木屋,/ˈkæbɪn/,forest,,cabin
+trail,trail,林间小道,/treɪl/,forest,,trail
+sidewalk,sidewalk,人行道,/ˈsaɪdwɔːk/,city,,sidewalk
+crosswalk,crosswalk,斑马线,/ˈkrɒswɔːk/,city,,crosswalk
+skyscraper,skyscraper,摩天大楼,/ˈskaɪskreɪpə/,city,,skyscraper
+downtown,downtown,市中心,/ˌdaʊnˈtaʊn/,city,,downtown
+parkinglot,parking lot,停车场,/ˈpɑːkɪŋ lɒt/,city,,parking lot
+streetlight,streetlight,路灯,/ˈstriːtlaɪt/,city,,streetlight
+fishing,fishing,钓鱼,/ˈfɪʃɪŋ/,sports,1f3a3,
+boxing,boxing,拳击,/ˈbɒksɪŋ/,sports,1f94a,
+karate,karate,空手道,/kəˈrɑːti/,sports,1f94b,
+skating,skating,滑冰,/ˈskeɪtɪŋ/,sports,26f8,
+snowboarding,snowboarding,单板滑雪,/ˈsnəʊbɔːdɪŋ/,sports,1f3c2,
+surfing,surfing,冲浪,/ˈsɜːfɪŋ/,sports,1f3c4,
+rowing,rowing,划船,/ˈrəʊɪŋ/,sports,1f6a3,
+climbing,climbing,攀岩,/ˈklaɪmɪŋ/,sports,1f9d7,
+fencing,fencing,击剑,/ˈfensɪŋ/,sports,1f93a,
+horseracing,horse racing,赛马,/hɔːs ˈreɪsɪŋ/,sports,1f3c7,
+billiards,billiards,台球,/ˈbɪliədz/,sports,1f3b1,
+frisbee,frisbee,飞盘,/ˈfrɪzbiː/,sports,1f94f,
+hockey,hockey,冰球,/ˈhɒki/,sports,1f3d2,
+cricket2,cricket,板球,/ˈkrɪkɪt/,sports,1f3cf,
+lacrosse,lacrosse,长曲棍球,/ləˈkrɒs/,sports,1f94d,
+fieldhockey,field hockey,曲棍球,/fiːld ˈhɒki/,sports,1f3d1,
+handball,handball,手球,/ˈhændbɔːl/,sports,1f93e,
+waterpolo,water polo,水球,/ˈwɔːtə ˈpəʊləʊ/,sports,1f93d,
+weightlifting,weightlifting,举重,/ˈweɪtlɪftɪŋ/,sports,26f9_fe0f,
+skateboarding,skateboarding,滑板运动,/ˈskeɪtbɔːdɪŋ/,sports,1f6f9,
+flute,flute,长笛,/fluːt/,music,1fa88,
+accordion,accordion,手风琴,/əˈkɔːdiən/,music,1fa97,
+notes,notes,音符,/nəʊts/,music,1f3b6,
+musicalscore,musical score,乐谱,/ˈmjuːzɪkl skɔː/,music,1f3bc,
+doctor,doctor,医生,/ˈdɒktə/,jobs,1f9d1_200d_2695_fe0f,
+farmworker,farmworker,农场工人,/ˈfɑːmwɜːkə/,jobs,1f9d1_200d_1f33e,
+cook,cook,厨师,/kʊk/,jobs,1f9d1_200d_1f373,
+teacher,teacher,老师,/ˈtiːtʃə/,jobs,1f9d1_200d_1f3eb,
+firefighter,firefighter,消防员,/ˈfaɪəfaɪtə/,jobs,1f9d1_200d_1f692,
+pilot,pilot,飞行员,/ˈpaɪlət/,jobs,1f9d1_200d_2708_fe0f,
+scientist,scientist,科学家,/ˈsaɪəntɪst/,jobs,1f9d1_200d_1f52c,
+artist,artist,画家,/ˈɑːtɪst/,jobs,1f9d1_200d_1f3a8,
+singer,singer,歌手,/ˈsɪŋə/,jobs,1f9d1_200d_1f3a4,
+mechanic,mechanic,修理工,/məˈkænɪk/,jobs,1f9d1_200d_1f527,
+judge,judge,法官,/dʒʌdʒ/,jobs,1f9d1_200d_2696_fe0f,
+factoryworker,factory worker,工厂工人,/ˈfæktəri ˈwɜːkə/,jobs,1f9d1_200d_1f3ed,
+detective,detective,侦探,/dɪˈtektɪv/,jobs,1f575_fe0f,
+guard,guard,卫兵,/ɡɑːd/,jobs,1f482,
+astronaut,astronaut,宇航员,/ˈæstrənɔːt/,jobs,1f9d1_200d_1f680,
+soldier,soldier,士兵,/ˈsəʊldʒə/,jobs,,soldier
+nurse,nurse,护士,/nɜːs/,jobs,,nurse
+dentist,dentist,牙医,/ˈdentɪst/,jobs,,dentist
+barber,barber,理发师,/ˈbɑːbə/,jobs,,barber
+waiter,waiter,服务员,/ˈweɪtə/,jobs,,waiter
+librarian,librarian,图书管理员,/laɪˈbreəriən/,jobs,,librarian
+engineer,engineer,工程师,/ˌendʒɪˈnɪə/,jobs,,engineer
+driver,driver,司机,/ˈdraɪvə/,jobs,,driver
+postman,postman,邮递员,/ˈpəʊstmən/,jobs,,postman
+conductor,conductor,指挥家,/kənˈdʌktə/,jobs,,conductor
+vet,vet,兽医,/vet/,jobs,,vet
+captain,captain,船长,/ˈkæptɪn/,jobs,,captain
+coach,coach,教练,/kəʊtʃ/,jobs,,coach
+reporter,reporter,记者,/rɪˈpɔːtə/,jobs,,reporter
+tailor,tailor,裁缝,/ˈteɪlə/,jobs,,tailor
+planet,planet,行星,/ˈplænɪt/,space,1fa90,
+comet,comet,彗星,/ˈkɒmɪt/,space,2604_fe0f,
+satellite,satellite,人造卫星,/ˈsætəlaɪt/,space,1f6f0_fe0f,
+shootingstar,shooting star,流星,/ˈʃuːtɪŋ stɑː/,space,1f320,
+galaxy,galaxy,银河,/ˈɡæləksi/,space,1f30c,
+telescope,telescope,望远镜,/ˈtelɪskəʊp/,space,1f52d,
+blackhole,black hole,黑洞,/blæk həʊl/,space,,black hole
+spacestation,space station,空间站,/speɪs ˈsteɪʃn/,space,,space station
+asteroid,asteroid,小行星,/ˈæstərɔɪd/,space,,asteroid
+meteor,meteor,陨石,/ˈmiːtiə/,space,,meteor
+orbit,orbit,轨道,/ˈɔːbɪt/,space,,orbit
+spacesuit,spacesuit,宇航服,/ˈspeɪssuːt/,space,,spacesuit
+princess,princess,公主,/ˌprɪnˈses/,characters,1f478,
+prince,prince,王子,/prɪns/,characters,1f934,
+mermaid,mermaid,美人鱼,/ˈmɜːmeɪd/,characters,1f9dc,
+genie,genie,灯神,/ˈdʒiːni/,characters,1f9de,
+zombie,zombie,僵尸,/ˈzɒmbi/,characters,1f9df,
+vampire,vampire,吸血鬼,/ˈvæmpaɪə/,characters,1f9db,
+elf,elf,精灵,/elf/,characters,1f9dd,
+ogre,ogre,食人魔,/ˈəʊɡə/,characters,1f479,
+goblin,goblin,小妖怪,/ˈɡɒblɪn/,characters,1f47a,
+angel,angel,天使,/ˈeɪndʒəl/,characters,1f47c,
+ninja,ninja,忍者,/ˈnɪndʒə/,characters,1f977,
+dragon,dragon,龙,/ˈdræɡən/,characters,1f409,
+screwdriver,screwdriver,螺丝刀,/ˈskruːdraɪvə/,tools,1fa9b,
+bolt,bolt,螺栓,/bəʊlt/,tools,1f529,
+gear,gear,齿轮,/ɡɪə/,tools,2699_fe0f,
+saw,saw,锯子,/sɔː/,tools,1fa9a,
+axe,axe,斧头,/æks/,tools,1fa93,
+magnet,magnet,磁铁,/ˈmæɡnət/,tools,1f9f2,
+rope,rope,绳子,/rəʊp/,tools,1faa2,
+chain,chain,链条,/tʃeɪn/,tools,26d3_fe0f,
+brick,brick,砖头,/brɪk/,tools,1f9f1,
+fireextinguisher,fire extinguisher,灭火器,/ˈfaɪə ɪkˈstɪŋɡwɪʃə/,tools,1f9ef,
+oildrum,oil drum,油桶,/ɔɪl drʌm/,tools,1f6e2_fe0f,
+compass,compass,指南针,/ˈkʌmpəs/,tools,1f9ed,
+shovel,shovel,铲子,/ˈʃʌvl/,tools,,shovel
+drill,drill,电钻,/drɪl/,tools,,drill
+nail,nail,钉子,/neɪl/,tools,,nail
+pliers,pliers,老虎钳,/ˈplaɪəz/,tools,,pliers
+toolbox,toolbox,工具箱,/ˈtuːlbɒks/,tools,,toolbox
+tapemeasure,tape measure,卷尺,/teɪp ˈmeʒə/,tools,,tape measure
+wheelbarrow,wheelbarrow,手推车,/ˈwiːlbærəʊ/,tools,,wheelbarrow
+telephone,telephone,电话,/ˈtelɪfəʊn/,electronics,260e_fe0f,
+desktop,desktop,台式电脑,/ˈdesktɒp/,electronics,1f5a5_fe0f,
+keyboard,keyboard,键盘,/ˈkiːbɔːd/,electronics,2328_fe0f,
+mouse2,mouse,鼠标,/maʊs/,electronics,1f5b1_fe0f,
+printer,printer,打印机,/ˈprɪntə/,electronics,1f5a8_fe0f,
+videocamera,video camera,摄像机,/ˈvɪdiəʊ ˈkæmərə/,electronics,1f3a5,
+radio,radio,收音机,/ˈreɪdiəʊ/,electronics,1f4fb,
+gamecontroller,game controller,游戏手柄,/ɡeɪm kənˈtrəʊlə/,electronics,1f3ae,
+joystick,joystick,摇杆,/ˈdʒɔɪstɪk/,electronics,1f579_fe0f,
+battery,battery,电池,/ˈbætri/,electronics,1f50b,
+plug,plug,插头,/plʌɡ/,electronics,1f50c,
+CD,CD,光盘,/ˌsiː ˈdiː/,electronics,1f4bf,
+cassette,cassette,磁带,/kəˈset/,electronics,1f4fc,
+floppy,floppy,软盘,/ˈflɒpi/,electronics,1f4be,
+satellitedish,satellite dish,卫星天线,/ˈsætəlaɪt dɪʃ/,electronics,1f4e1,
+tablet,tablet,平板电脑,/ˈtæblət/,electronics,,tablet
+remotecontrol,remote control,遥控器,/rɪˈməʊt kənˈtrəʊl/,electronics,,remote control
+speaker,speaker,音箱,/ˈspiːkə/,electronics,,speaker
+smartwatch,smartwatch,智能手表,/ˈsmɑːtwɒtʃ/,electronics,,smartwatch
+e-reader,e-reader,电子书阅读器,/ˈiː riːdə/,electronics,,e-reader
+drone,drone,无人机,/drəʊn/,electronics,,drone
+bandage,bandage,创可贴,/ˈbændɪdʒ/,health,1fa79,
+pill,pill,药片,/pɪl/,health,1f48a,
+stethoscope,stethoscope,听诊器,/ˈsteθəskəʊp/,health,1fa7a,
+germ,germ,细菌,/dʒɜːm/,health,1f9a0,
+medicine,medicine,药,/ˈmedsn/,health,,medicine
+fever,fever,发烧,/ˈfiːvə/,health,,fever
+cough,cough,咳嗽,/kɒf/,health,,cough
+sneeze,sneeze,打喷嚏,/sniːz/,health,,sneeze
+flu,flu,流感,/fluː/,health,,flu
+injection,injection,打针,/ɪnˈdʒekʃn/,health,,injection
+dizzy,dizzy,头晕,/ˈdɪzi/,health,,dizzy
+healthy,healthy,健康,/ˈhelθi/,health,,healthy
+headache,headache,头疼,/ˈhedeɪk/,health,,headache
+vitamin,vitamin,维生素,/ˈvɪtəmɪn/,health,,vitamin
+Christmastree,Christmas tree,圣诞树,/ˈkrɪsməs triː/,festivals,1f384,
+Halloweenpumpkin,Halloween pumpkin,万圣节南瓜,/ˌhæləʊˈiːn ˈpʌmpkɪn/,festivals,1f383,
+confetti,confetti,彩色纸屑,/kənˈfeti/,festivals,1f38a,
+lantern,lantern,灯笼,/ˈlæntən/,festivals,1f3ee,
+firecracker,firecracker,鞭炮,/ˈfaɪəkrækə/,festivals,1f9e8,
+fireworks,fireworks,烟花,/ˈfaɪəwɜːks/,festivals,1f386,
+sparkler,sparkler,仙女棒,/ˈspɑːklə/,festivals,1f387,
+mooncake,mooncake,月饼,/ˈmuːnkeɪk/,festivals,1f96e,
+redenvelope,red envelope,红包,/red ˈenvələʊp/,festivals,1f9e7,
+pinata,pinata,皮纳塔,/pɪˈnjɑːtə/,festivals,1fa85,
+Christmasstocking,Christmas stocking,圣诞袜,/ˈkrɪsməs ˈstɒkɪŋ/,festivals,,Christmas stocking
+candycane,candy cane,拐杖糖,/ˈkændi keɪn/,festivals,,candy cane
+partyhat,party hat,派对帽,/ˈpɑːti hæt/,festivals,,party hat
+SpringFestival,Spring Festival,春节,/sprɪŋ ˈfestɪvl/,festivals,,Spring Festival
+Mid-AutumnFestival,Mid-Autumn Festival,中秋节,/mɪd ˈɔːtəm ˈfestɪvl/,festivals,,Mid-Autumn Festival
+DragonBoatFestival,Dragon Boat Festival,端午节,/ˈdræɡən bəʊt ˈfestɪvl/,festivals,,Dragon Boat Festival
+LanternFestival,Lantern Festival,元宵节,/ˈlæntən ˈfestɪvl/,festivals,,Lantern Festival
+Easter,Easter,复活节,/ˈiːstə/,festivals,,Easter
+thumbsup,thumbs up,点赞,/θʌmz ʌp/,actions,1f44d,
+thumbsdown,thumbs down,差评,/θʌmz daʊn/,actions,1f44e,
+OKhand,OK hand,OK手势,/ˌəʊˈkeɪ hænd/,actions,1f44c,
+victory,victory,胜利手势,/ˈvɪktəri/,actions,270c_fe0f,
+fistbump,fist bump,碰拳,/fɪst bʌmp/,actions,1f44a,
+wavegoodbye,wave goodbye,挥手告别,/weɪv ɡədˈbaɪ/,actions,1f44b,
+point,point,指向,/pɔɪnt/,actions,1f449,
+handshake,handshake,握手,/ˈhændʃeɪk/,actions,1f91d,
+shrug,shrug,耸肩,/ʃrʌɡ/,actions,1f937,
+facepalm,facepalm,捂脸,/ˈfeɪspɑːm/,actions,1f926,
+sw-and,and,和,/ænd/,sightwords,,and
+sw-away,away,离开；远去,/əˈweɪ/,sightwords,,away
+sw-come,come,来,/kʌm/,sightwords,,come
+sw-for,for,为了,/fɔː(r)/,sightwords,,for
+sw-go,go,去,/ɡəʊ/,sightwords,,go
+sw-here,here,这里,/hɪə(r)/,sightwords,,here
+sw-is,is,是,/ɪz/,sightwords,,is
+sw-it,it,它,/ɪt/,sightwords,,it
+sw-little,little,小的,/ˈlɪtl/,sightwords,,little
+sw-look,look,看,/lʊk/,sightwords,,look
+sw-me,me,我（宾格）,/miː/,sightwords,,me
+sw-my,my,我的,/maɪ/,sightwords,,my
+sw-play,play,玩,/pleɪ/,sightwords,,play
+sw-said,said,说（say 的过去式）,/sed/,sightwords,,said
+sw-see,see,看见,/siː/,sightwords,,see
+sw-the,the,这个（定冠词）,/ðə/,sightwords,,the
+sw-to,to,到；向,/tuː/,sightwords,,to
+sw-we,we,我们,/wiː/,sightwords,,we
+sw-where,where,哪里,/weə(r)/,sightwords,,where
+sw-you,you,你；你们,/juː/,sightwords,,you
+sw-all,all,全部；所有,/ɔːl/,sightwords,,all
+sw-am,am,是（be 的第一人称）,/æm/,sightwords,,am
+sw-are,are,是,/ɑː(r)/,sightwords,,are
+sw-at,at,在,/æt/,sightwords,,at
+sw-ate,ate,吃（eat 的过去式）,/et/,sightwords,,ate
+sw-be,be,是；成为,/biː/,sightwords,,be
+sw-but,but,但是,/bʌt/,sightwords,,but
+sw-came,came,来（come 的过去式）,/keɪm/,sightwords,,came
+sw-did,did,做（do 的过去式）,/dɪd/,sightwords,,did
+sw-do,do,做,/duː/,sightwords,,do
+sw-get,get,得到,/ɡet/,sightwords,,get
+sw-have,have,有,/hæv/,sightwords,,have
+sw-he,he,他,/hiː/,sightwords,,he
+sw-into,into,到…里面,/ˈɪntuː/,sightwords,,into
+sw-like,like,喜欢,/laɪk/,sightwords,,like
+sw-must,must,必须,/mʌst/,sightwords,,must
+sw-no,no,不,/nəʊ/,sightwords,,no
+sw-now,now,现在,/naʊ/,sightwords,,now
+sw-on,on,在…上面,/ɒn/,sightwords,,on
+sw-our,our,我们的,/ˈaʊə(r)/,sightwords,,our
+sw-please,please,请,/pliːz/,sightwords,,please
+sw-say,say,说,/seɪ/,sightwords,,say
+sw-she,she,她,/ʃiː/,sightwords,,she
+sw-so,so,所以,/səʊ/,sightwords,,so
+sw-soon,soon,很快,/suːn/,sightwords,,soon
+sw-that,that,那个,/ðæt/,sightwords,,that
+sw-there,there,那里,/ðeə(r)/,sightwords,,there
+sw-they,they,他们,/ðeɪ/,sightwords,,they
+sw-this,this,这个,/ðɪs/,sightwords,,this
+sw-too,too,也,/tuː/,sightwords,,too
+sw-under,under,在…下面,/ˈʌndə(r)/,sightwords,,under
+sw-want,want,想要,/wɒnt/,sightwords,,want
+sw-was,was,是（is/am 的过去式）,/wɒz/,sightwords,,was
+sw-went,went,去（go 的过去式）,/went/,sightwords,,went
+sw-what,what,什么,/wɒt/,sightwords,,what
+sw-who,who,谁,/huː/,sightwords,,who
+sw-with,with,和…一起,/wɪð/,sightwords,,with
+sw-yes,yes,是的,/jes/,sightwords,,yes
+sw-after,after,在…之后,/ˈɑːftə(r)/,sightwords,,after
+sw-again,again,又；再,/əˈɡen/,sightwords,,again
+sw-an,an,一（个）,/ən/,sightwords,,an
+sw-any,any,一些；任何,/ˈeni/,sightwords,,any
+sw-as,as,像…一样,/æz/,sightwords,,as
+sw-by,by,被；由,/baɪ/,sightwords,,by
+sw-could,could,能；可以,/kʊd/,sightwords,,could
+sw-every,every,每个,/ˈevri/,sightwords,,every
+sw-from,from,从,/frɒm/,sightwords,,from
+sw-going,going,将要,/ˈɡəʊɪŋ/,sightwords,,going
+sw-has,has,有（have 的第三人称单数）,/hæz/,sightwords,,has
+sw-her,her,她的,/hɜː(r)/,sightwords,,her
+sw-him,him,他（宾格）,/hɪm/,sightwords,,him
+sw-his,his,他的,/hɪz/,sightwords,,his
+sw-how,how,怎样,/haʊ/,sightwords,,how
+sw-just,just,刚刚,/dʒʌst/,sightwords,,just
+sw-know,know,知道,/nəʊ/,sightwords,,know
+sw-let,let,让,/let/,sightwords,,let
+sw-live,live,居住,/lɪv/,sightwords,,live
+sw-may,may,可以,/meɪ/,sightwords,,may
+sw-of,of,…的,/əv/,sightwords,,of
+sw-once,once,一次,/wʌns/,sightwords,,once
+sw-over,over,在…上方,/ˈəʊvə(r)/,sightwords,,over
+sw-put,put,放,/pʊt/,sightwords,,put
+sw-some,some,一些,/sʌm/,sightwords,,some
+sw-stop,stop,停止,/stɒp/,sightwords,,stop
+sw-thank,thank,感谢,/θænk/,sightwords,,thank
+sw-them,them,他们（宾格）,/ðəm/,sightwords,,them
+sw-then,then,然后,/ðen/,sightwords,,then
+sw-were,were,是（are 的过去式）,/wɜː(r)/,sightwords,,were
+sw-when,when,什么时候,/wen/,sightwords,,when
+sw-always,always,总是,/ˈɔːlweɪz/,sightwords,,always
+sw-around,around,到处；围绕,/əˈraʊnd/,sightwords,,around
+sw-because,because,因为,/bɪˈkɒz/,sightwords,,because
+sw-been,been,是（be 的过去分词）,/biːn/,sightwords,,been
+sw-before,before,在…之前,/bɪˈfɔː(r)/,sightwords,,before
+sw-both,both,两个都,/bəʊθ/,sightwords,,both
+sw-does,does,做（do 的第三人称单数）,/dʌz/,sightwords,,does
+sw-don-t,don't,不要,/dəʊnt/,sightwords,,don't
+sw-found,found,找到（find 的过去式）,/faʊnd/,sightwords,,found
+sw-gave,gave,给（give 的过去式）,/ɡeɪv/,sightwords,,gave
+sw-goes,goes,去（go 的第三人称单数）,/ɡəʊz/,sightwords,,goes
+sw-its,its,它的,/ɪts/,sightwords,,its
+sw-made,made,做（make 的过去式）,/meɪd/,sightwords,,made
+sw-many,many,许多,/ˈmeni/,sightwords,,many
+sw-off,off,离开；关掉,/ɒf/,sightwords,,off
+sw-or,or,或者,/ɔː(r)/,sightwords,,or
+sw-their,their,他们的,/ðeə(r)/,sightwords,,their
+sw-these,these,这些,/ðiːz/,sightwords,,these
+sw-those,those,那些,/ðəʊz/,sightwords,,those
+sw-upon,upon,在…之上,/əˈpɒn/,sightwords,,upon
+sw-us,us,我们（宾格）,/ʌs/,sightwords,,us
+sw-use,use,使用,/juːz/,sightwords,,use
+sw-very,very,非常,/ˈveri/,sightwords,,very
+sw-which,which,哪一个,/wɪtʃ/,sightwords,,which
+sw-why,why,为什么,/waɪ/,sightwords,,why
+sw-work,work,工作,/wɜːk/,sightwords,,work
+sw-would,would,将会,/wʊd/,sightwords,,would
+sw-your,your,你的,/jɔː(r)/,sightwords,,your
+sw-about,about,关于,/əˈbaʊt/,sightwords,,about
+sw-bring,bring,带来,/brɪŋ/,sightwords,,bring
+sw-carry,carry,搬运,/ˈkæri/,sightwords,,carry
+sw-done,done,完成（do 的过去分词）,/dʌn/,sightwords,,done
+sw-grow,grow,生长,/ɡrəʊ/,sightwords,,grow
+sw-hold,hold,握住,/həʊld/,sightwords,,hold
+sw-hurt,hurt,受伤,/hɜːt/,sightwords,,hurt
+sw-if,if,如果,/ɪf/,sightwords,,if
+sw-keep,keep,保持,/kiːp/,sightwords,,keep
+sw-much,much,许多,/mʌtʃ/,sightwords,,much
+sw-myself,myself,我自己,/maɪˈself/,sightwords,,myself
+sw-never,never,从不,/ˈnevə(r)/,sightwords,,never
+sw-only,only,只；仅仅,/ˈəʊnli/,sightwords,,only
+sw-own,own,自己的,/əʊn/,sightwords,,own
+sw-shall,shall,将要,/ʃæl/,sightwords,,shall
+sw-show,show,展示,/ʃəʊ/,sightwords,,show
+sw-start,start,开始,/stɑːt/,sightwords,,start
+sw-together,together,一起,/təˈɡeðə(r)/,sightwords,,together
+sw-try,try,尝试,/traɪ/,sightwords,,try
+sw-word,word,单词,/wɜːd/,sightwords,,word
+sw-each,each,每个,/iːtʃ/,sightwords,,each
+sw-other,other,其他的,/ˈʌðə(r)/,sightwords,,other
+sw-time,time,时间,/taɪm/,sightwords,,time
+sw-way,way,路；方法,/weɪ/,sightwords,,way
+sw-people,people,人们,/ˈpiːpl/,sightwords,,people
+sw-than,than,比,/ðæn/,sightwords,,than
+sw-oil,oil,油,/ɔɪl/,sightwords,,oil
+sw-part,part,部分,/pɑːt/,sightwords,,part
+sw-sound,sound,声音,/saʊnd/,sightwords,,sound
+sw-place,place,地方,/pleɪs/,sightwords,,place
+sw-most,most,最多的,/məʊst/,sightwords,,most
+sw-name,name,名字,/neɪm/,sightwords,,name
+sw-sentence,sentence,句子,/ˈsentəns/,sightwords,,sentence
+sw-boy,boy,男孩,/bɔɪ/,sightwords,,boy
+sw-follow,follow,跟随,/ˈfɒləʊ/,sightwords,,follow
+sw-also,also,也,/ˈɔːlsəʊ/,sightwords,,also
+sw-form,form,形式；形状,/fɔːm/,sightwords,,form
+sw-set,set,放置；一套,/set/,sightwords,,set
+sw-another,another,另一个,/əˈnʌðə(r)/,sightwords,,another
+sw-large,large,大的,/lɑːdʒ/,sightwords,,large
+sw-such,such,这样的,/sʌtʃ/,sightwords,,such
+sw-turn,turn,转动,/tɜːn/,sightwords,,turn
+sw-men,men,男人们（man 的复数）,/men/,sightwords,,men
+sw-need,need,需要,/niːd/,sightwords,,need
+sw-home,home,家,/həʊm/,sightwords,,home
+sw-move,move,移动,/muːv/,sightwords,,move
+sw-picture,picture,图片,/ˈpɪktʃə(r)/,sightwords,,picture
+sw-change,change,改变,/tʃeɪndʒ/,sightwords,,change
+sw-air,air,空气,/eə(r)/,sightwords,,air
+sw-animal,animal,动物,/ˈænɪml/,sightwords,,animal
+sw-page,page,页,/peɪdʒ/,sightwords,,page
+sw-letter,letter,信；字母,/ˈletə(r)/,sightwords,,letter
+sw-study,study,学习,/ˈstʌdi/,sightwords,,study
+sw-still,still,仍然,/stɪl/,sightwords,,still
+sw-should,should,应该,/ʃʊd/,sightwords,,should
+sw-america,America,美国,/əˈmerɪkə/,sightwords,,America
+sw-world,world,世界,/wɜːld/,sightwords,,world
+sw-add,add,加上,/æd/,sightwords,,add
+sw-food,food,食物,/fuːd/,sightwords,,food
+sw-country,country,国家,/ˈkʌntri/,sightwords,,country
+sw-city,city,城市,/ˈsɪti/,sightwords,,city
+sw-eye,eye,眼睛,/aɪ/,sightwords,,eye
+sw-thought,thought,想法,/θɔːt/,sightwords,,thought
+sw-head,head,头,/hed/,sightwords,,head
+sw-few,few,很少的,/fjuː/,sightwords,,few
+sw-while,while,当…的时候,/waɪl/,sightwords,,while
+sw-might,might,可能,/maɪt/,sightwords,,might
+sw-something,something,某事；某物,/ˈsʌmθɪŋ/,sightwords,,something
+sw-seem,seem,好像,/siːm/,sightwords,,seem
+sw-next,next,下一个,/nekst/,sightwords,,next
+sw-example,example,例子,/ɪɡˈzɑːmpl/,sightwords,,example
+sw-life,life,生活；生命,/laɪf/,sightwords,,life
+sw-often,often,经常,/ˈɒfn/,sightwords,,often
+sw-until,until,直到,/ənˈtɪl/,sightwords,,until
+sw-children,children,孩子们,/ˈtʃɪldrən/,sightwords,,children
+sw-side,side,边,/saɪd/,sightwords,,side
+sw-feet,feet,脚（foot 的复数）,/fiːt/,sightwords,,feet
+sw-mile,mile,英里,/maɪl/,sightwords,,mile
+sw-sea,sea,大海,/siː/,sightwords,,sea
+sw-began,began,开始（begin 的过去式）,/bɪˈɡæn/,sightwords,,began
+sw-took,took,拿（take 的过去式）,/tʊk/,sightwords,,took
+sw-river,river,河,/ˈrɪvə(r)/,sightwords,,river
+sw-state,state,州；状态,/steɪt/,sightwords,,state
+sw-hear,hear,听见,/hɪə(r)/,sightwords,,hear
+sw-later,later,后来,/ˈleɪtə(r)/,sightwords,,later
+sw-miss,miss,想念；错过,/mɪs/,sightwords,,miss
+sw-enough,enough,足够的,/ɪˈnʌf/,sightwords,,enough
+sw-almost,almost,几乎,/ˈɔːlməʊst/,sightwords,,almost
+sw-girl,girl,女孩,/ɡɜːl/,sightwords,,girl
+sw-sometimes,sometimes,有时,/ˈsʌmtaɪmz/,sightwords,,sometimes
+sw-talk,talk,说话,/tɔːk/,sightwords,,talk
+sw-list,list,清单,/lɪst/,sightwords,,list
+sw-song,song,歌曲,/sɒŋ/,sightwords,,song
+sw-being,being,生物,/ˈbiːɪŋ/,sightwords,,being
+sw-idea,idea,主意,/aɪˈdɪə/,sightwords,,idea
+sw-body,body,身体,/ˈbɒdi/,sightwords,,body
+sw-color,color,颜色,/ˈkʌlə(r)/,sightwords,,color
+sw-stand,stand,站立,/stænd/,sightwords,,stand
+sw-area,area,地区,/ˈeəriə/,sightwords,,area
+sw-mark,mark,标记,/mɑːk/,sightwords,,mark
+sw-birds,birds,鸟（bird 的复数）,/bɜːdz/,sightwords,,birds
+sw-problem,problem,问题,/ˈprɒbləm/,sightwords,,problem
+sw-complete,complete,完成,/kəmˈpliːt/,sightwords,,complete
+sw-room,room,房间,/ruːm/,sightwords,,room
+sw-knew,knew,知道（know 的过去式）,/njuː/,sightwords,,knew
+sw-since,since,自从,/sɪns/,sightwords,,since
+sw-ever,ever,曾经,/ˈevə(r)/,sightwords,,ever
+sw-piece,piece,片；块,/piːs/,sightwords,,piece
+sw-told,told,告诉（tell 的过去式）,/təʊld/,sightwords,,told
+sw-usually,usually,通常,/ˈjuːʒuəli/,sightwords,,usually
+sw-friends,friends,朋友们（friend 的复数）,/frendz/,sightwords,,friends
+sw-heard,heard,听见（hear 的过去式）,/hɜːd/,sightwords,,heard
+sw-order,order,顺序,/ˈɔːdə(r)/,sightwords,,order
+sw-become,become,变成,/bɪˈkʌm/,sightwords,,become
+sw-however,however,然而,/haʊˈevə(r)/,sightwords,,however
+sw-hours,hours,小时（hour 的复数）,/ˈaʊəz/,sightwords,,hours
+sw-whole,whole,全部的,/həʊl/,sightwords,,whole
+sw-waves,waves,波浪（wave 的复数）,/weɪvz/,sightwords,,waves
+sw-reached,reached,到达（reach 的过去式）,/riːtʃt/,sightwords,,reached
+sw-friend,friend,朋友,/frend/,sightwords,,friend
+sw-touch,touch,触摸,/tʌtʃ/,sightwords,,touch
+sw-break,break,打破,/breɪk/,sightwords,,break
+sw-instead,instead,代替,/ɪnˈsted/,sightwords,,instead
+sw-trouble,trouble,麻烦,/ˈtrʌbl/,sightwords,,trouble
+sw-box,box,盒子,/bɒks/,sightwords,,box
+sw-yet,yet,还；尚,/jet/,sightwords,,yet
+sw-able,able,能够,/ˈeɪbl/,sightwords,,able
+sw-age,age,年龄,/eɪdʒ/,sightwords,,age
+sw-minute,minute,分钟,/ˈmɪnɪt/,sightwords,,minute
+sw-size,size,大小,/saɪz/,sightwords,,size
+sw-interest,interest,兴趣,/ˈɪntrəst/,sightwords,,interest
+sw-object,object,物品,/ˈɒbdʒɪkt/,sightwords,,object
+sw-action,action,行动,/ˈækʃn/,sightwords,,action
+sw-amount,amount,数量,/əˈmaʊnt/,sightwords,,amount
+sw-reason,reason,原因,/ˈriːzn/,sightwords,,reason
+sw-length,length,长度,/leŋθ/,sightwords,,length
+sw-frame,frame,边框,/freɪm/,sightwords,,frame
+sw-north,north,北,/nɔːθ/,sightwords,,north
+sw-south,south,南,/saʊθ/,sightwords,,south
+sw-east,east,东,/iːst/,sightwords,,east
+sw-voice,voice,声音,/vɔɪs/,sightwords,,voice
+sw-noise,noise,噪音,/nɔɪz/,sightwords,,noise
+sw-human,human,人；人类,/ˈhjuːmən/,sightwords,,human
+sw-machine,machine,机器,/məˈʃiːn/,sightwords,,machine
+sw-glass,glass,玻璃,/ɡlɑːs/,sightwords,,glass
+sw-wood,wood,木头,/wʊd/,sightwords,,wood
+sw-ground,ground,地面,/ɡraʊnd/,sightwords,,ground
+sw-ocean,ocean,海洋,/ˈəʊʃn/,sightwords,,ocean
+sw-space,space,太空,/speɪs/,sightwords,,space
+sw-winter,winter,冬天,/ˈwɪntə(r)/,sightwords,,winter
+sw-summer,summer,夏天,/ˈsʌmə(r)/,sightwords,,summer
+sw-autumn,autumn,秋天,/ˈɔːtəm/,sightwords,,autumn
+sw-season,season,季节,/ˈsiːzn/,sightwords,,season
+sw-travel,travel,旅行,/ˈtrævl/,sightwords,,travel
+sw-clothes,clothes,衣服,/kləʊðz/,sightwords,,clothes
+sw-kitchen,kitchen,厨房,/ˈkɪtʃɪn/,sightwords,,kitchen
+sw-village,village,村庄,/ˈvɪlɪdʒ/,sightwords,,village
+sw-office,office,办公室,/ˈɒfɪs/,sightwords,,office
+sw-market,market,市场,/ˈmɑːkɪt/,sightwords,,market
+sw-future,future,未来,/ˈfjuːtʃə(r)/,sightwords,,future
+sw-nature,nature,大自然,/ˈneɪtʃə(r)/,sightwords,,nature
+sw-valley,valley,山谷,/ˈvæli/,sightwords,,valley
+sw-energy,energy,能量,/ˈenədʒi/,sightwords,,energy
+sw-force,force,力,/fɔːs/,sightwords,,force
+sw-power,power,力量,/ˈpaʊə(r)/,sightwords,,power
+sw-weight,weight,重量,/weɪt/,sightwords,,weight
+sw-speed,speed,速度,/spiːd/,sightwords,,speed
+sw-distance,distance,距离,/ˈdɪstəns/,sightwords,,distance
+sw-temperature,temperature,温度,/ˈtemprətʃə(r)/,sightwords,,temperature
+sw-metal,metal,金属,/ˈmetl/,sightwords,,metal
+sw-silver,silver,银,/ˈsɪlvə(r)/,sightwords,,silver
+sw-gold,gold,金子,/ɡəʊld/,sightwords,,gold
+sw-iron,iron,铁,/ˈaɪən/,sightwords,,iron
+sw-cotton,cotton,棉花,/ˈkɒtn/,sightwords,,cotton
+sw-wool,wool,羊毛,/wʊl/,sightwords,,wool
+sw-leather,leather,皮革,/ˈleðə(r)/,sightwords,,leather
+sw-plastic,plastic,塑料,/ˈplæstɪk/,sightwords,,plastic
+sw-rubber,rubber,橡胶,/ˈrʌbə(r)/,sightwords,,rubber
+sw-mind,mind,头脑,/maɪnd/,sightwords,,mind
+sw-skin,skin,皮肤,/skɪn/,sightwords,,skin
+sw-stomach,stomach,胃,/ˈstʌmək/,sightwords,,stomach
+sw-elbow,elbow,手肘,/ˈelbəʊ/,sightwords,,elbow
+sw-neck,neck,脖子,/nek/,sightwords,,neck
+sw-game,game,游戏,/ɡeɪm/,sightwords,,game
+sw-coin,coin,硬币,/kɔɪn/,sightwords,,coin
+sw-town,town,城镇,/taʊn/,sightwords,,town
+sw-road,road,马路,/rəʊd/,sightwords,,road
+sw-poem,poem,诗,/ˈpəʊɪm/,sightwords,,poem
+sw-sky,sky,天空,/skaɪ/,sightwords,,sky
+at-mat,mat,垫子,/mæt/,wordfamilies,,mat
+at-fat,fat,胖的,/fæt/,wordfamilies,,fat
+at-sat,sat,坐（sit 的过去式）,/sæt/,wordfamilies,,sat
+at-pat,pat,轻拍,/pæt/,wordfamilies,,pat
+an-man,man,男人,/mæn/,wordfamilies,,man
+an-can,can,能；会,/kæn/,wordfamilies,,can
+an-fan,fan,风扇；粉丝,/fæn/,wordfamilies,,fan
+an-ran,ran,跑（run 的过去式）,/ræn/,wordfamilies,,ran
+ap-nap,nap,小睡,/næp/,wordfamilies,,nap
+ap-tap,tap,水龙头,/tæp/,wordfamilies,,tap
+ap-lap,lap,膝上；一圈,/læp/,wordfamilies,,lap
+ap-gap,gap,缺口,/ɡæp/,wordfamilies,,gap
+ad-had,had,有（have 的过去式）,/hæd/,wordfamilies,,had
+ad-mad,mad,生气的,/mæd/,wordfamilies,,mad
+ad-pad,pad,垫子；便笺本,/pæd/,wordfamilies,,pad
+ad-sad,sad,悲伤的,/sæd/,wordfamilies,,sad
+ag-bag,bag,包,/bæɡ/,wordfamilies,,bag
+ag-tag,tag,标签,/tæɡ/,wordfamilies,,tag
+ag-rag,rag,抹布,/ræɡ/,wordfamilies,,rag
+ag-wag,wag,摇（尾巴）,/wæɡ/,wordfamilies,,wag
+ag-lag,lag,落在后面,/læɡ/,wordfamilies,,lag
+am-ham,ham,火腿,/hæm/,wordfamilies,,ham
+am-ram,ram,公羊,/ræm/,wordfamilies,,ram
+am-yam,yam,红薯,/jæm/,wordfamilies,,yam
+am-dam,dam,水坝,/dæm/,wordfamilies,,dam
+ab-cab,cab,出租车,/kæb/,wordfamilies,,cab
+ab-lab,lab,实验室,/læb/,wordfamilies,,lab
+ab-jab,jab,戳；刺,/dʒæb/,wordfamilies,,jab
+ab-dab,dab,轻点；轻涂,/dæb/,wordfamilies,,dab
+ab-tab,tab,标签；搭扣,/tæb/,wordfamilies,,tab
+ix-fix,fix,修理,/fɪks/,wordfamilies,,fix
+ix-mix,mix,混合,/mɪks/,wordfamilies,,mix
+it-bit,bit,一点儿,/bɪt/,wordfamilies,,bit
+it-fit,fit,合身；适合,/fɪt/,wordfamilies,,fit
+it-hit,hit,打；击中,/hɪt/,wordfamilies,,hit
+it-kit,kit,工具箱,/kɪt/,wordfamilies,,kit
+it-pit,pit,坑；果核,/pɪt/,wordfamilies,,pit
+it-sit,sit,坐,/sɪt/,wordfamilies,,sit
+in-bin,bin,垃圾箱,/bɪn/,wordfamilies,,bin
+in-fin,fin,鱼鳍,/fɪn/,wordfamilies,,fin
+in-pin,pin,别针,/pɪn/,wordfamilies,,pin
+in-tin,tin,罐头盒,/tɪn/,wordfamilies,,tin
+ig-dig,dig,挖,/dɪɡ/,wordfamilies,,dig
+ig-fig,fig,无花果,/fɪɡ/,wordfamilies,,fig
+ig-wig,wig,假发,/wɪɡ/,wordfamilies,,wig
+ip-dip,dip,蘸一蘸,/dɪp/,wordfamilies,,dip
+ip-hip,hip,胯部,/hɪp/,wordfamilies,,hip
+ip-lip,lip,嘴唇,/lɪp/,wordfamilies,,lip
+ip-rip,rip,撕开,/rɪp/,wordfamilies,,rip
+ip-tip,tip,尖端,/tɪp/,wordfamilies,,tip
+ip-zip,zip,拉链,/zɪp/,wordfamilies,,zip
+og-log,log,原木,/lɒɡ/,wordfamilies,,log
+og-jog,jog,慢跑,/dʒɒɡ/,wordfamilies,,jog
+og-hog,hog,大猪,/hɒɡ/,wordfamilies,,hog
+op-hop,hop,单脚跳,/hɒp/,wordfamilies,,hop
+op-mop,mop,拖把,/mɒp/,wordfamilies,,mop
+op-top,top,顶部,/tɒp/,wordfamilies,,top
+op-pop,pop,砰；爆开,/pɒp/,wordfamilies,,pop
+op-cop,cop,警察,/kɒp/,wordfamilies,,cop
+ot-cot,cot,婴儿床,/kɒt/,wordfamilies,,cot
+ot-dot,dot,圆点,/dɒt/,wordfamilies,,dot
+ot-got,got,得到（get 的过去式）,/ɡɒt/,wordfamilies,,got
+ot-lot,lot,许多,/lɒt/,wordfamilies,,lot
+ot-not,not,不,/nɒt/,wordfamilies,,not
+ob-cob,cob,玉米芯,/kɒb/,wordfamilies,,cob
+ob-job,job,工作,/dʒɒb/,wordfamilies,,job
+ob-mob,mob,暴徒；人群,/mɒb/,wordfamilies,,mob
+ob-rob,rob,抢劫,/rɒb/,wordfamilies,,rob
+ob-sob,sob,抽泣,/sɒb/,wordfamilies,,sob
+ub-cub,cub,幼兽,/kʌb/,wordfamilies,,cub
+ub-rub,rub,摩擦,/rʌb/,wordfamilies,,rub
+ub-tub,tub,浴盆,/tʌb/,wordfamilies,,tub
+ub-hub,hub,中心；轮毂,/hʌb/,wordfamilies,,hub
+ug-mug,mug,马克杯,/mʌɡ/,wordfamilies,,mug
+ug-rug,rug,小地毯,/rʌɡ/,wordfamilies,,rug
+ug-jug,jug,壶,/dʒʌɡ/,wordfamilies,,jug
+ug-tug,tug,用力拉,/tʌɡ/,wordfamilies,,tug
+um-gum,gum,口香糖,/ɡʌm/,wordfamilies,,gum
+um-hum,hum,哼唱,/hʌm/,wordfamilies,,hum
+um-mum,mum,妈妈,/mʌm/,wordfamilies,,mum
+un-bun,bun,小圆面包,/bʌn/,wordfamilies,,bun
+un-fun,fun,有趣；乐趣,/fʌn/,wordfamilies,,fun
+un-nun,nun,修女,/nʌn/,wordfamilies,,nun
+un-pun,pun,双关语,/pʌn/,wordfamilies,,pun
+ut-cut,cut,切；剪,/kʌt/,wordfamilies,,cut
+ut-hut,hut,小屋,/hʌt/,wordfamilies,,hut
+ut-gut,gut,肠子,/ɡʌt/,wordfamilies,,gut
+ut-nut,nut,坚果,/nʌt/,wordfamilies,,nut
+ut-shut,shut,关上,/ʃʌt/,wordfamilies,,shut
+ell-fell,fell,倒下（fall 的过去式）,/fel/,wordfamilies,,fell
+ell-well,well,好；水井,/wel/,wordfamilies,,well
+ell-yell,yell,大喊,/jel/,wordfamilies,,yell
+ell-smell,smell,闻到；气味,/smel/,wordfamilies,,smell
+ell-spell,spell,拼写,/spel/,wordfamilies,,spell
+ill-bill,bill,账单,/bɪl/,wordfamilies,,bill
+ill-fill,fill,装满,/fɪl/,wordfamilies,,fill
+ill-hill,hill,小山,/hɪl/,wordfamilies,,hill
+ill-mill,mill,磨坊,/mɪl/,wordfamilies,,mill
+ill-will,will,将要,/wɪl/,wordfamilies,,will
+all-ball,ball,球,/bɔːl/,wordfamilies,,ball
+all-call,call,打电话；喊,/kɔːl/,wordfamilies,,call
+all-fall,fall,落下；摔倒,/fɔːl/,wordfamilies,,fall
+all-hall,hall,大厅,/hɔːl/,wordfamilies,,hall
+ing-wing,wing,翅膀,/wɪŋ/,wordfamilies,,wing
+ing-spring,spring,春天；弹簧,/sprɪŋ/,wordfamilies,,spring
+ing-string,string,线；细绳,/strɪŋ/,wordfamilies,,string
+ick-pick,pick,挑选；摘,/pɪk/,wordfamilies,,pick
+ick-kick,kick,踢,/kɪk/,wordfamilies,,kick
+ick-lick,lick,舔,/lɪk/,wordfamilies,,lick
+ick-nick,nick,刻痕；小缺口,/nɪk/,wordfamilies,,nick
+ick-tick,tick,滴答声；勾,/tɪk/,wordfamilies,,tick
+ock-sock,sock,短袜,/sɒk/,wordfamilies,,sock
+ock-block,block,积木；街区,/blɒk/,wordfamilies,,block
+ock-dock,dock,码头,/dɒk/,wordfamilies,,dock
+uck-buck,buck,雄鹿,/bʌk/,wordfamilies,,buck
+uck-luck,luck,运气,/lʌk/,wordfamilies,,luck
+uck-muck,muck,淤泥；污物,/mʌk/,wordfamilies,,muck
+ump-bump,bump,碰撞；肿块,/bʌmp/,wordfamilies,,bump
+ump-lump,lump,团；块,/lʌmp/,wordfamilies,,lump
+ump-pump,pump,泵；打气筒,/pʌmp/,wordfamilies,,pump
+ump-stump,stump,树桩,/stʌmp/,wordfamilies,,stump
+unk-bunk,bunk,双层床,/bʌŋk/,wordfamilies,,bunk
+unk-dunk,dunk,浸一浸,/dʌŋk/,wordfamilies,,dunk
+unk-junk,junk,废旧物品,/dʒʌŋk/,wordfamilies,,junk
+unk-trunk,trunk,树干；象鼻,/trʌŋk/,wordfamilies,,trunk
+unk-sunk,sunk,沉没（sink 的过去分词）,/sʌŋk/,wordfamilies,,sunk
+ash-cash,cash,现金,/kæʃ/,wordfamilies,,cash
+ash-dash,dash,猛冲,/dæʃ/,wordfamilies,,dash
+ash-hash,hash,切碎的食物,/hæʃ/,wordfamilies,,hash
+ash-mash,mash,捣成泥,/mæʃ/,wordfamilies,,mash
+ash-rash,rash,皮疹,/ræʃ/,wordfamilies,,rash
+ack-pack,pack,打包；背包,/pæk/,wordfamilies,,pack
+ack-sack,sack,麻袋,/sæk/,wordfamilies,,sack
+ack-rack,rack,架子,/ræk/,wordfamilies,,rack
+ack-quack,quack,嘎嘎（鸭叫声）,/kwæk/,wordfamilies,,quack
+est-best,best,最好的,/best/,wordfamilies,,best
+est-nest,nest,鸟窝,/nest/,wordfamilies,,nest
+est-vest,vest,背心,/vest/,wordfamilies,,vest
+est-west,west,西,/west/,wordfamilies,,west
+est-pest,pest,害虫,/pest/,wordfamilies,,pest
+dg-shop,shop,商店,/ʃɒp/,digraphs,,shop
+dg-dish,dish,盘子,/dɪʃ/,digraphs,,dish
+dg-shelf,shelf,架子,/ʃelf/,digraphs,,shelf
+dg-shine,shine,发光,/ʃaɪn/,digraphs,,shine
+dg-shy,shy,害羞的,/ʃaɪ/,digraphs,,shy
+dg-chip,chip,薯条；碎屑,/tʃɪp/,digraphs,,chip
+dg-chin,chin,下巴,/tʃɪn/,digraphs,,chin
+dg-chest,chest,胸部,/tʃest/,digraphs,,chest
+dg-child,child,小孩,/tʃaɪld/,digraphs,,child
+dg-chase,chase,追赶,/tʃeɪs/,digraphs,,chase
+dg-thunder,thunder,雷,/ˈθʌndə(r)/,digraphs,,thunder
+dg-feather,feather,羽毛,/ˈfeðə(r)/,digraphs,,feather
+dg-weather,weather,天气,/ˈweðə(r)/,digraphs,,weather
+dg-thumb,thumb,大拇指,/θʌm/,digraphs,,thumb
+dg-teeth,teeth,牙齿,/tiːθ/,digraphs,,teeth
+dg-bath,bath,洗澡；浴缸,/bɑːθ/,digraphs,,bath
+dg-wheel,wheel,车轮,/wiːl/,digraphs,,wheel
+dg-whistle,whistle,哨子,/ˈwɪsl/,digraphs,,whistle
+dg-whisker,whisker,（动物的）胡须,/ˈwɪskə(r)/,digraphs,,whisker
+dg-photo,photo,照片,/ˈfəʊtəʊ/,digraphs,,photo
+dg-graph,graph,图表,/ɡrɑːf/,digraphs,,graph
+dg-alphabet,alphabet,字母表,/ˈælfəbet/,digraphs,,alphabet
+dg-thing,thing,东西,/θɪŋ/,digraphs,,thing
+dg-tank,tank,坦克；水箱,/tæŋk/,digraphs,,tank
+dg-rank,rank,等级,/ræŋk/,digraphs,,rank
+dg-sink,sink,水槽,/sɪŋk/,digraphs,,sink
+dg-honk,honk,按喇叭,/hɒŋk/,digraphs,,honk
+dg-silk,silk,丝绸,/sɪlk/,digraphs,,silk
+dg-belt,belt,腰带,/belt/,digraphs,,belt
+dg-mask,mask,面具,/mɑːsk/,digraphs,,mask
+dg-task,task,任务,/tɑːsk/,digraphs,,task
+dg-plant,plant,植物,/plɑːnt/,digraphs,,plant
+dg-lamp,lamp,台灯,/læmp/,digraphs,,lamp
+dg-camp,camp,野营,/kæmp/,digraphs,,camp
+dg-land,land,陆地,/lænd/,digraphs,,land
+dg-past,past,过去,/pɑːst/,digraphs,,past
+dg-bend,bend,弯曲,/bend/,digraphs,,bend
+dg-send,send,寄送,/send/,digraphs,,send
+dg-dust,dust,灰尘,/dʌst/,digraphs,,dust
+dg-lift,lift,电梯；举起,/lɪft/,digraphs,,lift
+dg-skirt,skirt,裙子,/skɜːt/,digraphs,,skirt
+dg-sport,sport,运动,/spɔːt/,digraphs,,sport
+dg-spot,spot,斑点,/spɒt/,digraphs,,spot
+dg-club,club,俱乐部,/klʌb/,digraphs,,club
+dg-flag,flag,旗帜,/flæɡ/,digraphs,,flag
+dg-glad,glad,高兴的,/ɡlæd/,digraphs,,glad
+dg-plan,plan,计划,/plæn/,digraphs,,plan
+dg-plane,plane,飞机,/pleɪn/,digraphs,,plane
+adj-big,big,大的,/bɪɡ/,adjectives,,big
+adj-small,small,小的,/smɔːl/,adjectives,,small
+adj-tall,tall,高的,/tɔːl/,adjectives,,tall
+adj-short,short,矮的或短的,/ʃɔːt/,adjectives,,short
+adj-long,long,长的,/lɒŋ/,adjectives,,long
+adj-new,new,新的,/njuː/,adjectives,,new
+adj-old,old,旧的或老的,/əʊld/,adjectives,,old
+adj-good,good,好的,/ɡʊd/,adjectives,,good
+adj-bad,bad,坏的,/bæd/,adjectives,,bad
+adj-fast,fast,快的,/fɑːst/,adjectives,,fast
+adj-slow,slow,慢的,/sləʊ/,adjectives,,slow
+adj-hot,hot,热的,/hɒt/,adjectives,,hot
+adj-cold,cold,冷的,/kəʊld/,adjectives,,cold
+adj-warm,warm,温暖的,/wɔːm/,adjectives,,warm
+adj-cool,cool,凉爽的,/kuːl/,adjectives,,cool
+adj-wet,wet,湿的,/wet/,adjectives,,wet
+adj-dry,dry,干的,/draɪ/,adjectives,,dry
+adj-clean,clean,干净的,/kliːn/,adjectives,,clean
+adj-dirty,dirty,脏的,/ˈdɜːti/,adjectives,,dirty
+adj-soft,soft,软的,/sɒft/,adjectives,,soft
+adj-hard,hard,硬的,/hɑːd/,adjectives,,hard
+adj-heavy,heavy,重的,/ˈhevi/,adjectives,,heavy
+adj-light,light,轻的,/laɪt/,adjectives,,light
+adj-full,full,满的,/fʊl/,adjectives,,full
+adj-empty,empty,空的,/ˈempti/,adjectives,,empty
+adj-sweet,sweet,甜的,/swiːt/,adjectives,,sweet
+adj-sour,sour,酸的,/ˈsaʊə/,adjectives,,sour
+adj-spicy,spicy,辣的,/ˈspaɪsi/,adjectives,,spicy
+adj-fresh,fresh,新鲜的,/freʃ/,adjectives,,fresh
+adj-round,round,圆的,/raʊnd/,adjectives,,round
+adj-straight,straight,直的,/streɪt/,adjectives,,straight
+adj-curly,curly,卷的,/ˈkɜːli/,adjectives,,curly
+adj-smooth,smooth,光滑的,/smuːð/,adjectives,,smooth
+adj-rough,rough,粗糙的,/rʌf/,adjectives,,rough
+adj-shiny,shiny,闪亮的,/ˈʃaɪni/,adjectives,,shiny
+adj-dull,dull,暗淡的,/dʌl/,adjectives,,dull
+adj-bright,bright,明亮的,/braɪt/,adjectives,,bright
+adj-dark,dark,黑暗的,/dɑːk/,adjectives,,dark
+adj-funny,funny,滑稽的,/ˈfʌni/,adjectives,,funny
+adj-kind,kind,友善的,/kaɪnd/,adjectives,,kind
+adj-gentle,gentle,温柔的,/ˈdʒentl/,adjectives,,gentle
+adj-polite,polite,有礼貌的,/pəˈlaɪt/,adjectives,,polite
+adj-lazy,lazy,懒的,/ˈleɪzi/,adjectives,,lazy
+adj-busy,busy,忙的,/ˈbɪzi/,adjectives,,busy
+adj-lucky,lucky,幸运的,/ˈlʌki/,adjectives,,lucky
+adj-careful,careful,小心的,/ˈkeəfl/,adjectives,,careful
+adj-friendly,friendly,友好的,/ˈfrendli/,adjectives,,friendly
+adj-hungry,hungry,饿的,/ˈhʌŋɡri/,adjectives,,hungry
+adj-thirsty,thirsty,渴的,/ˈθɜːsti/,adjectives,,thirsty
+adj-tired2,tired,疲倦的,/ˈtaɪəd/,adjectives,,tired
+adj-awake,awake,醒着的,/əˈweɪk/,adjectives,,awake
+adj-colorful,colorful,五彩缤纷的,/ˈkʌləfl/,adjectives,,colorful
+adj-beautiful,beautiful,美丽的,/ˈbjuːtɪfl/,adjectives,,beautiful
+adj-pretty,pretty,漂亮的,/ˈprɪti/,adjectives,,pretty
+adj-handsome,handsome,英俊的,/ˈhænsəm/,adjectives,,handsome
+adj-huge,huge,巨大的,/hjuːdʒ/,adjectives,,huge
+adj-tiny,tiny,极小的,/ˈtaɪni/,adjectives,,tiny
+adj-giant,giant,庞大的,/ˈdʒaɪənt/,adjectives,,giant
+adj-quick,quick,迅速的,/kwɪk/,adjectives,,quick
+adj-wrong,wrong,错误的,/rɒŋ/,adjectives,,wrong
+adj-correct,correct,正确的,/kəˈrekt/,adjectives,,correct
+adj-true,true,真实的,/truː/,adjectives,,true
+adj-false,false,虚假的,/fɔːls/,adjectives,,false
+adj-real,real,真的,/rɪəl/,adjectives,,real
+adj-fake,fake,假的,/feɪk/,adjectives,,fake
+adj-safe,safe,安全的,/seɪf/,adjectives,,safe
+adj-dangerous,dangerous,危险的,/ˈdeɪndʒərəs/,adjectives,,dangerous
+adj-famous,famous,有名的,/ˈfeɪməs/,adjectives,,famous
+adj-favorite,favorite,最爱的,/ˈfeɪvərɪt/,adjectives,,favorite
+adj-important,important,重要的,/ɪmˈpɔːtnt/,adjectives,,important
+adj-ready,ready,准备好的,/ˈredi/,adjectives,,ready
+adj-sure,sure,确定的,/ʃʊə/,adjectives,,sure
+adj-worried,worried,担心的,/ˈwʌrid/,adjectives,,worried
+adj-afraid,afraid,害怕的,/əˈfreɪd/,adjectives,,afraid
+adj-brave,brave,勇敢的,/breɪv/,adjectives,,brave
+adj-naughty,naughty,调皮的,/ˈnɔːti/,adjectives,,naughty
+adj-curious,curious,好奇的,/ˈkjʊəriəs/,adjectives,,curious
+adj-honest,honest,诚实的,/ˈɒnɪst/,adjectives,,honest
+adj-patient,patient,有耐心的,/ˈpeɪʃnt/,adjectives,,patient
+adj-wild,wild,野生的,/waɪld/,adjectives,,wild
+adj-calm,calm,平静的,/kɑːm/,adjectives,,calm
+adj-tidy,tidy,整洁的,/ˈtaɪdi/,adjectives,,tidy
+adj-messy,messy,凌乱的,/ˈmesi/,adjectives,,messy
+adj-deep,deep,深的,/diːp/,adjectives,,deep
+adj-salty,salty,咸的,/ˈsɔːlti/,adjectives,,salty
+adj-bitter,bitter,苦的,/ˈbɪtə/,adjectives,,bitter
+adj-juicy,juicy,多汁的,/ˈdʒuːsi/,adjectives,,juicy
+adj-crispy,crispy,酥脆的,/ˈkrɪspi/,adjectives,,crispy
+adj-yummy,yummy,好吃的,/ˈjʌmi/,adjectives,,yummy
+adj-delicious,delicious,美味的,/dɪˈlɪʃəs/,adjectives,,delicious
+adj-wonderful,wonderful,极好的,/ˈwʌndəfl/,adjectives,,wonderful
+adj-amazing,amazing,令人惊叹的,/əˈmeɪzɪŋ/,adjectives,,amazing
+adj-cute,cute,可爱的,/kjuːt/,adjectives,,cute
+adj-lovely,lovely,可爱的,/ˈlʌvli/,adjectives,,lovely
+adj-awful,awful,糟糕的,/ˈɔːfl/,adjectives,,awful
+adj-perfect,perfect,完美的,/ˈpɜːfɪkt/,adjectives,,perfect
+adj-plain,plain,朴素的,/pleɪn/,adjectives,,plain
+adj-fancy,fancy,华丽的,/ˈfænsi/,adjectives,,fancy
+adj-tight,tight,紧的,/taɪt/,adjectives,,tight
+adj-loose,loose,松的,/luːs/,adjectives,,loose
+adj-neat,neat,整齐的,/niːt/,adjectives,,neat
+adj-cozy,cozy,温暖舒适的,/ˈkəʊzi/,adjectives,,cozy
+adj-nice,nice,很好的,/niːs/,adjectives,,nice
+adj-great,great,很棒的,/ɡreɪt/,adjectives,,great
+adj-terrible,terrible,可怕的,/ˈterəbl/,adjectives,,terrible
+adj-horrible,horrible,可怕的,/ˈhɒrəbl/,adjectives,,horrible
+adj-awesome,awesome,了不起的,/ˈɔːsəm/,adjectives,,awesome
+adj-clever,clever,聪明的,/ˈklevə/,adjectives,,clever
+adj-smart,smart,机灵的,/smɑːt/,adjectives,,smart
+adj-wise,wise,有智慧的,/waɪz/,adjectives,,wise
+adj-foolish,foolish,愚蠢的,/ˈfuːlɪʃ/,adjectives,,foolish
+adj-rude,rude,粗鲁的,/ruːd/,adjectives,,rude
+adj-mean,mean,刻薄的,/miːn/,adjectives,,mean
+adj-gloomy,gloomy,阴郁的,/ˈɡluːmi/,adjectives,,gloomy
+adj-upset,upset,难过的,/ʌpˈset/,adjectives,,upset
+adj-furious,furious,狂怒的,/ˈfjʊəriəs/,adjectives,,furious
+adj-delighted,delighted,高兴的,/dɪˈlaɪtɪd/,adjectives,,delighted
+adj-cheerful,cheerful,欢快的,/ˈtʃɪəfl/,adjectives,,cheerful
+adj-miserable,miserable,痛苦的,/ˈmɪzərəbl/,adjectives,,miserable
+adj-jealous,jealous,嫉妒的,/ˈdʒeləs/,adjectives,,jealous
+adj-lonely,lonely,孤单的,/ˈləʊnli/,adjectives,,lonely
+adj-embarrassed,embarrassed,尴尬的,/ɪmˈbærəst/,adjectives,,embarrassed
+opp-in,in,在里面,/ɪn/,opposites,,in
+opp-out,out,在外面,/aʊt/,opposites,,out
+opp-up,up,向上,/ʌp/,opposites,,up
+opp-down,down,向下,/daʊn/,opposites,,down
+opp-left,left,左边,/left/,opposites,,left
+opp-right,right,右边,/raɪt/,opposites,,right
+opp-more,more,更多,/mɔː/,opposites,,more
+opp-less,less,更少,/les/,opposites,,less
+opp-same,same,相同的,/seɪm/,opposites,,same
+opp-different,different,不同的,/ˈdɪfrənt/,opposites,,different
+opp-near,near,近的,/nɪə/,opposites,,near
+opp-far,far,远的,/fɑː/,opposites,,far
+opp-high,high,高的,/haɪ/,opposites,,high
+opp-low,low,低的,/ləʊ/,opposites,,low
+opp-thick,thick,厚的,/θɪk/,opposites,,thick
+opp-thin,thin,薄的,/θɪn/,opposites,,thin
+opp-wide,wide,宽的,/waɪd/,opposites,,wide
+opp-narrow,narrow,窄的,/ˈnærəʊ/,opposites,,narrow
+opp-early,early,早的,/ˈɜːli/,opposites,,early
+opp-late,late,晚的,/leɪt/,opposites,,late
+opp-rich,rich,富有的,/rɪtʃ/,opposites,,rich
+opp-poor,poor,贫穷的,/pɔː/,opposites,,poor
+opp-loud,loud,大声的,/laʊd/,opposites,,loud
+opp-quiet,quiet,安静的,/ˈkwaɪət/,opposites,,quiet
+opp-inside,inside,内部,/ˌɪnˈsaɪd/,opposites,,inside
+opp-outside,outside,外部,/ˌaʊtˈsaɪd/,opposites,,outside
+opp-above,above,在上面,/əˈbʌv/,opposites,,above
+opp-below,below,在下面,/bɪˈləʊ/,opposites,,below
+opp-forward,forward,向前,/ˈfɔːwəd/,opposites,,forward
+opp-backward,backward,向后,/ˈbækwəd/,opposites,,backward
+opp-cheap,cheap,便宜的,/tʃiːp/,opposites,,cheap
+opp-expensive,expensive,昂贵的,/ɪkˈspensɪv/,opposites,,expensive
+opp-easy,easy,容易的,/ˈiːzi/,opposites,,easy
+opp-difficult,difficult,困难的,/ˈdɪfɪkəlt/,opposites,,difficult
+opp-first,first,第一,/fɜːst/,opposites,,first
+opp-last,last,最后,/lɑːst/,opposites,,last
+opp-win,win,赢,/wɪn/,opposites,,win
+opp-lose,lose,输,/luːz/,opposites,,lose
+opp-lend,lend,借出,/lend/,opposites,,lend
+opp-borrow,borrow,借入,/ˈbɒrəʊ/,opposites,,borrow
+opp-question,question,问题,/ˈkwestʃən/,opposites,,question
+opp-answer,answer,回答,/ˈɑːnsə/,opposites,,answer
+opp-arrive,arrive,到达,/əˈraɪv/,opposites,,arrive
+opp-leave,leave,离开,/liːv/,opposites,,leave
+opp-begin,begin,开始,/bɪˈɡɪn/,opposites,,begin
+opp-end,end,结束,/end/,opposites,,end
+opp-catch,catch,接住,/kætʃ/,opposites,,catch
+opp-throw,throw,扔,/θrəʊ/,opposites,,throw
+opp-lock,lock,锁上,/lɒk/,opposites,,lock
+opp-unlock,unlock,开锁,/ˌʌnˈlɒk/,opposites,,unlock
+act-eat,eat,吃,/iːt/,actions,,eat
+act-drink,drink,喝,/drɪŋk/,actions,,drink
+act-jump,jump,跳,/dʒʌmp/,actions,,jump
+act-swim,swim,游泳,/swɪm/,actions,,swim
+act-fly,fly,飞,/flaɪ/,actions,,fly
+act-sing,sing,唱歌,/sɪŋ/,actions,,sing
+act-read,read,读书,/riːd/,actions,,read
+act-sleep,sleep,睡觉,/sliːp/,actions,,sleep
+act-listen,listen,听,/ˈlɪsn/,actions,,listen
+act-open,open,打开,/ˈəʊpn/,actions,,open
+act-close,close,关上,/kləʊz/,actions,,close
+act-help,help,帮助,/help/,actions,,help
+act-cook,cooking,做饭,/ˈkʊkɪŋ/,actions,,cooking
+act-wash,wash,洗,/wɒʃ/,actions,,wash
+act-ask,ask,问,/ɑːsk/,actions,,ask
+act-tell,tell,告诉,/tel/,actions,,tell
+act-give,give,给,/ɡɪv/,actions,,give
+act-take,take,拿走,/teɪk/,actions,,take
+act-make,make,制作,/meɪk/,actions,,make
+act-buy,buy,买,/baɪ/,actions,,buy
+act-find,find,找到,/faɪnd/,actions,,find
+act-understand,understand,明白,/ˌʌndəˈstænd/,actions,,understand
+act-remember,remember,记得,/rɪˈmembə/,actions,,remember
+act-forget,forget,忘记,/fəˈɡet/,actions,,forget
+act-teach,teach,教,/tiːtʃ/,actions,,teach
+act-learn,learn,学习,/lɜːn/,actions,,learn
+act-count,count,数数,/kaʊnt/,actions,,count
+act-push,push,推,/pʊʃ/,actions,,push
+act-pull,pull,拉,/pʊl/,actions,,pull
+act-brush,brush,刷,/brʌʃ/,actions,,brush
+act-smile,smile,微笑,/smaɪl/,actions,,smile
+act-shout,shout,喊叫,/ʃaʊt/,actions,,shout
+act-whisper,whisper,低语,/ˈwɪspə/,actions,,whisper
+act-climb,climb,爬,/klaɪm/,actions,,climb
+act-hide,hide,躲藏,/haɪd/,actions,,hide
+act-share,share,分享,/ʃeə/,actions,,share
+act-wait,wait,等待,/weɪt/,actions,,wait
+act-hurry,hurry,赶紧,/ˈhʌri/,actions,,hurry
+act-rest,rest,休息,/rest/,actions,,rest
+act-exercise,exercise,锻炼,/ˈeksəsaɪz/,actions,,exercise
+act-ride,ride,骑,/raɪd/,actions,,ride
+act-drive,drive,驾驶,/draɪv/,actions,,drive
+act-draw,draw,画画,/drɔː/,actions,,draw
+act-scrub,scrub,擦洗,/skrʌb/,actions,,scrub
+act-paste,paste,粘贴,/peɪst/,actions,,paste
+act-fold,fold,折叠,/fəʊld/,actions,,fold
+act-tear,tear,撕,/teə/,actions,,tear
+act-toss,toss,抛,/tɒs/,actions,,toss
+act-bounce,bounce,拍球弹跳,/baʊns/,actions,,bounce
+act-roll,roll,滚动,/rəʊl/,actions,,roll
+act-spin,spin,旋转,/spɪn/,actions,,spin
+act-skip,skip,跳绳蹦跳,/skɪp/,actions,,skip
+act-march,march,齐步走,/mɑːtʃ/,actions,,march
+act-wiggle,wiggle,扭动,/ˈwɪɡl/,actions,,wiggle
+act-snap,snap,打响指,/snæp/,actions,,snap
+act-stomp,stomp,跺脚,/stɒmp/,actions,,stomp
+act-wave,wave,挥手,/weɪv/,actions,,wave
+act-nod,nod,点头,/nɒd/,actions,,nod
+act-lean,lean,倚靠,/liːn/,actions,,lean
+act-stretch,stretch,伸展,/stretʃ/,actions,,stretch
+act-breathe,breathe,呼吸,/briːð/,actions,,breathe
+act-yawn,yawn,打哈欠,/jɔːn/,actions,,yawn
+prep-behind,behind,在……后面,/bɪˈhaɪnd/,prepositions,,behind
+prep-beside,beside,在……旁边,/bɪˈsaɪd/,prepositions,,beside
+prep-between,between,在……之间,/bɪˈtwiːn/,prepositions,,between
+prep-nextto,next to,在……旁边,/nekst tuː/,prepositions,,next to
+prep-infrontof,in front of,在……前面,/ɪn frʌnt əv/,prepositions,,in front of
+prep-through,through,穿过,/θruː/,prepositions,,through
+prep-across,across,横过,/əˈkrɒs/,prepositions,,across
+prep-along,along,沿着,/əˈlɒŋ/,prepositions,,along
+prep-toward,toward,朝向,/təˈwɔːd/,prepositions,,toward
+prep-against,against,靠着,/əˈɡenst/,prepositions,,against
+prep-among,among,在……之中,/əˈmʌŋ/,prepositions,,among
+prep-beyond,beyond,超出,/bɪˈjɒnd/,prepositions,,beyond
+prep-during,during,在……期间,/ˈdjʊərɪŋ/,prepositions,,during
+prep-without,without,没有,/wɪˈðaʊt/,prepositions,,without
+prep-outof,out of,从……出去,/aʊt əv/,prepositions,,out of
+prep-underneath,underneath,在……底下,/ˌʌndəˈniːθ/,prepositions,,underneath
+prep-insteadof,instead of,代替,/ɪnˈsted əv/,prepositions,,instead of
+prep-ontopof,on top of,在……上面,/ɒn tɒp əv/,prepositions,,on top of
+prep-inthemiddleof,in the middle of,在……中间,/ɪn ðə ˈmɪdl əv/,prepositions,,in the middle of
+prep-atthebackof,at the back of,在……后部,/æt ðə bæk əv/,prepositions,,at the back of
+ord-second,second,第二,/ˈsekənd/,ordinals,,second
+ord-third,third,第三,/θɜːd/,ordinals,,third
+ord-fourth,fourth,第四,/fɔːθ/,ordinals,,fourth
+ord-fifth,fifth,第五,/fɪfθ/,ordinals,,fifth
+ord-sixth,sixth,第六,/sɪksθ/,ordinals,,sixth
+ord-seventh,seventh,第七,/ˈsevnθ/,ordinals,,seventh
+ord-eighth,eighth,第八,/eɪtθ/,ordinals,,eighth
+ord-ninth,ninth,第九,/naɪnθ/,ordinals,,ninth
+ord-tenth,tenth,第十,/tenθ/,ordinals,,tenth
+ord-eleventh,eleventh,第十一,/ɪˈlevnθ/,ordinals,,eleventh
+ord-twelfth,twelfth,第十二,/twelfθ/,ordinals,,twelfth
+ord-thirteenth,thirteenth,第十三,/ˌθɜːˈtiːnθ/,ordinals,,thirteenth
+ord-fourteenth,fourteenth,第十四,/ˌfɔːˈtiːnθ/,ordinals,,fourteenth
+ord-fifteenth,fifteenth,第十五,/ˌfɪfˈtiːnθ/,ordinals,,fifteenth
+ord-sixteenth,sixteenth,第十六,/ˌsɪksˈtiːnθ/,ordinals,,sixteenth
+ord-seventeenth,seventeenth,第十七,/ˌsevnˈtiːnθ/,ordinals,,seventeenth
+ord-eighteenth,eighteenth,第十八,/ˌeɪˈtiːnθ/,ordinals,,eighteenth
+ord-nineteenth,nineteenth,第十九,/ˌnaɪnˈtiːnθ/,ordinals,,nineteenth
+ord-twentieth,twentieth,第二十,/ˈtwentiəθ/,ordinals,,twentieth
+subj-math,math,数学,/mæθ/,subjects,,math
+subj-Chinese,Chinese,语文,/ˌtʃaɪˈniːz/,subjects,,Chinese
+subj-English,English,英语,/ˈɪŋɡlɪʃ/,subjects,,English
+subj-art,art,美术,/ɑːt/,subjects,,art
+subj-science,science,科学,/ˈsaɪəns/,subjects,,science
+subj-PE,PE,体育,/ˌpiː ˈiː/,subjects,,PE
+subj-history,history,历史,/ˈhɪstri/,subjects,,history
+subj-geography,geography,地理,/dʒiˈɒɡrəfi/,subjects,,geography
+subj-coding,coding,编程,/ˈkəʊdɪŋ/,subjects,,coding
+subj-spelling,spelling,拼写,/ˈspelɪŋ/,subjects,,spelling
+subj-grammar,grammar,语法,/ˈɡræmə/,subjects,,grammar
+subj-phonics,phonics,自然拼读,/ˈfɒnɪks/,subjects,,phonics
+subj-calligraphy,calligraphy,书法,/kəˈlɪɡrəfi/,subjects,,calligraphy
+subj-physics,physics,物理,/ˈfɪzɪks/,subjects,,physics
+subj-chemistry,chemistry,化学,/ˈkemɪstri/,subjects,,chemistry
+subj-biology,biology,生物,/baɪˈɒlədʒi/,subjects,,biology
+subj-drama,drama,戏剧,/ˈdrɑːmə/,subjects,,drama
+subj-moral,moral,品德,/ˈmɒrəl/,subjects,,moral
+mw-plus,plus,加,/plʌs/,mathwords,,plus
+mw-minus,minus,减,/ˈmaɪnəs/,mathwords,,minus
+mw-times,times,乘,/taɪmz/,mathwords,,times
+mw-dividedby,divided by,除以,/dɪˈvaɪdɪd baɪ/,mathwords,,divided by
+mw-equals,equals,等于,/ˈiːkwəlz/,mathwords,,equals
+mw-half,half,一半,/hɑːf/,mathwords,,half
+mw-quarter,quarter,四分之一,/ˈkwɔːtə/,mathwords,,quarter
+mw-odd,odd,奇数,/ɒd/,mathwords,,odd
+mw-even,even,偶数,/ˈiːvn/,mathwords,,even
+mw-double,double,两倍,/ˈdʌbl/,mathwords,,double
+mw-dozen,dozen,一打,/ˈdʌzn/,mathwords,,dozen
+mw-sum,sum,总和,/sʌm/,mathwords,,sum
+mw-total,total,总数,/ˈtəʊtl/,mathwords,,total
+mw-number,number,数字,/ˈnʌmbə/,mathwords,,number
+mw-digit,digit,数位,/ˈdɪdʒɪt/,mathwords,,digit
+mw-shape,shape,形状,/ʃeɪp/,mathwords,,shape
+mw-pattern,pattern,规律,/ˈpætn/,mathwords,,pattern
+mw-measure,measure,测量,/ˈmeʒə/,mathwords,,measure
+mw-group,group,分组,/ɡruːp/,mathwords,,group
+mw-subtract,subtract,减去,/səbˈtrækt/,mathwords,,subtract
+mw-multiply,multiply,乘以,/ˈmʌltɪplaɪ/,mathwords,,multiply
+mw-divide,divide,平均分,/dɪˈvaɪd/,mathwords,,divide
+rt-getup,get up,起床,/ɡet ʌp/,routine,,get up
+rt-brushmyteeth,brush my teeth,刷牙,/brʌʃ maɪ tiːθ/,routine,,brush my teeth
+rt-washmyface,wash my face,洗脸,/wɒʃ maɪ feɪs/,routine,,wash my face
+rt-combmyhair,comb my hair,梳头,/kəʊm maɪ heə/,routine,,comb my hair
+rt-getdressed,get dressed,穿衣服,/ɡet drest/,routine,,get dressed
+rt-havebreakfast,have breakfast,吃早饭,/hæv ˈbrekfəst/,routine,,have breakfast
+rt-gotoschool,go to school,去上学,/ɡəʊ tə skuːl/,routine,,go to school
+rt-havelunch,have lunch,吃午饭,/hæv lʌntʃ/,routine,,have lunch
+rt-dohomework,do homework,做作业,/duː ˈhəʊmwɜːk/,routine,,do homework
+rt-playgames,play games,玩游戏,/pleɪ ɡeɪmz/,routine,,play games
+rt-takeanap,take a nap,睡午觉,/teɪk ə næp/,routine,,take a nap
+rt-havedinner,have dinner,吃晚饭,/hæv ˈdɪnə/,routine,,have dinner
+rt-takeashower,take a shower,洗澡,/teɪk ə ˈʃaʊə/,routine,,take a shower
+rt-watchTV,watch TV,看电视,/wɒtʃ ˌtiː ˈviː/,routine,,watch TV
+rt-gotobed,go to bed,上床睡觉,/ɡəʊ tə bed/,routine,,go to bed
+rt-saygoodnight,say goodnight,说晚安,/seɪ ˈɡʊdnaɪt/,routine,,say goodnight
+rt-tidymyroom,tidy my room,整理房间,/ˈtaɪdi maɪ ruːm/,routine,,tidy my room
+rt-watertheplants,water the plants,浇花,/ˈwɔːtə ðə plɑːnts/,routine,,water the plants
+rt-feedthefish,feed the fish,喂鱼,/fiːd ðə fɪʃ/,routine,,feed the fish
+rt-walkthedog,walk the dog,遛狗,/wɔːk ðə dɒɡ/,routine,,walk the dog
+rt-setthetable,set the table,摆餐具,/set ðə ˈteɪbl/,routine,,set the table
+rt-clearthetable,clear the table,收桌子,/klɪə ðə ˈteɪbl/,routine,,clear the table
+rt-drymyhair,dry my hair,吹干头发,/draɪ maɪ heə/,routine,,dry my hair
+rt-packmybag,pack my bag,收拾书包,/pæk maɪ bæɡ/,routine,,pack my bag
+st-story,story,故事,/ˈstɔːri/,story,,story
+st-hero,hero,英雄,/ˈhɪərəʊ/,story,,hero
+st-magic,magic,魔法,/ˈmædʒɪk/,story,,magic
+st-dream,dream,梦,/driːm/,story,,dream
+st-wish,wish,愿望,/wɪʃ/,story,,wish
+st-knight,knight,骑士,/naɪt/,story,,knight
+st-adventure,adventure,冒险,/ədˈventʃə/,story,,adventure
+st-treasure,treasure,宝藏,/ˈtreʒə/,story,,treasure
+st-journey,journey,旅程,/ˈdʒɜːni/,story,,journey
+st-map,map,地图,/mæp/,story,,map
+st-pirate,pirate,海盗,/ˈpaɪrət/,story,,pirate
+st-castle,castle,童话城堡,/ˈkɑːsl/,story,,castle
+st-witch,witch,女巫,/wɪtʃ/,story,,witch
+st-potion,potion,魔药,/ˈpəʊʃn/,story,,potion
+st-sword,sword,宝剑,/sɔːd/,story,,sword
+st-shield,shield,盾牌,/ʃiːld/,story,,shield
+st-crown,crown,王冠,/kraʊn/,story,,crown
+st-king,king,国王,/kɪŋ/,story,,king
+st-fairytale,fairy tale,童话故事,/ˈfeəri teɪl/,story,,fairy tale
+st-onceuponatime,once upon a time,从前,/wʌns əˌpɒn ə ˈtaɪm/,story,,once upon a time
+st-happilyeverafter,happily ever after,从此幸福生活,/ˈhæpɪli ˈevə ˈɑːftə/,story,,happily ever after
+st-magicspell,magic spell,魔法咒语,/ˈmædʒɪk spel/,story,,magic spell
+st-myth,myth,神话,/mɪθ/,story,,myth
+st-legend,legend,传说,/ˈledʒənd/,story,,legend
+st-fable,fable,寓言,/ˈfeɪbl/,story,,fable
+gr-hello,hello,你好,/həˈləʊ/,greetings,,hello
+gr-hi,hi,嗨,/haɪ/,greetings,,hi
+gr-goodbye,goodbye,再见,/ˌɡʊdˈbaɪ/,greetings,,goodbye
+gr-bye-bye,bye-bye,拜拜,/ˌbaɪˈbaɪ/,greetings,,bye-bye
+gr-thankyou,thank you,谢谢你,/ˈθæŋk juː/,greetings,,thank you
+gr-yourewelcome,you're welcome,不客气,/jʊə ˈwelkəm/,greetings,,you're welcome
+gr-sorry,sorry,对不起,/ˈsɒri/,greetings,,sorry
+gr-excuseme,excuse me,打扰一下,/ɪkˈskjuːz miː/,greetings,,excuse me
+gr-goodmorning,good morning,早上好,/ɡʊd ˈmɔːnɪŋ/,greetings,,good morning
+gr-goodafternoon,good afternoon,下午好,/ɡʊd ˌɑːftəˈnuːn/,greetings,,good afternoon
+gr-goodevening,good evening,晚上好,/ɡʊd ˈiːvnɪŋ/,greetings,,good evening
+gr-goodnight,good night,晚安,/ɡʊd naɪt/,greetings,,good night
+gr-seeyou,see you,回头见,/siː juː/,greetings,,see you
+gr-seeyoutomorrow,see you tomorrow,明天见,/siː juː təˈmɒrəʊ/,greetings,,see you tomorrow
+gr-seeyoulater,see you later,一会儿见,/siː juː ˈleɪtə/,greetings,,see you later
+gr-nicetomeetyou,nice to meet you,很高兴认识你,/naɪs tə miːt juː/,greetings,,nice to meet you
+gr-nicetomeetyoutoo,nice to meet you too,我也是,/naɪs tə miːt juː tuː/,greetings,,nice to meet you too
+gr-howareyou,how are you,你好吗,/haʊ ɑː juː/,greetings,,how are you
+gr-Imfine,I'm fine,我很好,/aɪm faɪn/,greetings,,I'm fine
+gr-whatsyourname,what's your name,你叫什么名字,/wɒts jɔː neɪm/,greetings,,what's your name
+gr-mynameis,my name is,我叫……,/maɪ neɪm ɪz/,greetings,,my name is
+gr-howoldareyou,how old are you,你几岁了,/haʊ əʊld ɑː juː/,greetings,,how old are you
+gr-whereareyoufrom,where are you from,你来自哪里,/weə ɑː juː frɒm/,greetings,,where are you from
+gr-ImfromChina,I'm from China,我来自中国,/aɪm frɒm ˈtʃaɪnə/,greetings,,I'm from China
+gr-happybirthday,happy birthday,生日快乐,/ˈhæpi ˈbɜːθdeɪ/,greetings,,happy birthday
+gr-merryChristmas,merry Christmas,圣诞快乐,/ˈmeri ˈkrɪsməs/,greetings,,merry Christmas
+gr-happynewyear,happy new year,新年快乐,/ˈhæpi njuː jɪə/,greetings,,happy new year
+gr-goodluck,good luck,祝你好运,/ɡʊd lʌk/,greetings,,good luck
+gr-congratulations,congratulations,祝贺你,/kənˌɡrætʃʊˈleɪʃnz/,greetings,,congratulations
+gr-welldone,well done,做得好,/wel dʌn/,greetings,,well done
+gr-goodjob,good job,干得好,/ɡʊd dʒɒb/,greetings,,good job
+gr-letsgo,let's go,我们走吧,/lets ɡəʊ/,greetings,,let's go
+gr-letsplay,let's play,一起玩吧,/lets pleɪ/,greetings,,let's play
+gr-timetoeat,time to eat,吃饭时间到啦,/taɪm tuː iːt/,greetings,,time to eat
+gr-washyourhands,wash your hands,去洗手,/wɒʃ jɔː hændz/,greetings,,wash your hands
+gr-brushyourteeth,brush your teeth,去刷牙,/brʌʃ jɔː tiːθ/,greetings,,brush your teeth
+gr-tidyyourroom,tidy your room,收拾房间,/ˈtaɪdi jɔː ruːm/,greetings,,tidy your room
+gr-bequiet,be quiet,请安静,/biː ˈkwaɪət/,greetings,,be quiet
+gr-becareful,be careful,当心,/biː ˈkeəfl/,greetings,,be careful
+gr-lineup,line up,排队,/laɪn ʌp/,greetings,,line up
+gr-raiseyourhand,raise your hand,举手,/reɪz jɔː hænd/,greetings,,raise your hand
+gr-mayIcomein,may I come in,我可以进来吗,/meɪ aɪ kʌm ɪn/,greetings,,may I come in
+gr-canyouhelpme,can you help me,你能帮我吗,/kæn juː help miː/,greetings,,can you help me
+gr-Idontknow,I don't know,我不知道,/aɪ dəʊnt nəʊ/,greetings,,I don't know
+gr-Iloveyou,I love you,我爱你,/aɪ lʌv juː/,greetings,,I love you
+gr-Imsorry,I'm sorry,我很抱歉,/aɪm ˈsɒri/,greetings,,I'm sorry
+gr-ofcourse,of course,当然,/əv kɔːs/,greetings,,of course
+gr-waitamoment,wait a moment,等一下,/weɪt ə ˈməʊmənt/,greetings,,wait a moment
+gr-afteryou,after you,您先请,/ˈɑːftə juː/,greetings,,after you
+gr-blessyou,bless you,保佑你（回应喷嚏）,/bles juː/,greetings,,bless you
+gr-goodtoseeyou,good to see you,很高兴见到你,/ɡʊd tə siː juː/,greetings,,good to see you
+gr-longtimenosee,long time no see,好久不见,/lɒŋ taɪm nəʊ siː/,greetings,,long time no see
+gr-takecare,take care,保重,/teɪk keə/,greetings,,take care
+gr-havefun,have fun,玩得开心,/hæv fʌn/,greetings,,have fun
+gr-sweetdreams,sweet dreams,做个好梦,/swiːt driːmz/,greetings,,sweet dreams
+gr-getwellsoon,get well soon,早日康复,/ɡet wel suːn/,greetings,,get well soon
+gr-welcomeback,welcome back,欢迎回来,/ˈwelkəm bæk/,greetings,,welcome back
+gr-comeinplease,come in please,请进,/kʌm ɪn pliːz/,greetings,,come in please
+cv-whatsthis,what's this,这是什么,/wɒts ðɪs/,conversation,,what's this
+cv-itsacat,it's a cat,它是一只猫,/ɪts ə kæt/,conversation,,it's a cat
+cv-whatcolorisit,what color is it,它是什么颜色,/wɒt ˈkʌlə ɪz ɪt/,conversation,,what color is it
+cv-whatdayisittoday,what day is it today,今天星期几,/wɒt deɪ ɪz ɪt təˈdeɪ/,conversation,,what day is it today
+cv-whattimeisit,what time is it,现在几点了,/wɒt taɪm ɪz ɪt/,conversation,,what time is it
+cv-whatstheweatherlike,what's the weather like,天气怎么样,/wɒts ðə ˈweðə laɪk/,conversation,,what's the weather like
+cv-howmanyapples,how many apples,有几个苹果,/haʊ ˈmeni ˈæplz/,conversation,,how many apples
+cv-howmuchisit,how much is it,多少钱,/haʊ mʌtʃ ɪz ɪt/,conversation,,how much is it
+cv-whosebagisthis,whose bag is this,这是谁的包,/huːz bæɡ ɪz ðɪs/,conversation,,whose bag is this
+cv-itsmyturn,it's my turn,轮到我了,/ɪts maɪ tɜːn/,conversation,,it's my turn
+cv-itsyourturn,it's your turn,轮到你了,/ɪts jɔː tɜːn/,conversation,,it's your turn
+cv-canyouswim,can you swim,你会游泳吗,/kæn juː swɪm/,conversation,,can you swim
+cv-yesIcan,yes I can,是的我会,/jes aɪ kæn/,conversation,,yes I can
+cv-noIcant,no I can't,不我不会,/nəʊ aɪ kɑːnt/,conversation,,no I can't
+cv-doyoulikeapples,do you like apples,你喜欢苹果吗,/duː juː laɪk ˈæplz/,conversation,,do you like apples
+cv-yesIdo,yes I do,是的喜欢,/jes aɪ duː/,conversation,,yes I do
+cv-noIdont,no I don't,不不喜欢,/nəʊ aɪ dəʊnt/,conversation,,no I don't
+cv-whereisthecat,where is the cat,小猫在哪里,/weə ɪz ðə kæt/,conversation,,where is the cat
+cv-hereitis,here it is,在这里,/hɪər ɪt ɪz/,conversation,,here it is
+cv-Ifoundit,I found it,我找到啦,/aɪ faʊnd ɪt/,conversation,,I found it
+cv-letmetry,let me try,让我试试,/let miː traɪ/,conversation,,let me try
+cv-myturnfirst,my turn first,我先来,/maɪ tɜːn fɜːst/,conversation,,my turn first
+cv-youarenext,you are next,该你了,/juː ɑː nekst/,conversation,,you are next
+cv-tryyourbest,try your best,尽你最大努力,/traɪ jɔː best/,conversation,,try your best
+cv-dontgiveup,don't give up,别放弃,/dəʊnt ɡɪv ʌp/,conversation,,don't give up
+cv-almostdone,almost done,快完成啦,/ˈɔːlməʊst dʌn/,conversation,,almost done
+cv-alldone,all done,全部完成,/ɔːl dʌn/,conversation,,all done
+cv-goodidea,good idea,好主意,/ɡʊd aɪˈdɪə/,conversation,,good idea
+cv-soundsgreat,sounds great,听起来棒极了,/saʊndz ɡreɪt/,conversation,,sounds great
+cv-metoo,me too,我也是,/miː tuː/,conversation,,me too
+cv-whatdoyoulike,what do you like,你喜欢什么,/wɒt duː juː laɪk/,conversation,,what do you like
+cv-Ilikeapples,I like apples,我喜欢苹果,/aɪ laɪk ˈæplz/,conversation,,I like apples
+cv-canIhelpyou,can I help you,需要帮忙吗,/kæn aɪ help juː/,conversation,,can I help you
+cv-areyouOK,are you OK,你还好吗,/ɑː juː ˌəʊˈkeɪ/,conversation,,are you OK
+cv-whereareyougoing,where are you going,你要去哪里,/weə ɑː juː ˈɡəʊɪŋ/,conversation,,where are you going
+cv-Imgoinghome,I'm going home,我要回家,/aɪm ˈɡəʊɪŋ həʊm/,conversation,,I'm going home
+cv-whatareyoudoing,what are you doing,你在做什么,/wɒt ɑː juː ˈduːɪŋ/,conversation,,what are you doing
+cv-Imreading,I'm reading,我在看书,/aɪm ˈriːdɪŋ/,conversation,,I'm reading
+golden,golden,金色,/ˈɡəʊldən/,colors,,golden
+silver,silver,银色,/ˈsɪlvə/,colors,,silver
+elbow,elbow,手肘,/ˈelbəʊ/,body,,elbow
+neck,neck,脖子,/nek/,body,,neck
+chest,chest,胸部,/tʃest/,body,,chest
+waist,waist,腰部,/weɪst/,body,,waist
+pomegranate,pomegranate,石榴,/ˈpɒmɪɡrænɪt/,fruits,,pomegranate
+fig,fig,无花果,/fɪɡ/,fruits,,fig
+guava,guava,番石榴,/ˈɡwɑːvə/,fruits,,guava
+papaya,papaya,木瓜,/pəˈpaɪə/,fruits,,papaya
+lychee,lychee,荔枝,/ˌliːˈtʃiː/,fruits,,lychee
+longan,longan,龙眼,/ˈlɒŋɡən/,fruits,,longan
+domino,domino,多米诺骨牌,/ˈdɒmɪnəʊ/,toys,,domino
+checkers,checkers,跳棋,/ˈtʃekəz/,toys,,checkers
+jumprope,jump rope,跳绳,/dʒʌmp rəʊp/,toys,,jump rope
+hulahoop,hula hoop,呼啦圈,/ˈhuːlə huːp/,toys,,hula hoop
+button,button,纽扣,/ˈbʌtn/,clothes,,button
+zipper,zipper,拉链,/ˈzɪpə/,clothes,,zipper
+pocket,pocket,口袋,/ˈpɒkɪt/,clothes,,pocket
+sleeve,sleeve,袖子,/sliːv/,clothes,,sleeve
+doorbell,doorbell,门铃,/ˈdɔːbel/,home,,doorbell
+bench,bench,长凳,/bentʃ/,home,,bench
+milktea,milk tea,奶茶,/mɪlk tiː/,drinks,,milk tea
+icedtea,iced tea,冰茶,/aɪst tiː/,drinks,,iced tea
+toffee,toffee,太妃糖,/ˈtɒfi/,desserts,,toffee
+sorbet,sorbet,雪葩,/ˈsɔːbeɪ/,desserts,,sorbet
+recess,recess,课间休息,/rɪˈses/,school,,recess
+class,class,班级,/klɑːs/,school,,class
+dimsum,dim sum,广式点心,/ˌdɪm ˈsʌm/,food,,dim sum
+hotpot,hot pot,火锅,/hɒt pɒt/,food,,hot pot
+yam,yam,山药,/jæm/,vegetables,,yam
+taro,taro,芋头,/ˈtɑːrəʊ/,vegetables,,taro
+friend,friend,朋友,/frend/,family,,friend
+bestfriend,best friend,最好的朋友,/best frend/,family,,best friend
+teacup,teacup,茶杯,/ˈtiːkʌp/,kitchen,,teacup
+dish,dish,碟子,/dɪʃ/,kitchen,,dish
+Monday,Monday,星期一,/ˈmʌndeɪ/,time,,Monday
+Tuesday,Tuesday,星期二,/ˈtjuːzdeɪ/,time,,Tuesday
+Wednesday,Wednesday,星期三,/ˈwenzdeɪ/,time,,Wednesday
+Thursday,Thursday,星期四,/ˈθɜːzdeɪ/,time,,Thursday
+Friday,Friday,星期五,/ˈfraɪdeɪ/,time,,Friday
+Saturday,Saturday,星期六,/ˈsætədeɪ/,time,,Saturday
+Sunday,Sunday,星期日,/ˈsʌndeɪ/,time,,Sunday
+storm,storm,风暴,/stɔːm/,nature,,storm
+sunshine,sunshine,阳光,/ˈsʌnʃaɪn/,nature,,sunshine
+lighthouse,lighthouse,灯塔,/ˈlaɪthaʊs/,places,,lighthouse
+harbor,harbor,海港,/ˈhɑːbə/,places,,harbor
+garbagetruck,garbage truck,垃圾车,/ˈɡɑːbɪdʒ trʌk/,vehicles,,garbage truck
+towtruck,tow truck,拖车,/təʊ trʌk/,vehicles,,tow truck
+tide,tide,潮汐,/taɪd/,ocean,,tide
+splash,splash,浪花,/splæʃ/,ocean,,splash
+nest,nest,鸟巢,/nest/,birds,,nest
+busstop,bus stop,公交车站,/bʌs stɒp/,city,,bus stop
+taxistand,taxi stand,出租车站,/ˈtæksi stænd/,city,,taxi stand
+city-square,square,广场,/skweə/,city,,square
+street,street,街道,/striːt/,city,,street
+willow,willow,柳树,/ˈwɪləʊ/,forest,,willow
+vine,vine,藤蔓,/vaɪn/,forest,,vine
+acorn,acorn,橡子,/ˈeɪkɔːn/,forest,,acorn
+pine,pine,松树,/paɪn/,forest,,pine
+herd,herd,兽群,/hɜːd/,farm,,herd
+termite,termite,白蚁,/ˈtɜːmaɪt/,insects,,termite
+moth,moth,飞蛾,/mɒθ/,insects,,moth
+flea,flea,跳蚤,/fliː/,insects,,flea
+locust,locust,蝗虫,/ˈləʊkəst/,insects,,locust
+robin,robin,知更鸟,/ˈrɒbɪn/,birds,,robin
+quail,quail,鹌鹑,/kweɪl/,birds,,quail
+toucan,toucan,巨嘴鸟,/ˈtuːkən/,birds,,toucan
+stingray,stingray,魟鱼,/ˈstɪŋreɪ/,ocean,,stingray
+swordfish,swordfish,剑鱼,/ˈsɔːdfɪʃ/,ocean,,swordfish
+harmonica,harmonica,口琴,/ˌhɑːməˈkɒnɪk/,music,,harmonica
+ukulele,ukulele,尤克里里,/ˌjuːkəˈleɪli/,music,,ukulele
+sorethroat,sore throat,嗓子疼,/sɔː θrəʊt/,health,,sore throat
+runnynose,runny nose,流鼻涕,/ˈrʌni nəʊz/,health,,runny nose
+toothache,toothache,牙疼,/ˈtuːθeɪk/,health,,toothache
+firstaid,first aid,急救,/fɜːst eɪd/,health,,first aid
+dancer,dancer,舞蹈家,/ˈdɑːnsə/,jobs,,dancer
+fisherman,fisherman,渔夫,/ˈfɪʃəmən/,jobs,,fisherman
+smartspeaker,smart speaker,智能音箱,/smɑːt ˈspiːkə/,electronics,,smart speaker
+powerbank,power bank,充电宝,/ˈpaʊə bæŋk/,electronics,,power bank
+evilqueen,evil queen,恶毒王后,/iːvl kwiːn/,story,,evil queen
+magicmirror,magic mirror,魔镜,/ˈmædʒɪk ˈmɪrə/,story,,magic mirror
+goldenegg,golden egg,金蛋,/ˈɡəʊldən eɡ/,story,,golden egg
+bigbadwolf,big bad wolf,大灰狼,/ˌbɪɡ bæd ˈwʊlf/,story,,big bad wolf
+happyending,happy ending,圆满结局,/ˈhæpi ˈendɪŋ/,story,,happy ending
+relieved,relieved,如释重负,/rɪˈliːvd/,emotions,1f60c,
+tasty,tasty,好吃极了,/ˈteɪsti/,emotions,1f60b,
+drowsy,drowsy,昏昏欲睡,/ˈdraʊzi/,emotions,1f62a,
+drool,drool,流口水,/druːl/,emotions,1f924,
+masked,masked,戴口罩,/mɑːskt/,emotions,1f637,
+unamused,unamused,无语,/ˌʌnəˈmjuːzd/,emotions,1f612,
+rolleyes,roll eyes,翻白眼,/rəʊl aɪz/,emotions,1f643,
+smirk,smirk,得意地笑,/smɜːk/,emotions,1f60f,
+pensive,pensive,心事重重,/ˈpensɪv/,emotions,1f614,
+weary,weary,疲惫不堪,/ˈwɪəri/,emotions,1f629,
+cube,cube,正方体,/kjuːb/,shapes,,cube
+cone,cone,圆锥体,/kəʊn/,shapes,,cone
+sw-noun,noun,名词,/naʊn/,sightwords,,noun
+sw-verb,verb,动词,/vɜːb/,sightwords,,verb

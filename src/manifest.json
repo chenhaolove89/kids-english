@@ -1,12 +1,12 @@
 {
-    "name" : "快乐学单词",
+    "name" : "快乐学园",
     "appid" : "__UNI__230600A",
-    "description" : "看图学单词，点一点就会读",
-    "versionName" : "1.1.0",
-    "versionCode" : "110",
+    "description" : "小朋友的快乐学习园地：英语、语文、数学一起学",
+    "versionName" : "1.2.0",
+    "versionCode" : "120",
     "vueVersion" : "3",
     "h5" : {
-        "title" : "快乐学单词",
+        "title" : "快乐学园",
         "router" : {
             "mode" : "hash",
             "base" : "./"

@@ -63,3 +63,25 @@ export function play(src, onEnd) {
 export function preload(srcList) {
   srcList.forEach(getHowl)
 }
+
+// 顺序播放：数学题里把「3 + 5 = ?」拆成多段中文语音连着播。
+// token 防串音：新序列开始后，旧序列的 onEnd 链自动失效。
+let seqToken = 0
+
+export function playSeq(srcList, onDone) {
+  const token = ++seqToken
+  const list = srcList.filter(Boolean)
+  const next = () => {
+    if (token !== seqToken) return
+    if (!list.length) {
+      if (onDone) onDone()
+      return
+    }
+    play(list.shift(), next)
+  }
+  next()
+}
+
+export function stopSeq() {
+  seqToken++
+}

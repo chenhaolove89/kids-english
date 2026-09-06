@@ -4,19 +4,19 @@
       <view class="back" @tap="goBack">
         <text class="back-icon">←</text>
       </view>
-      <text class="title">听音选图</text>
+      <text class="title">{{ subject === 'zh' ? '听音识字' : '听音选图' }}</text>
       <text class="score">⭐ {{ score }}</text>
     </view>
 
     <template v-if="!finished">
       <view class="prompt" @tap="speakQuestion">
         <text class="prompt-speaker">🔊</text>
-        <text class="prompt-hint">听一听，选出对应的图片</text>
+        <text class="prompt-hint">{{ subject === 'zh' ? '听一听，选出对应的汉字' : '听一听，选出对应的图片' }}</text>
       </view>
 
       <view class="round-info">第 {{ roundIdx + 1 }} / {{ rounds.length }} 题</view>
 
-      <view class="options">
+      <view class="options" :class="{ 'options-text': subject === 'zh' }">
         <view
           v-for="opt in options"
           :key="opt.id"
@@ -24,7 +24,8 @@
           :class="{ right: flashId === opt.id && isRight, wrong: flashId === opt.id && !isRight, shake: flashId === opt.id && !isRight }"
           @tap="pick(opt)"
         >
-          <image class="opt-img" :src="opt.image" mode="aspectFit" />
+          <image v-if="subject === 'en'" class="opt-img" :src="opt.image" mode="aspectFit" />
+          <text v-else class="opt-char" :style="{ color: opt.color }">{{ opt.main }}</text>
         </view>
       </view>
     </template>
@@ -38,7 +39,7 @@
           <text class="result-btn-text">再玩一次</text>
         </view>
         <view class="result-btn ghost" @tap="goBack">
-          <text class="result-btn-text ghost-text">返回首页</text>
+          <text class="result-btn-text ghost-text">返回</text>
         </view>
       </view>
     </template>
@@ -48,11 +49,15 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import data from '@/data/words.json'
+import enData from '@/data/words.json'
+import zhData from '@/data/hanzi.json'
 import { play, preload } from '@/utils/player.js'
 
 const ROUNDS = 10
+const OPTION_COLORS = ['#FF8C42', '#4D96FF', '#3BB273', '#9B5DE5', '#F76BA8', '#FF6B6B', '#12B886', '#FAB005']
 
+const subject = ref('en')
+const pool = ref([])
 const rounds = ref([])
 const roundIdx = ref(0)
 const score = ref(0)
@@ -76,20 +81,34 @@ function shuffle(arr) {
 }
 
 onLoad((query) => {
+  subject.value = query.subject || 'en'
   preload(['/static/audio/great_job.mp3', '/static/audio/try_again.mp3'])
-  const pool =
-    query.cat === 'all'
-      ? data.categories.flatMap((c) => c.words)
-      : (data.categories.find((c) => c.id === query.cat)?.words ?? [])
-  start(pool)
+  let p = []
+  if (subject.value === 'en') {
+    if (query.cat) {
+      p = enData.categories.find((c) => c.id === query.cat)?.words ?? []
+    } else {
+      const lv = Number(query.level) || 1
+      p = enData.categories.filter((c) => c.level === lv).flatMap((c) => c.words)
+    }
+  } else {
+    const lv = Number(query.level) || 1
+    const level = zhData.levels.find((l) => Number(l.id) === lv) || zhData.levels[0]
+    p = level.chars.map((h) => ({ ...h, main: h.char, color: OPTION_COLORS[h.id.charCodeAt(0) % OPTION_COLORS.length] }))
+    preload(p.map((x) => x.audio))
+  }
+  pool.value = p
+  start()
 })
 
-function start(pool) {
-  const shuffled = shuffle(pool)
-  rounds.value = shuffled.slice(0, Math.min(ROUNDS, shuffled.length)).map((w) => ({
-    answer: w,
-    options: shuffle([w, ...shuffle(pool.filter((x) => x.id !== w.id)).slice(0, 3)]),
-  }))
+function start() {
+  const p = pool.value
+  rounds.value = shuffle(p)
+    .slice(0, Math.min(ROUNDS, p.length))
+    .map((w) => ({
+      answer: w,
+      options: shuffle([w, ...shuffle(p.filter((x) => x.id !== w.id)).slice(0, 3)]),
+    }))
   roundIdx.value = 0
   score.value = 0
   finished.value = false
@@ -108,7 +127,7 @@ function speakQuestion() {
 }
 
 function pick(opt) {
-  if (flashId.value) return // 上一题反馈还没结束
+  if (flashId.value) return
   flashId.value = opt.id
   isRight.value = opt.id === rounds.value[roundIdx.value].answer.id
   if (isRight.value) {
@@ -118,7 +137,7 @@ function pick(opt) {
   } else {
     play('/static/audio/try_again.mp3')
     setTimeout(() => {
-      flashId.value = '' // 清除错误标记，允许再选
+      flashId.value = ''
     }, 1000)
   }
 }
@@ -133,8 +152,7 @@ function nextRound() {
 }
 
 function restart() {
-  const pool = data.categories.flatMap((c) => c.words)
-  start(pool)
+  start()
 }
 function goBack() {
   uni.navigateBack()
@@ -242,6 +260,13 @@ function goBack() {
 .opt-img {
   width: 260rpx;
   height: 260rpx;
+}
+.options-text .option {
+  height: 260rpx;
+}
+.opt-char {
+  font-size: 170rpx;
+  font-weight: 800;
 }
 .shake {
   animation: shake 0.45s;

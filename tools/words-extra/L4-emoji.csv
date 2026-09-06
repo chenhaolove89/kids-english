@@ -1,0 +1,160 @@
+fishing,fishing,钓鱼,/ˈfɪʃɪŋ/,sports,1f3a3,
+boxing,boxing,拳击,/ˈbɒksɪŋ/,sports,1f94a,
+karate,karate,空手道,/kəˈrɑːti/,sports,1f94b,
+skating,skating,滑冰,/ˈskeɪtɪŋ/,sports,26f8,
+snowboarding,snowboarding,单板滑雪,/ˈsnəʊbɔːdɪŋ/,sports,1f3c2,
+surfing,surfing,冲浪,/ˈsɜːfɪŋ/,sports,1f3c4,
+rowing,rowing,划船,/ˈrəʊɪŋ/,sports,1f6a3,
+climbing,climbing,攀岩,/ˈklaɪmɪŋ/,sports,1f9d7,
+fencing,fencing,击剑,/ˈfensɪŋ/,sports,1f93a,
+horse racing,horse racing,赛马,/hɔːs ˈreɪsɪŋ/,sports,1f3c7,
+billiards,billiards,台球,/ˈbɪliədz/,sports,1f3b1,
+frisbee,frisbee,飞盘,/ˈfrɪzbiː/,sports,1f94f,
+hockey,hockey,冰球,/ˈhɒki/,sports,1f3d2,
+cricket2,cricket,板球,/ˈkrɪkɪt/,sports,1f3cf,
+lacrosse,lacrosse,长曲棍球,/ləˈkrɒs/,sports,1f94d,
+field hockey,field hockey,曲棍球,/fiːld ˈhɒki/,sports,1f3d1,
+handball,handball,手球,/ˈhændbɔːl/,sports,1f93e,
+water polo,water polo,水球,/ˈwɔːtə ˈpəʊləʊ/,sports,1f93d,
+weightlifting,weightlifting,举重,/ˈweɪtlɪftɪŋ/,sports,26f9_fe0f,
+skateboarding,skateboarding,滑板运动,/ˈskeɪtbɔːdɪŋ/,sports,1f6f9,
+flute,flute,长笛,/fluːt/,music,1fa88,
+accordion,accordion,手风琴,/əˈkɔːdiən/,music,1fa97,
+notes,notes,音符,/nəʊts/,music,1f3b6,
+musical score,musical score,乐谱,/ˈmjuːzɪkl skɔː/,music,1f3bc,
+doctor,doctor,医生,/ˈdɒktə/,jobs,1f9d1_200d_2695_fe0f,
+farmworker,farmworker,农场工人,/ˈfɑːmwɜːkə/,jobs,1f9d1_200d_1f33e,
+cook,cook,厨师,/kʊk/,jobs,1f9d1_200d_1f373,
+teacher,teacher,老师,/ˈtiːtʃə/,jobs,1f9d1_200d_1f3eb,
+firefighter,firefighter,消防员,/ˈfaɪəfaɪtə/,jobs,1f9d1_200d_1f692,
+pilot,pilot,飞行员,/ˈpaɪlət/,jobs,1f9d1_200d_2708_fe0f,
+scientist,scientist,科学家,/ˈsaɪəntɪst/,jobs,1f9d1_200d_1f52c,
+artist,artist,画家,/ˈɑːtɪst/,jobs,1f9d1_200d_1f3a8,
+singer,singer,歌手,/ˈsɪŋə/,jobs,1f9d1_200d_1f3a4,
+mechanic,mechanic,修理工,/məˈkænɪk/,jobs,1f9d1_200d_1f527,
+judge,judge,法官,/dʒʌdʒ/,jobs,1f9d1_200d_2696_fe0f,
+factory worker,factory worker,工厂工人,/ˈfæktəri ˈwɜːkə/,jobs,1f9d1_200d_1f3ed,
+detective,detective,侦探,/dɪˈtektɪv/,jobs,1f575_fe0f,
+guard,guard,卫兵,/ɡɑːd/,jobs,1f482,
+astronaut,astronaut,宇航员,/ˈæstrənɔːt/,jobs,1f9d1_200d_1f680,
+soldier,soldier,士兵,/ˈsəʊldʒə/,jobs,,soldier
+nurse,nurse,护士,/nɜːs/,jobs,,nurse
+dentist,dentist,牙医,/ˈdentɪst/,jobs,,dentist
+barber,barber,理发师,/ˈbɑːbə/,jobs,,barber
+waiter,waiter,服务员,/ˈweɪtə/,jobs,,waiter
+librarian,librarian,图书管理员,/laɪˈbreəriən/,jobs,,librarian
+engineer,engineer,工程师,/ˌendʒɪˈnɪə/,jobs,,engineer
+driver,driver,司机,/ˈdraɪvə/,jobs,,driver
+postman,postman,邮递员,/ˈpəʊstmən/,jobs,,postman
+conductor,conductor,指挥家,/kənˈdʌktə/,jobs,,conductor
+vet,vet,兽医,/vet/,jobs,,vet
+captain,captain,船长,/ˈkæptɪn/,jobs,,captain
+coach,coach,教练,/kəʊtʃ/,jobs,,coach
+reporter,reporter,记者,/rɪˈpɔːtə/,jobs,,reporter
+tailor,tailor,裁缝,/ˈteɪlə/,jobs,,tailor
+planet,planet,行星,/ˈplænɪt/,space,1fa90,
+comet,comet,彗星,/ˈkɒmɪt/,space,2604_fe0f,
+satellite,satellite,人造卫星,/ˈsætəlaɪt/,space,1f6f0_fe0f,
+shooting star,shooting star,流星,/ˈʃuːtɪŋ stɑː/,space,1f320,
+galaxy,galaxy,银河,/ˈɡæləksi/,space,1f30c,
+telescope,telescope,望远镜,/ˈtelɪskəʊp/,space,1f52d,
+black hole,black hole,黑洞,/blæk həʊl/,space,,black hole
+space station,space station,空间站,/speɪs ˈsteɪʃn/,space,,space station
+asteroid,asteroid,小行星,/ˈæstərɔɪd/,space,,asteroid
+meteor,meteor,陨石,/ˈmiːtiə/,space,,meteor
+orbit,orbit,轨道,/ˈɔːbɪt/,space,,orbit
+spacesuit,spacesuit,宇航服,/ˈspeɪssuːt/,space,,spacesuit
+princess,princess,公主,/ˌprɪnˈses/,characters,1f478,
+prince,prince,王子,/prɪns/,characters,1f934,
+mermaid,mermaid,美人鱼,/ˈmɜːmeɪd/,characters,1f9dc,
+genie,genie,灯神,/ˈdʒiːni/,characters,1f9de,
+zombie,zombie,僵尸,/ˈzɒmbi/,characters,1f9df,
+vampire,vampire,吸血鬼,/ˈvæmpaɪə/,characters,1f9db,
+elf,elf,精灵,/elf/,characters,1f9dd,
+ogre,ogre,食人魔,/ˈəʊɡə/,characters,1f479,
+goblin,goblin,小妖怪,/ˈɡɒblɪn/,characters,1f47a,
+angel,angel,天使,/ˈeɪndʒəl/,characters,1f47c,
+ninja,ninja,忍者,/ˈnɪndʒə/,characters,1f977,
+dragon,dragon,龙,/ˈdræɡən/,characters,1f409,
+screwdriver,screwdriver,螺丝刀,/ˈskruːdraɪvə/,tools,1fa9b,
+bolt,bolt,螺栓,/bəʊlt/,tools,1f529,
+gear,gear,齿轮,/ɡɪə/,tools,2699_fe0f,
+saw,saw,锯子,/sɔː/,tools,1fa9a,
+axe,axe,斧头,/æks/,tools,1fa93,
+magnet,magnet,磁铁,/ˈmæɡnət/,tools,1f9f2,
+rope,rope,绳子,/rəʊp/,tools,1faa2,
+chain,chain,链条,/tʃeɪn/,tools,26d3_fe0f,
+brick,brick,砖头,/brɪk/,tools,1f9f1,
+fire extinguisher,fire extinguisher,灭火器,/ˈfaɪə ɪkˈstɪŋɡwɪʃə/,tools,1f9ef,
+oil drum,oil drum,油桶,/ɔɪl drʌm/,tools,1f6e2_fe0f,
+compass,compass,指南针,/ˈkʌmpəs/,tools,1f9ed,
+shovel,shovel,铲子,/ˈʃʌvl/,tools,,shovel
+drill,drill,电钻,/drɪl/,tools,,drill
+nail,nail,钉子,/neɪl/,tools,,nail
+pliers,pliers,老虎钳,/ˈplaɪəz/,tools,,pliers
+toolbox,toolbox,工具箱,/ˈtuːlbɒks/,tools,,toolbox
+tape measure,tape measure,卷尺,/teɪp ˈmeʒə/,tools,,tape measure
+wheelbarrow,wheelbarrow,手推车,/ˈwiːlbærəʊ/,tools,,wheelbarrow
+telephone,telephone,电话,/ˈtelɪfəʊn/,electronics,260e_fe0f,
+desktop,desktop,台式电脑,/ˈdesktɒp/,electronics,1f5a5_fe0f,
+keyboard,keyboard,键盘,/ˈkiːbɔːd/,electronics,2328_fe0f,
+mouse2,mouse,鼠标,/maʊs/,electronics,1f5b1_fe0f,
+printer,printer,打印机,/ˈprɪntə/,electronics,1f5a8_fe0f,
+video camera,video camera,摄像机,/ˈvɪdiəʊ ˈkæmərə/,electronics,1f3a5,
+radio,radio,收音机,/ˈreɪdiəʊ/,electronics,1f4fb,
+game controller,game controller,游戏手柄,/ɡeɪm kənˈtrəʊlə/,electronics,1f3ae,
+joystick,joystick,摇杆,/ˈdʒɔɪstɪk/,electronics,1f579_fe0f,
+battery,battery,电池,/ˈbætri/,electronics,1f50b,
+plug,plug,插头,/plʌɡ/,electronics,1f50c,
+CD,CD,光盘,/ˌsiː ˈdiː/,electronics,1f4bf,
+cassette,cassette,磁带,/kəˈset/,electronics,1f4fc,
+floppy,floppy,软盘,/ˈflɒpi/,electronics,1f4be,
+satellite dish,satellite dish,卫星天线,/ˈsætəlaɪt dɪʃ/,electronics,1f4e1,
+tablet,tablet,平板电脑,/ˈtæblət/,electronics,,tablet
+remote control,remote control,遥控器,/rɪˈməʊt kənˈtrəʊl/,electronics,,remote control
+speaker,speaker,音箱,/ˈspiːkə/,electronics,,speaker
+smartwatch,smartwatch,智能手表,/ˈsmɑːtwɒtʃ/,electronics,,smartwatch
+e-reader,e-reader,电子书阅读器,/ˈiː riːdə/,electronics,,e-reader
+drone,drone,无人机,/drəʊn/,electronics,,drone
+bandage,bandage,创可贴,/ˈbændɪdʒ/,health,1fa79,
+pill,pill,药片,/pɪl/,health,1f48a,
+stethoscope,stethoscope,听诊器,/ˈsteθəskəʊp/,health,1fa7a,
+germ,germ,细菌,/dʒɜːm/,health,1f9a0,
+medicine,medicine,药,/ˈmedsn/,health,,medicine
+fever,fever,发烧,/ˈfiːvə/,health,,fever
+cough,cough,咳嗽,/kɒf/,health,,cough
+sneeze,sneeze,打喷嚏,/sniːz/,health,,sneeze
+flu,flu,流感,/fluː/,health,,flu
+injection,injection,打针,/ɪnˈdʒekʃn/,health,,injection
+dizzy,dizzy,头晕,/ˈdɪzi/,health,,dizzy
+healthy,healthy,健康,/ˈhelθi/,health,,healthy
+headache,headache,头疼,/ˈhedeɪk/,health,,headache
+vitamin,vitamin,维生素,/ˈvɪtəmɪn/,health,,vitamin
+Christmas tree,Christmas tree,圣诞树,/ˈkrɪsməs triː/,festivals,1f384,
+Halloween pumpkin,Halloween pumpkin,万圣节南瓜,/ˌhæləʊˈiːn ˈpʌmpkɪn/,festivals,1f383,
+confetti,confetti,彩色纸屑,/kənˈfeti/,festivals,1f38a,
+lantern,lantern,灯笼,/ˈlæntən/,festivals,1f3ee,
+firecracker,firecracker,鞭炮,/ˈfaɪəkrækə/,festivals,1f9e8,
+fireworks,fireworks,烟花,/ˈfaɪəwɜːks/,festivals,1f386,
+sparkler,sparkler,仙女棒,/ˈspɑːklə/,festivals,1f387,
+mooncake,mooncake,月饼,/ˈmuːnkeɪk/,festivals,1f96e,
+red envelope,red envelope,红包,/red ˈenvələʊp/,festivals,1f9e7,
+pinata,pinata,皮纳塔,/pɪˈnjɑːtə/,festivals,1fa85,
+Christmas stocking,Christmas stocking,圣诞袜,/ˈkrɪsməs ˈstɒkɪŋ/,festivals,,Christmas stocking
+candy cane,candy cane,拐杖糖,/ˈkændi keɪn/,festivals,,candy cane
+party hat,party hat,派对帽,/ˈpɑːti hæt/,festivals,,party hat
+Spring Festival,Spring Festival,春节,/sprɪŋ ˈfestɪvl/,festivals,,Spring Festival
+Mid-Autumn Festival,Mid-Autumn Festival,中秋节,/mɪd ˈɔːtəm ˈfestɪvl/,festivals,,Mid-Autumn Festival
+Dragon Boat Festival,Dragon Boat Festival,端午节,/ˈdræɡən bəʊt ˈfestɪvl/,festivals,,Dragon Boat Festival
+Lantern Festival,Lantern Festival,元宵节,/ˈlæntən ˈfestɪvl/,festivals,,Lantern Festival
+Easter,Easter,复活节,/ˈiːstə/,festivals,,Easter
+thumbs up,thumbs up,点赞,/θʌmz ʌp/,actions,1f44d,
+thumbs down,thumbs down,差评,/θʌmz daʊn/,actions,1f44e,
+OK hand,OK hand,OK手势,/ˌəʊˈkeɪ hænd/,actions,1f44c,
+victory,victory,胜利手势,/ˈvɪktəri/,actions,270c_fe0f,
+fist bump,fist bump,碰拳,/fɪst bʌmp/,actions,1f44a,
+wave goodbye,wave goodbye,挥手告别,/weɪv ɡədˈbaɪ/,actions,1f44b,
+point,point,指向,/pɔɪnt/,actions,1f449,
+handshake,handshake,握手,/ˈhændʃeɪk/,actions,1f91d,
+shrug,shrug,耸肩,/ʃrʌɡ/,actions,1f937,
+facepalm,facepalm,捂脸,/ˈfeɪspɑːm/,actions,1f926,

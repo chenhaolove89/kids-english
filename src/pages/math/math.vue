@@ -1,0 +1,148 @@
+<template>
+  <view class="page">
+    <view class="topbar">
+      <view class="back" @tap="goBack">
+        <text class="back-icon">←</text>
+      </view>
+      <text class="title">学数学</text>
+      <text class="total">4 个关卡</text>
+    </view>
+
+    <view class="tip">
+      <text class="tip-text">听题目，选答案，每关 10 道题</text>
+    </view>
+
+    <view
+      v-for="lv in levels"
+      :key="lv.id"
+      class="level-card"
+      :style="{ background: lv.bg }"
+      @tap="go(lv)"
+    >
+      <view class="level-left">
+        <view class="level-num" :style="{ background: lv.color }">
+          <text class="level-num-text">{{ lv.id }}</text>
+        </view>
+        <view class="level-info">
+          <text class="level-name" :style="{ color: lv.color }">{{ lv.name }}</text>
+          <text class="level-desc">{{ lv.desc }}</text>
+        </view>
+      </view>
+      <text class="go-icon">→</text>
+    </view>
+  </view>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const levels = ref([
+  { id: 1, name: '认识数字', desc: '点数、听音认数、找规律', color: '#3BB273', bg: '#E3F6E8' },
+  { id: 2, name: '十以内加减', desc: '看图数一数，算一算', color: '#4D96FF', bg: '#E3EEFF' },
+  { id: 3, name: '二十以内', desc: '进位加减、比大小、找搭档', color: '#FF8C42', bg: '#FFEDD9' },
+  { id: 4, name: '乘除进阶', desc: '乘法口诀、平均分', color: '#9B5DE5', bg: '#F0E6FB' },
+])
+
+function go(lv) {
+  uni.navigateTo({ url: `/pages/math/practice?level=${lv.id}` })
+}
+function goBack() {
+  uni.navigateBack()
+}
+</script>
+
+<style scoped>
+.page {
+  min-height: 100vh;
+  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 4rpx 8rpx;
+}
+.back {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
+}
+.back-icon {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #4a3f35;
+}
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 46rpx;
+  font-weight: 800;
+  color: #4a3f35;
+}
+.total {
+  min-width: 84rpx;
+  text-align: right;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #a2917d;
+}
+.tip {
+  margin: 16rpx 4rpx 30rpx;
+}
+.tip-text {
+  font-size: 27rpx;
+  color: #b3a492;
+}
+.level-card {
+  border-radius: 48rpx;
+  padding: 40rpx 36rpx;
+  margin-bottom: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10rpx 28rpx rgba(120, 90, 40, 0.08);
+}
+.level-card:active {
+  transform: scale(0.98);
+}
+.level-left {
+  display: flex;
+  align-items: center;
+  gap: 26rpx;
+}
+.level-num {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.level-num-text {
+  color: #ffffff;
+  font-size: 48rpx;
+  font-weight: 800;
+}
+.level-name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 800;
+}
+.level-desc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #8a8073;
+  font-weight: 600;
+}
+.go-icon {
+  font-size: 44rpx;
+  color: #c9bba7;
+  font-weight: 700;
+}
+</style>
