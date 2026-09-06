@@ -27,7 +27,10 @@ npm run gen:assets     # 改词表后重新生成音频/图片/数据（加 --fo
 node tools/gen-audio-volumes.mjs   # 音频变动后重算每词增益（响度对齐 + 防削波）
 npm run dev:h5         # 本地开发 http://localhost:5173
 npm run build:h5       # 构建 → dist/build/h5/
+node tools/serve.mjs   # 预览生产构建 → http://127.0.0.1:4173（或双击"本地预览.bat"）
 ```
+
+> 注意：构建产物**不能双击 index.html 打开**（浏览器禁止 file:// 页面加载 ES module 脚本，会白屏），本地预览请走上面的本地服务。
 
 ## 怎么加单词
 
