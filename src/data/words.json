@@ -1,0 +1,2585 @@
+{
+  "generatedAt": "2026-09-06T14:30:48.519Z",
+  "categories": [
+    {
+      "id": "animals",
+      "zh": "动物",
+      "en": "Animals",
+      "color": "#3BB273",
+      "bg": "#E3F6E8",
+      "icon": "/static/img/cat-animals.png",
+      "words": [
+        {
+          "id": "dog",
+          "en": "dog",
+          "zh": "狗",
+          "phonetic": "/dɒɡ/",
+          "image": "/static/img/dog.png",
+          "audio": "/static/audio/dog.mp3"
+        },
+        {
+          "id": "cat",
+          "en": "cat",
+          "zh": "猫",
+          "phonetic": "/kæt/",
+          "image": "/static/img/cat.png",
+          "audio": "/static/audio/cat.mp3"
+        },
+        {
+          "id": "mouse",
+          "en": "mouse",
+          "zh": "老鼠",
+          "phonetic": "/maʊs/",
+          "image": "/static/img/mouse.png",
+          "audio": "/static/audio/mouse.mp3"
+        },
+        {
+          "id": "rabbit",
+          "en": "rabbit",
+          "zh": "兔子",
+          "phonetic": "/ˈræbɪt/",
+          "image": "/static/img/rabbit.png",
+          "audio": "/static/audio/rabbit.mp3"
+        },
+        {
+          "id": "fox",
+          "en": "fox",
+          "zh": "狐狸",
+          "phonetic": "/fɒks/",
+          "image": "/static/img/fox.png",
+          "audio": "/static/audio/fox.mp3"
+        },
+        {
+          "id": "bear",
+          "en": "bear",
+          "zh": "熊",
+          "phonetic": "/beər/",
+          "image": "/static/img/bear.png",
+          "audio": "/static/audio/bear.mp3"
+        },
+        {
+          "id": "pig",
+          "en": "pig",
+          "zh": "猪",
+          "phonetic": "/pɪɡ/",
+          "image": "/static/img/pig.png",
+          "audio": "/static/audio/pig.mp3"
+        },
+        {
+          "id": "cow",
+          "en": "cow",
+          "zh": "奶牛",
+          "phonetic": "/kaʊ/",
+          "image": "/static/img/cow.png",
+          "audio": "/static/audio/cow.mp3"
+        },
+        {
+          "id": "frog",
+          "en": "frog",
+          "zh": "青蛙",
+          "phonetic": "/frɒɡ/",
+          "image": "/static/img/frog.png",
+          "audio": "/static/audio/frog.mp3"
+        },
+        {
+          "id": "monkey",
+          "en": "monkey",
+          "zh": "猴子",
+          "phonetic": "/ˈmʌŋki/",
+          "image": "/static/img/monkey.png",
+          "audio": "/static/audio/monkey.mp3"
+        },
+        {
+          "id": "lion",
+          "en": "lion",
+          "zh": "狮子",
+          "phonetic": "/ˈlaɪən/",
+          "image": "/static/img/lion.png",
+          "audio": "/static/audio/lion.mp3"
+        },
+        {
+          "id": "tiger",
+          "en": "tiger",
+          "zh": "老虎",
+          "phonetic": "/ˈtaɪɡər/",
+          "image": "/static/img/tiger.png",
+          "audio": "/static/audio/tiger.mp3"
+        },
+        {
+          "id": "koala",
+          "en": "koala",
+          "zh": "考拉",
+          "phonetic": "/kəʊˈɑːlə/",
+          "image": "/static/img/koala.png",
+          "audio": "/static/audio/koala.mp3"
+        },
+        {
+          "id": "chicken",
+          "en": "chicken",
+          "zh": "小鸡",
+          "phonetic": "/ˈtʃɪkɪn/",
+          "image": "/static/img/chicken.png",
+          "audio": "/static/audio/chicken.mp3"
+        },
+        {
+          "id": "duck",
+          "en": "duck",
+          "zh": "鸭子",
+          "phonetic": "/dʌk/",
+          "image": "/static/img/duck.png",
+          "audio": "/static/audio/duck.mp3"
+        },
+        {
+          "id": "owl",
+          "en": "owl",
+          "zh": "猫头鹰",
+          "phonetic": "/aʊl/",
+          "image": "/static/img/owl.png",
+          "audio": "/static/audio/owl.mp3"
+        },
+        {
+          "id": "horse",
+          "en": "horse",
+          "zh": "小马",
+          "phonetic": "/hɔːs/",
+          "image": "/static/img/horse.png",
+          "audio": "/static/audio/horse.mp3"
+        },
+        {
+          "id": "bee",
+          "en": "bee",
+          "zh": "蜜蜂",
+          "phonetic": "/biː/",
+          "image": "/static/img/bee.png",
+          "audio": "/static/audio/bee.mp3"
+        },
+        {
+          "id": "ladybug",
+          "en": "ladybug",
+          "zh": "瓢虫",
+          "phonetic": "/ˈleɪdibʌɡ/",
+          "image": "/static/img/ladybug.png",
+          "audio": "/static/audio/ladybug.mp3"
+        },
+        {
+          "id": "elephant",
+          "en": "elephant",
+          "zh": "大象",
+          "phonetic": "/ˈelɪfənt/",
+          "image": "/static/img/elephant.png",
+          "audio": "/static/audio/elephant.mp3"
+        },
+        {
+          "id": "sheep",
+          "en": "sheep",
+          "zh": "绵羊",
+          "phonetic": "/ʃiːp/",
+          "image": "/static/img/sheep.png",
+          "audio": "/static/audio/sheep.mp3"
+        },
+        {
+          "id": "goat",
+          "en": "goat",
+          "zh": "山羊",
+          "phonetic": "/ɡəʊt/",
+          "image": "/static/img/goat.png",
+          "audio": "/static/audio/goat.mp3"
+        },
+        {
+          "id": "hamster",
+          "en": "hamster",
+          "zh": "仓鼠",
+          "phonetic": "/ˈhæmstər/",
+          "image": "/static/img/hamster.png",
+          "audio": "/static/audio/hamster.mp3"
+        },
+        {
+          "id": "wolf",
+          "en": "wolf",
+          "zh": "狼",
+          "phonetic": "/wʊlf/",
+          "image": "/static/img/wolf.png",
+          "audio": "/static/audio/wolf.mp3"
+        },
+        {
+          "id": "kangaroo",
+          "en": "kangaroo",
+          "zh": "袋鼠",
+          "phonetic": "/ˌkæŋɡəˈruː/",
+          "image": "/static/img/kangaroo.png",
+          "audio": "/static/audio/kangaroo.mp3"
+        },
+        {
+          "id": "camel",
+          "en": "camel",
+          "zh": "骆驼",
+          "phonetic": "/ˈkæml/",
+          "image": "/static/img/camel.png",
+          "audio": "/static/audio/camel.mp3"
+        },
+        {
+          "id": "giraffe",
+          "en": "giraffe",
+          "zh": "长颈鹿",
+          "phonetic": "/dʒəˈrɑːf/",
+          "image": "/static/img/giraffe.png",
+          "audio": "/static/audio/giraffe.mp3"
+        },
+        {
+          "id": "zebra",
+          "en": "zebra",
+          "zh": "斑马",
+          "phonetic": "/ˈzebrə/",
+          "image": "/static/img/zebra.png",
+          "audio": "/static/audio/zebra.mp3"
+        },
+        {
+          "id": "hippo",
+          "en": "hippo",
+          "zh": "河马",
+          "phonetic": "/ˈhɪpəʊ/",
+          "image": "/static/img/hippo.png",
+          "audio": "/static/audio/hippo.mp3"
+        },
+        {
+          "id": "rhino",
+          "en": "rhino",
+          "zh": "犀牛",
+          "phonetic": "/ˈraɪnəʊ/",
+          "image": "/static/img/rhino.png",
+          "audio": "/static/audio/rhino.mp3"
+        },
+        {
+          "id": "deer",
+          "en": "deer",
+          "zh": "梅花鹿",
+          "phonetic": "/dɪər/",
+          "image": "/static/img/deer.png",
+          "audio": "/static/audio/deer.mp3"
+        },
+        {
+          "id": "gorilla",
+          "en": "gorilla",
+          "zh": "大猩猩",
+          "phonetic": "/ɡəˈrɪlə/",
+          "image": "/static/img/gorilla.png",
+          "audio": "/static/audio/gorilla.mp3"
+        },
+        {
+          "id": "crocodile",
+          "en": "crocodile",
+          "zh": "鳄鱼",
+          "phonetic": "/ˈkrɒkədaɪl/",
+          "image": "/static/img/crocodile.png",
+          "audio": "/static/audio/crocodile.mp3"
+        },
+        {
+          "id": "snake",
+          "en": "snake",
+          "zh": "蛇",
+          "phonetic": "/sneɪk/",
+          "image": "/static/img/snake.png",
+          "audio": "/static/audio/snake.mp3"
+        },
+        {
+          "id": "turtle",
+          "en": "turtle",
+          "zh": "海龟",
+          "phonetic": "/ˈtɜːtl/",
+          "image": "/static/img/turtle.png",
+          "audio": "/static/audio/turtle.mp3"
+        },
+        {
+          "id": "penguin",
+          "en": "penguin",
+          "zh": "企鹅",
+          "phonetic": "/ˈpeŋɡwɪn/",
+          "image": "/static/img/penguin.png",
+          "audio": "/static/audio/penguin.mp3"
+        },
+        {
+          "id": "dolphin",
+          "en": "dolphin",
+          "zh": "海豚",
+          "phonetic": "/ˈdɒlfɪn/",
+          "image": "/static/img/dolphin.png",
+          "audio": "/static/audio/dolphin.mp3"
+        },
+        {
+          "id": "whale",
+          "en": "whale",
+          "zh": "鲸鱼",
+          "phonetic": "/weɪl/",
+          "image": "/static/img/whale.png",
+          "audio": "/static/audio/whale.mp3"
+        },
+        {
+          "id": "shark",
+          "en": "shark",
+          "zh": "鲨鱼",
+          "phonetic": "/ʃɑːk/",
+          "image": "/static/img/shark.png",
+          "audio": "/static/audio/shark.mp3"
+        },
+        {
+          "id": "octopus",
+          "en": "octopus",
+          "zh": "章鱼",
+          "phonetic": "/ˈɒktəpəs/",
+          "image": "/static/img/octopus.png",
+          "audio": "/static/audio/octopus.mp3"
+        },
+        {
+          "id": "crab",
+          "en": "crab",
+          "zh": "螃蟹",
+          "phonetic": "/kræb/",
+          "image": "/static/img/crab.png",
+          "audio": "/static/audio/crab.mp3"
+        },
+        {
+          "id": "seal",
+          "en": "seal",
+          "zh": "海豹",
+          "phonetic": "/siːl/",
+          "image": "/static/img/seal.png",
+          "audio": "/static/audio/seal.mp3"
+        },
+        {
+          "id": "snail",
+          "en": "snail",
+          "zh": "蜗牛",
+          "phonetic": "/sneɪl/",
+          "image": "/static/img/snail.png",
+          "audio": "/static/audio/snail.mp3"
+        },
+        {
+          "id": "butterfly",
+          "en": "butterfly",
+          "zh": "蝴蝶",
+          "phonetic": "/ˈbʌtəflaɪ/",
+          "image": "/static/img/butterfly.png",
+          "audio": "/static/audio/butterfly.mp3"
+        },
+        {
+          "id": "flamingo",
+          "en": "flamingo",
+          "zh": "火烈鸟",
+          "phonetic": "/fləˈmɪŋɡəʊ/",
+          "image": "/static/img/flamingo.png",
+          "audio": "/static/audio/flamingo.mp3"
+        },
+        {
+          "id": "turkey",
+          "en": "turkey",
+          "zh": "火鸡",
+          "phonetic": "/ˈtɜːki/",
+          "image": "/static/img/turkey.png",
+          "audio": "/static/audio/turkey.mp3"
+        },
+        {
+          "id": "swan",
+          "en": "swan",
+          "zh": "天鹅",
+          "phonetic": "/swɒn/",
+          "image": "/static/img/swan.png",
+          "audio": "/static/audio/swan.mp3"
+        },
+        {
+          "id": "parrot",
+          "en": "parrot",
+          "zh": "鹦鹉",
+          "phonetic": "/ˈpærət/",
+          "image": "/static/img/parrot.png",
+          "audio": "/static/audio/parrot.mp3"
+        },
+        {
+          "id": "hedgehog",
+          "en": "hedgehog",
+          "zh": "刺猬",
+          "phonetic": "/ˈhedʒhɒɡ/",
+          "image": "/static/img/hedgehog.png",
+          "audio": "/static/audio/hedgehog.mp3"
+        },
+        {
+          "id": "squirrel",
+          "en": "squirrel",
+          "zh": "松鼠",
+          "phonetic": "/ˈskwɜːrəl/",
+          "image": "/static/img/squirrel.png",
+          "audio": "/static/audio/squirrel.mp3"
+        }
+      ]
+    },
+    {
+      "id": "fruits",
+      "zh": "水果",
+      "en": "Fruits",
+      "color": "#FF6B6B",
+      "bg": "#FFE9E9",
+      "icon": "/static/img/cat-fruits.png",
+      "words": [
+        {
+          "id": "apple",
+          "en": "apple",
+          "zh": "苹果",
+          "phonetic": "/ˈæpl/",
+          "image": "/static/img/apple.png",
+          "audio": "/static/audio/apple.mp3"
+        },
+        {
+          "id": "banana",
+          "en": "banana",
+          "zh": "香蕉",
+          "phonetic": "/bəˈnɑːnə/",
+          "image": "/static/img/banana.png",
+          "audio": "/static/audio/banana.mp3"
+        },
+        {
+          "id": "grapes",
+          "en": "grapes",
+          "zh": "葡萄",
+          "phonetic": "/ɡreɪps/",
+          "image": "/static/img/grapes.png",
+          "audio": "/static/audio/grapes.mp3"
+        },
+        {
+          "id": "strawberry",
+          "en": "strawberry",
+          "zh": "草莓",
+          "phonetic": "/ˈstrɔːbəri/",
+          "image": "/static/img/strawberry.png",
+          "audio": "/static/audio/strawberry.mp3"
+        },
+        {
+          "id": "watermelon",
+          "en": "watermelon",
+          "zh": "西瓜",
+          "phonetic": "/ˈwɔːtəmelən/",
+          "image": "/static/img/watermelon.png",
+          "audio": "/static/audio/watermelon.mp3"
+        },
+        {
+          "id": "peach",
+          "en": "peach",
+          "zh": "桃子",
+          "phonetic": "/piːtʃ/",
+          "image": "/static/img/peach.png",
+          "audio": "/static/audio/peach.mp3"
+        },
+        {
+          "id": "pineapple",
+          "en": "pineapple",
+          "zh": "菠萝",
+          "phonetic": "/ˈpaɪnæpl/",
+          "image": "/static/img/pineapple.png",
+          "audio": "/static/audio/pineapple.mp3"
+        },
+        {
+          "id": "cherry",
+          "en": "cherry",
+          "zh": "樱桃",
+          "phonetic": "/ˈtʃeri/",
+          "image": "/static/img/cherry.png",
+          "audio": "/static/audio/cherry.mp3"
+        },
+        {
+          "id": "mango",
+          "en": "mango",
+          "zh": "芒果",
+          "phonetic": "/ˈmæŋɡəʊ/",
+          "image": "/static/img/mango.png",
+          "audio": "/static/audio/mango.mp3"
+        },
+        {
+          "id": "coconut",
+          "en": "coconut",
+          "zh": "椰子",
+          "phonetic": "/ˈkəʊkənʌt/",
+          "image": "/static/img/coconut.png",
+          "audio": "/static/audio/coconut.mp3"
+        },
+        {
+          "id": "kiwi",
+          "en": "kiwi",
+          "zh": "猕猴桃",
+          "phonetic": "/ˈkiːwiː/",
+          "image": "/static/img/kiwi.png",
+          "audio": "/static/audio/kiwi.mp3"
+        },
+        {
+          "id": "pear",
+          "en": "pear",
+          "zh": "梨",
+          "phonetic": "/peər/",
+          "image": "/static/img/pear.png",
+          "audio": "/static/audio/pear.mp3"
+        },
+        {
+          "id": "blueberry",
+          "en": "blueberry",
+          "zh": "蓝莓",
+          "phonetic": "/ˈbluːbəri/",
+          "image": "/static/img/blueberry.png",
+          "audio": "/static/audio/blueberry.mp3"
+        },
+        {
+          "id": "lemon",
+          "en": "lemon",
+          "zh": "柠檬",
+          "phonetic": "/ˈlemən/",
+          "image": "/static/img/lemon.png",
+          "audio": "/static/audio/lemon.mp3"
+        },
+        {
+          "id": "melon",
+          "en": "melon",
+          "zh": "甜瓜",
+          "phonetic": "/ˈmelən/",
+          "image": "/static/img/melon.png",
+          "audio": "/static/audio/melon.mp3"
+        },
+        {
+          "id": "avocado",
+          "en": "avocado",
+          "zh": "牛油果",
+          "phonetic": "/ˌævəˈkɑːdəʊ/",
+          "image": "/static/img/avocado.png",
+          "audio": "/static/audio/avocado.mp3"
+        }
+      ]
+    },
+    {
+      "id": "vegetables",
+      "zh": "蔬菜",
+      "en": "Vegetables",
+      "color": "#7CB342",
+      "bg": "#EFF5E3",
+      "icon": "/static/img/cat-vegetables.png",
+      "words": [
+        {
+          "id": "carrot",
+          "en": "carrot",
+          "zh": "胡萝卜",
+          "phonetic": "/ˈkærət/",
+          "image": "/static/img/carrot.png",
+          "audio": "/static/audio/carrot.mp3"
+        },
+        {
+          "id": "corn",
+          "en": "corn",
+          "zh": "玉米",
+          "phonetic": "/kɔːn/",
+          "image": "/static/img/corn.png",
+          "audio": "/static/audio/corn.mp3"
+        },
+        {
+          "id": "tomato",
+          "en": "tomato",
+          "zh": "番茄",
+          "phonetic": "/təˈmɑːtəʊ/",
+          "image": "/static/img/tomato.png",
+          "audio": "/static/audio/tomato.mp3"
+        },
+        {
+          "id": "broccoli",
+          "en": "broccoli",
+          "zh": "西兰花",
+          "phonetic": "/ˈbrɒkəli/",
+          "image": "/static/img/broccoli.png",
+          "audio": "/static/audio/broccoli.mp3"
+        },
+        {
+          "id": "potato",
+          "en": "potato",
+          "zh": "土豆",
+          "phonetic": "/pəˈteɪtəʊ/",
+          "image": "/static/img/potato.png",
+          "audio": "/static/audio/potato.mp3"
+        },
+        {
+          "id": "cucumber",
+          "en": "cucumber",
+          "zh": "黄瓜",
+          "phonetic": "/ˈkjuːkʌmbər/",
+          "image": "/static/img/cucumber.png",
+          "audio": "/static/audio/cucumber.mp3"
+        },
+        {
+          "id": "eggplant",
+          "en": "eggplant",
+          "zh": "茄子",
+          "phonetic": "/ˈeɡplɑːnt/",
+          "image": "/static/img/eggplant.png",
+          "audio": "/static/audio/eggplant.mp3"
+        },
+        {
+          "id": "pepper",
+          "en": "pepper",
+          "zh": "辣椒",
+          "phonetic": "/ˈpepər/",
+          "image": "/static/img/pepper.png",
+          "audio": "/static/audio/pepper.mp3"
+        },
+        {
+          "id": "onion",
+          "en": "onion",
+          "zh": "洋葱",
+          "phonetic": "/ˈʌnjən/",
+          "image": "/static/img/onion.png",
+          "audio": "/static/audio/onion.mp3"
+        },
+        {
+          "id": "garlic",
+          "en": "garlic",
+          "zh": "大蒜",
+          "phonetic": "/ˈɡɑːlɪk/",
+          "image": "/static/img/garlic.png",
+          "audio": "/static/audio/garlic.mp3"
+        },
+        {
+          "id": "mushroom",
+          "en": "mushroom",
+          "zh": "蘑菇",
+          "phonetic": "/ˈmʌʃruːm/",
+          "image": "/static/img/mushroom.png",
+          "audio": "/static/audio/mushroom.mp3"
+        },
+        {
+          "id": "pumpkin",
+          "en": "pumpkin",
+          "zh": "南瓜",
+          "phonetic": "/ˈpʌmpkɪn/",
+          "image": "/static/img/pumpkin.png",
+          "audio": "/static/audio/pumpkin.mp3"
+        },
+        {
+          "id": "lettuce",
+          "en": "lettuce",
+          "zh": "生菜",
+          "phonetic": "/ˈletɪs/",
+          "image": "/static/img/lettuce.png",
+          "audio": "/static/audio/lettuce.mp3"
+        },
+        {
+          "id": "peanut",
+          "en": "peanut",
+          "zh": "花生",
+          "phonetic": "/ˈpiːnʌt/",
+          "image": "/static/img/peanut.png",
+          "audio": "/static/audio/peanut.mp3"
+        },
+        {
+          "id": "sweetpotato",
+          "en": "sweet potato",
+          "zh": "红薯",
+          "phonetic": "/ˈswiːt pəˈteɪtəʊ/",
+          "image": "/static/img/sweetpotato.png",
+          "audio": "/static/audio/sweetpotato.mp3"
+        }
+      ]
+    },
+    {
+      "id": "food",
+      "zh": "食物",
+      "en": "Food",
+      "color": "#FF8C42",
+      "bg": "#FFEDD9",
+      "icon": "/static/img/cat-food.png",
+      "words": [
+        {
+          "id": "egg",
+          "en": "egg",
+          "zh": "鸡蛋",
+          "phonetic": "/eɡ/",
+          "image": "/static/img/egg.png",
+          "audio": "/static/audio/egg.mp3"
+        },
+        {
+          "id": "bread",
+          "en": "bread",
+          "zh": "面包",
+          "phonetic": "/bred/",
+          "image": "/static/img/bread.png",
+          "audio": "/static/audio/bread.mp3"
+        },
+        {
+          "id": "hamburger",
+          "en": "hamburger",
+          "zh": "汉堡",
+          "phonetic": "/ˈhæmbɜːɡər/",
+          "image": "/static/img/hamburger.png",
+          "audio": "/static/audio/hamburger.mp3"
+        },
+        {
+          "id": "fries",
+          "en": "fries",
+          "zh": "薯条",
+          "phonetic": "/fraɪz/",
+          "image": "/static/img/fries.png",
+          "audio": "/static/audio/fries.mp3"
+        },
+        {
+          "id": "pizza",
+          "en": "pizza",
+          "zh": "披萨",
+          "phonetic": "/ˈpiːtsə/",
+          "image": "/static/img/pizza.png",
+          "audio": "/static/audio/pizza.mp3"
+        },
+        {
+          "id": "hotdog",
+          "en": "hot dog",
+          "zh": "热狗",
+          "phonetic": "/ˈhɒt dɒɡ/",
+          "image": "/static/img/hotdog.png",
+          "audio": "/static/audio/hotdog.mp3"
+        },
+        {
+          "id": "milk",
+          "en": "milk",
+          "zh": "牛奶",
+          "phonetic": "/mɪlk/",
+          "image": "/static/img/milk.png",
+          "audio": "/static/audio/milk.mp3"
+        },
+        {
+          "id": "cake",
+          "en": "cake",
+          "zh": "蛋糕",
+          "phonetic": "/keɪk/",
+          "image": "/static/img/cake.png",
+          "audio": "/static/audio/cake.mp3"
+        },
+        {
+          "id": "icecream",
+          "en": "ice cream",
+          "zh": "冰淇淋",
+          "phonetic": "/ˌaɪs ˈkriːm/",
+          "image": "/static/img/icecream.png",
+          "audio": "/static/audio/icecream.mp3"
+        },
+        {
+          "id": "cookie",
+          "en": "cookie",
+          "zh": "饼干",
+          "phonetic": "/ˈkʊki/",
+          "image": "/static/img/cookie.png",
+          "audio": "/static/audio/cookie.mp3"
+        },
+        {
+          "id": "donut",
+          "en": "donut",
+          "zh": "甜甜圈",
+          "phonetic": "/ˈdəʊnʌt/",
+          "image": "/static/img/donut.png",
+          "audio": "/static/audio/donut.mp3"
+        },
+        {
+          "id": "chocolate",
+          "en": "chocolate",
+          "zh": "巧克力",
+          "phonetic": "/ˈtʃɒklət/",
+          "image": "/static/img/chocolate.png",
+          "audio": "/static/audio/chocolate.mp3"
+        },
+        {
+          "id": "candy",
+          "en": "candy",
+          "zh": "糖果",
+          "phonetic": "/ˈkændi/",
+          "image": "/static/img/candy.png",
+          "audio": "/static/audio/candy.mp3"
+        },
+        {
+          "id": "honey",
+          "en": "honey",
+          "zh": "蜂蜜",
+          "phonetic": "/ˈhʌni/",
+          "image": "/static/img/honey.png",
+          "audio": "/static/audio/honey.mp3"
+        },
+        {
+          "id": "noodles",
+          "en": "noodles",
+          "zh": "面条",
+          "phonetic": "/ˈnuːdlz/",
+          "image": "/static/img/noodles.png",
+          "audio": "/static/audio/noodles.mp3"
+        },
+        {
+          "id": "rice",
+          "en": "rice",
+          "zh": "米饭",
+          "phonetic": "/raɪs/",
+          "image": "/static/img/rice.png",
+          "audio": "/static/audio/rice.mp3"
+        },
+        {
+          "id": "sushi",
+          "en": "sushi",
+          "zh": "寿司",
+          "phonetic": "/ˈsuːʃi/",
+          "image": "/static/img/sushi.png",
+          "audio": "/static/audio/sushi.mp3"
+        },
+        {
+          "id": "pasta",
+          "en": "pasta",
+          "zh": "意面",
+          "phonetic": "/ˈpæstə/",
+          "image": "/static/img/pasta.png",
+          "audio": "/static/audio/pasta.mp3"
+        },
+        {
+          "id": "drumstick",
+          "en": "drumstick",
+          "zh": "鸡腿",
+          "phonetic": "/ˈdrʌmstɪk/",
+          "image": "/static/img/drumstick.png",
+          "audio": "/static/audio/drumstick.mp3"
+        },
+        {
+          "id": "cheese",
+          "en": "cheese",
+          "zh": "奶酪",
+          "phonetic": "/tʃiːz/",
+          "image": "/static/img/cheese.png",
+          "audio": "/static/audio/cheese.mp3"
+        }
+      ]
+    },
+    {
+      "id": "vehicles",
+      "zh": "交通工具",
+      "en": "Vehicles",
+      "color": "#4D96FF",
+      "bg": "#E3EEFF",
+      "icon": "/static/img/cat-vehicles.png",
+      "words": [
+        {
+          "id": "car",
+          "en": "car",
+          "zh": "小汽车",
+          "phonetic": "/kɑːr/",
+          "image": "/static/img/car.png",
+          "audio": "/static/audio/car.mp3"
+        },
+        {
+          "id": "taxi",
+          "en": "taxi",
+          "zh": "出租车",
+          "phonetic": "/ˈtæksi/",
+          "image": "/static/img/taxi.png",
+          "audio": "/static/audio/taxi.mp3"
+        },
+        {
+          "id": "bus",
+          "en": "bus",
+          "zh": "公共汽车",
+          "phonetic": "/bʌs/",
+          "image": "/static/img/bus.png",
+          "audio": "/static/audio/bus.mp3"
+        },
+        {
+          "id": "van",
+          "en": "van",
+          "zh": "面包车",
+          "phonetic": "/væn/",
+          "image": "/static/img/van.png",
+          "audio": "/static/audio/van.mp3"
+        },
+        {
+          "id": "ambulance",
+          "en": "ambulance",
+          "zh": "救护车",
+          "phonetic": "/ˈæmbjələns/",
+          "image": "/static/img/ambulance.png",
+          "audio": "/static/audio/ambulance.mp3"
+        },
+        {
+          "id": "firetruck",
+          "en": "fire truck",
+          "zh": "消防车",
+          "phonetic": "/ˈfaɪər trʌk/",
+          "image": "/static/img/firetruck.png",
+          "audio": "/static/audio/firetruck.mp3"
+        },
+        {
+          "id": "policecar",
+          "en": "police car",
+          "zh": "警车",
+          "phonetic": "/pəˈliːs kɑːr/",
+          "image": "/static/img/policecar.png",
+          "audio": "/static/audio/policecar.mp3"
+        },
+        {
+          "id": "truck",
+          "en": "truck",
+          "zh": "卡车",
+          "phonetic": "/trʌk/",
+          "image": "/static/img/truck.png",
+          "audio": "/static/audio/truck.mp3"
+        },
+        {
+          "id": "tractor",
+          "en": "tractor",
+          "zh": "拖拉机",
+          "phonetic": "/ˈtræktər/",
+          "image": "/static/img/tractor.png",
+          "audio": "/static/audio/tractor.mp3"
+        },
+        {
+          "id": "bicycle",
+          "en": "bicycle",
+          "zh": "自行车",
+          "phonetic": "/ˈbaɪsɪkl/",
+          "image": "/static/img/bicycle.png",
+          "audio": "/static/audio/bicycle.mp3"
+        },
+        {
+          "id": "scooter",
+          "en": "scooter",
+          "zh": "滑板车",
+          "phonetic": "/ˈskuːtər/",
+          "image": "/static/img/scooter.png",
+          "audio": "/static/audio/scooter.mp3"
+        },
+        {
+          "id": "motorcycle",
+          "en": "motorcycle",
+          "zh": "摩托车",
+          "phonetic": "/ˈməʊtəsaɪkl/",
+          "image": "/static/img/motorcycle.png",
+          "audio": "/static/audio/motorcycle.mp3"
+        },
+        {
+          "id": "airplane",
+          "en": "airplane",
+          "zh": "飞机",
+          "phonetic": "/ˈeəpleɪn/",
+          "image": "/static/img/airplane.png",
+          "audio": "/static/audio/airplane.mp3"
+        },
+        {
+          "id": "helicopter",
+          "en": "helicopter",
+          "zh": "直升机",
+          "phonetic": "/ˈhelɪkɒptər/",
+          "image": "/static/img/helicopter.png",
+          "audio": "/static/audio/helicopter.mp3"
+        },
+        {
+          "id": "rocket",
+          "en": "rocket",
+          "zh": "火箭",
+          "phonetic": "/ˈrɒkɪt/",
+          "image": "/static/img/rocket.png",
+          "audio": "/static/audio/rocket.mp3"
+        },
+        {
+          "id": "sailboat",
+          "en": "sailboat",
+          "zh": "帆船",
+          "phonetic": "/ˈseɪlbəʊt/",
+          "image": "/static/img/sailboat.png",
+          "audio": "/static/audio/sailboat.mp3"
+        },
+        {
+          "id": "ship",
+          "en": "ship",
+          "zh": "轮船",
+          "phonetic": "/ʃɪp/",
+          "image": "/static/img/ship.png",
+          "audio": "/static/audio/ship.mp3"
+        },
+        {
+          "id": "train",
+          "en": "train",
+          "zh": "火车",
+          "phonetic": "/treɪn/",
+          "image": "/static/img/train.png",
+          "audio": "/static/audio/train.mp3"
+        },
+        {
+          "id": "subway",
+          "en": "subway",
+          "zh": "地铁",
+          "phonetic": "/ˈsʌbweɪ/",
+          "image": "/static/img/subway.png",
+          "audio": "/static/audio/subway.mp3"
+        },
+        {
+          "id": "suv",
+          "en": "SUV",
+          "zh": "越野车",
+          "phonetic": "/ˌes juː ˈviː/",
+          "image": "/static/img/suv.png",
+          "audio": "/static/audio/suv.mp3"
+        },
+        {
+          "id": "lorry",
+          "en": "lorry",
+          "zh": "大货车",
+          "phonetic": "/ˈlɒri/",
+          "image": "/static/img/lorry.png",
+          "audio": "/static/audio/lorry.mp3"
+        },
+        {
+          "id": "bullettrain",
+          "en": "bullet train",
+          "zh": "高铁",
+          "phonetic": "/ˈbʊlɪt treɪn/",
+          "image": "/static/img/bullettrain.png",
+          "audio": "/static/audio/bullettrain.mp3"
+        },
+        {
+          "id": "ferry",
+          "en": "ferry",
+          "zh": "渡轮",
+          "phonetic": "/ˈferi/",
+          "image": "/static/img/ferry.png",
+          "audio": "/static/audio/ferry.mp3"
+        },
+        {
+          "id": "canoe",
+          "en": "canoe",
+          "zh": "独木舟",
+          "phonetic": "/kəˈnuː/",
+          "image": "/static/img/canoe.png",
+          "audio": "/static/audio/canoe.mp3"
+        },
+        {
+          "id": "racingcar",
+          "en": "racing car",
+          "zh": "赛车",
+          "phonetic": "/ˈreɪsɪŋ kɑːr/",
+          "image": "/static/img/racingcar.png",
+          "audio": "/static/audio/racingcar.mp3"
+        },
+        {
+          "id": "tram",
+          "en": "tram",
+          "zh": "有轨电车",
+          "phonetic": "/træm/",
+          "image": "/static/img/tram.png",
+          "audio": "/static/audio/tram.mp3"
+        },
+        {
+          "id": "sled",
+          "en": "sled",
+          "zh": "雪橇",
+          "phonetic": "/sled/",
+          "image": "/static/img/sled.png",
+          "audio": "/static/audio/sled.mp3"
+        },
+        {
+          "id": "ufo",
+          "en": "UFO",
+          "zh": "飞碟",
+          "phonetic": "/ˌjuː ef ˈəʊ/",
+          "image": "/static/img/ufo.png",
+          "audio": "/static/audio/ufo.mp3"
+        },
+        {
+          "id": "cablecar",
+          "en": "cable car",
+          "zh": "缆车",
+          "phonetic": "/ˈkeɪbl kɑːr/",
+          "image": "/static/img/cablecar.png",
+          "audio": "/static/audio/cablecar.mp3"
+        },
+        {
+          "id": "speedboat",
+          "en": "speedboat",
+          "zh": "快艇",
+          "phonetic": "/ˈspiːdbəʊt/",
+          "image": "/static/img/speedboat.png",
+          "audio": "/static/audio/speedboat.mp3"
+        }
+      ]
+    },
+    {
+      "id": "colors",
+      "zh": "颜色",
+      "en": "Colors",
+      "color": "#F76BA8",
+      "bg": "#FDE3EE",
+      "icon": "/static/img/cat-colors.png",
+      "words": [
+        {
+          "id": "red",
+          "en": "red",
+          "zh": "红色",
+          "phonetic": "/red/",
+          "image": "/static/img/red.png",
+          "audio": "/static/audio/red.mp3"
+        },
+        {
+          "id": "orange",
+          "en": "orange",
+          "zh": "橙色",
+          "phonetic": "/ˈɒrɪndʒ/",
+          "image": "/static/img/orange.png",
+          "audio": "/static/audio/orange.mp3"
+        },
+        {
+          "id": "yellow",
+          "en": "yellow",
+          "zh": "黄色",
+          "phonetic": "/ˈjeləʊ/",
+          "image": "/static/img/yellow.png",
+          "audio": "/static/audio/yellow.mp3"
+        },
+        {
+          "id": "green",
+          "en": "green",
+          "zh": "绿色",
+          "phonetic": "/ɡriːn/",
+          "image": "/static/img/green.png",
+          "audio": "/static/audio/green.mp3"
+        },
+        {
+          "id": "blue",
+          "en": "blue",
+          "zh": "蓝色",
+          "phonetic": "/bluː/",
+          "image": "/static/img/blue.png",
+          "audio": "/static/audio/blue.mp3"
+        },
+        {
+          "id": "purple",
+          "en": "purple",
+          "zh": "紫色",
+          "phonetic": "/ˈpɜːpl/",
+          "image": "/static/img/purple.png",
+          "audio": "/static/audio/purple.mp3"
+        },
+        {
+          "id": "brown",
+          "en": "brown",
+          "zh": "棕色",
+          "phonetic": "/braʊn/",
+          "image": "/static/img/brown.png",
+          "audio": "/static/audio/brown.mp3"
+        },
+        {
+          "id": "black",
+          "en": "black",
+          "zh": "黑色",
+          "phonetic": "/blæk/",
+          "image": "/static/img/black.png",
+          "audio": "/static/audio/black.mp3"
+        },
+        {
+          "id": "white",
+          "en": "white",
+          "zh": "白色",
+          "phonetic": "/waɪt/",
+          "image": "/static/img/white.png",
+          "audio": "/static/audio/white.mp3"
+        },
+        {
+          "id": "pink",
+          "en": "pink",
+          "zh": "粉色",
+          "phonetic": "/pɪŋk/",
+          "image": "/static/img/pink.png",
+          "audio": "/static/audio/pink.mp3"
+        }
+      ]
+    },
+    {
+      "id": "numbers",
+      "zh": "数字",
+      "en": "Numbers",
+      "color": "#9B5DE5",
+      "bg": "#F0E6FB",
+      "icon": "/static/img/cat-numbers.png",
+      "words": [
+        {
+          "id": "one",
+          "en": "one",
+          "zh": "一",
+          "phonetic": "/wʌn/",
+          "image": "/static/img/one.svg",
+          "audio": "/static/audio/one.mp3"
+        },
+        {
+          "id": "two",
+          "en": "two",
+          "zh": "二",
+          "phonetic": "/tuː/",
+          "image": "/static/img/two.svg",
+          "audio": "/static/audio/two.mp3"
+        },
+        {
+          "id": "three",
+          "en": "three",
+          "zh": "三",
+          "phonetic": "/θriː/",
+          "image": "/static/img/three.svg",
+          "audio": "/static/audio/three.mp3"
+        },
+        {
+          "id": "four",
+          "en": "four",
+          "zh": "四",
+          "phonetic": "/fɔːr/",
+          "image": "/static/img/four.svg",
+          "audio": "/static/audio/four.mp3"
+        },
+        {
+          "id": "five",
+          "en": "five",
+          "zh": "五",
+          "phonetic": "/faɪv/",
+          "image": "/static/img/five.svg",
+          "audio": "/static/audio/five.mp3"
+        },
+        {
+          "id": "six",
+          "en": "six",
+          "zh": "六",
+          "phonetic": "/sɪks/",
+          "image": "/static/img/six.svg",
+          "audio": "/static/audio/six.mp3"
+        },
+        {
+          "id": "seven",
+          "en": "seven",
+          "zh": "七",
+          "phonetic": "/ˈsevn/",
+          "image": "/static/img/seven.svg",
+          "audio": "/static/audio/seven.mp3"
+        },
+        {
+          "id": "eight",
+          "en": "eight",
+          "zh": "八",
+          "phonetic": "/eɪt/",
+          "image": "/static/img/eight.svg",
+          "audio": "/static/audio/eight.mp3"
+        },
+        {
+          "id": "nine",
+          "en": "nine",
+          "zh": "九",
+          "phonetic": "/naɪn/",
+          "image": "/static/img/nine.svg",
+          "audio": "/static/audio/nine.mp3"
+        },
+        {
+          "id": "ten",
+          "en": "ten",
+          "zh": "十",
+          "phonetic": "/ten/",
+          "image": "/static/img/ten.svg",
+          "audio": "/static/audio/ten.mp3"
+        }
+      ]
+    },
+    {
+      "id": "nature",
+      "zh": "自然",
+      "en": "Nature",
+      "color": "#2FA4A9",
+      "bg": "#E0F4F5",
+      "icon": "/static/img/cat-nature.png",
+      "words": [
+        {
+          "id": "sun",
+          "en": "sun",
+          "zh": "太阳",
+          "phonetic": "/sʌn/",
+          "image": "/static/img/sun.png",
+          "audio": "/static/audio/sun.mp3"
+        },
+        {
+          "id": "moon",
+          "en": "moon",
+          "zh": "月亮",
+          "phonetic": "/muːn/",
+          "image": "/static/img/moon.png",
+          "audio": "/static/audio/moon.mp3"
+        },
+        {
+          "id": "star",
+          "en": "star",
+          "zh": "星星",
+          "phonetic": "/stɑːr/",
+          "image": "/static/img/star.png",
+          "audio": "/static/audio/star.mp3"
+        },
+        {
+          "id": "cloud",
+          "en": "cloud",
+          "zh": "云",
+          "phonetic": "/klaʊd/",
+          "image": "/static/img/cloud.png",
+          "audio": "/static/audio/cloud.mp3"
+        },
+        {
+          "id": "rainbow",
+          "en": "rainbow",
+          "zh": "彩虹",
+          "phonetic": "/ˈreɪnbəʊ/",
+          "image": "/static/img/rainbow.png",
+          "audio": "/static/audio/rainbow.mp3"
+        },
+        {
+          "id": "lightning",
+          "en": "lightning",
+          "zh": "闪电",
+          "phonetic": "/ˈlaɪtnɪŋ/",
+          "image": "/static/img/lightning.png",
+          "audio": "/static/audio/lightning.mp3"
+        },
+        {
+          "id": "snowman",
+          "en": "snowman",
+          "zh": "雪人",
+          "phonetic": "/ˈsnəʊmæn/",
+          "image": "/static/img/snowman.png",
+          "audio": "/static/audio/snowman.mp3"
+        },
+        {
+          "id": "snowflake",
+          "en": "snowflake",
+          "zh": "雪花",
+          "phonetic": "/ˈsnəʊfleɪk/",
+          "image": "/static/img/snowflake.png",
+          "audio": "/static/audio/snowflake.mp3"
+        },
+        {
+          "id": "umbrella",
+          "en": "umbrella",
+          "zh": "雨伞",
+          "phonetic": "/ʌmˈbrelə/",
+          "image": "/static/img/umbrella.png",
+          "audio": "/static/audio/umbrella.mp3"
+        },
+        {
+          "id": "wave",
+          "en": "wave",
+          "zh": "海浪",
+          "phonetic": "/weɪv/",
+          "image": "/static/img/wave.png",
+          "audio": "/static/audio/wave.mp3"
+        },
+        {
+          "id": "fire",
+          "en": "fire",
+          "zh": "火",
+          "phonetic": "/ˈfaɪər/",
+          "image": "/static/img/fire.png",
+          "audio": "/static/audio/fire.mp3"
+        },
+        {
+          "id": "earth",
+          "en": "earth",
+          "zh": "地球",
+          "phonetic": "/ɜːθ/",
+          "image": "/static/img/earth.png",
+          "audio": "/static/audio/earth.mp3"
+        },
+        {
+          "id": "mountain",
+          "en": "mountain",
+          "zh": "高山",
+          "phonetic": "/ˈmaʊntən/",
+          "image": "/static/img/mountain.png",
+          "audio": "/static/audio/mountain.mp3"
+        },
+        {
+          "id": "volcano",
+          "en": "volcano",
+          "zh": "火山",
+          "phonetic": "/vɒlˈkeɪnəʊ/",
+          "image": "/static/img/volcano.png",
+          "audio": "/static/audio/volcano.mp3"
+        },
+        {
+          "id": "tornado",
+          "en": "tornado",
+          "zh": "龙卷风",
+          "phonetic": "/tɔːˈneɪdəʊ/",
+          "image": "/static/img/tornado.png",
+          "audio": "/static/audio/tornado.mp3"
+        },
+        {
+          "id": "wind",
+          "en": "wind",
+          "zh": "风",
+          "phonetic": "/wɪnd/",
+          "image": "/static/img/wind.png",
+          "audio": "/static/audio/wind.mp3"
+        },
+        {
+          "id": "fog",
+          "en": "fog",
+          "zh": "雾",
+          "phonetic": "/fɒɡ/",
+          "image": "/static/img/fog.png",
+          "audio": "/static/audio/fog.mp3"
+        },
+        {
+          "id": "tree",
+          "en": "tree",
+          "zh": "大树",
+          "phonetic": "/triː/",
+          "image": "/static/img/tree.png",
+          "audio": "/static/audio/tree.mp3"
+        },
+        {
+          "id": "flower",
+          "en": "flower",
+          "zh": "花朵",
+          "phonetic": "/ˈflaʊər/",
+          "image": "/static/img/flower.png",
+          "audio": "/static/audio/flower.mp3"
+        },
+        {
+          "id": "cactus",
+          "en": "cactus",
+          "zh": "仙人掌",
+          "phonetic": "/ˈkæktəs/",
+          "image": "/static/img/cactus.png",
+          "audio": "/static/audio/cactus.mp3"
+        }
+      ]
+    },
+    {
+      "id": "body",
+      "zh": "身体",
+      "en": "My Body",
+      "color": "#C77D52",
+      "bg": "#F5EBE2",
+      "icon": "/static/img/cat-body.png",
+      "words": [
+        {
+          "id": "eyes",
+          "en": "eyes",
+          "zh": "眼睛",
+          "phonetic": "/aɪz/",
+          "image": "/static/img/eyes.png",
+          "audio": "/static/audio/eyes.mp3"
+        },
+        {
+          "id": "ear",
+          "en": "ear",
+          "zh": "耳朵",
+          "phonetic": "/ɪər/",
+          "image": "/static/img/ear.png",
+          "audio": "/static/audio/ear.mp3"
+        },
+        {
+          "id": "nose",
+          "en": "nose",
+          "zh": "鼻子",
+          "phonetic": "/nəʊz/",
+          "image": "/static/img/nose.png",
+          "audio": "/static/audio/nose.mp3"
+        },
+        {
+          "id": "mouth",
+          "en": "mouth",
+          "zh": "嘴巴",
+          "phonetic": "/maʊθ/",
+          "image": "/static/img/mouth.png",
+          "audio": "/static/audio/mouth.mp3"
+        },
+        {
+          "id": "tongue",
+          "en": "tongue",
+          "zh": "舌头",
+          "phonetic": "/tʌŋ/",
+          "image": "/static/img/tongue.png",
+          "audio": "/static/audio/tongue.mp3"
+        },
+        {
+          "id": "hand",
+          "en": "hand",
+          "zh": "手",
+          "phonetic": "/hænd/",
+          "image": "/static/img/hand.png",
+          "audio": "/static/audio/hand.mp3"
+        },
+        {
+          "id": "foot",
+          "en": "foot",
+          "zh": "脚",
+          "phonetic": "/fʊt/",
+          "image": "/static/img/foot.png",
+          "audio": "/static/audio/foot.mp3"
+        },
+        {
+          "id": "leg",
+          "en": "leg",
+          "zh": "腿",
+          "phonetic": "/leɡ/",
+          "image": "/static/img/leg.png",
+          "audio": "/static/audio/leg.mp3"
+        },
+        {
+          "id": "tooth",
+          "en": "tooth",
+          "zh": "牙齿",
+          "phonetic": "/tuːθ/",
+          "image": "/static/img/tooth.png",
+          "audio": "/static/audio/tooth.mp3"
+        },
+        {
+          "id": "brain",
+          "en": "brain",
+          "zh": "大脑",
+          "phonetic": "/breɪn/",
+          "image": "/static/img/brain.png",
+          "audio": "/static/audio/brain.mp3"
+        }
+      ]
+    },
+    {
+      "id": "clothes",
+      "zh": "衣服",
+      "en": "Clothes",
+      "color": "#5C7CFA",
+      "bg": "#E8EDFF",
+      "icon": "/static/img/cat-clothes.png",
+      "words": [
+        {
+          "id": "tshirt",
+          "en": "T-shirt",
+          "zh": "T恤",
+          "phonetic": "/ˈtiː ʃɜːt/",
+          "image": "/static/img/tshirt.png",
+          "audio": "/static/audio/tshirt.mp3"
+        },
+        {
+          "id": "jeans",
+          "en": "jeans",
+          "zh": "牛仔裤",
+          "phonetic": "/dʒiːnz/",
+          "image": "/static/img/jeans.png",
+          "audio": "/static/audio/jeans.mp3"
+        },
+        {
+          "id": "dress",
+          "en": "dress",
+          "zh": "连衣裙",
+          "phonetic": "/dres/",
+          "image": "/static/img/dress.png",
+          "audio": "/static/audio/dress.mp3"
+        },
+        {
+          "id": "shoe",
+          "en": "shoe",
+          "zh": "鞋子",
+          "phonetic": "/ʃuː/",
+          "image": "/static/img/shoe.png",
+          "audio": "/static/audio/shoe.mp3"
+        },
+        {
+          "id": "boots",
+          "en": "boots",
+          "zh": "靴子",
+          "phonetic": "/buːts/",
+          "image": "/static/img/boots.png",
+          "audio": "/static/audio/boots.mp3"
+        },
+        {
+          "id": "socks",
+          "en": "socks",
+          "zh": "袜子",
+          "phonetic": "/sɒks/",
+          "image": "/static/img/socks.png",
+          "audio": "/static/audio/socks.mp3"
+        },
+        {
+          "id": "hat",
+          "en": "hat",
+          "zh": "帽子",
+          "phonetic": "/hæt/",
+          "image": "/static/img/hat.png",
+          "audio": "/static/audio/hat.mp3"
+        },
+        {
+          "id": "cap",
+          "en": "cap",
+          "zh": "鸭舌帽",
+          "phonetic": "/kæp/",
+          "image": "/static/img/cap.png",
+          "audio": "/static/audio/cap.mp3"
+        },
+        {
+          "id": "sunhat",
+          "en": "sun hat",
+          "zh": "草帽",
+          "phonetic": "/sʌn hæt/",
+          "image": "/static/img/sunhat.png",
+          "audio": "/static/audio/sunhat.mp3"
+        },
+        {
+          "id": "glasses",
+          "en": "glasses",
+          "zh": "眼镜",
+          "phonetic": "/ˈɡlɑːsɪz/",
+          "image": "/static/img/glasses.png",
+          "audio": "/static/audio/glasses.mp3"
+        },
+        {
+          "id": "scarf",
+          "en": "scarf",
+          "zh": "围巾",
+          "phonetic": "/skɑːf/",
+          "image": "/static/img/scarf.png",
+          "audio": "/static/audio/scarf.mp3"
+        },
+        {
+          "id": "gloves",
+          "en": "gloves",
+          "zh": "手套",
+          "phonetic": "/ɡlʌvz/",
+          "image": "/static/img/gloves.png",
+          "audio": "/static/audio/gloves.mp3"
+        },
+        {
+          "id": "coat",
+          "en": "coat",
+          "zh": "外套",
+          "phonetic": "/kəʊt/",
+          "image": "/static/img/coat.png",
+          "audio": "/static/audio/coat.mp3"
+        },
+        {
+          "id": "crown",
+          "en": "crown",
+          "zh": "王冠",
+          "phonetic": "/kraʊn/",
+          "image": "/static/img/crown.png",
+          "audio": "/static/audio/crown.mp3"
+        },
+        {
+          "id": "ring",
+          "en": "ring",
+          "zh": "戒指",
+          "phonetic": "/rɪŋ/",
+          "image": "/static/img/ring.png",
+          "audio": "/static/audio/ring.mp3"
+        },
+        {
+          "id": "watch",
+          "en": "watch",
+          "zh": "手表",
+          "phonetic": "/wɒtʃ/",
+          "image": "/static/img/watch.png",
+          "audio": "/static/audio/watch.mp3"
+        },
+        {
+          "id": "backpack",
+          "en": "backpack",
+          "zh": "书包",
+          "phonetic": "/ˈbækpæk/",
+          "image": "/static/img/backpack.png",
+          "audio": "/static/audio/backpack.mp3"
+        },
+        {
+          "id": "slippers",
+          "en": "slippers",
+          "zh": "拖鞋",
+          "phonetic": "/ˈslɪpəz/",
+          "image": "/static/img/slippers.png",
+          "audio": "/static/audio/slippers.mp3"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "zh": "物品",
+      "en": "Things",
+      "color": "#C9A227",
+      "bg": "#F8F1DC",
+      "icon": "/static/img/cat-home.png",
+      "words": [
+        {
+          "id": "book",
+          "en": "book",
+          "zh": "书",
+          "phonetic": "/bʊk/",
+          "image": "/static/img/book.png",
+          "audio": "/static/audio/book.mp3"
+        },
+        {
+          "id": "pencil",
+          "en": "pencil",
+          "zh": "铅笔",
+          "phonetic": "/ˈpensl/",
+          "image": "/static/img/pencil.png",
+          "audio": "/static/audio/pencil.mp3"
+        },
+        {
+          "id": "crayon",
+          "en": "crayon",
+          "zh": "蜡笔",
+          "phonetic": "/ˈkreɪən/",
+          "image": "/static/img/crayon.png",
+          "audio": "/static/audio/crayon.mp3"
+        },
+        {
+          "id": "scissors",
+          "en": "scissors",
+          "zh": "剪刀",
+          "phonetic": "/ˈsɪzəz/",
+          "image": "/static/img/scissors.png",
+          "audio": "/static/audio/scissors.mp3"
+        },
+        {
+          "id": "key",
+          "en": "key",
+          "zh": "钥匙",
+          "phonetic": "/kiː/",
+          "image": "/static/img/key.png",
+          "audio": "/static/audio/key.mp3"
+        },
+        {
+          "id": "lock",
+          "en": "lock",
+          "zh": "锁",
+          "phonetic": "/lɒk/",
+          "image": "/static/img/lock.png",
+          "audio": "/static/audio/lock.mp3"
+        },
+        {
+          "id": "hammer",
+          "en": "hammer",
+          "zh": "锤子",
+          "phonetic": "/ˈhæmər/",
+          "image": "/static/img/hammer.png",
+          "audio": "/static/audio/hammer.mp3"
+        },
+        {
+          "id": "wrench",
+          "en": "wrench",
+          "zh": "扳手",
+          "phonetic": "/rentʃ/",
+          "image": "/static/img/wrench.png",
+          "audio": "/static/audio/wrench.mp3"
+        },
+        {
+          "id": "bed",
+          "en": "bed",
+          "zh": "床",
+          "phonetic": "/bed/",
+          "image": "/static/img/bed.png",
+          "audio": "/static/audio/bed.mp3"
+        },
+        {
+          "id": "chair",
+          "en": "chair",
+          "zh": "椅子",
+          "phonetic": "/tʃeər/",
+          "image": "/static/img/chair.png",
+          "audio": "/static/audio/chair.mp3"
+        },
+        {
+          "id": "door",
+          "en": "door",
+          "zh": "门",
+          "phonetic": "/dɔːr/",
+          "image": "/static/img/door.png",
+          "audio": "/static/audio/door.mp3"
+        },
+        {
+          "id": "window",
+          "en": "window",
+          "zh": "窗户",
+          "phonetic": "/ˈwɪndəʊ/",
+          "image": "/static/img/window.png",
+          "audio": "/static/audio/window.mp3"
+        },
+        {
+          "id": "phone",
+          "en": "phone",
+          "zh": "手机",
+          "phonetic": "/fəʊn/",
+          "image": "/static/img/phone.png",
+          "audio": "/static/audio/phone.mp3"
+        },
+        {
+          "id": "computer",
+          "en": "computer",
+          "zh": "电脑",
+          "phonetic": "/kəmˈpjuːtər/",
+          "image": "/static/img/computer.png",
+          "audio": "/static/audio/computer.mp3"
+        },
+        {
+          "id": "tv",
+          "en": "TV",
+          "zh": "电视",
+          "phonetic": "/ˌtiː ˈviː/",
+          "image": "/static/img/tv.png",
+          "audio": "/static/audio/tv.mp3"
+        },
+        {
+          "id": "camera",
+          "en": "camera",
+          "zh": "照相机",
+          "phonetic": "/ˈkæmərə/",
+          "image": "/static/img/camera.png",
+          "audio": "/static/audio/camera.mp3"
+        },
+        {
+          "id": "flashlight",
+          "en": "flashlight",
+          "zh": "手电筒",
+          "phonetic": "/ˈflæʃlaɪt/",
+          "image": "/static/img/flashlight.png",
+          "audio": "/static/audio/flashlight.mp3"
+        },
+        {
+          "id": "bulb",
+          "en": "bulb",
+          "zh": "灯泡",
+          "phonetic": "/bʌlb/",
+          "image": "/static/img/bulb.png",
+          "audio": "/static/audio/bulb.mp3"
+        },
+        {
+          "id": "bell",
+          "en": "bell",
+          "zh": "铃铛",
+          "phonetic": "/bel/",
+          "image": "/static/img/bell.png",
+          "audio": "/static/audio/bell.mp3"
+        },
+        {
+          "id": "clock",
+          "en": "clock",
+          "zh": "闹钟",
+          "phonetic": "/klɒk/",
+          "image": "/static/img/clock.png",
+          "audio": "/static/audio/clock.mp3"
+        },
+        {
+          "id": "cup",
+          "en": "cup",
+          "zh": "杯子",
+          "phonetic": "/kʌp/",
+          "image": "/static/img/cup.png",
+          "audio": "/static/audio/cup.mp3"
+        }
+      ]
+    },
+    {
+      "id": "places",
+      "zh": "场所",
+      "en": "Places",
+      "color": "#8A6BD1",
+      "bg": "#EEE7FB",
+      "icon": "/static/img/cat-places.png",
+      "words": [
+        {
+          "id": "house",
+          "en": "house",
+          "zh": "房子",
+          "phonetic": "/haʊs/",
+          "image": "/static/img/house.png",
+          "audio": "/static/audio/house.mp3"
+        },
+        {
+          "id": "castle",
+          "en": "castle",
+          "zh": "城堡",
+          "phonetic": "/ˈkɑːsl/",
+          "image": "/static/img/castle.png",
+          "audio": "/static/audio/castle.mp3"
+        },
+        {
+          "id": "school",
+          "en": "school",
+          "zh": "学校",
+          "phonetic": "/skuːl/",
+          "image": "/static/img/school.png",
+          "audio": "/static/audio/school.mp3"
+        },
+        {
+          "id": "hospital",
+          "en": "hospital",
+          "zh": "医院",
+          "phonetic": "/ˈhɒspɪtl/",
+          "image": "/static/img/hospital.png",
+          "audio": "/static/audio/hospital.mp3"
+        },
+        {
+          "id": "hotel",
+          "en": "hotel",
+          "zh": "宾馆",
+          "phonetic": "/həʊˈtel/",
+          "image": "/static/img/hotel.png",
+          "audio": "/static/audio/hotel.mp3"
+        },
+        {
+          "id": "store",
+          "en": "store",
+          "zh": "商店",
+          "phonetic": "/stɔːr/",
+          "image": "/static/img/store.png",
+          "audio": "/static/audio/store.mp3"
+        },
+        {
+          "id": "factory",
+          "en": "factory",
+          "zh": "工厂",
+          "phonetic": "/ˈfæktəri/",
+          "image": "/static/img/factory.png",
+          "audio": "/static/audio/factory.mp3"
+        },
+        {
+          "id": "tent",
+          "en": "tent",
+          "zh": "帐篷",
+          "phonetic": "/tent/",
+          "image": "/static/img/tent.png",
+          "audio": "/static/audio/tent.mp3"
+        },
+        {
+          "id": "bridge",
+          "en": "bridge",
+          "zh": "大桥",
+          "phonetic": "/brɪdʒ/",
+          "image": "/static/img/bridge.png",
+          "audio": "/static/audio/bridge.mp3"
+        },
+        {
+          "id": "beach",
+          "en": "beach",
+          "zh": "海滩",
+          "phonetic": "/biːtʃ/",
+          "image": "/static/img/beach.png",
+          "audio": "/static/audio/beach.mp3"
+        },
+        {
+          "id": "ferriswheel",
+          "en": "ferris wheel",
+          "zh": "摩天轮",
+          "phonetic": "/ˈferɪs wiːl/",
+          "image": "/static/img/ferriswheel.png",
+          "audio": "/static/audio/ferriswheel.mp3"
+        },
+        {
+          "id": "rollercoaster",
+          "en": "roller coaster",
+          "zh": "过山车",
+          "phonetic": "/ˈrəʊlər ˈkəʊstər/",
+          "image": "/static/img/rollercoaster.png",
+          "audio": "/static/audio/rollercoaster.mp3"
+        },
+        {
+          "id": "fountain",
+          "en": "fountain",
+          "zh": "喷泉",
+          "phonetic": "/ˈfaʊntən/",
+          "image": "/static/img/fountain.png",
+          "audio": "/static/audio/fountain.mp3"
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "zh": "运动",
+      "en": "Sports",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "icon": "/static/img/cat-sports.png",
+      "words": [
+        {
+          "id": "football",
+          "en": "football",
+          "zh": "足球",
+          "phonetic": "/ˈfʊtbɔːl/",
+          "image": "/static/img/football.png",
+          "audio": "/static/audio/football.mp3"
+        },
+        {
+          "id": "basketball",
+          "en": "basketball",
+          "zh": "篮球",
+          "phonetic": "/ˈbɑːskɪtbɔːl/",
+          "image": "/static/img/basketball.png",
+          "audio": "/static/audio/basketball.mp3"
+        },
+        {
+          "id": "rugby",
+          "en": "rugby",
+          "zh": "橄榄球",
+          "phonetic": "/ˈrʌɡbi/",
+          "image": "/static/img/rugby.png",
+          "audio": "/static/audio/rugby.mp3"
+        },
+        {
+          "id": "baseball",
+          "en": "baseball",
+          "zh": "棒球",
+          "phonetic": "/ˈbeɪsbɔːl/",
+          "image": "/static/img/baseball.png",
+          "audio": "/static/audio/baseball.mp3"
+        },
+        {
+          "id": "tennis",
+          "en": "tennis",
+          "zh": "网球",
+          "phonetic": "/ˈtenɪs/",
+          "image": "/static/img/tennis.png",
+          "audio": "/static/audio/tennis.mp3"
+        },
+        {
+          "id": "volleyball",
+          "en": "volleyball",
+          "zh": "排球",
+          "phonetic": "/ˈvɒlibɔːl/",
+          "image": "/static/img/volleyball.png",
+          "audio": "/static/audio/volleyball.mp3"
+        },
+        {
+          "id": "pingpong",
+          "en": "ping-pong",
+          "zh": "乒乓球",
+          "phonetic": "/ˈpɪŋ pɒŋ/",
+          "image": "/static/img/pingpong.png",
+          "audio": "/static/audio/pingpong.mp3"
+        },
+        {
+          "id": "badminton",
+          "en": "badminton",
+          "zh": "羽毛球",
+          "phonetic": "/ˈbædmɪntən/",
+          "image": "/static/img/badminton.png",
+          "audio": "/static/audio/badminton.mp3"
+        },
+        {
+          "id": "bowling",
+          "en": "bowling",
+          "zh": "保龄球",
+          "phonetic": "/ˈbəʊlɪŋ/",
+          "image": "/static/img/bowling.png",
+          "audio": "/static/audio/bowling.mp3"
+        },
+        {
+          "id": "golf",
+          "en": "golf",
+          "zh": "高尔夫球",
+          "phonetic": "/ɡɒlf/",
+          "image": "/static/img/golf.png",
+          "audio": "/static/audio/golf.mp3"
+        },
+        {
+          "id": "archery",
+          "en": "archery",
+          "zh": "射箭",
+          "phonetic": "/ˈɑːtʃəri/",
+          "image": "/static/img/archery.png",
+          "audio": "/static/audio/archery.mp3"
+        },
+        {
+          "id": "dart",
+          "en": "dart",
+          "zh": "飞镖",
+          "phonetic": "/dɑːt/",
+          "image": "/static/img/dart.png",
+          "audio": "/static/audio/dart.mp3"
+        },
+        {
+          "id": "kite",
+          "en": "kite",
+          "zh": "风筝",
+          "phonetic": "/kaɪt/",
+          "image": "/static/img/kite.png",
+          "audio": "/static/audio/kite.mp3"
+        },
+        {
+          "id": "medal",
+          "en": "medal",
+          "zh": "奖牌",
+          "phonetic": "/ˈmedl/",
+          "image": "/static/img/medal.png",
+          "audio": "/static/audio/medal.mp3"
+        },
+        {
+          "id": "trophy",
+          "en": "trophy",
+          "zh": "奖杯",
+          "phonetic": "/ˈtrəʊfi/",
+          "image": "/static/img/trophy.png",
+          "audio": "/static/audio/trophy.mp3"
+        },
+        {
+          "id": "swimming",
+          "en": "swimming",
+          "zh": "游泳",
+          "phonetic": "/ˈswɪmɪŋ/",
+          "image": "/static/img/swimming.png",
+          "audio": "/static/audio/swimming.mp3"
+        },
+        {
+          "id": "skiing",
+          "en": "skiing",
+          "zh": "滑雪",
+          "phonetic": "/ˈskiːɪŋ/",
+          "image": "/static/img/skiing.png",
+          "audio": "/static/audio/skiing.mp3"
+        }
+      ]
+    },
+    {
+      "id": "music",
+      "zh": "乐器",
+      "en": "Music",
+      "color": "#C257B5",
+      "bg": "#F7E5F4",
+      "icon": "/static/img/cat-music.png",
+      "words": [
+        {
+          "id": "guitar",
+          "en": "guitar",
+          "zh": "吉他",
+          "phonetic": "/ɡɪˈtɑːr/",
+          "image": "/static/img/guitar.png",
+          "audio": "/static/audio/guitar.mp3"
+        },
+        {
+          "id": "violin",
+          "en": "violin",
+          "zh": "小提琴",
+          "phonetic": "/ˌvaɪəˈlɪn/",
+          "image": "/static/img/violin.png",
+          "audio": "/static/audio/violin.mp3"
+        },
+        {
+          "id": "drum",
+          "en": "drum",
+          "zh": "鼓",
+          "phonetic": "/drʌm/",
+          "image": "/static/img/drum.png",
+          "audio": "/static/audio/drum.mp3"
+        },
+        {
+          "id": "piano",
+          "en": "piano",
+          "zh": "钢琴",
+          "phonetic": "/piˈænəʊ/",
+          "image": "/static/img/piano.png",
+          "audio": "/static/audio/piano.mp3"
+        },
+        {
+          "id": "microphone",
+          "en": "microphone",
+          "zh": "麦克风",
+          "phonetic": "/ˈmaɪkrəfəʊn/",
+          "image": "/static/img/microphone.png",
+          "audio": "/static/audio/microphone.mp3"
+        },
+        {
+          "id": "headphone",
+          "en": "headphone",
+          "zh": "耳机",
+          "phonetic": "/ˈhedfəʊn/",
+          "image": "/static/img/headphone.png",
+          "audio": "/static/audio/headphone.mp3"
+        },
+        {
+          "id": "trumpet",
+          "en": "trumpet",
+          "zh": "小号",
+          "phonetic": "/ˈtrʌmpɪt/",
+          "image": "/static/img/trumpet.png",
+          "audio": "/static/audio/trumpet.mp3"
+        },
+        {
+          "id": "saxophone",
+          "en": "saxophone",
+          "zh": "萨克斯",
+          "phonetic": "/ˈsæksəfəʊn/",
+          "image": "/static/img/saxophone.png",
+          "audio": "/static/audio/saxophone.mp3"
+        },
+        {
+          "id": "banjo",
+          "en": "banjo",
+          "zh": "班卓琴",
+          "phonetic": "/ˈbændʒəʊ/",
+          "image": "/static/img/banjo.png",
+          "audio": "/static/audio/banjo.mp3"
+        },
+        {
+          "id": "music",
+          "en": "music",
+          "zh": "音乐",
+          "phonetic": "/ˈmjuːzɪk/",
+          "image": "/static/img/music.png",
+          "audio": "/static/audio/music.mp3"
+        }
+      ]
+    },
+    {
+      "id": "toys",
+      "zh": "玩具",
+      "en": "Toys",
+      "color": "#5FA8D3",
+      "bg": "#E5F2F8",
+      "icon": "/static/img/cat-toys.png",
+      "words": [
+        {
+          "id": "teddybear",
+          "en": "teddy bear",
+          "zh": "泰迪熊",
+          "phonetic": "/ˈtedi beər/",
+          "image": "/static/img/teddybear.png",
+          "audio": "/static/audio/teddybear.mp3"
+        },
+        {
+          "id": "balloon",
+          "en": "balloon",
+          "zh": "气球",
+          "phonetic": "/bəˈluːn/",
+          "image": "/static/img/balloon.png",
+          "audio": "/static/audio/balloon.mp3"
+        },
+        {
+          "id": "gift",
+          "en": "gift",
+          "zh": "礼物",
+          "phonetic": "/ɡɪft/",
+          "image": "/static/img/gift.png",
+          "audio": "/static/audio/gift.mp3"
+        },
+        {
+          "id": "party",
+          "en": "party",
+          "zh": "派对",
+          "phonetic": "/ˈpɑːti/",
+          "image": "/static/img/party.png",
+          "audio": "/static/audio/party.mp3"
+        },
+        {
+          "id": "yoyo",
+          "en": "yo-yo",
+          "zh": "悠悠球",
+          "phonetic": "/ˈjəʊ jəʊ/",
+          "image": "/static/img/yoyo.png",
+          "audio": "/static/audio/yoyo.mp3"
+        },
+        {
+          "id": "dice",
+          "en": "dice",
+          "zh": "骰子",
+          "phonetic": "/daɪs/",
+          "image": "/static/img/dice.png",
+          "audio": "/static/audio/dice.mp3"
+        },
+        {
+          "id": "puzzle",
+          "en": "puzzle",
+          "zh": "拼图",
+          "phonetic": "/ˈpʌzl/",
+          "image": "/static/img/puzzle.png",
+          "audio": "/static/audio/puzzle.mp3"
+        },
+        {
+          "id": "paint",
+          "en": "paint",
+          "zh": "颜料",
+          "phonetic": "/peɪnt/",
+          "image": "/static/img/paint.png",
+          "audio": "/static/audio/paint.mp3"
+        },
+        {
+          "id": "circus",
+          "en": "circus",
+          "zh": "马戏团",
+          "phonetic": "/ˈsɜːkəs/",
+          "image": "/static/img/circus.png",
+          "audio": "/static/audio/circus.mp3"
+        },
+        {
+          "id": "carousel",
+          "en": "carousel",
+          "zh": "旋转木马",
+          "phonetic": "/ˌkærəˈsel/",
+          "image": "/static/img/carousel.png",
+          "audio": "/static/audio/carousel.mp3"
+        }
+      ]
+    },
+    {
+      "id": "characters",
+      "zh": "人物",
+      "en": "Characters",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "icon": "/static/img/cat-characters.png",
+      "words": [
+        {
+          "id": "robot",
+          "en": "robot",
+          "zh": "机器人",
+          "phonetic": "/ˈrəʊbɒt/",
+          "image": "/static/img/robot.png",
+          "audio": "/static/audio/robot.mp3"
+        },
+        {
+          "id": "alien",
+          "en": "alien",
+          "zh": "外星人",
+          "phonetic": "/ˈeɪliən/",
+          "image": "/static/img/alien.png",
+          "audio": "/static/audio/alien.mp3"
+        },
+        {
+          "id": "ghost",
+          "en": "ghost",
+          "zh": "幽灵",
+          "phonetic": "/ɡəʊst/",
+          "image": "/static/img/ghost.png",
+          "audio": "/static/audio/ghost.mp3"
+        },
+        {
+          "id": "clown",
+          "en": "clown",
+          "zh": "小丑",
+          "phonetic": "/klaʊn/",
+          "image": "/static/img/clown.png",
+          "audio": "/static/audio/clown.mp3"
+        },
+        {
+          "id": "cowboy",
+          "en": "cowboy",
+          "zh": "牛仔",
+          "phonetic": "/ˈkaʊbɔɪ/",
+          "image": "/static/img/cowboy.png",
+          "audio": "/static/audio/cowboy.mp3"
+        },
+        {
+          "id": "santa",
+          "en": "Santa",
+          "zh": "圣诞老人",
+          "phonetic": "/ˈsæntə/",
+          "image": "/static/img/santa.png",
+          "audio": "/static/audio/santa.mp3"
+        },
+        {
+          "id": "policeofficer",
+          "en": "police officer",
+          "zh": "警察",
+          "phonetic": "/pəˈliːs ˈɒfɪsər/",
+          "image": "/static/img/policeofficer.png",
+          "audio": "/static/audio/policeofficer.mp3"
+        },
+        {
+          "id": "wizard",
+          "en": "wizard",
+          "zh": "巫师",
+          "phonetic": "/ˈwɪzəd/",
+          "image": "/static/img/wizard.png",
+          "audio": "/static/audio/wizard.mp3"
+        },
+        {
+          "id": "fairy",
+          "en": "fairy",
+          "zh": "仙女",
+          "phonetic": "/ˈfeəri/",
+          "image": "/static/img/fairy.png",
+          "audio": "/static/audio/fairy.mp3"
+        },
+        {
+          "id": "superhero",
+          "en": "superhero",
+          "zh": "超级英雄",
+          "phonetic": "/ˈsuːpəhɪərəʊ/",
+          "image": "/static/img/superhero.png",
+          "audio": "/static/audio/superhero.mp3"
+        }
+      ]
+    },
+    {
+      "id": "actions",
+      "zh": "动作",
+      "en": "Actions",
+      "color": "#12B886",
+      "bg": "#E2F6EF",
+      "icon": "/static/img/cat-actions.png",
+      "words": [
+        {
+          "id": "run",
+          "en": "run",
+          "zh": "跑步",
+          "phonetic": "/rʌn/",
+          "image": "/static/img/run.png",
+          "audio": "/static/audio/run.mp3"
+        },
+        {
+          "id": "walk",
+          "en": "walk",
+          "zh": "走路",
+          "phonetic": "/wɔːk/",
+          "image": "/static/img/walk.png",
+          "audio": "/static/audio/walk.mp3"
+        },
+        {
+          "id": "dance",
+          "en": "dance",
+          "zh": "跳舞",
+          "phonetic": "/dɑːns/",
+          "image": "/static/img/dance.png",
+          "audio": "/static/audio/dance.mp3"
+        },
+        {
+          "id": "clap",
+          "en": "clap",
+          "zh": "拍手",
+          "phonetic": "/klæp/",
+          "image": "/static/img/clap.png",
+          "audio": "/static/audio/clap.mp3"
+        },
+        {
+          "id": "strong",
+          "en": "strong",
+          "zh": "力气大",
+          "phonetic": "/strɒŋ/",
+          "image": "/static/img/strong.png",
+          "audio": "/static/audio/strong.mp3"
+        },
+        {
+          "id": "write",
+          "en": "write",
+          "zh": "写字",
+          "phonetic": "/raɪt/",
+          "image": "/static/img/write.png",
+          "audio": "/static/audio/write.mp3"
+        },
+        {
+          "id": "cartwheel",
+          "en": "cartwheel",
+          "zh": "侧手翻",
+          "phonetic": "/ˈkɑːtwiːl/",
+          "image": "/static/img/cartwheel.png",
+          "audio": "/static/audio/cartwheel.mp3"
+        },
+        {
+          "id": "yoga",
+          "en": "yoga",
+          "zh": "瑜伽",
+          "phonetic": "/ˈjəʊɡə/",
+          "image": "/static/img/yoga.png",
+          "audio": "/static/audio/yoga.mp3"
+        },
+        {
+          "id": "hug",
+          "en": "hug",
+          "zh": "拥抱",
+          "phonetic": "/hʌɡ/",
+          "image": "/static/img/hug.png",
+          "audio": "/static/audio/hug.mp3"
+        },
+        {
+          "id": "pray",
+          "en": "pray",
+          "zh": "祈祷",
+          "phonetic": "/preɪ/",
+          "image": "/static/img/pray.png",
+          "audio": "/static/audio/pray.mp3"
+        }
+      ]
+    },
+    {
+      "id": "emotions",
+      "zh": "表情",
+      "en": "Emotions",
+      "color": "#FAB005",
+      "bg": "#FFF3D6",
+      "icon": "/static/img/cat-emotions.png",
+      "words": [
+        {
+          "id": "happy",
+          "en": "happy",
+          "zh": "开心",
+          "phonetic": "/ˈhæpi/",
+          "image": "/static/img/happy.png",
+          "audio": "/static/audio/happy.mp3"
+        },
+        {
+          "id": "laugh",
+          "en": "laugh",
+          "zh": "大笑",
+          "phonetic": "/lɑːf/",
+          "image": "/static/img/laugh.png",
+          "audio": "/static/audio/laugh.mp3"
+        },
+        {
+          "id": "cool",
+          "en": "cool",
+          "zh": "酷",
+          "phonetic": "/kuːl/",
+          "image": "/static/img/cool.png",
+          "audio": "/static/audio/cool.mp3"
+        },
+        {
+          "id": "cry",
+          "en": "cry",
+          "zh": "哭",
+          "phonetic": "/kraɪ/",
+          "image": "/static/img/cry.png",
+          "audio": "/static/audio/cry.mp3"
+        },
+        {
+          "id": "angry",
+          "en": "angry",
+          "zh": "生气",
+          "phonetic": "/ˈæŋɡri/",
+          "image": "/static/img/angry.png",
+          "audio": "/static/audio/angry.mp3"
+        },
+        {
+          "id": "scared",
+          "en": "scared",
+          "zh": "害怕",
+          "phonetic": "/skeəd/",
+          "image": "/static/img/scared.png",
+          "audio": "/static/audio/scared.mp3"
+        },
+        {
+          "id": "sleepy",
+          "en": "sleepy",
+          "zh": "困了",
+          "phonetic": "/ˈsliːpi/",
+          "image": "/static/img/sleepy.png",
+          "audio": "/static/audio/sleepy.mp3"
+        },
+        {
+          "id": "love",
+          "en": "love",
+          "zh": "爱",
+          "phonetic": "/lʌv/",
+          "image": "/static/img/love.png",
+          "audio": "/static/audio/love.mp3"
+        },
+        {
+          "id": "think",
+          "en": "think",
+          "zh": "思考",
+          "phonetic": "/θɪŋk/",
+          "image": "/static/img/think.png",
+          "audio": "/static/audio/think.mp3"
+        },
+        {
+          "id": "silly",
+          "en": "silly",
+          "zh": "傻乎乎",
+          "phonetic": "/ˈsɪli/",
+          "image": "/static/img/silly.png",
+          "audio": "/static/audio/silly.mp3"
+        }
+      ]
+    }
+  ]
+}

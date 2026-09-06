@@ -1,0 +1,22 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/learn/learn",
+      "style": { "navigationStyle": "custom", "disableScroll": true }
+    },
+    {
+      "path": "pages/quiz/quiz",
+      "style": { "navigationStyle": "custom", "disableScroll": true }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "快乐学单词",
+    "navigationBarBackgroundColor": "#FFF8EC",
+    "backgroundColor": "#FFF8EC"
+  }
+}
