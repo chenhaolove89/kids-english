@@ -4,4 +4,7 @@ unpackage/
 tmp/
 *.log
 .DS_Store
+.env
+.env.*
+!.env.example
 快乐学单词-电脑版.zip

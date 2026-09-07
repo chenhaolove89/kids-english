@@ -1,5 +1,13 @@
+/**
+ * 音频统一入口（H5 实现：Howler）。
+ * 新增业务一律 import 这里，不直接碰 Howler——将来小程序端用条件编译换成
+ * uni.createInnerAudioContext，页面代码不动。
+ *
+ * 加固原则：音频任何失败（加载失败/播放抛错）都不允许让作答流程卡死，
+ * 播放失败时会照常触发 onEnd，顺序播报的链不会断。
+ */
 import { Howl, Howler } from 'howler'
-import volumes from '@/data/audio-volumes.json'
+import volumes from '../data/audio-volumes.json'
 
 const cache = new Map()
 
@@ -36,6 +44,10 @@ function getHowl(src) {
   return cache.get(src)
 }
 
+// 全局同一时刻只播一条单发音轨：换新音源前先停掉上一条。
+// 小朋友快速连点时（翻卡片、点选项）新音频会立即压掉旧的，不会叠加混音。
+let lastOneShot = null
+
 /**
  * 播放音频。Howler 内部会在首次触摸事件时解锁 iOS 的 WebAudio，
  * 我们的"点一下发音"天然是用户手势，iPad 静音开关也不影响。
@@ -44,12 +56,32 @@ function getHowl(src) {
  * running 走原同步路径，行为不变。
  */
 export function play(src, onEnd) {
-  const howl = getHowl(src)
+  let howl
+  try {
+    howl = getHowl(src)
+  } catch (e) {
+    console.error('[player] 音频初始化失败:', src, e)
+    if (onEnd) safeNext(onEnd)
+    return null
+  }
+  if (lastOneShot && lastOneShot !== howl) {
+    try {
+      lastOneShot.stop()
+    } catch (e) {
+      /* 未加载完成时 stop 可能报错，忽略 */
+    }
+  }
+  lastOneShot = howl
   const ctx = Howler.ctx
   const start = () => {
-    try { howl.stop() } catch (e) { /* 未加载完成时 stop 可能报错，忽略 */ }
-    const id = howl.play()
-    if (onEnd) howl.once('end', onEnd, id)
+    try {
+      howl.stop()
+      const id = howl.play()
+      if (onEnd) howl.once('end', onEnd, id)
+    } catch (e) {
+      console.error('[player] 播放失败（流程继续）:', src, e)
+      if (onEnd) safeNext(onEnd)
+    }
   }
   if (ctx && ctx.state !== 'running') {
     ctx.resume().then(start, start)
@@ -59,9 +91,26 @@ export function play(src, onEnd) {
   return howl
 }
 
+function safeNext(fn) {
+  // 让流程继续但不阻塞当前调用栈
+  setTimeout(() => {
+    try {
+      fn()
+    } catch (e) {
+      /* 回调自身异常不再扩散 */
+    }
+  }, 0)
+}
+
 /** 批量预加载（进入页面时预热本分类音频） */
 export function preload(srcList) {
-  srcList.forEach(getHowl)
+  ;(srcList || []).forEach((src) => {
+    try {
+      getHowl(src)
+    } catch (e) {
+      /* 预加载失败不影响页面 */
+    }
+  })
 }
 
 // 顺序播放：数学题里把「3 + 5 = ?」拆成多段中文语音连着播。
@@ -70,7 +119,7 @@ let seqToken = 0
 
 export function playSeq(srcList, onDone) {
   const token = ++seqToken
-  const list = srcList.filter(Boolean)
+  const list = (srcList || []).filter(Boolean)
   const next = () => {
     if (token !== seqToken) return
     if (!list.length) {
@@ -84,4 +133,12 @@ export function playSeq(srcList, onDone) {
 
 export function stopSeq() {
   seqToken++
+  // 序列作废时连当前正在播的一条一起停，避免退出页面后声音残留
+  if (lastOneShot) {
+    try {
+      lastOneShot.stop()
+    } catch (e) {
+      /* 忽略 */
+    }
+  }
 }

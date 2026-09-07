@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-06T18:24:52.090Z",
+ "generatedAt": "2026-09-07T06:36:55.260Z",
  "levels": [
   {
    "id": 1,
@@ -5323,7 +5323,7 @@
     {
      "id": "evergreen",
      "en": "evergreen",
-     "zh": "松树",
+     "zh": "常绿树",
      "phonetic": "/ˈevəɡriːn/",
      "image": "/static/img/evergreen.png",
      "audio": "/static/audio/evergreen.mp3",
@@ -6782,12 +6782,12 @@
      "card": "emoji"
     },
     {
-     "id": "Turkey",
+     "id": "turkey-country",
      "en": "Turkey",
      "zh": "土耳其",
      "phonetic": "/ˈtɜːki/",
-     "image": "/static/img/Turkey.png",
-     "audio": "/static/audio/Turkey.mp3",
+     "image": "/static/img/turkey-country.png",
+     "audio": "/static/audio/turkey-country.mp3",
      "card": "emoji"
     },
     {
@@ -7761,9 +7761,9 @@
     },
     {
      "id": "city-square",
-     "en": "square",
+     "en": "city square",
      "zh": "广场",
-     "phonetic": "/skweə/",
+     "phonetic": "/ˌsɪti ˈskweə/",
      "image": "/static/img/city-square.svg",
      "audio": "/static/audio/city-square.mp3",
      "card": "word"
@@ -13863,7 +13863,7 @@
     {
      "id": "sw-being",
      "en": "being",
-     "zh": "生物",
+     "zh": "存在",
      "phonetic": "/ˈbiːɪŋ/",
      "image": "/static/img/sw-being.svg",
      "audio": "/static/audio/sw-being.mp3",
@@ -14963,7 +14963,7 @@
     {
      "id": "am-yam",
      "en": "yam",
-     "zh": "红薯",
+     "zh": "山药",
      "phonetic": "/jæm/",
      "image": "/static/img/am-yam.svg",
      "audio": "/static/audio/am-yam.mp3",

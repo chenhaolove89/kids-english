@@ -44,12 +44,17 @@
 <script setup>
 import { ref, computed } from 'vue'
 import data from '@/data/words.json'
+import { isCategoryHidden } from '@/content/lowAge.js'
 
 const levels = ref(data.levels)
-const totalWords = computed(() => data.categories.reduce((s, c) => s + c.words.length, 0))
+// 低龄模式隐藏的分类不计入顶部总数，与所见一致
+const totalWords = computed(() =>
+  data.categories.filter((c) => !isCategoryHidden(c.id)).reduce((s, c) => s + c.words.length, 0),
+)
 
 function catsOf(levelId) {
-  return data.categories.filter((c) => c.level === levelId)
+  // 低龄模式：惊悚/暗黑分类不出现在自由探索页
+  return data.categories.filter((c) => c.level === levelId && !isCategoryHidden(c.id))
 }
 function goLearn(id) {
   uni.navigateTo({ url: `/pages/learn/learn?subject=en&cat=${id}` })

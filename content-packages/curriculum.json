@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "stages": [
+    { "id": "qimeng", "name": "启蒙", "hint": "3-6岁", "emoji": "🌱", "order": 1 },
+    { "id": "g12", "name": "一二年级", "hint": "6-8岁", "emoji": "📚", "order": 2 },
+    { "id": "g34", "name": "三四年级", "hint": "8-10岁", "emoji": "🚀", "order": 3 },
+    { "id": "g56", "name": "五六年级", "hint": "10-12岁", "emoji": "🎓", "order": 4 }
+  ],
+  "subjects": [
+    { "id": "en", "name": "学英语", "en": "English", "color": "#FF8C42", "bg": "#FFF3E4", "icon": "/static/img/subject-english.png" },
+    { "id": "zh", "name": "学语文", "en": "Chinese", "color": "#E4573D", "bg": "#FDEBE7", "icon": "/static/img/subject-chinese.png" },
+    { "id": "math", "name": "学数学", "en": "Math", "color": "#4D96FF", "bg": "#E9F2FF", "icon": "/static/img/subject-math.png" }
+  ],
+  "mapping": {
+    "en": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g34", "4": "g56" }, "levelLabel": { "1": "启蒙词汇", "2": "生活词汇", "3": "拓展词汇", "4": "进阶词汇" } },
+    "zh": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g34", "4": "g56" }, "levelLabel": {} },
+    "math": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g12", "4": "g34" }, "levelLabel": {} }
+  }
+}

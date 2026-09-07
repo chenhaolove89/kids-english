@@ -10,11 +10,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const SRC = path.join(ROOT, 'dist/build/web')
+const SRC = path.join(ROOT, 'dist/build/h5')
 const OUT = path.join(ROOT, 'tmp/gh-publish')
 
 if (!fs.existsSync(path.join(SRC, 'index.html'))) {
-  console.error('未找到 dist/build/web/index.html，请先 npm run build:h5')
+  console.error('未找到 dist/build/h5/index.html，请先 npm run build:h5')
   process.exit(1)
 }
 

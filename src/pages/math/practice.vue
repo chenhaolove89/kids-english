@@ -5,47 +5,57 @@
         <text class="back-icon">←</text>
       </view>
       <text class="title">{{ level.name }}</text>
-      <text class="score">⭐ {{ score }}</text>
+      <text class="score">⭐ {{ firstCorrect }}</text>
     </view>
 
     <template v-if="!finished">
       <view class="round-info">第 {{ qIdx + 1 }} / {{ questions.length }} 题（点题目可以再听一遍）</view>
 
       <view class="stage" @tap="respeak">
-        <!-- 点数题 -->
-        <view v-if="q.kind === 'count'" class="dots">
-          <text v-for="(e, i) in q.emojiList" :key="i" class="dot-emoji">{{ e }}</text>
+        <!-- 点数题：喜欢的物品 + 彩色卡片拼贴 -->
+        <view v-if="q.kind === 'count'" class="tiles">
+          <view v-for="(e, i) in q.emojiList" :key="i" class="tile" :class="'tilt' + i % 4">
+            <text class="tile-emoji">{{ e }}</text>
+          </view>
         </view>
 
         <!-- 看图加法：两组圆点 -->
         <view v-else-if="q.kind === 'add'" class="groups">
           <view class="group">
-            <text v-for="(e, i) in q.leftEmojis" :key="'l' + i" class="dot-emoji">{{ e }}</text>
+            <view v-for="(e, i) in q.leftEmojis" :key="'l' + i" class="tile sm" :class="'tilt' + i % 4">
+              <text class="tile-emoji">{{ e }}</text>
+            </view>
           </view>
           <text class="op-symbol" :style="{ color: level.color }">+</text>
           <view class="group">
-            <text v-for="(e, i) in q.rightEmojis" :key="'r' + i" class="dot-emoji">{{ e }}</text>
+            <view v-for="(e, i) in q.rightEmojis" :key="'r' + i" class="tile sm" :class="'tilt' + (i + 2) % 4">
+              <text class="tile-emoji">{{ e }}</text>
+            </view>
           </view>
         </view>
 
         <!-- 看图减法：划掉一部分 -->
         <view v-else-if="q.kind === 'sub'" class="groups">
           <view class="group">
-            <text
+            <view
               v-for="(e, i) in q.leftEmojis"
               :key="'s' + i"
-              class="dot-emoji"
-              :class="{ faded: i >= q.leftEmojis.length - q.takeAway }"
-            >{{ e }}</text>
+              class="tile sm"
+              :class="['tilt' + i % 4, { faded: i >= q.leftEmojis.length - q.takeAway }]"
+            >
+              <text class="tile-emoji">{{ e }}</text>
+            </view>
           </view>
           <text class="op-symbol" :style="{ color: level.color }">−</text>
           <view class="group">
-            <text v-for="(e, i) in q.rightEmojis" :key="'t' + i" class="dot-emoji">{{ e }}</text>
+            <view v-for="(e, i) in q.rightEmojis" :key="'t' + i" class="tile sm" :class="'tilt' + (i + 1) % 4">
+              <text class="tile-emoji">{{ e }}</text>
+            </view>
           </view>
         </view>
 
-        <!-- 比一比：两边直接点 -->
-        <view v-else-if="q.kind === 'compare'" class="compare">
+        <!-- 比一比：两边直接点（compare=比多少 emoji 组，compareNum=比数字） -->
+        <view v-else-if="q.kind === 'compare' || q.kind === 'compareNum'" class="compare">
           <view
             v-for="(g, gi) in q.groups"
             :key="gi"
@@ -67,8 +77,8 @@
         </view>
       </view>
 
-      <!-- 选项 -->
-      <view v-if="q.kind !== 'compare'" class="options" :class="'opts-' + q.options.length">
+      <!-- 选项：比大小两种题型直接点组卡片，没有数字选项 -->
+      <view v-if="q.kind !== 'compare' && q.kind !== 'compareNum'" class="options" :class="'opts-' + q.options.length">
         <view
           v-for="opt in q.options"
           :key="opt.id"
@@ -84,13 +94,14 @@
     <template v-else>
       <view class="result">
         <text class="result-emoji">🎉</text>
-        <text class="result-score">答对 {{ score }} / {{ questions.length }} 题</text>
+        <text class="result-score">一次答对 {{ firstCorrect }} / {{ questions.length }} 题</text>
         <text class="result-stars">{{ starsText }}</text>
+        <text class="result-note">{{ starsNote }}</text>
         <view class="result-btn" @tap="restart">
           <text class="result-btn-text">再玩一次</text>
         </view>
         <view class="result-btn ghost" @tap="goBack">
-          <text class="result-btn-text ghost-text">返回关卡</text>
+          <text class="result-btn-text ghost-text">返回</text>
         </view>
       </view>
     </template>
@@ -100,198 +111,83 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
-import { playSeq, preload, stopSeq } from '@/utils/player.js'
+import { playSeq, preload, stopSeq } from '@/platform/audio.js'
+import { getLesson } from '@/content/catalog.js'
+import { buildQuestions, normalizeMathLevel, MATH_LEVELS } from '@/domain/mathgen.js'
+import { isPickCorrect } from '@/domain/judge.js'
+import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
+import { getSessionService } from '@/services/session.js'
 
-const A = '/static/audio'
-const EMOJIS = ['🍎', '🍌', '🐤', '🌸', '⭐', '🐠', '🍓', '🚗', '🧸', '🍇', '🍀', '🎈']
-const LEVELS = {
-  1: { id: 1, name: '认识数字', color: '#3BB273', bg: '#E3F6E8' },
-  2: { id: 2, name: '十以内加减', color: '#4D96FF', bg: '#E3EEFF' },
-  3: { id: 3, name: '二十以内', color: '#FF8C42', bg: '#FFEDD9' },
-  4: { id: 4, name: '乘除进阶', color: '#9B5DE5', bg: '#F0E6FB' },
-}
-
-const level = ref(LEVELS[1])
+const level = ref(MATH_LEVELS[1])
 const questions = ref([])
 const qIdx = ref(0)
 const score = ref(0)
+const firstCorrect = ref(0)
 const finished = ref(false)
 const flash = ref('')
 const isRight = ref(false)
 const q = computed(() => questions.value[qIdx.value] || {})
-const starsText = computed(() => {
-  const full = Math.round((score.value / Math.max(questions.value.length, 1)) * 5)
-  return '⭐'.repeat(full) + '☆'.repeat(5 - full)
-})
 
-const rnd = (n) => Math.floor(Math.random() * n)
-const pick = (arr) => arr[rnd(arr.length)]
-function shuffle(a) {
-  const x = [...a]
-  for (let i = x.length - 1; i > 0; i--) {
-    const j = rnd(i + 1)
-    ;[x[i], x[j]] = [x[j], x[i]]
-  }
-  return x
-}
+const svc = getSessionService()
+const lesson = ref(null) // 有 lessonId 才记录会话；旧入口只玩不记录
+const firstPickMap = new Map()
 
-// 生成一个数字题的选项（正确答案 + 相近干扰项）
-function numOptions(answer, count) {
-  const set = new Set([answer])
-  const deltas = [1, -1, 2, -2, 10, -10, 5, -5]
-  let di = 0
-  while (set.size < count && di < deltas.length) {
-    const v = answer + deltas[di++]
-    if (v >= 0) set.add(v)
-  }
-  while (set.size < count) set.add(rnd(100))
-  return shuffle([...set]).map((v) => ({ id: String(v), label: String(v) }))
-}
-
-function emojisOf(n) {
-  const e = pick(EMOJIS)
-  return Array.from({ length: n }, () => e)
-}
-
-function makeQuestion(lvId) {
-  const kinds = {
-    1: ['count', 'listen', 'sequence'],
-    2: ['add', 'sub', 'compare'],
-    3: ['add20', 'sub20', 'missing', 'compareNum'],
-    4: ['mul', 'div'],
-  }[lvId]
-  const kind = pick(kinds)
-  const qz = { kind, firstTry: true }
-
-  if (kind === 'count') {
-    const n = 1 + rnd(9)
-    qz.emojiList = emojisOf(n)
-    qz.seq = [`${A}/zh-countit.mp3`, `${A}/zh-total.mp3`]
-    qz.options = numOptions(n, 3)
-    qz.answer = String(n)
-  } else if (kind === 'listen') {
-    const n = 1 + rnd(19)
-    qz.seq = [`${A}/zh-listen.mp3`, `${A}/n${n}.mp3`]
-    qz.options = numOptions(n, 4)
-    qz.answer = String(n)
-  } else if (kind === 'sequence') {
-    const start = 1 + rnd(10)
-    const step = pick([1, 2])
-    const nums = [start, start + step, start + step * 2, start + step * 3]
-    const hideIdx = 1 + rnd(2)
-    qz.answer = String(nums[hideIdx])
-    qz.display = nums.map((v, i) => (i === hideIdx ? '?' : String(v))).join('  ')
-    qz.seq = [`${A}/zh-missing.mp3`]
-    qz.options = numOptions(nums[hideIdx], 4)
-  } else if (kind === 'add') {
-    const a = 1 + rnd(9)
-    const b = 1 + rnd(10 - a)
-    qz.leftEmojis = emojisOf(a)
-    qz.rightEmojis = emojisOf(b)
-    qz.answer = String(a + b)
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-plus.mp3`, `${A}/n${b}.mp3`, `${A}/zh-howmany.mp3`]
-    qz.options = numOptions(a + b, 3)
-  } else if (kind === 'sub') {
-    const a = 2 + rnd(9)
-    const b = 1 + rnd(a - 1)
-    qz.leftEmojis = emojisOf(a)
-    qz.rightEmojis = emojisOf(b)
-    qz.takeAway = b
-    qz.answer = String(a - b)
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-minus.mp3`, `${A}/n${b}.mp3`, `${A}/zh-howmany.mp3`]
-    qz.options = numOptions(a - b, 3)
-  } else if (kind === 'compare') {
-    const a = 1 + rnd(9)
-    let b = 1 + rnd(9)
-    while (b === a) b = 1 + rnd(9)
-    const more = Math.random() < 0.5
-    qz.groups = [
-      { emojis: emojisOf(a), n: a },
-      { emojis: emojisOf(b), n: b },
-    ]
-    if (Math.random() < 0.5) qz.groups.reverse()
-    const target = qz.groups.findIndex((g) => g.n === (more ? Math.max(a, b) : Math.min(a, b)))
-    qz.answer = String(target)
-    qz.seq = [more ? `${A}/zh-more.mp3` : `${A}/zh-less.mp3`]
-  } else if (kind === 'add20') {
-    const a = 3 + rnd(16)
-    const b = 1 + rnd(Math.max(1, 20 - a))
-    qz.answer = String(a + b)
-    qz.display = `${a} + ${b} = ?`
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-plus.mp3`, `${A}/n${b}.mp3`, `${A}/zh-howmany.mp3`]
-    qz.options = numOptions(a + b, 4)
-  } else if (kind === 'sub20') {
-    const a = 8 + rnd(13)
-    const b = 1 + rnd(a - 2)
-    qz.answer = String(a - b)
-    qz.display = `${a} − ${b} = ?`
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-minus.mp3`, `${A}/n${b}.mp3`, `${A}/zh-howmany.mp3`]
-    qz.options = numOptions(a - b, 4)
-  } else if (kind === 'missing') {
-    const a = 2 + rnd(12)
-    const b = 1 + rnd(9)
-    qz.answer = String(b)
-    qz.display = `${a} + ? = ${a + b}`
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-plus.mp3`, `${A}/zh-ji.mp3`, `${A}/zh-equals.mp3`, `${A}/n${a + b}.mp3`]
-    qz.options = numOptions(b, 4)
-  } else if (kind === 'compareNum') {
-    const a = 1 + rnd(19)
-    let b = 1 + rnd(19)
-    while (b === a) b = 1 + rnd(19)
-    const bigger = Math.random() < 0.5
-    qz.groups = [
-      { n: a },
-      { n: b },
-    ]
-    if (Math.random() < 0.5) qz.groups.reverse()
-    const target = qz.groups.findIndex((g) => g.n === (bigger ? Math.max(a, b) : Math.min(a, b)))
-    qz.answer = String(target)
-    qz.seq = [bigger ? `${A}/zh-bigger.mp3` : `${A}/zh-smaller.mp3`]
-  } else if (kind === 'mul') {
-    const a = 2 + rnd(8)
-    const b = 2 + rnd(8)
-    qz.answer = String(a * b)
-    qz.display = `${a} × ${b} = ?`
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-times.mp3`, `${A}/n${b}.mp3`, `${A}/zh-howmany.mp3`]
-    qz.options = numOptions(a * b, 4)
-  } else if (kind === 'div') {
-    const b = 2 + rnd(8)
-    const c = 2 + rnd(8)
-    const a = b * c
-    qz.answer = String(c)
-    qz.display = `${a} ÷ ${b} = ?`
-    qz.seq = [`${A}/n${a}.mp3`, `${A}/zh-divided.mp3`, `${A}/n${b}.mp3`, `${A}/zh-howmany.mp3`]
-    qz.options = numOptions(c, 4)
-  }
-  return qz
-}
-
-function buildQuestions(lvId) {
-  const list = []
-  const used = new Set()
-  while (list.length < 10) {
-    const qz = makeQuestion(lvId)
-    const key = qz.kind + '|' + qz.answer + '|' + (qz.display || '')
-    if (used.has(key)) continue
-    used.add(key)
-    list.push(qz)
-  }
-  return list
-}
+const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.value, questions.value.length)))
+const starsNote = computed(() => `共 ${questions.value.length} 题 · 首次选对得星`)
 
 onLoad((query) => {
-  const lvId = Number(query.level) || 1
-  level.value = LEVELS[lvId]
-  questions.value = buildQuestions(lvId)
+  // 有 lessonId 时以课程目录的关卡为准，URL 参数不可信；非法关卡安全回退第 1 关
+  const l = getLesson(query.lessonId)
+  const lvId = normalizeMathLevel(l && l.ref?.kind === 'math-level' ? l.ref.id : query.level)
+  level.value = MATH_LEVELS[lvId]
   preload(['/static/audio/zh-great.mp3', '/static/audio/zh-try.mp3', '/static/audio/zh-awesome.mp3'])
-  startQuestion()
+
+  if (l) {
+    lesson.value = l
+    const resumed = svc.resumeSessionFor(l.id)
+    if (resumed?.snapshot?.questions?.length) {
+      restoreSnapshot(resumed.snapshot)
+      return
+    }
+    svc.startSession({ lessonId: l.id, kind: 'challenge', skillIds: l.skillIds || [] })
+  }
+  startFresh()
 })
 
-onUnload(() => stopSeq())
+onUnload(() => {
+  stopSeq()
+  if (lesson.value && !finished.value) svc.pauseSession()
+})
+
+/** 恢复：题目快照原样回来，重进不是重新出题，记录与题目不错配 */
+function restoreSnapshot(snap) {
+  questions.value = snap.questions
+  qIdx.value = Math.max(0, Math.min(snap.qIdx || 0, snap.questions.length - 1))
+  score.value = snap.score || 0
+  firstCorrect.value = snap.firstCorrect || 0
+  finished.value = false
+  startQuestion()
+}
+
+function currentSnapshot() {
+  return { questions: questions.value, qIdx: qIdx.value, score: score.value, firstCorrect: firstCorrect.value }
+}
+
+function startFresh() {
+  questions.value = buildQuestions(level.value.id)
+  qIdx.value = 0
+  score.value = 0
+  firstCorrect.value = 0
+  firstPickMap.clear()
+  finished.value = false
+  if (lesson.value) svc.saveSnapshot(currentSnapshot())
+  startQuestion()
+}
 
 function startQuestion() {
   flash.value = ''
   preload(q.value.seq || [])
+  if (lesson.value) svc.saveSnapshot(currentSnapshot())
   setTimeout(() => playSeq(q.value.seq), 350)
 }
 
@@ -301,13 +197,22 @@ function respeak() {
 
 function pickById(id) {
   if (flash.value) return
+  const correct = isPickCorrect(q.value, id)
+  let firstTry = true
+  if (lesson.value) {
+    const attempt = svc.recordAttempt({ activityId: 'math-gen', order: qIdx.value, answer: id, correct, itemId: q.value.answer })
+    firstTry = attempt ? attempt.firstTry : true
+  } else {
+    firstTry = !firstPickMap.has(qIdx.value)
+    firstPickMap.set(qIdx.value, true)
+  }
   flash.value = id
-  isRight.value = id === q.value.answer
-  if (isRight.value) {
+  isRight.value = correct
+  if (correct) {
     score.value++
+    if (firstTry) firstCorrect.value++
     playSeq([`/static/audio/${Math.random() < 0.4 ? 'zh-awesome' : 'zh-great'}.mp3`], nextQuestion)
   } else {
-    q.value.firstTry = false
     playSeq(['/static/audio/zh-try.mp3'])
     setTimeout(() => {
       flash.value = ''
@@ -321,15 +226,17 @@ function nextQuestion() {
     startQuestion()
   } else {
     finished.value = true
+    if (lesson.value) svc.completeSession()
   }
 }
 
 function restart() {
-  score.value = 0
-  qIdx.value = 0
-  finished.value = false
-  questions.value = buildQuestions(level.value.id)
-  startQuestion()
+  if (lesson.value) {
+    // 重开必须重新建会话，否则这一局的作答会被静默丢弃
+    svc.clearActive()
+    svc.startSession({ lessonId: lesson.value.id, kind: 'challenge', skillIds: lesson.value.skillIds || [] })
+  }
+  startFresh()
 }
 function goBack() {
   uni.navigateBack()
@@ -410,13 +317,42 @@ function goBack() {
   font-size: 64rpx;
   line-height: 1.15;
 }
-/* 看图加/减法里两组圆点空间紧张，略缩保证并排 */
-.groups .dot-emoji {
+/* 物品卡片拼贴：马卡龙底色 + 轻微错落旋转，比一排相同 emoji 更抓眼 */
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18rpx;
+  max-width: 460rpx;
+}
+.tile {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 14rpx rgba(120, 90, 40, 0.1);
+}
+.tile.sm {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 26rpx;
+}
+.tile-emoji {
+  font-size: 72rpx;
+  line-height: 1;
+}
+.tile.sm .tile-emoji {
   font-size: 54rpx;
 }
-.dot-emoji.faded {
+.tile.faded {
   opacity: 0.25;
 }
+.tilt0 { background: #ffe8cc; transform: rotate(-4deg); }
+.tilt1 { background: #ddebff; transform: rotate(3deg); }
+.tilt2 { background: #e3f6e8; transform: rotate(-2deg); }
+.tilt3 { background: #fde3ee; transform: rotate(4deg); }
 .groups {
   display: flex;
   align-items: center;
@@ -559,6 +495,11 @@ function goBack() {
   margin-top: 20rpx;
   font-size: 52rpx;
   letter-spacing: 8rpx;
+}
+.result-note {
+  margin-top: 14rpx;
+  font-size: 27rpx;
+  color: #b3a492;
 }
 .result-btn {
   margin-top: 56rpx;

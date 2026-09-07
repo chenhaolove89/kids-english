@@ -5,6 +5,14 @@
       "style": { "navigationStyle": "custom" }
     },
     {
+      "path": "pages/map/map",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/parent/parent",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
       "path": "pages/index/index",
       "style": { "navigationStyle": "custom" }
     },
@@ -29,6 +37,32 @@
       "style": { "navigationStyle": "custom", "disableScroll": true }
     }
   ],
+  "tabBar": {
+    "color": "#a2917d",
+    "selectedColor": "#FF8C42",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "static/tab/home.png",
+        "selectedIconPath": "static/tab/home.png"
+      },
+      {
+        "pagePath": "pages/map/map",
+        "text": "课程",
+        "iconPath": "static/tab/map.png",
+        "selectedIconPath": "static/tab/map.png"
+      },
+      {
+        "pagePath": "pages/parent/parent",
+        "text": "家长",
+        "iconPath": "static/tab/parent.png",
+        "selectedIconPath": "static/tab/parent.png"
+      }
+    ]
+  },
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "快乐学园",

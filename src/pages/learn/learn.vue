@@ -23,8 +23,11 @@
             </view>
           </template>
           <template v-else>
-            <view class="char-wrap">
-              <text class="char-big" :style="{ color: theme.color }">{{ it.main }}</text>
+            <view class="char-wrap" :class="{ 'has-emoji': it.emoji }">
+              <view v-if="it.emoji" class="hz-emoji-tile">
+                <image class="hz-emoji-img" :src="it.emoji" mode="aspectFit" />
+              </view>
+              <text class="char-big" :class="{ 'char-sm': it.emoji }" :style="{ color: theme.color }">{{ it.main }}</text>
             </view>
             <text class="word-pinyin">{{ it.phon }}</text>
             <view class="word-row" @tap.stop="speakExtra(idx)">
@@ -53,10 +56,14 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { play, preload } from '@/utils/player.js'
+import { play, preload } from '@/platform/audio.js'
+import { createThrottle } from '@/platform/nav.js'
+import { getLesson } from '@/content/catalog.js'
+import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
+import { getSessionService } from '@/services/session.js'
 
 const subject = ref('en')
 const title = ref('')
@@ -64,10 +71,22 @@ const theme = ref({ bg: '#FFF8EC', color: '#FF8C42' })
 const items = ref([])
 const current = ref(0)
 
+const svc = getSessionService()
+const lesson = ref(null) // 有 lessonId 才记录会话；旧入口不记录
+let completed = false
+
 onLoad((query) => {
   subject.value = query.subject || 'en'
+  let resolvedCatId = null
   if (subject.value === 'en') {
-    const c = enData.categories.find((x) => x.id === query.cat) || enData.categories[0]
+    // 走适配器：低龄模式隐藏的分类深链会回退到第一个可见分类
+    const c = resolveEnCategory(query.cat) || resolveEnCategory(enData.categories[0]?.id)
+    if (!c) {
+      uni.showToast({ title: '内容准备中', icon: 'none' })
+      setTimeout(() => uni.reLaunch({ url: '/pages/home/home' }), 600)
+      return
+    }
+    resolvedCatId = c.id
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
@@ -77,12 +96,38 @@ onLoad((query) => {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
     theme.value = { bg: lv.bg, color: lv.color }
     title.value = `识字 · ${lv.zh}`
-    items.value = lv.chars.map((h) => ({ id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio }))
+    items.value = lv.chars.map((h) => ({ id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio, emoji: h.emoji || '' }))
     preload(items.value.flatMap((i) => [i.audio, i.extraAudio]))
   }
+
+  wireSession(query.lessonId, resolvedCatId)
   // 进页先播第一个（用户点卡片进来时已有点击手势，iOS 可正常发声）
-  setTimeout(() => speakIdx(0), 400)
+  setTimeout(() => speakIdx(current.value), 400)
 })
+
+/** 会话接入：恢复未完成进度；没有 lessonId（旧入口）则不记录。
+ *  深链指向被低龄模式隐藏的分类时内容会回退到别的分类，课程与所见不一致，降级为不记录。 */
+function wireSession(lessonId, resolvedCatId) {
+  const l = getLesson(lessonId)
+  if (!l) return
+  if (l.ref?.kind === 'en-category' && resolvedCatId && l.ref.id !== resolvedCatId) return
+  lesson.value = l
+  const resumed = svc.resumeSessionFor(l.id)
+  if (resumed) {
+    const idx = resumed.snapshot && Number(resumed.snapshot.idx)
+    if (Number.isInteger(idx)) current.value = Math.min(Math.max(0, idx), items.value.length - 1)
+    if (current.value >= items.value.length - 1) completeLearn()
+  } else {
+    svc.startSession({ lessonId: l.id, kind: 'learn', skillIds: l.skillIds || [] })
+  }
+  svc.saveSnapshot({ idx: current.value })
+}
+
+function completeLearn() {
+  if (!lesson.value) return
+  const done = svc.completeSession()
+  if (done) completed = true
+}
 
 function speakIdx(i) {
   const it = items.value[i]
@@ -104,14 +149,28 @@ function speakExtra(i) {
 }
 function onChange(e) {
   current.value = e.detail.current
+  if (lesson.value) svc.saveSnapshot({ idx: current.value })
+  if (current.value >= items.value.length - 1) completeLearn()
   speakIdx(current.value)
 }
+// 翻页节流：小朋友连点只认第一次，防止一口气翻好几张、音频追着叠
+const tapGate = createThrottle(450)
+
 function prev() {
+  if (!tapGate()) return
   if (current.value > 0) current.value--
 }
 function next() {
+  if (!tapGate()) return
   if (current.value < items.value.length - 1) current.value++
+  if (current.value >= items.value.length - 1) completeLearn()
 }
+onUnload(() => {
+  if (lesson.value && !completed) {
+    svc.saveSnapshot({ idx: current.value })
+    svc.pauseSession()
+  }
+})
 function goBack() {
   uni.navigateBack()
 }
@@ -204,10 +263,33 @@ function goBack() {
   align-items: center;
   justify-content: center;
 }
+/* 图文搭配：图标在前，字在后；没有映射的字回退独占大字排版 */
+.char-wrap.has-emoji {
+  flex-direction: column;
+  gap: 20rpx;
+}
+.hz-emoji-tile {
+  width: 210rpx;
+  height: 210rpx;
+  border-radius: 56rpx;
+  background: #ffffff;
+  box-shadow: 0 12rpx 26rpx rgba(120, 90, 40, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-3deg);
+}
+.hz-emoji-img {
+  width: 156rpx;
+  height: 156rpx;
+}
 .char-big {
   font-size: 360rpx;
   font-weight: 800;
   line-height: 1;
+}
+.char-sm {
+  font-size: 220rpx;
 }
 .word-en {
   margin-top: 30rpx;

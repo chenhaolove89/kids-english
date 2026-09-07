@@ -48,7 +48,8 @@ async function main() {
     if (peak < 0.01) { map[id] = 1; continue } // 静音文件不放大
     let factor = Math.pow(10, (TARGET_RMS - rms) / 20) // 拉到目标响度
     factor = Math.min(factor, PEAK_LIMIT / peak)       // 峰值钳制
-    factor = Math.max(1, Math.min(factor, 3.5))        // 只放大不缩小，设上限
+    // 上限 3.0：播放端音量过大对孩子听力不友好（i/o/sw-eye 曾到 3.49）
+    factor = Math.max(1, Math.min(factor, 3.0))        // 只放大不缩小，设上限
     map[id] = Math.round(factor * 100) / 100
     if (map[id] > 1.01) boosted++
     afterRms.push(rms + 20 * Math.log10(map[id]))

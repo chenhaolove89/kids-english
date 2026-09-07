@@ -160,6 +160,20 @@ function readHanzi() {
   })
 }
 
+// 字→图标映射（识字卡图文搭配）：char,NotoEmoji码点。没映射的字卡片回退纯文字排版。
+function readHanziEmoji() {
+  const file = path.join(ROOT, 'tools/hanzi-emoji.csv')
+  if (!fs.existsSync(file)) return new Map()
+  const lines = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').trim().split(/\r?\n/).filter((l) => l.trim())
+  if (lines[0].toLowerCase().startsWith('char,')) lines.shift()
+  const map = new Map()
+  for (const l of lines) {
+    const [char, emoji] = l.split(',')
+    if (char && emoji) map.set(char.trim(), emoji.trim())
+  }
+  return map
+}
+
 // ---------- TTS ----------
 async function makeTTS(voices) {
   let lastErr
@@ -259,6 +273,7 @@ function wordSVG(text, i) {
 async function main() {
   const words = readCSV(path.join(ROOT, 'tools/words.csv'))
   const hanzi = readHanzi()
+  const hanziEmoji = readHanziEmoji()
   console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字\n`)
 
   // ---------- 任务清单 ----------
@@ -336,6 +351,17 @@ async function main() {
       if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`${w.id}(${w.emoji})`)
     })
   }
+  // 识字卡图标（字→emoji 映射，并发下载）
+  for (const h of hanzi) {
+    const code = hanziEmoji.get(h.char)
+    if (!code) continue
+    const out = path.join(IMG_DIR, `hz-${h.id}.png`)
+    if (!FORCE && fs.existsSync(out)) { imgSkip++; continue }
+    needImg.push(async () => {
+      const buf = await fetchEmoji(code)
+      if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`hz-${h.id}(${h.char},${code})`)
+    })
+  }
   for (const [id, meta] of Object.entries(CATEGORIES)) {
     const out = path.join(IMG_DIR, `cat-${id}.png`)
     if (!FORCE && fs.existsSync(out)) continue
@@ -405,6 +431,7 @@ async function main() {
       id: h.id, char: h.char, pinyin: h.pinyin, word: h.word,
       audio: `/static/audio/zh-${h.id}.mp3`,
       wordAudio: `/static/audio/zh-${h.id}w.mp3`,
+      emoji: hanziEmoji.has(h.char) ? `/static/img/hz-${h.id}.png` : '',
     })),
   }))
   fs.writeFileSync(path.join(DATA_DIR, 'hanzi.json'), JSON.stringify({

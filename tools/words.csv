@@ -571,7 +571,7 @@ blossom,blossom,小雏菊,/ˈblɒsəm/,nature,1f33c,
 hibiscus,hibiscus,木槿花,/hɪˈbɪskəs/,nature,1f33a,
 chestnut,chestnut,栗子,/ˈtʃesnʌt/,nature,1f330,
 palmtree,palm tree,椰子树,/pɑːm triː/,nature,1f334,
-evergreen,evergreen,松树,/ˈevəɡriːn/,nature,1f332,
+evergreen,evergreen,常绿树,/ˈevəɡriːn/,nature,1f332,
 desert,desert,沙漠,/ˈdezət/,nature,1f3dc_fe0f,
 island,island,海岛,/ˈaɪlənd/,nature,1f3dd_fe0f,
 nationalpark,national park,国家公园,/ˈnæʃnəl pɑːk/,nature,1f3de_fe0f,
@@ -690,7 +690,7 @@ Denmark,Denmark,丹麦,/ˈdenmɑːk/,countries,1f1e9_1f1f0,
 Finland,Finland,芬兰,/ˈfɪnlənd/,countries,1f1eb_1f1ee,
 Portugal,Portugal,葡萄牙,/ˈpɔːtʃʊɡl/,countries,1f1f5_1f1f9,
 Greece,Greece,希腊,/ɡriːs/,countries,1f1ec_1f1f7,
-Turkey,Turkey,土耳其,/ˈtɜːki/,countries,1f1f9_1f1f7,
+turkey-country,Turkey,土耳其,/ˈtɜːki/,countries,1f1f9_1f1f7,
 Argentina,Argentina,阿根廷,/ˌɑːdʒənˈtiːnə/,countries,1f1e6_1f1f7,
 SouthAfrica,South Africa,南非,/saʊθ ˈæfrɪkə/,countries,1f1ff_1f1e6,
 Kenya,Kenya,肯尼亚,/ˈkenjə/,countries,1f1f0_1f1ea,
@@ -1158,7 +1158,7 @@ sw-sometimes,sometimes,有时,/ˈsʌmtaɪmz/,sightwords,,sometimes
 sw-talk,talk,说话,/tɔːk/,sightwords,,talk
 sw-list,list,清单,/lɪst/,sightwords,,list
 sw-song,song,歌曲,/sɒŋ/,sightwords,,song
-sw-being,being,生物,/ˈbiːɪŋ/,sightwords,,being
+sw-being,being,存在,/ˈbiːɪŋ/,sightwords,,being
 sw-idea,idea,主意,/aɪˈdɪə/,sightwords,,idea
 sw-body,body,身体,/ˈbɒdi/,sightwords,,body
 sw-color,color,颜色,/ˈkʌlə(r)/,sightwords,,color
@@ -1277,7 +1277,7 @@ ag-wag,wag,摇（尾巴）,/wæɡ/,wordfamilies,,wag
 ag-lag,lag,落在后面,/læɡ/,wordfamilies,,lag
 am-ham,ham,火腿,/hæm/,wordfamilies,,ham
 am-ram,ram,公羊,/ræm/,wordfamilies,,ram
-am-yam,yam,红薯,/jæm/,wordfamilies,,yam
+am-yam,yam,山药,/jæm/,wordfamilies,,yam
 am-dam,dam,水坝,/dæm/,wordfamilies,,dam
 ab-cab,cab,出租车,/kæb/,wordfamilies,,cab
 ab-lab,lab,实验室,/læb/,wordfamilies,,lab
@@ -1954,7 +1954,7 @@ splash,splash,浪花,/splæʃ/,ocean,,splash
 nest,nest,鸟巢,/nest/,birds,,nest
 busstop,bus stop,公交车站,/bʌs stɒp/,city,,bus stop
 taxistand,taxi stand,出租车站,/ˈtæksi stænd/,city,,taxi stand
-city-square,square,广场,/skweə/,city,,square
+city-square,city square,广场,/ˌsɪti ˈskweə/,city,,city square
 street,street,街道,/striːt/,city,,street
 willow,willow,柳树,/ˈwɪləʊ/,forest,,willow
 vine,vine,藤蔓,/vaɪn/,forest,,vine
