@@ -335,23 +335,23 @@ function existingColor(svgPath, fallback) {
 }
 
 /**
- * 金/银心形卡：colors 其余 10 词都是 Noto 心形 emoji，Noto 没有金银心形，
- * 这两个词才掉进 wordSVG 的文字卡路径。心形必须直接是该颜色本身，且不套色块
- * 底板——底板取自与词义无关的调色板下标，正是"银色"被画成绿卡的成因。
+ * 金/银心形卡：colors 其余 10 词都是 Noto 心形 emoji（三段色位图风），Noto 没有
+ * 金银心形，这两个词才掉进 wordSVG 的文字卡路径。自绘的平涂+描边心与 Noto 造型
+ * 不同族（孩子一眼看出不一致），因此取 Noto 黄心 SVG 源（tools/noto-heart.svg，
+ * v2.047，Apache-2.0）整体换色：base/shade/light 与黄心三段色一一对应。
  */
 const METAL_HEARTS = {
-  golden: { fill: '#FFD700', stroke: '#C9A227' },
-  silver: { fill: '#C0C0C0', stroke: '#8A939E' },
+  // 金：琥珀金三段（Material Amber 系），比黄心 #FFCC32 更深更暖以拉开区分
+  golden: { base: '#FFB300', shade: '#C77800', light: '#FFE082' },
+  // 银：冷蓝灰三段（Material BlueGrey 系），与白心暖灰 #E0E0E0 拉开冷暖差
+  silver: { base: '#B0BEC5', shade: '#78909C', light: '#E7EDF2' },
 }
 
-const HEART_PATH = 'M256 448C256 448 68 328 68 200C68 140 116 92 176 92C216 92 256 124 256 124' +
-  'C256 124 296 92 336 92C396 92 444 140 444 200C444 328 256 448 256 448Z'
+const NOTO_HEART_TEMPLATE = fs.readFileSync(path.join(ROOT, 'tools/noto-heart.svg'), 'utf8')
 
 function heartSVG(kind) {
-  const { fill, stroke } = METAL_HEARTS[kind]
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <path d="${HEART_PATH}" fill="${fill}" stroke="${stroke}" stroke-width="14" stroke-linejoin="round"/>
-</svg>`
+  const { base, shade, light } = METAL_HEARTS[kind]
+  return NOTO_HEART_TEMPLATE.replaceAll('__BASE__', base).replaceAll('__SHADE__', shade).replaceAll('__LIGHT__', light)
 }
 
 /**
