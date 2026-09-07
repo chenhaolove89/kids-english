@@ -59,7 +59,7 @@ import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { play, preload } from '@/platform/audio.js'
+import { play, playEn, preload, preloadEn } from '@/platform/audio.js'
 import { createThrottle } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
@@ -91,7 +91,7 @@ onLoad((query) => {
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
     items.value = c.words.map((w) => ({ id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio }))
-    preload(items.value.map((i) => i.audio))
+    preloadEn(items.value.map((i) => i.audio))
   } else {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
     theme.value = { bg: lv.bg, color: lv.color }
@@ -131,7 +131,10 @@ function completeLearn() {
 
 function speakIdx(i) {
   const it = items.value[i]
-  if (it) play(it.audio)
+  if (!it) return
+  // 英语按家长中心所选口音发音；语文不动
+  if (subject.value === 'en') playEn(it.audio)
+  else play(it.audio)
 }
 
 // 英文长短不一：单词 88rpx，长短语逐步缩号，保证最长词例（20 字符）单行放下

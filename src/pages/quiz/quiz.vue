@@ -50,7 +50,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
-import { play, preload } from '@/platform/audio.js'
+import { play, playEn, preload, preloadEn } from '@/platform/audio.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
@@ -91,7 +91,7 @@ onLoad((query) => {
   // 错题重练模式：/?review=en|zh——题目来自错题本到期条目，不计课时会话
   reviewMode.value = query.review === 'en' || query.review === 'zh'
   subject.value = reviewMode.value ? query.review : query.subject || 'en'
-  preload(['/static/audio/great_job.mp3', '/static/audio/try_again.mp3'])
+  preloadEn(['/static/audio/great_job.mp3', '/static/audio/try_again.mp3'])
   let p = []
   if (reviewMode.value) {
     p = getReviewPool(subject.value)
@@ -181,7 +181,9 @@ function loadRound() {
 
 function speakQuestion() {
   if (finished.value) return
-  play(rounds.value[roundIdx.value].answer.audio)
+  // 英语按所选口音发音；语文听音选字不动
+  if (subject.value === 'en') playEn(rounds.value[roundIdx.value].answer.audio)
+  else play(rounds.value[roundIdx.value].answer.audio)
 }
 
 function pick(opt) {
@@ -210,10 +212,10 @@ function pick(opt) {
     if (firstTry) firstCorrect.value++
     // 立即落快照：答对后有 1.5s 才进下一题，期间退出的话恢复不能丢这一题的进度
     if (lesson.value) svc.saveSnapshot(currentSnapshot())
-    play('/static/audio/great_job.mp3')
+    playEn('/static/audio/great_job.mp3')
     setTimeout(nextRound, 1500)
   } else {
-    play('/static/audio/try_again.mp3')
+    playEn('/static/audio/try_again.mp3')
     setTimeout(() => {
       flashId.value = ''
     }, 1000)

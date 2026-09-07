@@ -105,6 +105,17 @@
         <text class="meta-label">累计作答</text>
         <text class="meta-value">{{ attemptCount }} 次</text>
       </view>
+      <view class="meta-row">
+        <text class="meta-label">英语发音</text>
+        <view class="accent-pills">
+          <view class="accent-pill" :class="{ on: accent === 'us' }" @tap="setAccent('us')">
+            <text class="accent-pill-text">🇺🇸 美式</text>
+          </view>
+          <view class="accent-pill" :class="{ on: accent === 'gb' }" @tap="setAccent('gb')">
+            <text class="accent-pill-text">🇬🇧 英式</text>
+          </view>
+        </view>
+      </view>
       <view v-if="lowAgeVisible" class="meta-row lowage-row">
         <text class="meta-label">低龄模式（隐藏惊悚角色类内容）</text>
         <switch :checked="lowAge" color="#3BB273" style="transform: scale(0.85)" @change="onLowAgeChange" />
@@ -127,6 +138,7 @@ import { getStorage } from '@/platform/storage.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
 import { getLowAgeMode, setLowAgeMode, updatePrefs } from '@/content/lowAge.js'
+import { getAccent, playEn } from '@/platform/audio.js'
 import { SUBJECTS, getLesson, catalog } from '@/content/catalog.js'
 import { visibleLessons } from '@/services/curriculum.js'
 import { starsForFirstAttempt } from '@/domain/progress.js'
@@ -144,6 +156,7 @@ const reviewDue = ref(0)
 const topWrongText = ref('')
 const lowAge = ref(true)
 const lowAgeVisible = ref(false)
+const accent = ref('us')
 
 onShow(() => {
   refresh()
@@ -157,6 +170,7 @@ function refresh() {
   week.value = prog.weeklyReport()
   attemptCount.value = store.get('attempts', []).length
   lowAge.value = getLowAgeMode()
+  accent.value = getAccent()
   reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh')
   topWrongText.value = reviewSvc
     .topWrong(3)
@@ -206,6 +220,14 @@ function onLowAgeChange(e) {
   lowAge.value = getLowAgeMode()
   refresh()
   uni.showToast({ title: lowAge.value ? '已开启低龄模式' : '已关闭低龄模式', icon: 'none' })
+}
+
+/** 切换英语口音：立即生效并播一个反馈音试听 */
+function setAccent(a) {
+  if (accent.value === a) return
+  accent.value = a
+  updatePrefs({ accent: a })
+  playEn('/static/audio/great_job.mp3')
 }
 
 function fmtTime(ts) {
@@ -458,6 +480,26 @@ function clearRecords() {
   font-size: 27rpx;
   font-weight: 700;
   color: #4a3f35;
+}
+/* 英语发音口音胶囊 */
+.accent-pills {
+  display: flex;
+  gap: 12rpx;
+}
+.accent-pill {
+  padding: 8rpx 22rpx;
+  border-radius: 30rpx;
+  background: #f7f3ec;
+}
+.accent-pill.on {
+  background: #ffedd9;
+  box-shadow: inset 0 0 0 3rpx #ffb84d;
+}
+.accent-pill-text {
+  font-size: 25rpx;
+  font-weight: 700;
+  color: #4a3f35;
+  white-space: nowrap;
 }
 .clear-btn {
   margin: 20rpx 0 28rpx;

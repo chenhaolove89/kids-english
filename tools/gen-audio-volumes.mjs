@@ -12,7 +12,9 @@ import { MPEGDecoder } from 'mpg123-decoder'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIO_DIR = path.join(ROOT, 'src/static/audio')
+const AUDIO_GB_DIR = path.join(ROOT, 'src/static/audio-gb')
 const OUT = path.join(ROOT, 'src/data/audio-volumes.json')
+const OUT_GB = path.join(ROOT, 'src/data/audio-volumes-gb.json')
 
 const TARGET_RMS = -20 // dBFS，日常语音响度
 const PEAK_LIMIT = 0.95 // 增益后峰值上限，防削波
@@ -37,14 +39,14 @@ async function decode(file) {
   return { peak, rms: 10 * Math.log10(sumSq / n) }
 }
 
-async function main() {
-  const files = fs.readdirSync(AUDIO_DIR).filter((f) => f.endsWith('.mp3')).sort()
+async function measure(dir) {
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.mp3')).sort()
   const map = {}
   let boosted = 0
   const afterRms = []
   for (const f of files) {
     const id = f.replace(/\.mp3$/, '')
-    const { peak, rms } = await decode(path.join(AUDIO_DIR, f))
+    const { peak, rms } = await decode(path.join(dir, f))
     if (peak < 0.01) { map[id] = 1; continue } // 静音文件不放大
     let factor = Math.pow(10, (TARGET_RMS - rms) / 20) // 拉到目标响度
     factor = Math.min(factor, PEAK_LIMIT / peak)       // 峰值钳制
@@ -54,11 +56,20 @@ async function main() {
     if (map[id] > 1.01) boosted++
     afterRms.push(rms + 20 * Math.log10(map[id]))
   }
-  fs.writeFileSync(OUT, JSON.stringify(map, null, 1))
-  afterRms.sort((a, b) => a - b)
-  console.log(`共 ${files.length} 个文件，增益 ${boosted} 个`)
-  console.log(`增益后 RMS 范围: ${Math.min(...afterRms).toFixed(1)} ~ ${Math.max(...afterRms).toFixed(1)} dBFS`)
-  console.log(`最大增益: ×${Math.max(...Object.values(map))}  已写出 ${path.relative(ROOT, OUT)}`)
+  return { map, boosted, afterRms, count: files.length }
+}
+
+async function main() {
+  // 美音必跑；英式目录存在（跑过 npm run gen:assets-gb）才生成英音增益表
+  const jobs = [{ dir: AUDIO_DIR, out: OUT, label: '美音' }]
+  if (fs.existsSync(AUDIO_GB_DIR)) jobs.push({ dir: AUDIO_GB_DIR, out: OUT_GB, label: '英音' })
+  for (const j of jobs) {
+    const { map, boosted, afterRms, count } = await measure(j.dir)
+    fs.writeFileSync(j.out, JSON.stringify(map, null, 1))
+    afterRms.sort((a, b) => a - b)
+    console.log(`[${j.label}] 共 ${count} 个文件，增益 ${boosted} 个 → ${path.relative(ROOT, j.out)}`)
+    console.log(`  增益后 RMS 范围: ${Math.min(...afterRms).toFixed(1)} ~ ${Math.max(...afterRms).toFixed(1)} dBFS，最大增益 ×${Math.max(...Object.values(map))}`)
+  }
 }
 
 main()

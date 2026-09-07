@@ -3,6 +3,7 @@
  *  输入 tools/words.csv（由 merge-words.mjs 合并） + tools/hanzi.csv
  *  输出：
  *   - static/audio/{id}.mp3        英文单词发音（Edge TTS，en-US 儿童音色）
+ *   - static/audio-gb/{id}.mp3     英式发音（--gb 模式生成，en-GB 童声，文件名与美音一致）
  *   - static/audio/zh-*.mp3        中文发音：汉字/例词/数字0-100/数学用语/反馈语
  *   - static/img/{id}.png          单词配图（Noto Emoji 512px，Apache-2.0）
  *   - static/img/{id}.svg          自绘词卡（数字/字母/形状/拼读词等）
@@ -20,15 +21,20 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const STATIC_DIR = path.join(ROOT, 'src/static')
 const AUDIO_DIR = path.join(STATIC_DIR, 'audio')
+const AUDIO_GB_DIR = path.join(STATIC_DIR, 'audio-gb')
 const IMG_DIR = path.join(STATIC_DIR, 'img')
 const ICON_DIR = path.join(STATIC_DIR, 'icons')
 const DATA_DIR = path.join(ROOT, 'src/data')
 const FORCE = process.argv.includes('--force')
+// --gb：只生成英式发音音频（static/audio-gb/，与美音同名 mp3），不碰图片/数据
+const GB_MODE = process.argv.includes('--gb')
 
 const NOTO_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/png/512'
 // 国旗在 Noto 仓库里按 ISO 国家代码存放（CN.png），emoji 码点路径下没有
 const NOTO_FLAG_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/third_party/region-flags/png'
 const EN_VOICES = ['en-US-AnaNeural', 'en-US-JennyNeural']
+// 英式对应童声 Maisie（≈Ana 的 en-GB 版），不可用时降级成年女声 Sonia
+const EN_GB_VOICES = ['en-GB-MaisieNeural', 'en-GB-SoniaNeural']
 const ZH_VOICES = ['zh-CN-XiaoxiaoNeural', 'zh-CN-XiaoyiNeural']
 
 const LEVELS = {
@@ -275,6 +281,36 @@ async function main() {
   const hanzi = readHanzi()
   const hanziEmoji = readHanziEmoji()
   console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字\n`)
+
+  // ---------- 英式发音模式：只生成 audio-gb，不动图片与数据 ----------
+  if (GB_MODE) {
+    fs.mkdirSync(AUDIO_GB_DIR, { recursive: true })
+    const jobs = []
+    for (const w of words) {
+      if (!FORCE && fs.existsSync(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) continue
+      jobs.push({ id: w.id, text: w.en, out: path.join(AUDIO_GB_DIR, `${w.id}.mp3`) })
+    }
+    for (const f of FEEDBACK_EN) {
+      if (!FORCE && fs.existsSync(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) continue
+      jobs.push({ id: f.id, text: f.text, out: path.join(AUDIO_GB_DIR, `${f.id}.mp3`) })
+    }
+    console.log(`== 英式发音（en-GB）待生成：${jobs.length} ==`)
+    if (jobs.length) await ttsPool('EN-GB', EN_GB_VOICES, jobs, 3)
+    let miss = 0
+    for (const w of words) {
+      if (!fs.existsSync(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺英式音频: ${w.id}`); miss++ }
+    }
+    for (const f of FEEDBACK_EN) {
+      if (!fs.existsSync(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺英式反馈音频: ${f.id}`); miss++ }
+    }
+    if (miss) {
+      console.log(`英式音频缺失 ${miss} 个，请重跑 npm run gen:assets-gb 补齐`)
+      process.exitCode = 1
+    } else {
+      console.log(`✓ 英式音频全部就绪（${words.length + FEEDBACK_EN.length} 个）`)
+    }
+    return
+  }
 
   // ---------- 任务清单 ----------
   const enJobs = []

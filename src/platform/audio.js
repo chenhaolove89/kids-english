@@ -8,12 +8,30 @@
  */
 import { Howl, Howler } from 'howler'
 import volumes from '../data/audio-volumes.json'
+import volumesGb from '../data/audio-volumes-gb.json'
+import { withAccent } from './assets.js'
+import { getStorage } from './storage.js'
 
 const cache = new Map()
 
 // 按 tools/gen-audio-volumes.mjs 实测生成的每词增益（安静词放大更多），
-// WebAudio GainNode 支持 >1 的音量，因子已按峰值钳制不会削波
+// WebAudio GainNode 支持 >1 的音量，因子已按峰值钳制不会削波。
+// 英式与美音分开实测，同名文件响度不同，各查各的表。
 const DEFAULT_VOLUME = 1.2
+
+/** 当前英语口音：prefs.accent，'us'（默认）| 'gb'。家长中心切换，播放时即时生效 */
+export function getAccent() {
+  try {
+    return getStorage().get('prefs', {})?.accent === 'gb' ? 'gb' : 'us'
+  } catch (e) {
+    return 'us'
+  }
+}
+
+/** 英文音频按当前口音解析实际路径（语文/数学路径原样透传，见 withAccent 守卫） */
+export function accentEnSrc(src) {
+  return withAccent(src, getAccent())
+}
 
 // iPad Safari 兼容：iOS 在 锁屏/切走/Siri/来电/系统回收 后会把 AudioContext 置为
 // interrupted 或 suspended。Howler 只恢复自己触发的挂起——ctx 被系统挂起后它的
@@ -33,11 +51,22 @@ if (typeof document !== 'undefined') {
 function getHowl(src) {
   if (!cache.has(src)) {
     const id = src.split('/').pop().replace(/\.mp3$/, '')
-    const howl = new Howl({ src: [src], preload: true, volume: volumes[id] || DEFAULT_VOLUME })
-    // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试
+    const isGb = src.includes('/audio-gb/')
+    const gain = (isGb ? volumesGb[id] : undefined) ?? volumes[id] ?? DEFAULT_VOLUME
+    const howl = new Howl({ src: [src], preload: true, volume: gain })
+    // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试。
+    // 英式缺文件（uniCloud 漏传新目录）时顺带预取美音兜底，下一次点击就能出声。
     howl.once('loaderror', () => {
       console.error('[player] 音频加载失败，将在下次点击时重试:', src)
       cache.delete(src)
+      if (isGb) {
+        const usSrc = src.replace('/audio-gb/', '/audio/')
+        console.warn('[player] 英式音频缺失，回退美音:', usSrc)
+        try {
+          if (!cache.has(usSrc)) getHowl(usSrc)
+          cache.set(src, cache.get(usSrc))
+        } catch (e) { /* 下次点击再试 */ }
+      }
     })
     cache.set(src, howl)
   }
@@ -111,6 +140,16 @@ export function preload(srcList) {
       /* 预加载失败不影响页面 */
     }
   })
+}
+
+/** 英文词/反馈音播放：按当前口音取音频（家长中心切美式/英式，播放时即时生效） */
+export function playEn(src, onEnd) {
+  return play(accentEnSrc(src), onEnd)
+}
+
+/** 英文词批量预加载（按当前口音解析路径） */
+export function preloadEn(srcList) {
+  preload((srcList || []).map((s) => accentEnSrc(s)))
 }
 
 // 顺序播放：数学题里把「3 + 5 = ?」拆成多段中文语音连着播。
