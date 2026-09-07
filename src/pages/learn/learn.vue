@@ -61,8 +61,9 @@ import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
 import { play, playEn, playSeq, preload, preloadEn, accentEnSrc, stopSeq } from '@/platform/audio.js'
 import { createThrottle } from '@/platform/nav.js'
-import { getLesson } from '@/content/catalog.js'
+import { LESSONS, getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
+import { nextLessonAfter, lessonUrl } from '@/services/curriculum.js'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection.js'
 
@@ -75,6 +76,8 @@ const current = ref(0)
 const svc = getSessionService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口不记录
 let completed = false
+let entryRef = null // 旧入口无 lessonId 时，用入口参数反查目录定位当前课
+let advancing = false // toast 600ms 窗口内防重复触发跳转
 
 onLoad((query) => {
   subject.value = query.subject || 'en'
@@ -88,6 +91,7 @@ onLoad((query) => {
       return
     }
     resolvedCatId = c.id
+    entryRef = { kind: 'en-category', id: c.id }
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
@@ -101,6 +105,7 @@ onLoad((query) => {
     if (isQimeng) preload(items.value.map((i) => i.zhAudio))
   } else {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
+    entryRef = { kind: 'zh-level', id: String(lv.id) }
     theme.value = { bg: lv.bg, color: lv.color }
     title.value = `识字 · ${lv.zh}`
     items.value = lv.chars.map((h) => ({ id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio, emoji: h.emoji || '' }))
@@ -181,8 +186,32 @@ function prev() {
 }
 function next() {
   if (!tapGate()) return
-  if (current.value < items.value.length - 1) current.value++
-  if (current.value >= items.value.length - 1) completeLearn()
+  if (current.value < items.value.length - 1) {
+    current.value++
+    if (current.value >= items.value.length - 1) completeLearn()
+    return
+  }
+  // 已在最后一张再点「→」：顺序进入下一课（低龄隐藏课已被目录过滤跳过）
+  completeLearn()
+  goNextLesson()
+}
+
+// 旧入口（自由探索）不带 lessonId：用入口参数反查目录定位当前课
+function findCurrentLesson() {
+  if (lesson.value) return lesson.value
+  if (!entryRef) return null
+  return LESSONS.find((l) => l.kind === 'learn' && l.ref && l.ref.kind === entryRef.kind
+    && String(l.ref.id) === entryRef.id) || null
+}
+
+/** 翻到最后再点「→」：toast 过渡 600ms 后切下一课；科目学完回课程页 */
+function goNextLesson() {
+  if (advancing) return
+  advancing = true
+  const cur = findCurrentLesson()
+  const nxt = cur && nextLessonAfter(cur.id)
+  uni.showToast({ title: nxt ? '学完啦！去下一个 ✨' : '本科目全部学完啦 🏆', icon: 'none', duration: 900 })
+  setTimeout(() => uni.reLaunch({ url: nxt ? lessonUrl(nxt) : '/pages/map/map' }), 600)
 }
 onUnload(() => {
   // 中文→英文之间有停顿：不作废序列，孩子退出后还会在页面外念出英文
