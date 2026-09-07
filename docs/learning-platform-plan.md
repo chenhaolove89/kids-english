@@ -57,6 +57,6 @@ Attempt 至少记录 attemptId、sessionId、lessonId、activityId、skillIds、
 
 第四阶段：确有跨设备需求后增加家庭档案、账号与同步，再完成小程序、App 平台验证。范围不含本轮部署或发布。
 
-## 当前启动阻塞
+## 实施状态
 
-Harness doctor 返回 ready=true、surface=desktop。项目根目录没有 .env，DEEPSEEK_API_KEY 缺失；另外两个必需环境变量已存在。按 deepseek-harness-env 技能要求，不能启动 Harness。已将 .env 及其变体加入忽略规则。请在本机 E:\kids-english\.env 中设置密钥，不要在聊天中发送。补齐后使用同目录 harness-phase-1.md 委派；目前没有 runId，也没有实现或测试成功声明。
+第一阶段已于 2026-09-07 交付（commit 40ac652，v1.3.0）：domain/services/platform/content 四层分层、事件流学习记录、68 门课程目录、错题本、家长周报与低龄模式均已落地，56 个单元测试全绿。第二阶段（启蒙与一二年级内容铺量）尚未开始，数学科目五至六年级暂无课程。

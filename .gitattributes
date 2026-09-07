@@ -1,0 +1,6 @@
+# 统一 LF：生成文件的可复现校验（validate:content --check）依赖字节级比对，
+# autocrlf 检出转 CRLF 会导致假阳性。Windows 批处理脚本必须保持 CRLF。
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf

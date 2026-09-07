@@ -237,7 +237,8 @@ const catalog = {
 const emitted = JSON.stringify(catalog, null, 2) + '\n'
 
 if (process.argv.includes('--check')) {
-  const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : ''
+  // Windows 下 core.autocrlf=true 检出会把 LF 转成 CRLF，比对前必须归一化，否则门禁假阳性
+  const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8').replace(/\r\n/g, '\n') : ''
   if (existing !== emitted) {
     console.error('✗ src/content/catalog.json 与课程源不一致，请运行 npm run build:content')
     process.exit(1)
