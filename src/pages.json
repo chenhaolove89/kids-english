@@ -1,11 +1,11 @@
 {
   "pages": [
     {
-      "path": "pages/home/home",
+      "path": "pages/map/map",
       "style": { "navigationStyle": "custom" }
     },
     {
-      "path": "pages/map/map",
+      "path": "pages/collection/collection",
       "style": { "navigationStyle": "custom" }
     },
     {
@@ -44,16 +44,16 @@
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/home/home",
-        "text": "首页",
-        "iconPath": "static/tab/home.png",
-        "selectedIconPath": "static/tab/home.png"
-      },
-      {
         "pagePath": "pages/map/map",
         "text": "课程",
         "iconPath": "static/tab/map.png",
         "selectedIconPath": "static/tab/map.png"
+      },
+      {
+        "pagePath": "pages/collection/collection",
+        "text": "收集",
+        "iconPath": "static/tab/collection.png",
+        "selectedIconPath": "static/tab/collection.png"
       },
       {
         "pagePath": "pages/parent/parent",

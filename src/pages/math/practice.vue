@@ -117,6 +117,7 @@ import { buildQuestions, normalizeMathLevel, MATH_LEVELS } from '@/domain/mathge
 import { isPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
 import { getSessionService } from '@/services/session.js'
+import { getCollectionService } from '@/services/collection.js'
 
 const level = ref(MATH_LEVELS[1])
 const questions = ref([])
@@ -226,7 +227,11 @@ function nextQuestion() {
     startQuestion()
   } else {
     finished.value = true
-    if (lesson.value) svc.completeSession()
+    if (lesson.value) {
+      const done = svc.completeSession()
+      // 图鉴点亮：数学无词表，完成关卡即点亮徽章
+      if (done) getCollectionService().recordChallengeDone(done)
+    }
   }
 }
 

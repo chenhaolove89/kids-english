@@ -58,6 +58,7 @@ import { buildListenPickRounds } from '@/domain/rounds.js'
 import { isRoundPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
 import { getSessionService } from '@/services/session.js'
+import { getCollectionService } from '@/services/collection.js'
 import { getReviewService } from '@/services/review.js'
 import { getReviewPool } from '@/services/review-pools.js'
 
@@ -97,7 +98,7 @@ onLoad((query) => {
     p = getReviewPool(subject.value)
     if (!p.length) {
       uni.showToast({ title: '太棒了，暂无待复习', icon: 'none' })
-      setTimeout(() => uni.reLaunch({ url: '/pages/home/home' }), 700)
+      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
       return
     }
   } else if (subject.value === 'en') {
@@ -119,9 +120,9 @@ onLoad((query) => {
   if (subject.value === 'zh') preload(p.map((x) => x.audio))
   pool.value = p
   if (!p.length) {
-    // 深链参数无效（分类/级别不存在）：提示后回主页，而不是卡在空页面
+    // 深链参数无效（分类/级别不存在）：提示后回课程页，而不是卡在空页面
     uni.showToast({ title: '内容准备中', icon: 'none' })
-    setTimeout(() => uni.reLaunch({ url: '/pages/home/home' }), 600)
+    setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
     return
   }
 
@@ -228,7 +229,11 @@ function nextRound() {
     loadRound()
   } else {
     finished.value = true
-    if (lesson.value) svc.completeSession()
+    if (lesson.value) {
+      const done = svc.completeSession()
+      // 图鉴点亮：首答答对的条目进「掌握」（复习重练无会话，不点亮）
+      if (done) getCollectionService().recordChallengeDone(done)
+    }
   }
 }
 

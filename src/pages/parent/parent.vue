@@ -249,6 +249,9 @@ function clearRecords() {
       store.remove('attempts')
       store.remove('sessions')
       store.remove('active')
+      // 图鉴点亮集合同属学习记录：一并清空，庆祝基线归零
+      store.remove('collection')
+      updatePrefs({ lastCollectionCounts: null })
       refresh()
       uni.showToast({ title: '已清空', icon: 'success' })
     },

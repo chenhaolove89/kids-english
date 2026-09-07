@@ -17,7 +17,7 @@
 ```
 src/
   pages/                 # 页面壳：布局、导航、反馈。逻辑逐步抽空
-    home/  learn/  quiz/  math/ ...
+    map/  collection/  learn/  quiz/  math/ ...   # map 即首页（v1.4 起移除独立 home）
   components/            # 通用 UI：WordCard, QuestionBox, StarBar, StagePicker, AudioButton
   domain/                # ★纯函数层。禁止 import uni / vue / howler / DOM
     judge.js             #   判题（各 activity 类型的对错判定）
@@ -114,6 +114,6 @@ SessionEvent  { sessionId, lessonId, event: start|pause|complete|abort, ts }
 ## 6. 产品层增量（Codex 总纲之外的建议）
 
 1. **指令朗读是启蒙段的硬约束**：启蒙段孩子基本不识字，所有页面指令、按钮语义必须能自动朗读。TTS 生成链路已有，把"指令音频存在"纳入 build-curriculum 校验项。
-2. **激励系统与统计同源**：星级（首答正确率）既是家长报告的指标，也是孩子的星星/贴纸墙与关卡解锁条件。一套数据，两处消费，避免"孩子看的分数"和"家长看的正确率"打架。
+2. **激励系统与统计同源**：星级（首答正确率）既是家长报告的指标，也是孩子的星星/贴纸墙与关卡解锁条件。一套数据，两处消费，避免"孩子看的分数"和"家长看的正确率"打架。（已落地：收集页「我的百宝箱」图鉴点亮——学一学→认识、挑战首答答对→掌握，全部由事件流派生，与星数同一口径；关卡硬锁仍不做，课程保持自由切换。）
 3. **家长报告先行于账号系统**：本机周报（时长、各科星级、错题 TOP3、建议）零隐私成本、留存价值高；账号/排名/支付都推迟到真有需求时。
 4. **内容生产沿用 CSV 工具链心智**：教研同事产出 CSV/YAML → 工具校验生成 → 人工听音审读 → 版本化课程包。禁止手改生成 JSON 的规则从 words/hanzi 扩展到课程包。

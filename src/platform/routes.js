@@ -5,8 +5,8 @@
 
 // 与 src/pages.json 的 pages 列表一一对应（不含查询参数）
 export const KNOWN_ROUTES = [
-  '/pages/home/home',
   '/pages/map/map',
+  '/pages/collection/collection',
   '/pages/parent/parent',
   '/pages/index/index',
   '/pages/chinese/chinese',
@@ -16,7 +16,8 @@ export const KNOWN_ROUTES = [
   '/pages/quiz/quiz',
 ]
 
-export const HOME_ROUTE = '/pages/home/home'
+// 首页即课程地图（v1.4 起移除独立首页，入口收敛到课程 Tab）
+export const HOME_ROUTE = '/pages/map/map'
 
 /**
  * 解析 H5 hash 路由：'#/' 或 '' 是首页根；返回 { path, valid }。

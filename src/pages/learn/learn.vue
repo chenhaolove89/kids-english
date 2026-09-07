@@ -64,6 +64,7 @@ import { createThrottle } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
 import { getSessionService } from '@/services/session.js'
+import { getCollectionService } from '@/services/collection.js'
 
 const subject = ref('en')
 const title = ref('')
@@ -83,7 +84,7 @@ onLoad((query) => {
     const c = resolveEnCategory(query.cat) || resolveEnCategory(enData.categories[0]?.id)
     if (!c) {
       uni.showToast({ title: '内容准备中', icon: 'none' })
-      setTimeout(() => uni.reLaunch({ url: '/pages/home/home' }), 600)
+      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
       return
     }
     resolvedCatId = c.id
@@ -126,7 +127,11 @@ function wireSession(lessonId, resolvedCatId) {
 function completeLearn() {
   if (!lesson.value) return
   const done = svc.completeSession()
-  if (done) completed = true
+  if (done) {
+    completed = true
+    // 图鉴点亮：学一学完成 → 该课全部词/字进「认识」
+    getCollectionService().recordLearnDone(done)
+  }
 }
 
 function speakIdx(i) {

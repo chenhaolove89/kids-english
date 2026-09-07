@@ -13,14 +13,14 @@
 v1.3 引入课程目录与学习闭环，代码按依赖方向分层（只许上层引下层）：
 
 ```
-src/domain/      ★ 纯函数：判题、星级口径、数学出题、出轮、复习调度（Node 可测，禁碰 uni/DOM/Howler）
+src/domain/      ★ 纯函数：判题、星级口径、数学出题、出轮、复习调度、收集点亮合并（Node 可测，禁碰 uni/DOM/Howler）
 src/platform/    平台封装：storage(schemaVersion+迁移+容错)、audio(Howler 收口)、assets(资源 URL 收口)
 src/content/     课程目录运行时（catalog.json 由工具生成，勿手改）+ 数据适配器
-src/services/    应用服务：session(课时会话与作答事件流)、progress(进度聚合)、curriculum(目录查询/继续学习)
+src/services/    应用服务：session(课时会话与作答事件流)、progress(进度聚合)、curriculum(目录查询/继续学习)、collection(图鉴点亮持久化+历史回填)
 src/pages/       页面壳（布局、导航），业务逻辑逐步下沉
 ```
 
-设计文档：`docs/learning-platform-plan.md`（总纲）、`docs/architecture.md`（实施细化）。学习记录采用**追加事件流**（Attempt/Session 本地存储，schemaVersion 化），星级 = 首次作答正确率（≥90% 3星 / ≥60% 2星 / 完成即 1星）；中断会话存题目快照，恢复不重新出题。首页提供四阶段课程地图（启蒙/一二/三四/五六年级，难度 L1-L4 与年级解耦）与"继续学习"。
+设计文档：`docs/learning-platform-plan.md`（总纲）、`docs/architecture.md`（实施细化）。学习记录采用**追加事件流**（Attempt/Session 本地存储，schemaVersion 化），星级 = 首次作答正确率（≥90% 3星 / ≥60% 2星 / 完成即 1星）；中断会话存题目快照，恢复不重新出题。课程页即首页（Tab 三栏：课程/收集/家长），提供四阶段课程地图（启蒙/一二/三四/五六年级，难度 L1-L4 与年级解耦）、"继续学习"与"错题重练"入口；收集页（我的百宝箱）把星星变成可收集的图鉴：学一学点亮「认识」、挑战首答答对升级「掌握」。
 
 > **质量门禁**：凡改动词表/识字表/出题逻辑/题目页面/静态资产，必须走 `.cursor/rules/content-audit-loop.mdc` 的多子代理审计循环（并行分科全量审计 → 修复 → 二轮复核抓漏网 → test/validate/build/浏览器实测），零容错。
 
@@ -29,7 +29,7 @@ src/pages/       页面壳（布局、导航），业务逻辑逐步下沉
 ```
 content-packages/curriculum.json  ★ 课程源（阶段/科目/级别映射，人工维护）
 tools/validate-content.mjs        课程校验 + 目录打包（npm run build:content / validate:content）
-tests/                            Node 内置测试（npm run test：出题/判题/会话/存储/目录回归）
+tests/                            Node 内置测试（npm run test：出题/判题/会话/存储/收集/路由/目录回归）
 src/domain/                       纯函数层（见上）
 src/platform/                     平台层（storage/audio/assets）
 src/services/                     应用服务层
@@ -40,13 +40,13 @@ tools/merge-words.mjs     词表合并 + 校验（id 唯一/同级 en 不重复�
 tools/words.csv           合并后的完整词表（gen-assets 的输入，勿手改）
 tools/hanzi.csv           ★ 语文识字表（char,pinyin,word,level）
 tools/gen-assets.mjs      资源生成：中英 TTS + emoji 图 + 自绘词卡 + 数据 JSON
-tools/gen-tab-icons.mjs   底部 Tab 图标（Noto Emoji：🏠/📚/👪，npm run gen:tab-icons）
+tools/gen-tab-icons.mjs   底部 Tab 图标（Noto Emoji：📚/⭐/👪，npm run gen:tab-icons）
 tools/gen-audio-volumes.mjs  音频响度对齐（生成每词增益表）
 tools/make-contact-sheet.ps1 全量图片拼图核对工具
 tools/make-share.mjs      电脑版零依赖分享包打包
 tools/publish-github-pages.mjs  GitHub Pages 发布（子路径相对化）
-src/pages/home/           首页 Tab：继续学习 + 学习摘要 + 今天学什么（阶段快速开始）
-src/pages/map/            课程 Tab：阶段课程地图 + 自由探索（旧入口）
+src/pages/map/            课程 Tab（即首页）：继续学习 + 错题重练 + 阶段课程地图 + 🎲随机来一课 + 自由探索（旧入口）
+src/pages/collection/     收集 Tab：我的百宝箱（英语/汉字图鉴两级点亮 + 数学徽章 + 庆祝条）
 src/pages/parent/         家长 Tab：本机摘要 / 分科进度 / 最近记录 / 数据管理
 src/pages/index/          英语：等级 → 分类宫格（旧入口保留）
 src/pages/chinese/        语文：等级 → 学一学/挑战（旧入口保留）

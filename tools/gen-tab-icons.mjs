@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 生成底部 tabBar 图标：从 Noto Emoji（与 gen-assets 同源 CDN）下载 PNG
- * 到 src/static/tab/。图标是给不识字的小朋友看的：🏠 首页 / 📚 课程 / 👪 家长。
+ * 到 src/static/tab/。图标是给不识字的小朋友看的：📚 课程 / ⭐ 收集 / 👪 家长。
  * 用法：node tools/gen-tab-icons.mjs（网络变更后可重跑，覆盖下载）
  */
 import fs from 'node:fs'
@@ -13,8 +13,8 @@ const OUT = path.join(ROOT, 'src', 'static', 'tab')
 const BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/png/512'
 
 const ICONS = [
-  { file: 'home.png', emoji: '🏠' },
   { file: 'map.png', emoji: '📚' },
+  { file: 'collection.png', emoji: '⭐' },
   { file: 'parent.png', emoji: '👪' },
 ]
 
