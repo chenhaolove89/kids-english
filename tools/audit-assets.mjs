@@ -220,6 +220,27 @@ for (const c of words.categories) {
   if (!pic) g.noPic.push(`${c.zh} ${c.id}(${text})`)
 }
 
+/* ---------- 7. 混合分类缺图词（基线锁） ---------- */
+// 有图的分类里不允许再出现文字卡词——那是「漏配图」（水果 7 词教训）：
+// 孩子翻到该词只有字没有图。存量缺图词锁在 baseline 里只减不增，新增即 fail。
+// 整类无图的分类（认读类/字母数字等）不在此检查内，仍走上面的覆盖度报告。
+const BASELINE_FILE = path.join(ROOT, 'tools', 'audit-textcard-baseline.json')
+const mixedMissing = []
+for (const c of words.categories) {
+  const noPic = c.words.filter((w) => !hasArt(w.image))
+  if (noPic.length && noPic.length < c.words.length) {
+    mixedMissing.push({ cat: c.id, zh: c.zh, ids: noPic.map((w) => w.id) })
+  }
+}
+const baseline = JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'))
+const newMissing = []
+const fixedInBaseline = []
+for (const m of mixedMissing) {
+  const base = new Set(baseline[m.cat] || [])
+  for (const id of m.ids) if (!base.has(id)) newMissing.push(`${m.cat}/${id}`)
+  for (const id of base) if (!m.ids.includes(id)) fixedInBaseline.push(`${m.cat}/${id}`)
+}
+
 /* ---------- 输出 ---------- */
 const uniqRefs = new Set(refs.map((r) => r.ref))
 console.log('=== 资源审计 ===')
@@ -243,6 +264,22 @@ for (const [st, g] of Object.entries(byStage)) {
   const pct = Math.round((g.text / (g.pic + g.text)) * 100)
   console.log(`${st}: 分类${g.cats} 图片卡${g.pic} 文字卡${g.text}（${pct}%）| 整类无图: ${g.noPic.join('、') || '无'}`)
 }
-const fail = broken.length || gbMissing.length || zhLearnMissing.length
-console.log(fail ? `\n✗ 资源审计未通过（缺失 ${broken.length}，英式缺口 ${gbMissing.length}，启蒙中文配音缺口 ${zhLearnMissing.length}）` : '\n✓ 资源审计通过：引用齐全、无空文件、英式镜像与启蒙中文配音完整')
+const mixedCount = mixedMissing.reduce((n, m) => n + m.ids.length, 0)
+console.log(`\n=== 混合分类缺图词（基线锁）：存量 ${mixedCount} 个 / ${mixedMissing.length} 类 ===`)
+for (const m of mixedMissing) console.log(`  ${m.zh} ${m.cat} ${m.ids.length} 个: ${m.ids.join(' ')}`)
+if (newMissing.length) {
+  console.log(`  ✗ 基线外新增缺图词 ${newMissing.length} 个（必须补 emoji 码点或进自绘白名单）:`)
+  for (const n of newMissing) console.log('    ' + n)
+}
+if (fixedInBaseline.length) {
+  console.log(`  ✓ 已补图可从基线移除 ${fixedInBaseline.length} 个: ${fixedInBaseline.slice(0, 30).join(' ')}${fixedInBaseline.length > 30 ? ' …' : ''}`)
+}
+const fail = broken.length || gbMissing.length || zhLearnMissing.length || newMissing.length
+const failNote = [
+  broken.length && `缺失 ${broken.length}`,
+  gbMissing.length && `英式缺口 ${gbMissing.length}`,
+  zhLearnMissing.length && `启蒙中文配音缺口 ${zhLearnMissing.length}`,
+  newMissing.length && `混合分类新增缺图 ${newMissing.length}`,
+].filter(Boolean).join('，')
+console.log(fail ? `\n✗ 资源审计未通过（${failNote}）` : '\n✓ 资源审计通过：引用齐全、无空文件、英式镜像与启蒙中文配音完整、混合分类无新增缺图')
 if (fail) process.exit(1)
