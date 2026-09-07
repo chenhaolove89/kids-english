@@ -59,7 +59,7 @@ import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { play, playEn, preload, preloadEn } from '@/platform/audio.js'
+import { play, playEn, playSeq, preload, preloadEn, accentEnSrc, stopSeq } from '@/platform/audio.js'
 import { createThrottle } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
@@ -91,8 +91,14 @@ onLoad((query) => {
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
-    items.value = c.words.map((w) => ({ id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio }))
+    // 启蒙阶段先中文再英文，需要中文配音；其他级别仍只念英文
+    const isQimeng = c.level === 1
+    items.value = c.words.map((w) => ({
+      id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio,
+      zhAudio: isQimeng ? `/static/audio-zh/${w.id}.mp3` : '',
+    }))
     preloadEn(items.value.map((i) => i.audio))
+    if (isQimeng) preload(items.value.map((i) => i.zhAudio))
   } else {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
     theme.value = { bg: lv.bg, color: lv.color }
@@ -134,11 +140,16 @@ function completeLearn() {
   }
 }
 
+// 中文释义与英文读音之间的停顿：太短孩子来不及把两边对上
+const ZH_EN_GAP_MS = 400
+
 function speakIdx(i) {
   const it = items.value[i]
   if (!it) return
+  // 启蒙：先中文再英文。playSeq 内部走 play，英文腿需自己按所选口音解析路径
+  if (it.zhAudio) playSeq([it.zhAudio, accentEnSrc(it.audio)], null, { gapMs: ZH_EN_GAP_MS })
   // 英语按家长中心所选口音发音；语文不动
-  if (subject.value === 'en') playEn(it.audio)
+  else if (subject.value === 'en') playEn(it.audio)
   else play(it.audio)
 }
 
@@ -174,6 +185,8 @@ function next() {
   if (current.value >= items.value.length - 1) completeLearn()
 }
 onUnload(() => {
+  // 中文→英文之间有停顿：不作废序列，孩子退出后还会在页面外念出英文
+  stopSeq()
   if (lesson.value && !completed) {
     svc.saveSnapshot({ idx: current.value })
     svc.pauseSession()

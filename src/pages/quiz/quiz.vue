@@ -50,7 +50,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
-import { play, playEn, preload, preloadEn } from '@/platform/audio.js'
+import { play, playEn, preload } from '@/platform/audio.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
@@ -92,7 +92,8 @@ onLoad((query) => {
   // 错题重练模式：/?review=en|zh——题目来自错题本到期条目，不计课时会话
   reviewMode.value = query.review === 'en' || query.review === 'zh'
   subject.value = reviewMode.value ? query.review : query.subject || 'en'
-  preloadEn(['/static/audio/great_job.mp3', '/static/audio/try_again.mp3'])
+  // 反馈语音用中文：孩子听不懂英文夸奖（口音试听仍用英文，见家长中心）
+  preload(['/static/audio/zh-great.mp3', '/static/audio/zh-try.mp3'])
   let p = []
   if (reviewMode.value) {
     p = getReviewPool(subject.value)
@@ -213,10 +214,10 @@ function pick(opt) {
     if (firstTry) firstCorrect.value++
     // 立即落快照：答对后有 1.5s 才进下一题，期间退出的话恢复不能丢这一题的进度
     if (lesson.value) svc.saveSnapshot(currentSnapshot())
-    playEn('/static/audio/great_job.mp3')
+    play('/static/audio/zh-great.mp3')
     setTimeout(nextRound, 1500)
   } else {
-    playEn('/static/audio/try_again.mp3')
+    play('/static/audio/zh-try.mp3')
     setTimeout(() => {
       flashId.value = ''
     }, 1000)

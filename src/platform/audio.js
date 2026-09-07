@@ -154,9 +154,10 @@ export function preloadEn(srcList) {
 
 // 顺序播放：数学题里把「3 + 5 = ?」拆成多段中文语音连着播。
 // token 防串音：新序列开始后，旧序列的 onEnd 链自动失效。
+// gapMs 用于需要停顿的序列（启蒙「中文 → 英文」），默认 0 保持连播行为不变。
 let seqToken = 0
 
-export function playSeq(srcList, onDone) {
+export function playSeq(srcList, onDone, { gapMs = 0 } = {}) {
   const token = ++seqToken
   const list = (srcList || []).filter(Boolean)
   const next = () => {
@@ -165,7 +166,12 @@ export function playSeq(srcList, onDone) {
       if (onDone) onDone()
       return
     }
-    play(list.shift(), next)
+    play(list.shift(), () => {
+      // 只在还有下一条时停顿；末尾也等会让 onDone 白白晚一个间隔
+      // 停顿期间孩子可能已翻页：next() 里的 token 校验会作废这条序列
+      if (gapMs && list.length) setTimeout(next, gapMs)
+      else next()
+    })
   }
   next()
 }

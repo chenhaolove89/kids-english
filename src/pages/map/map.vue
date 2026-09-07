@@ -1,26 +1,20 @@
 <template>
   <view class="page">
-    <view class="header">
-      <image class="logo" src="/static/icons/icon.png" mode="aspectFit" />
-      <view class="title-wrap">
-        <text class="title">快乐学园</text>
-        <text class="subtitle">英语 · 语文 · 数学，一样都好玩</text>
+    <!-- 继续学习：卡片按课程名自适应，星数放卡片右侧 -->
+    <view v-if="resume" class="resume-row">
+      <view class="resume-card" :style="{ background: resume.lesson.bg || '#FFF3E4' }" @tap="goResume">
+        <image v-if="resume.lesson.icon" class="resume-icon" :src="resume.lesson.icon" mode="aspectFit" />
+        <view class="resume-info">
+          <text class="resume-tag" :style="{ color: resume.lesson.color || '#FF8C42' }">{{ resumeModeText }}</text>
+          <text class="resume-title">{{ resume.lesson.title }}</text>
+        </view>
+        <view class="play-btn" :style="{ background: resume.lesson.color || '#FF8C42' }">
+          <text class="play-icon">▶</text>
+        </view>
       </view>
       <!-- 星数胶囊：点了去百宝箱看收集成果 -->
       <view class="star-pill" @tap="goCollection">
         <text class="star-pill-num">⭐ {{ totalStars }}</text>
-      </view>
-    </view>
-
-    <!-- 继续学习 -->
-    <view v-if="resume" class="resume-card" :style="{ background: resume.lesson.bg || '#FFF3E4' }" @tap="goResume">
-      <image v-if="resume.lesson.icon" class="resume-icon" :src="resume.lesson.icon" mode="aspectFit" />
-      <view class="resume-info">
-        <text class="resume-tag" :style="{ color: resume.lesson.color || '#FF8C42' }">{{ resumeModeText }}</text>
-        <text class="resume-title">{{ resume.lesson.title }}</text>
-      </view>
-      <view class="play-btn" :style="{ background: resume.lesson.color || '#FF8C42' }">
-        <text class="play-icon">▶</text>
       </view>
     </view>
 
@@ -53,13 +47,15 @@
       <view class="block-header">
         <image class="block-icon" :src="block.subject.icon" mode="aspectFit" />
         <text class="block-name" :style="{ color: block.subject.color }">{{ block.subject.name }}</text>
+        <!-- 启蒙/一二年级不识字：挑战只留 🏆 图标，与 🎲 配成一对圆钮 -->
         <view
           v-if="block.challenge && block.subject.id !== 'math'"
           class="block-quiz"
+          :class="{ 'block-quiz-icon': !showLabels }"
           :style="{ background: block.subject.color }"
           @tap="goLesson(block.challenge)"
         >
-          <text class="block-quiz-text">⚡ 挑战</text>
+          <text class="block-quiz-text">{{ showLabels ? '🏆 挑战' : '🏆' }}</text>
         </view>
         <!-- 🎲 随机来一课：本阶段该科随机抽一课，连点不重样 -->
         <view
@@ -121,6 +117,9 @@ const explore = [
 const stages = STAGES
 const stage = ref('qimeng')
 const blocks = computed(() => stageBlocks(stage.value))
+// 启蒙、一二年级的孩子还不识字，这类入口只留图标
+const PREREADER_STAGES = ['qimeng', 'g12']
+const showLabels = computed(() => !PREREADER_STAGES.includes(stage.value))
 
 // 旧首页的高价值入口并入课程页（课程页即首页）
 const resume = ref(null)
@@ -199,57 +198,34 @@ function go(s) {
 .page {
   min-height: 100vh;
   min-height: 100svh;
-  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
+  padding: calc(44rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
-.header {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-  padding: 16rpx 8rpx 30rpx;
-}
-.logo {
-  width: 100rpx;
-  height: 100rpx;
-  flex-shrink: 0;
-}
-.title-wrap {
-  flex: 1;
-  min-width: 0;
-}
-.title {
-  display: block;
-  font-size: 52rpx;
-  font-weight: 800;
-  color: #4a3f35;
-}
-.subtitle {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 26rpx;
-  color: #a2917d;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* 星数胶囊：贴在续学卡片右侧，尽量压小以免挤占卡片宽度 */
 .star-pill {
   flex-shrink: 0;
   background: #ffffff;
   border-radius: 40rpx;
-  padding: 16rpx 26rpx;
-  box-shadow: 0 8rpx 20rpx rgba(120, 90, 40, 0.1);
+  padding: 8rpx 18rpx;
+  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.12);
 }
 .star-pill:active {
   transform: scale(0.94);
 }
 .star-pill-num {
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: 800;
   color: #c99b52;
   white-space: nowrap;
 }
 
 /* 继续学习 */
+.resume-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 26rpx;
+}
 .resume-card {
   border-radius: 44rpx;
   padding: 30rpx 34rpx;
@@ -257,7 +233,9 @@ function go(s) {
   align-items: center;
   gap: 24rpx;
   box-shadow: 0 12rpx 32rpx rgba(120, 90, 40, 0.12);
-  margin-bottom: 26rpx;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
 }
 .resume-card:active {
   transform: scale(0.98);
@@ -426,6 +404,19 @@ function go(s) {
   font-size: 29rpx;
   font-weight: 800;
   white-space: nowrap;
+}
+/* 纯图标态：与 🎲 同尺寸成对，孩子不用认字 */
+.block-quiz.block-quiz-icon {
+  width: 72rpx;
+  height: 72rpx;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.block-quiz.block-quiz-icon .block-quiz-text {
+  font-size: 40rpx;
 }
 /* 🎲 随机来一课圆钮 */
 .block-dice {

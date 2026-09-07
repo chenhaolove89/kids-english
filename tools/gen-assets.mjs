@@ -22,12 +22,18 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const STATIC_DIR = path.join(ROOT, 'src/static')
 const AUDIO_DIR = path.join(STATIC_DIR, 'audio')
 const AUDIO_GB_DIR = path.join(STATIC_DIR, 'audio-gb')
+// 启蒙英文词的中文配音单独目录：withAccent 只改写 /static/audio/，放这里不会被口音逻辑误伤
+const AUDIO_ZH_DIR = path.join(STATIC_DIR, 'audio-zh')
 const IMG_DIR = path.join(STATIC_DIR, 'img')
 const ICON_DIR = path.join(STATIC_DIR, 'icons')
 const DATA_DIR = path.join(ROOT, 'src/data')
 const FORCE = process.argv.includes('--force')
 // --gb：只生成英式发音音频（static/audio-gb/，与美音同名 mp3），不碰图片/数据
 const GB_MODE = process.argv.includes('--gb')
+// --shapes：只重画形状卡（几何图形，非文字），不跑 TTS、不改数据
+const SHAPES_MODE = process.argv.includes('--shapes')
+// --learn-zh：只给启蒙（level 1）英文词补中文配音到 static/audio-zh/，不跑英文/图片/数据
+const LEARN_ZH_MODE = process.argv.includes('--learn-zh')
 
 const NOTO_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/png/512'
 // 国旗在 Noto 仓库里按 ISO 国家代码存放（CN.png），emoji 码点路径下没有
@@ -276,11 +282,139 @@ function wordSVG(text, i) {
 </svg>`
 }
 
+/**
+ * 形状几何卡：wordSVG 只会把传入的字符串画成文字，`draw=circle` 于是画出一张
+ * 写着 "circle" 的色块——不识字的孩子完全看不出圆形。形状类必须画几何本体。
+ * 图形统一白色，需要露出内部棱线的地方用卡片底色描边。
+ */
+const SHAPE_WHITE = '#FFFFFF'
+
+function regularPoints(n, r, rotDeg = 0) {
+  const pts = []
+  for (let k = 0; k < n; k++) {
+    const a = ((-90 + rotDeg + (360 * k) / n) * Math.PI) / 180
+    pts.push(`${Math.round(256 + r * Math.cos(a))},${Math.round(256 + r * Math.sin(a))}`)
+  }
+  return pts.join(' ')
+}
+
+const SHAPE_KINDS = {
+  circle: (c) => `<circle cx="256" cy="256" r="152" fill="${SHAPE_WHITE}"/>`,
+  oval: () => `<ellipse cx="256" cy="256" rx="184" ry="116" fill="${SHAPE_WHITE}"/>`,
+  square: () => `<rect x="112" y="112" width="288" height="288" rx="16" fill="${SHAPE_WHITE}"/>`,
+  rectangle: () => `<rect x="70" y="168" width="372" height="176" rx="16" fill="${SHAPE_WHITE}"/>`,
+  triangle: () => `<polygon points="${regularPoints(3, 172)}" fill="${SHAPE_WHITE}" stroke="${SHAPE_WHITE}" stroke-width="20" stroke-linejoin="round"/>`,
+  diamond: () => `<polygon points="256,84 428,256 256,428 84,256" fill="${SHAPE_WHITE}" stroke="${SHAPE_WHITE}" stroke-width="18" stroke-linejoin="round"/>`,
+  pentagon: () => `<polygon points="${regularPoints(5, 172)}" fill="${SHAPE_WHITE}" stroke="${SHAPE_WHITE}" stroke-width="18" stroke-linejoin="round"/>`,
+  hexagon: () => `<polygon points="${regularPoints(6, 172, 30)}" fill="${SHAPE_WHITE}" stroke="${SHAPE_WHITE}" stroke-width="18" stroke-linejoin="round"/>`,
+  cross: () => `<polygon points="198,84 314,84 314,198 428,198 428,314 314,314 314,428 198,428 198,314 84,314 84,198 198,198" fill="${SHAPE_WHITE}" stroke="${SHAPE_WHITE}" stroke-width="14" stroke-linejoin="round"/>`,
+  arrow: () => `<polygon points="84,214 262,214 262,140 430,256 262,372 262,298 84,298" fill="${SHAPE_WHITE}" stroke="${SHAPE_WHITE}" stroke-width="14" stroke-linejoin="round"/>`,
+  line: () => `<line x1="104" y1="338" x2="408" y2="174" stroke="${SHAPE_WHITE}" stroke-width="26" stroke-linecap="round"/><circle cx="104" cy="338" r="34" fill="${SHAPE_WHITE}"/><circle cx="408" cy="174" r="34" fill="${SHAPE_WHITE}"/>`,
+  // 月牙：用卡片底色在实心圆上挖掉一块，因此挖空圆必须与底色同色
+  crescent: (c) => `<circle cx="232" cy="256" r="156" fill="${SHAPE_WHITE}"/><circle cx="322" cy="212" r="136" fill="${c}"/>`,
+  cube: (c) => `<polygon points="216,108 416,108 416,308 336,376 136,376 136,176" fill="${SHAPE_WHITE}"/><rect x="136" y="176" width="200" height="200" fill="none" stroke="${c}" stroke-width="12"/><polyline points="136,176 216,108 416,108 336,176 336,376" fill="none" stroke="${c}" stroke-width="12"/><line x1="336" y1="176" x2="416" y2="108" stroke="${c}" stroke-width="12"/>`,
+  cone: () => `<polygon points="256,96 396,330 116,330" fill="${SHAPE_WHITE}"/><ellipse cx="256" cy="336" rx="140" ry="42" fill="${SHAPE_WHITE}"/>`,
+}
+
+function shapeSVG(kind, color) {
+  const body = SHAPE_KINDS[kind](color)
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect x="16" y="16" width="480" height="480" rx="110" fill="${color}"/>
+  <rect x="34" y="34" width="444" height="444" rx="96" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="14"/>
+  ${body}
+</svg>`
+}
+
+/** 沿用该卡片已有的底色，重画时只有图形变化、颜色不跳 */
+function existingColor(svgPath, fallback) {
+  try {
+    const m = fs.readFileSync(svgPath, 'utf8').match(/rx="110" fill="(#[0-9A-Fa-f]{6})"/)
+    if (m) return m[1]
+  } catch (e) { /* 首次生成 */ }
+  return fallback
+}
+
+/**
+ * 金/银心形卡：colors 其余 10 词都是 Noto 心形 emoji，Noto 没有金银心形，
+ * 这两个词才掉进 wordSVG 的文字卡路径。心形必须直接是该颜色本身，且不套色块
+ * 底板——底板取自与词义无关的调色板下标，正是"银色"被画成绿卡的成因。
+ */
+const METAL_HEARTS = {
+  golden: { fill: '#FFD700', stroke: '#C9A227' },
+  silver: { fill: '#C0C0C0', stroke: '#8A939E' },
+}
+
+const HEART_PATH = 'M256 448C256 448 68 328 68 200C68 140 116 92 176 92C216 92 256 124 256 124' +
+  'C256 124 296 92 336 92C396 92 444 140 444 200C444 328 256 448 256 448Z'
+
+function heartSVG(kind) {
+  const { fill, stroke } = METAL_HEARTS[kind]
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <path d="${HEART_PATH}" fill="${fill}" stroke="${stroke}" stroke-width="14" stroke-linejoin="round"/>
+</svg>`
+}
+
+/**
+ * 自绘判据按分类收紧：draw 值只有在"该词本身就是这个形状/颜色"时才可画。
+ * sight words 里 sw-silver 的 draw 也是 silver，但它是要孩子认读的单词卡，画成心形就错了。
+ */
+const DRAW_CATEGORY = { ...Object.fromEntries(Object.keys(SHAPE_KINDS).map((k) => [k, 'shapes'])), ...Object.fromEntries(Object.keys(METAL_HEARTS).map((k) => [k, 'colors'])) }
+
+/** 该词是否走语义自绘（几何形状或金属色心形）；否则只能画文字卡 */
+function isDrawnCard(w) {
+  const cat = DRAW_CATEGORY[w.draw]
+  return !w.emoji && !!cat && w.category === cat
+}
+
+/** 自绘卡统一出口：--shapes 重画与常规生成路径共用，避免两处判据漂移 */
+function drawnCardSVG(w) {
+  if (DRAW_CATEGORY[w.draw] === 'colors') return heartSVG(w.draw)
+  const out = path.join(IMG_DIR, `${w.id}.svg`)
+  return shapeSVG(w.draw, existingColor(out, '#5C7CFA'))
+}
+
 async function main() {
   const words = readCSV(path.join(ROOT, 'tools/words.csv'))
   const hanzi = readHanzi()
   const hanziEmoji = readHanziEmoji()
   console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字\n`)
+
+  // ---------- 自绘卡模式：只重画形状卡与金银心形卡，不跑 TTS、不改数据 ----------
+  if (SHAPES_MODE) {
+    let n = 0
+    for (const w of words) {
+      if (!isDrawnCard(w)) continue
+      fs.writeFileSync(path.join(IMG_DIR, `${w.id}.svg`), drawnCardSVG(w))
+      n++
+    }
+    console.log(`✓ 已重画自绘卡 ${n} 张（几何形状 + 金属色心形，非文字）`)
+    return
+  }
+
+  // ---------- 启蒙中文配音：只补 level 1 英文词的读音，不跑英文/图片/数据 ----------
+  if (LEARN_ZH_MODE) {
+    fs.mkdirSync(AUDIO_ZH_DIR, { recursive: true })
+    const l1 = words.filter((w) => CATEGORIES[w.category]?.level === 1)
+    const jobs = []
+    for (const w of l1) {
+      const out = path.join(AUDIO_ZH_DIR, `${w.id}.mp3`)
+      if (!FORCE && fs.existsSync(out)) continue
+      jobs.push({ id: `zhw-${w.id}`, text: w.zh, out })
+    }
+    console.log(`== 启蒙中文配音（zh-CN）待生成：${jobs.length} / 共 ${l1.length} 词 ==`)
+    if (jobs.length) await ttsPool('ZH-LEARN', ZH_VOICES, jobs, 3)
+    let miss = 0
+    for (const w of l1) {
+      if (!fs.existsSync(path.join(AUDIO_ZH_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺中文配音: ${w.id}（${w.zh}）`); miss++ }
+    }
+    if (miss) {
+      console.log(`启蒙中文配音仍缺 ${miss} 个，请重跑 npm run gen:learn-zh`)
+      process.exitCode = 1
+    } else {
+      console.log(`✓ 启蒙 ${l1.length} 词中文配音全部就绪`)
+    }
+    return
+  }
 
   // ---------- 英式发音模式：只生成 audio-gb，不动图片与数据 ----------
   if (GB_MODE) {
@@ -369,11 +503,11 @@ async function main() {
     await Promise.all(Array.from({ length: concurrency }, worker))
   }
 
-  // 自绘词卡（本地生成，快）
+  // 自绘词卡（本地生成，快）；语义可画的画图形，其余画文字卡
   drawWords.forEach((w, i) => {
     const out = path.join(IMG_DIR, `${w.id}.svg`)
     if (!FORCE && fs.existsSync(out)) { imgSkip++; return }
-    fs.writeFileSync(out, wordSVG(w.draw, i))
+    fs.writeFileSync(out, isDrawnCard(w) ? drawnCardSVG(w) : wordSVG(w.draw, i))
     imgNew++
   })
 

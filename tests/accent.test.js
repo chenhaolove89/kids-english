@@ -1,6 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { withAccent } from '../src/platform/assets.js'
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 test('英式口音：英文词/反馈音重写到 audio-gb 目录', () => {
   assert.equal(withAccent('/static/audio/red.mp3', 'gb'), '/static/audio-gb/red.mp3')
@@ -29,4 +34,23 @@ test('非法输入原样返回：空值/外链不重写', () => {
   assert.equal(withAccent(null, 'gb'), null)
   assert.equal(withAccent(undefined, 'gb'), undefined)
   assert.equal(withAccent('https://cdn.example.com/red.mp3', 'gb'), 'https://cdn.example.com/red.mp3')
+})
+
+test('大写开头的英文音频同样切英式（星期/国家等专有名词）', () => {
+  assert.equal(withAccent('/static/audio/China.mp3', 'gb'), '/static/audio-gb/China.mp3')
+  assert.equal(withAccent('/static/audio/Monday.mp3', 'gb'), '/static/audio-gb/Monday.mp3')
+  assert.equal(withAccent('/static/audio/CD.mp3', 'gb'), '/static/audio-gb/CD.mp3')
+})
+
+test('全量：每条英文音频都取得到真实存在的英式音轨', () => {
+  const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
+  const gaps = []
+  for (const c of words.categories) {
+    for (const w of c.words) {
+      const gb = withAccent(w.audio, 'gb')
+      if (gb === w.audio) gaps.push(`${c.id}/${w.id} 未被改写：${w.audio}`)
+      else if (!fs.existsSync(path.join(ROOT, 'src', gb.slice(1)))) gaps.push(`${c.id}/${w.id} 英式文件缺失：${gb}`)
+    }
+  }
+  assert.deepEqual(gaps, [])
 })

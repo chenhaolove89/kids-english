@@ -8,9 +8,11 @@
     "build:h5": "uni build",
     "gen:assets": "node tools/gen-assets.mjs",
     "gen:assets-gb": "node tools/gen-assets.mjs --gb",
+    "gen:learn-zh": "node tools/gen-assets.mjs --learn-zh",
     "gen:tab-icons": "node tools/gen-tab-icons.mjs",
     "build:content": "node tools/validate-content.mjs",
     "validate:content": "node tools/validate-content.mjs --check",
+    "audit:assets": "node tools/audit-assets.mjs",
     "test": "node --test \"tests/*.test.js\""
   },
   "dependencies": {
