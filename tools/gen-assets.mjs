@@ -355,10 +355,73 @@ function heartSVG(kind) {
 }
 
 /**
+ * 水果自绘卡：李子/石榴/无花果/番石榴/木瓜/荔枝/龙眼在 Unicode/Noto 里没有
+ * emoji（词表 emoji 列为空），只能掉文字卡——不识字的孩子认不出词。找相近
+ * emoji 顶替=配错图（零容忍），所以按 Noto 扁平风手绘几何组合：透明底 +
+ * 主体色块 + 高光 + 识别特征（石榴冠/木瓜切面/荔枝凸点/龙眼成串）。
+ */
+const FRUIT_BODIES = {
+  plum: `
+  <ellipse cx="252" cy="300" rx="150" ry="140" fill="#8E4585"/>
+  <path d="M252 170 C246 224 244 262 252 302" stroke="#743A6C" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.55"/>
+  <path d="M250 168 C240 140 224 124 202 116" stroke="#7A5230" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <ellipse cx="308" cy="124" rx="60" ry="26" fill="#5FA052" transform="rotate(-16 308 124)"/>
+  <ellipse cx="188" cy="248" rx="46" ry="30" fill="#FFFFFF" opacity="0.32" transform="rotate(-24 188 248)"/>`,
+  pomegranate: `
+  <circle cx="256" cy="304" r="146" fill="#D63B2F"/>
+  <path d="M212 176 L220 116 L242 160 L256 106 L270 160 L292 116 L300 176 Z" fill="#A8271D"/>
+  <ellipse cx="196" cy="262" rx="44" ry="30" fill="#FFFFFF" opacity="0.3" transform="rotate(-24 196 262)"/>`,
+  fig: `
+  <path d="M256 150 C168 168 128 248 146 330 C162 400 216 434 256 434 C296 434 350 400 366 330 C384 248 344 168 256 150 Z" fill="#6B3FA0"/>
+  <path d="M228 156 C234 130 244 116 256 110 C268 116 278 130 284 156" stroke="#7CB342" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <circle cx="256" cy="414" r="14" fill="#4A2C74"/>
+  <ellipse cx="206" cy="242" rx="40" ry="28" fill="#FFFFFF" opacity="0.3" transform="rotate(-20 206 242)"/>`,
+  guava: `
+  <circle cx="256" cy="300" r="142" fill="#A8C948"/>
+  <circle cx="200" cy="282" r="10" fill="#8FB03A"/><circle cx="292" cy="332" r="10" fill="#8FB03A"/>
+  <circle cx="312" cy="252" r="9" fill="#8FB03A"/><circle cx="230" cy="370" r="9" fill="#8FB03A"/>
+  <path d="M256 164 C250 138 238 122 220 114" stroke="#7A5230" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <ellipse cx="312" cy="122" rx="58" ry="25" fill="#5FA052" transform="rotate(-14 312 122)"/>
+  <ellipse cx="196" cy="256" rx="42" ry="28" fill="#FFFFFF" opacity="0.35" transform="rotate(-24 196 256)"/>`,
+  papaya: `
+  <ellipse cx="256" cy="272" rx="118" ry="176" fill="#8FB03A"/>
+  <ellipse cx="256" cy="272" rx="106" ry="164" fill="#FFB13B"/>
+  <ellipse cx="256" cy="286" rx="42" ry="86" fill="#3E2A1E"/>
+  <ellipse cx="212" cy="182" rx="30" ry="20" fill="#FFFFFF" opacity="0.35" transform="rotate(-30 212 182)"/>`,
+  lychee: `
+  <circle cx="256" cy="300" r="140" fill="#E0505E"/>
+  <circle cx="176" cy="300" r="12" fill="#C43E4B"/><circle cx="216" cy="236" r="12" fill="#C43E4B"/>
+  <circle cx="286" cy="222" r="12" fill="#C43E4B"/><circle cx="344" cy="272" r="12" fill="#C43E4B"/>
+  <circle cx="330" cy="344" r="12" fill="#C43E4B"/><circle cx="268" cy="392" r="12" fill="#C43E4B"/>
+  <circle cx="196" cy="368" r="12" fill="#C43E4B"/><circle cx="258" cy="300" r="12" fill="#C43E4B"/>
+  <path d="M256 166 C252 142 244 128 230 120" stroke="#7A5230" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <ellipse cx="318" cy="122" rx="52" ry="22" fill="#5FA052" transform="rotate(-12 318 122)"/>
+  <ellipse cx="178" cy="134" rx="44" ry="19" fill="#6FB25C" transform="rotate(14 178 134)"/>
+  <ellipse cx="206" cy="262" rx="36" ry="24" fill="#FFFFFF" opacity="0.25" transform="rotate(-24 206 262)"/>`,
+  longan: `
+  <path d="M256 96 C240 150 208 190 172 214 M256 96 C268 148 302 182 344 206 M256 96 C252 168 252 258 258 326" stroke="#7A5230" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <circle cx="168" cy="272" r="88" fill="#C09A5B"/>
+  <circle cx="348" cy="264" r="86" fill="#B98E4F"/>
+  <circle cx="260" cy="392" r="84" fill="#C9A063"/>
+  <ellipse cx="140" cy="244" rx="26" ry="17" fill="#FFFFFF" opacity="0.3" transform="rotate(-24 140 244)"/>
+  <ellipse cx="322" cy="236" rx="25" ry="16" fill="#FFFFFF" opacity="0.3" transform="rotate(-24 322 236)"/>
+  <ellipse cx="234" cy="364" rx="24" ry="16" fill="#FFFFFF" opacity="0.3" transform="rotate(-24 234 364)"/>`,
+}
+
+function fruitSVG(kind) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">${FRUIT_BODIES[kind]}
+</svg>`
+}
+
+/**
  * 自绘判据按分类收紧：draw 值只有在"该词本身就是这个形状/颜色"时才可画。
  * sight words 里 sw-silver 的 draw 也是 silver，但它是要孩子认读的单词卡，画成心形就错了。
  */
-const DRAW_CATEGORY = { ...Object.fromEntries(Object.keys(SHAPE_KINDS).map((k) => [k, 'shapes'])), ...Object.fromEntries(Object.keys(METAL_HEARTS).map((k) => [k, 'colors'])) }
+const DRAW_CATEGORY = {
+  ...Object.fromEntries(Object.keys(SHAPE_KINDS).map((k) => [k, 'shapes'])),
+  ...Object.fromEntries(Object.keys(METAL_HEARTS).map((k) => [k, 'colors'])),
+  ...Object.fromEntries(Object.keys(FRUIT_BODIES).map((k) => [k, 'fruits'])),
+}
 
 /** 该词是否走语义自绘（几何形状或金属色心形）；否则只能画文字卡 */
 function isDrawnCard(w) {
@@ -368,7 +431,9 @@ function isDrawnCard(w) {
 
 /** 自绘卡统一出口：--shapes 重画与常规生成路径共用，避免两处判据漂移 */
 function drawnCardSVG(w) {
-  if (DRAW_CATEGORY[w.draw] === 'colors') return heartSVG(w.draw)
+  const cat = DRAW_CATEGORY[w.draw]
+  if (cat === 'colors') return heartSVG(w.draw)
+  if (cat === 'fruits') return fruitSVG(w.draw)
   const out = path.join(IMG_DIR, `${w.id}.svg`)
   return shapeSVG(w.draw, existingColor(out, '#5C7CFA'))
 }
