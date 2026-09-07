@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-07T06:36:55.260Z",
+ "generatedAt": "2026-09-07T16:20:36.538Z",
  "levels": [
   {
    "id": 1,
@@ -631,9 +631,9 @@
      "en": "finger",
      "zh": "手指",
      "phonetic": "/ˈfɪŋɡə/",
-     "image": "/static/img/finger.svg",
+     "image": "/static/img/finger.png",
      "audio": "/static/audio/finger.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "arm",
@@ -1890,9 +1890,9 @@
      "en": "slide",
      "zh": "滑梯",
      "phonetic": "/slaɪd/",
-     "image": "/static/img/slide.svg",
+     "image": "/static/img/slide.png",
      "audio": "/static/audio/slide.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "swing",
@@ -2596,27 +2596,27 @@
      "en": "beans",
      "zh": "豆子",
      "phonetic": "/biːnz/",
-     "image": "/static/img/beans.svg",
+     "image": "/static/img/beans.png",
      "audio": "/static/audio/beans.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "peas",
      "en": "peas",
      "zh": "豌豆",
      "phonetic": "/piːz/",
-     "image": "/static/img/peas.svg",
+     "image": "/static/img/peas.png",
      "audio": "/static/audio/peas.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "ginger",
      "en": "ginger",
      "zh": "姜",
      "phonetic": "/ˈdʒɪndʒə/",
-     "image": "/static/img/ginger.svg",
+     "image": "/static/img/ginger.png",
      "audio": "/static/audio/ginger.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "lotusroot",
@@ -3947,9 +3947,9 @@
      "en": "dish",
      "zh": "碟子",
      "phonetic": "/dɪʃ/",
-     "image": "/static/img/dish.svg",
+     "image": "/static/img/dish.png",
      "audio": "/static/audio/dish.mp3",
-     "card": "word"
+     "card": "emoji"
     }
    ]
   },
@@ -5370,9 +5370,9 @@
      "en": "storm",
      "zh": "风暴",
      "phonetic": "/stɔːm/",
-     "image": "/static/img/storm.svg",
+     "image": "/static/img/storm.png",
      "audio": "/static/audio/storm.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "sunshine",
@@ -5498,9 +5498,9 @@
      "en": "jellyfish",
      "zh": "水母",
      "phonetic": "/ˈdʒelifɪʃ/",
-     "image": "/static/img/jellyfish.svg",
+     "image": "/static/img/jellyfish.png",
      "audio": "/static/audio/jellyfish.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "seahorse",
@@ -5570,9 +5570,9 @@
      "en": "splash",
      "zh": "浪花",
      "phonetic": "/splæʃ/",
-     "image": "/static/img/splash.svg",
+     "image": "/static/img/splash.png",
      "audio": "/static/audio/splash.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "stingray",
@@ -5698,9 +5698,9 @@
      "en": "worm",
      "zh": "蚯蚓",
      "phonetic": "/wɜːm/",
-     "image": "/static/img/worm.svg",
+     "image": "/static/img/worm.png",
      "audio": "/static/audio/worm.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "firefly",
@@ -5898,9 +5898,9 @@
      "en": "crow",
      "zh": "乌鸦",
      "phonetic": "/krəʊ/",
-     "image": "/static/img/crow.svg",
+     "image": "/static/img/crow.png",
      "audio": "/static/audio/crow.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "ostrich",
@@ -5943,9 +5943,9 @@
      "en": "nest",
      "zh": "鸟巢",
      "phonetic": "/nest/",
-     "image": "/static/img/nest.svg",
+     "image": "/static/img/nest.png",
      "audio": "/static/audio/nest.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "robin",
@@ -6188,9 +6188,9 @@
      "en": "train station",
      "zh": "火车站",
      "phonetic": "/treɪn ˈsteɪʃn/",
-     "image": "/static/img/trainstation.svg",
+     "image": "/static/img/trainstation.png",
      "audio": "/static/audio/trainstation.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "park",
@@ -8445,9 +8445,9 @@
      "en": "barber",
      "zh": "理发师",
      "phonetic": "/ˈbɑːbə/",
-     "image": "/static/img/barber.svg",
+     "image": "/static/img/barber.png",
      "audio": "/static/audio/barber.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "waiter",
@@ -9245,9 +9245,9 @@
      "en": "speaker",
      "zh": "音箱",
      "phonetic": "/ˈspiːkə/",
-     "image": "/static/img/speaker.svg",
+     "image": "/static/img/speaker.png",
      "audio": "/static/audio/speaker.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "smartwatch",
@@ -9355,9 +9355,9 @@
      "en": "fever",
      "zh": "发烧",
      "phonetic": "/ˈfiːvə/",
-     "image": "/static/img/fever.svg",
+     "image": "/static/img/fever.png",
      "audio": "/static/audio/fever.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "cough",
@@ -9373,9 +9373,9 @@
      "en": "sneeze",
      "zh": "打喷嚏",
      "phonetic": "/sniːz/",
-     "image": "/static/img/sneeze.svg",
+     "image": "/static/img/sneeze.png",
      "audio": "/static/audio/sneeze.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "flu",
@@ -9391,18 +9391,18 @@
      "en": "injection",
      "zh": "打针",
      "phonetic": "/ɪnˈdʒekʃn/",
-     "image": "/static/img/injection.svg",
+     "image": "/static/img/injection.png",
      "audio": "/static/audio/injection.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "dizzy",
      "en": "dizzy",
      "zh": "头晕",
      "phonetic": "/ˈdɪzi/",
-     "image": "/static/img/dizzy.svg",
+     "image": "/static/img/dizzy.png",
      "audio": "/static/audio/dizzy.mp3",
-     "card": "word"
+     "card": "emoji"
     },
     {
      "id": "healthy",

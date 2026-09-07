@@ -33,7 +33,7 @@ taro,taro,芋头,/ˈtɑːrəʊ/,vegetables,,taro
 friend,friend,朋友,/frend/,family,,friend
 best friend,best friend,最好的朋友,/best frend/,family,,best friend
 teacup,teacup,茶杯,/ˈtiːkʌp/,kitchen,,teacup
-dish,dish,碟子,/dɪʃ/,kitchen,,dish
+dish,dish,碟子,/dɪʃ/,kitchen,1f37d,dish
 Monday,Monday,星期一,/ˈmʌndeɪ/,time,,Monday
 Tuesday,Tuesday,星期二,/ˈtjuːzdeɪ/,time,,Tuesday
 Wednesday,Wednesday,星期三,/ˈwenzdeɪ/,time,,Wednesday
@@ -41,15 +41,15 @@ Thursday,Thursday,星期四,/ˈθɜːzdeɪ/,time,,Thursday
 Friday,Friday,星期五,/ˈfraɪdeɪ/,time,,Friday
 Saturday,Saturday,星期六,/ˈsætədeɪ/,time,,Saturday
 Sunday,Sunday,星期日,/ˈsʌndeɪ/,time,,Sunday
-storm,storm,风暴,/stɔːm/,nature,,storm
+storm,storm,风暴,/stɔːm/,nature,26c8,storm
 sunshine,sunshine,阳光,/ˈsʌnʃaɪn/,nature,,sunshine
 lighthouse,lighthouse,灯塔,/ˈlaɪthaʊs/,places,,lighthouse
 harbor,harbor,海港,/ˈhɑːbə/,places,,harbor
 garbage truck,garbage truck,垃圾车,/ˈɡɑːbɪdʒ trʌk/,vehicles,,garbage truck
 tow truck,tow truck,拖车,/təʊ trʌk/,vehicles,,tow truck
 tide,tide,潮汐,/taɪd/,ocean,,tide
-splash,splash,浪花,/splæʃ/,ocean,,splash
-nest,nest,鸟巢,/nest/,birds,,nest
+splash,splash,浪花,/splæʃ/,ocean,1f4a6,splash
+nest,nest,鸟巢,/nest/,birds,1faba,nest
 bus stop,bus stop,公交车站,/bʌs stɒp/,city,,bus stop
 taxi stand,taxi stand,出租车站,/ˈtæksi stænd/,city,,taxi stand
 city-square,city square,广场,/ˌsɪti ˈskweə/,city,,city square

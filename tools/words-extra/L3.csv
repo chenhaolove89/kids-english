@@ -38,7 +38,7 @@ shell,shell,贝壳,/ʃel/,ocean,1f41a,
 coral,coral,珊瑚,/ˈkɒrəl/,ocean,1fab8,
 anchor,anchor,船锚,/ˈæŋkə/,ocean,2693,
 starfish,starfish,海星,/ˈstɑːfɪʃ/,ocean,,starfish
-jellyfish,jellyfish,水母,/ˈdʒelifɪʃ/,ocean,,jellyfish
+jellyfish,jellyfish,水母,/ˈdʒelifɪʃ/,ocean,1fabc,jellyfish
 seahorse,seahorse,海马,/ˈsiːhɔːs/,ocean,,seahorse
 walrus,walrus,海象,/ˈwɔːlrəs/,ocean,,walrus
 orca,orca,虎鲸,/ˈɔːkə/,ocean,,orca
@@ -55,7 +55,7 @@ scorpion,scorpion,蝎子,/ˈskɔːpiən/,insects,1f982,
 mosquito,mosquito,蚊子,/məˈskiːtəʊ/,insects,1f99f,
 spider,spider,蜘蛛,/ˈspaɪdə/,insects,1f577_fe0f,
 web,web,蜘蛛网,/web/,insects,1f578_fe0f,
-worm,worm,蚯蚓,/wɜːm/,insects,,worm
+worm,worm,蚯蚓,/wɜːm/,insects,1fab1,worm
 firefly,firefly,萤火虫,/ˈfaɪəflaɪ/,insects,,firefly
 dragonfly,dragonfly,蜻蜓,/ˈdræɡənflaɪ/,insects,,dragonfly
 grasshopper,grasshopper,蚂蚱,/ˈɡrɑːshɒpə/,insects,,grasshopper
@@ -72,7 +72,7 @@ woodpecker,woodpecker,啄木鸟,/ˈwʊdˌpekə/,birds,,woodpecker
 kingfisher,kingfisher,翠鸟,/ˈkɪŋfɪʃə/,birds,,kingfisher
 magpie,magpie,喜鹊,/ˈmæɡpaɪ/,birds,,magpie
 crane,crane,仙鹤,/kreɪn/,birds,,crane
-crow,crow,乌鸦,/krəʊ/,birds,,crow
+crow,crow,乌鸦,/krəʊ/,birds,1f426_200d_2b1b,crow
 ostrich,ostrich,鸵鸟,/ˈɒstrɪtʃ/,birds,,ostrich
 nightingale,nightingale,夜莺,/ˈnaɪtɪŋɡeɪl/,birds,,nightingale
 swallow,swallow,燕子,/ˈswɒləʊ/,birds,,swallow
@@ -86,7 +86,7 @@ statue,statue,雕像,/ˈstætʃuː/,places,1f5fd,
 stadium,stadium,体育场,/ˈsteɪdiəm/,places,1f3df_fe0f,
 postbox,postbox,邮筒,/ˈpəʊstbɒks/,places,1f4ee,
 airport,airport,机场,/ˈeəpɔːt/,places,,airport
-train station,train station,火车站,/treɪn ˈsteɪʃn/,places,,train station
+train station,train station,火车站,/treɪn ˈsteɪʃn/,places,1f689,train station
 park,park,公园,/pɑːk/,places,,park
 zoo,zoo,动物园,/zuː/,places,,zoo
 cinema,cinema,电影院,/ˈsɪnəmə/,places,,cinema

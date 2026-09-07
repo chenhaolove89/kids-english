@@ -51,7 +51,7 @@ bone,bone,骨头,/bəʊn/,body,1f9b4,
 heart,heart,心脏,/hɑːt/,body,1fac0,
 lungs,lungs,肺,/lʌŋz/,body,1fac1,
 hair,hair,头发,/heə/,body,,hair
-finger,finger,手指,/ˈfɪŋɡə/,body,,finger
+finger,finger,手指,/ˈfɪŋɡə/,body,261d,finger
 arm,arm,手臂,/ɑːm/,body,,arm
 knee,knee,膝盖,/niː/,body,,knee
 shoulder,shoulder,肩膀,/ˈʃəʊldə/,body,,shoulder
@@ -73,7 +73,7 @@ magic wand,magic wand,魔法棒,/ˈmædʒɪk wɒnd/,toys,1fa84,
 crystal ball,crystal ball,水晶球,/ˈkrɪstl bɔːl/,toys,1f52e,
 puppet,puppet,套娃,/ˈpʌpɪt/,toys,1fa86,
 blocks,blocks,积木,/blɒks/,toys,,blocks
-slide,slide,滑梯,/slaɪd/,toys,,slide
+slide,slide,滑梯,/slaɪd/,toys,1f6dd,slide
 swing,swing,秋千,/swɪŋ/,toys,,swing
 seesaw,seesaw,跷跷板,/ˈsiːsɔː/,toys,,seesaw
 trampoline,trampoline,蹦床,/ˈtræmpəliːn/,toys,,trampoline

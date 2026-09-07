@@ -352,7 +352,7 @@ bone,bone,骨头,/bəʊn/,body,1f9b4,
 heart,heart,心脏,/hɑːt/,body,1fac0,
 lungs,lungs,肺,/lʌŋz/,body,1fac1,
 hair,hair,头发,/heə/,body,,hair
-finger,finger,手指,/ˈfɪŋɡə/,body,,finger
+finger,finger,手指,/ˈfɪŋɡə/,body,261d,finger
 arm,arm,手臂,/ɑːm/,body,,arm
 knee,knee,膝盖,/niː/,body,,knee
 shoulder,shoulder,肩膀,/ˈʃəʊldə/,body,,shoulder
@@ -374,7 +374,7 @@ magicwand,magic wand,魔法棒,/ˈmædʒɪk wɒnd/,toys,1fa84,
 crystalball,crystal ball,水晶球,/ˈkrɪstl bɔːl/,toys,1f52e,
 puppet,puppet,套娃,/ˈpʌpɪt/,toys,1fa86,
 blocks,blocks,积木,/blɒks/,toys,,blocks
-slide,slide,滑梯,/slaɪd/,toys,,slide
+slide,slide,滑梯,/slaɪd/,toys,1f6dd,slide
 swing,swing,秋千,/swɪŋ/,toys,,swing
 seesaw,seesaw,跷跷板,/ˈsiːsɔː/,toys,,seesaw
 trampoline,trampoline,蹦床,/ˈtræmpəliːn/,toys,,trampoline
@@ -409,9 +409,9 @@ breakfast,breakfast,早餐,/ˈbrekfəst/,food,,breakfast
 lunch,lunch,午餐,/lʌntʃ/,food,,lunch
 dinner,dinner,晚餐,/ˈdɪnə/,food,,dinner
 cabbage,cabbage,卷心菜,/ˈkæbɪdʒ/,vegetables,1f96c,
-beans,beans,豆子,/biːnz/,vegetables,,beans
-peas,peas,豌豆,/piːz/,vegetables,,peas
-ginger,ginger,姜,/ˈdʒɪndʒə/,vegetables,,ginger
+beans,beans,豆子,/biːnz/,vegetables,1fad8,beans
+peas,peas,豌豆,/piːz/,vegetables,1fad1,peas
+ginger,ginger,姜,/ˈdʒɪndʒə/,vegetables,1fada,ginger
 lotusroot,lotus root,莲藕,/ˈləʊtəs ruːt/,vegetables,,lotus root
 beansprout,bean sprout,豆芽,/biːn spraʊt/,vegetables,,bean sprout
 cupcake,cupcake,纸杯蛋糕,/ˈkʌpkeɪk/,desserts,1f9c1,
@@ -587,7 +587,7 @@ shell,shell,贝壳,/ʃel/,ocean,1f41a,
 coral,coral,珊瑚,/ˈkɒrəl/,ocean,1fab8,
 anchor,anchor,船锚,/ˈæŋkə/,ocean,2693,
 starfish,starfish,海星,/ˈstɑːfɪʃ/,ocean,,starfish
-jellyfish,jellyfish,水母,/ˈdʒelifɪʃ/,ocean,,jellyfish
+jellyfish,jellyfish,水母,/ˈdʒelifɪʃ/,ocean,1fabc,jellyfish
 seahorse,seahorse,海马,/ˈsiːhɔːs/,ocean,,seahorse
 walrus,walrus,海象,/ˈwɔːlrəs/,ocean,,walrus
 orca,orca,虎鲸,/ˈɔːkə/,ocean,,orca
@@ -604,7 +604,7 @@ scorpion,scorpion,蝎子,/ˈskɔːpiən/,insects,1f982,
 mosquito,mosquito,蚊子,/məˈskiːtəʊ/,insects,1f99f,
 spider,spider,蜘蛛,/ˈspaɪdə/,insects,1f577_fe0f,
 web,web,蜘蛛网,/web/,insects,1f578_fe0f,
-worm,worm,蚯蚓,/wɜːm/,insects,,worm
+worm,worm,蚯蚓,/wɜːm/,insects,1fab1,worm
 firefly,firefly,萤火虫,/ˈfaɪəflaɪ/,insects,,firefly
 dragonfly,dragonfly,蜻蜓,/ˈdræɡənflaɪ/,insects,,dragonfly
 grasshopper,grasshopper,蚂蚱,/ˈɡrɑːshɒpə/,insects,,grasshopper
@@ -621,7 +621,7 @@ woodpecker,woodpecker,啄木鸟,/ˈwʊdˌpekə/,birds,,woodpecker
 kingfisher,kingfisher,翠鸟,/ˈkɪŋfɪʃə/,birds,,kingfisher
 magpie,magpie,喜鹊,/ˈmæɡpaɪ/,birds,,magpie
 crane,crane,仙鹤,/kreɪn/,birds,,crane
-crow,crow,乌鸦,/krəʊ/,birds,,crow
+crow,crow,乌鸦,/krəʊ/,birds,1f426_200d_2b1b,crow
 ostrich,ostrich,鸵鸟,/ˈɒstrɪtʃ/,birds,,ostrich
 nightingale,nightingale,夜莺,/ˈnaɪtɪŋɡeɪl/,birds,,nightingale
 swallow,swallow,燕子,/ˈswɒləʊ/,birds,,swallow
@@ -635,7 +635,7 @@ statue,statue,雕像,/ˈstætʃuː/,places,1f5fd,
 stadium,stadium,体育场,/ˈsteɪdiəm/,places,1f3df_fe0f,
 postbox,postbox,邮筒,/ˈpəʊstbɒks/,places,1f4ee,
 airport,airport,机场,/ˈeəpɔːt/,places,,airport
-trainstation,train station,火车站,/treɪn ˈsteɪʃn/,places,,train station
+trainstation,train station,火车站,/treɪn ˈsteɪʃn/,places,1f689,train station
 park,park,公园,/pɑːk/,places,,park
 zoo,zoo,动物园,/zuː/,places,,zoo
 cinema,cinema,电影院,/ˈsɪnəmə/,places,,cinema
@@ -830,7 +830,7 @@ astronaut,astronaut,宇航员,/ˈæstrənɔːt/,jobs,1f9d1_200d_1f680,
 soldier,soldier,士兵,/ˈsəʊldʒə/,jobs,,soldier
 nurse,nurse,护士,/nɜːs/,jobs,,nurse
 dentist,dentist,牙医,/ˈdentɪst/,jobs,,dentist
-barber,barber,理发师,/ˈbɑːbə/,jobs,,barber
+barber,barber,理发师,/ˈbɑːbə/,jobs,1f488,barber
 waiter,waiter,服务员,/ˈweɪtə/,jobs,,waiter
 librarian,librarian,图书管理员,/laɪˈbreəriən/,jobs,,librarian
 engineer,engineer,工程师,/ˌendʒɪˈnɪə/,jobs,,engineer
@@ -902,7 +902,7 @@ floppy,floppy,软盘,/ˈflɒpi/,electronics,1f4be,
 satellitedish,satellite dish,卫星天线,/ˈsætəlaɪt dɪʃ/,electronics,1f4e1,
 tablet,tablet,平板电脑,/ˈtæblət/,electronics,,tablet
 remotecontrol,remote control,遥控器,/rɪˈməʊt kənˈtrəʊl/,electronics,,remote control
-speaker,speaker,音箱,/ˈspiːkə/,electronics,,speaker
+speaker,speaker,音箱,/ˈspiːkə/,electronics,1f50a,speaker
 smartwatch,smartwatch,智能手表,/ˈsmɑːtwɒtʃ/,electronics,,smartwatch
 e-reader,e-reader,电子书阅读器,/ˈiː riːdə/,electronics,,e-reader
 drone,drone,无人机,/drəʊn/,electronics,,drone
@@ -911,12 +911,12 @@ pill,pill,药片,/pɪl/,health,1f48a,
 stethoscope,stethoscope,听诊器,/ˈsteθəskəʊp/,health,1fa7a,
 germ,germ,细菌,/dʒɜːm/,health,1f9a0,
 medicine,medicine,药,/ˈmedsn/,health,,medicine
-fever,fever,发烧,/ˈfiːvə/,health,,fever
+fever,fever,发烧,/ˈfiːvə/,health,1f975,fever
 cough,cough,咳嗽,/kɒf/,health,,cough
-sneeze,sneeze,打喷嚏,/sniːz/,health,,sneeze
+sneeze,sneeze,打喷嚏,/sniːz/,health,1f927,sneeze
 flu,flu,流感,/fluː/,health,,flu
-injection,injection,打针,/ɪnˈdʒekʃn/,health,,injection
-dizzy,dizzy,头晕,/ˈdɪzi/,health,,dizzy
+injection,injection,打针,/ɪnˈdʒekʃn/,health,1f489,injection
+dizzy,dizzy,头晕,/ˈdɪzi/,health,1f635_200d_1f4ab,dizzy
 healthy,healthy,健康,/ˈhelθi/,health,,healthy
 headache,headache,头疼,/ˈhedeɪk/,health,,headache
 vitamin,vitamin,维生素,/ˈvɪtəmɪn/,health,,vitamin
@@ -1935,7 +1935,7 @@ taro,taro,芋头,/ˈtɑːrəʊ/,vegetables,,taro
 friend,friend,朋友,/frend/,family,,friend
 bestfriend,best friend,最好的朋友,/best frend/,family,,best friend
 teacup,teacup,茶杯,/ˈtiːkʌp/,kitchen,,teacup
-dish,dish,碟子,/dɪʃ/,kitchen,,dish
+dish,dish,碟子,/dɪʃ/,kitchen,1f37d,dish
 Monday,Monday,星期一,/ˈmʌndeɪ/,time,,Monday
 Tuesday,Tuesday,星期二,/ˈtjuːzdeɪ/,time,,Tuesday
 Wednesday,Wednesday,星期三,/ˈwenzdeɪ/,time,,Wednesday
@@ -1943,15 +1943,15 @@ Thursday,Thursday,星期四,/ˈθɜːzdeɪ/,time,,Thursday
 Friday,Friday,星期五,/ˈfraɪdeɪ/,time,,Friday
 Saturday,Saturday,星期六,/ˈsætədeɪ/,time,,Saturday
 Sunday,Sunday,星期日,/ˈsʌndeɪ/,time,,Sunday
-storm,storm,风暴,/stɔːm/,nature,,storm
+storm,storm,风暴,/stɔːm/,nature,26c8,storm
 sunshine,sunshine,阳光,/ˈsʌnʃaɪn/,nature,,sunshine
 lighthouse,lighthouse,灯塔,/ˈlaɪthaʊs/,places,,lighthouse
 harbor,harbor,海港,/ˈhɑːbə/,places,,harbor
 garbagetruck,garbage truck,垃圾车,/ˈɡɑːbɪdʒ trʌk/,vehicles,,garbage truck
 towtruck,tow truck,拖车,/təʊ trʌk/,vehicles,,tow truck
 tide,tide,潮汐,/taɪd/,ocean,,tide
-splash,splash,浪花,/splæʃ/,ocean,,splash
-nest,nest,鸟巢,/nest/,birds,,nest
+splash,splash,浪花,/splæʃ/,ocean,1f4a6,splash
+nest,nest,鸟巢,/nest/,birds,1faba,nest
 busstop,bus stop,公交车站,/bʌs stɒp/,city,,bus stop
 taxistand,taxi stand,出租车站,/ˈtæksi stænd/,city,,taxi stand
 city-square,city square,广场,/ˌsɪti ˈskweə/,city,,city square

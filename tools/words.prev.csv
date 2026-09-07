@@ -299,105 +299,6 @@ sleepy,sleepy,困了,/ˈsliːpi/,emotions,1f634,
 love,love,爱,/lʌv/,emotions,1f60d,
 think,think,思考,/θɪŋk/,emotions,1f914,
 silly,silly,傻乎乎,/ˈsɪli/,emotions,1f92a,
-golden,golden,金色,/ˈɡəʊldən/,colors,,golden
-silver,silver,银色,/ˈsɪlvə/,colors,,silver
-elbow,elbow,手肘,/ˈelbəʊ/,body,,elbow
-neck,neck,脖子,/nek/,body,,neck
-chest,chest,胸部,/tʃest/,body,,chest
-waist,waist,腰部,/weɪst/,body,,waist
-pomegranate,pomegranate,石榴,/ˈpɒmɪɡrænɪt/,fruits,,pomegranate
-fig,fig,无花果,/fɪɡ/,fruits,,fig
-guava,guava,番石榴,/ˈɡwɑːvə/,fruits,,guava
-papaya,papaya,木瓜,/pəˈpaɪə/,fruits,,papaya
-lychee,lychee,荔枝,/ˌliːˈtʃiː/,fruits,,lychee
-longan,longan,龙眼,/ˈlɒŋɡən/,fruits,,longan
-domino,domino,多米诺骨牌,/ˈdɒmɪnəʊ/,toys,,domino
-checkers,checkers,跳棋,/ˈtʃekəz/,toys,,checkers
-jumprope,jump rope,跳绳,/dʒʌmp rəʊp/,toys,,jump rope
-hulahoop,hula hoop,呼啦圈,/ˈhuːlə huːp/,toys,,hula hoop
-button,button,纽扣,/ˈbʌtn/,clothes,,button
-zipper,zipper,拉链,/ˈzɪpə/,clothes,,zipper
-pocket,pocket,口袋,/ˈpɒkɪt/,clothes,,pocket
-sleeve,sleeve,袖子,/sliːv/,clothes,,sleeve
-doorbell,doorbell,门铃,/ˈdɔːbel/,home,,doorbell
-bench,bench,长凳,/bentʃ/,home,,bench
-milktea,milk tea,奶茶,/mɪlk tiː/,drinks,,milk tea
-icedtea,iced tea,冰茶,/aɪst tiː/,drinks,,iced tea
-toffee,toffee,太妃糖,/ˈtɒfi/,desserts,,toffee
-sorbet,sorbet,雪葩,/ˈsɔːbeɪ/,desserts,,sorbet
-recess,recess,课间休息,/rɪˈses/,school,,recess
-class,class,班级,/klɑːs/,school,,class
-dimsum,dim sum,广式点心,/ˌdɪm ˈsʌm/,food,,dim sum
-hotpot,hot pot,火锅,/hɒt pɒt/,food,,hot pot
-yam,yam,山药,/jæm/,vegetables,,yam
-taro,taro,芋头,/ˈtɑːrəʊ/,vegetables,,taro
-friend,friend,朋友,/frend/,family,,friend
-bestfriend,best friend,最好的朋友,/best frend/,family,,best friend
-teacup,teacup,茶杯,/ˈtiːkʌp/,kitchen,,teacup
-dish,dish,碟子,/dɪʃ/,kitchen,,dish
-Monday,Monday,星期一,/ˈmʌndeɪ/,time,,Monday
-Tuesday,Tuesday,星期二,/ˈtjuːzdeɪ/,time,,Tuesday
-Wednesday,Wednesday,星期三,/ˈwenzdeɪ/,time,,Wednesday
-Thursday,Thursday,星期四,/ˈθɜːzdeɪ/,time,,Thursday
-Friday,Friday,星期五,/ˈfraɪdeɪ/,time,,Friday
-Saturday,Saturday,星期六,/ˈsætədeɪ/,time,,Saturday
-Sunday,Sunday,星期日,/ˈsʌndeɪ/,time,,Sunday
-storm,storm,风暴,/stɔːm/,nature,,storm
-sunshine,sunshine,阳光,/ˈsʌnʃaɪn/,nature,,sunshine
-lighthouse,lighthouse,灯塔,/ˈlaɪthaʊs/,places,,lighthouse
-harbor,harbor,海港,/ˈhɑːbə/,places,,harbor
-garbagetruck,garbage truck,垃圾车,/ˈɡɑːbɪdʒ trʌk/,vehicles,,garbage truck
-towtruck,tow truck,拖车,/təʊ trʌk/,vehicles,,tow truck
-tide,tide,潮汐,/taɪd/,ocean,,tide
-splash,splash,浪花,/splæʃ/,ocean,,splash
-nest,nest,鸟巢,/nest/,birds,,nest
-busstop,bus stop,公交车站,/bʌs stɒp/,city,,bus stop
-taxistand,taxi stand,出租车站,/ˈtæksi stænd/,city,,taxi stand
-city-square,square,广场,/skweə/,city,,square
-street,street,街道,/striːt/,city,,street
-willow,willow,柳树,/ˈwɪləʊ/,forest,,willow
-vine,vine,藤蔓,/vaɪn/,forest,,vine
-acorn,acorn,橡子,/ˈeɪkɔːn/,forest,,acorn
-pine,pine,松树,/paɪn/,forest,,pine
-herd,herd,兽群,/hɜːd/,farm,,herd
-termite,termite,白蚁,/ˈtɜːmaɪt/,insects,,termite
-moth,moth,飞蛾,/mɒθ/,insects,,moth
-flea,flea,跳蚤,/fliː/,insects,,flea
-locust,locust,蝗虫,/ˈləʊkəst/,insects,,locust
-robin,robin,知更鸟,/ˈrɒbɪn/,birds,,robin
-quail,quail,鹌鹑,/kweɪl/,birds,,quail
-toucan,toucan,巨嘴鸟,/ˈtuːkən/,birds,,toucan
-stingray,stingray,魟鱼,/ˈstɪŋreɪ/,ocean,,stingray
-swordfish,swordfish,剑鱼,/ˈsɔːdfɪʃ/,ocean,,swordfish
-harmonica,harmonica,口琴,/ˌhɑːməˈkɒnɪk/,music,,harmonica
-ukulele,ukulele,尤克里里,/ˌjuːkəˈleɪli/,music,,ukulele
-sorethroat,sore throat,嗓子疼,/sɔː θrəʊt/,health,,sore throat
-runnynose,runny nose,流鼻涕,/ˈrʌni nəʊz/,health,,runny nose
-toothache,toothache,牙疼,/ˈtuːθeɪk/,health,,toothache
-firstaid,first aid,急救,/fɜːst eɪd/,health,,first aid
-dancer,dancer,舞蹈家,/ˈdɑːnsə/,jobs,,dancer
-fisherman,fisherman,渔夫,/ˈfɪʃəmən/,jobs,,fisherman
-smartspeaker,smart speaker,智能音箱,/smɑːt ˈspiːkə/,electronics,,smart speaker
-powerbank,power bank,充电宝,/ˈpaʊə bæŋk/,electronics,,power bank
-evilqueen,evil queen,恶毒王后,/iːvl kwiːn/,story,,evil queen
-magicmirror,magic mirror,魔镜,/ˈmædʒɪk ˈmɪrə/,story,,magic mirror
-goldenegg,golden egg,金蛋,/ˈɡəʊldən eɡ/,story,,golden egg
-bigbadwolf,big bad wolf,大灰狼,/ˌbɪɡ bæd ˈwʊlf/,story,,big bad wolf
-happyending,happy ending,圆满结局,/ˈhæpi ˈendɪŋ/,story,,happy ending
-relieved,relieved,如释重负,/rɪˈliːvd/,emotions,1f60c,
-tasty,tasty,好吃极了,/ˈteɪsti/,emotions,1f60b,
-drowsy,drowsy,昏昏欲睡,/ˈdraʊzi/,emotions,1f62a,
-drool,drool,流口水,/druːl/,emotions,1f924,
-masked,masked,戴口罩,/mɑːskt/,emotions,1f637,
-unamused,unamused,无语,/ˌʌnəˈmjuːzd/,emotions,1f612,
-rolleyes,roll eyes,翻白眼,/rəʊl aɪz/,emotions,1f643,
-smirk,smirk,得意地笑,/smɜːk/,emotions,1f60f,
-pensive,pensive,心事重重,/ˈpensɪv/,emotions,1f614,
-weary,weary,疲惫不堪,/ˈwɪəri/,emotions,1f629,
-cube,cube,正方体,/kjuːb/,shapes,,cube
-cone,cone,圆锥体,/kəʊn/,shapes,,cone
-sw-noun,noun,名词,/naʊn/,sightwords,,noun
-sw-verb,verb,动词,/vɜːb/,sightwords,,verb
 zero,zero,零,/ˈzɪərəʊ/,numbers,,0
 eleven,eleven,十一,/ɪˈlevn/,numbers,,11
 twelve,twelve,十二,/twelv/,numbers,,12
@@ -670,7 +571,7 @@ blossom,blossom,小雏菊,/ˈblɒsəm/,nature,1f33c,
 hibiscus,hibiscus,木槿花,/hɪˈbɪskəs/,nature,1f33a,
 chestnut,chestnut,栗子,/ˈtʃesnʌt/,nature,1f330,
 palmtree,palm tree,椰子树,/pɑːm triː/,nature,1f334,
-evergreen,evergreen,松树,/ˈevəɡriːn/,nature,1f332,
+evergreen,evergreen,常绿树,/ˈevəɡriːn/,nature,1f332,
 desert,desert,沙漠,/ˈdezət/,nature,1f3dc_fe0f,
 island,island,海岛,/ˈaɪlənd/,nature,1f3dd_fe0f,
 nationalpark,national park,国家公园,/ˈnæʃnəl pɑːk/,nature,1f3de_fe0f,
@@ -789,7 +690,7 @@ Denmark,Denmark,丹麦,/ˈdenmɑːk/,countries,1f1e9_1f1f0,
 Finland,Finland,芬兰,/ˈfɪnlənd/,countries,1f1eb_1f1ee,
 Portugal,Portugal,葡萄牙,/ˈpɔːtʃʊɡl/,countries,1f1f5_1f1f9,
 Greece,Greece,希腊,/ɡriːs/,countries,1f1ec_1f1f7,
-Turkey,Turkey,土耳其,/ˈtɜːki/,countries,1f1f9_1f1f7,
+turkey-country,Turkey,土耳其,/ˈtɜːki/,countries,1f1f9_1f1f7,
 Argentina,Argentina,阿根廷,/ˌɑːdʒənˈtiːnə/,countries,1f1e6_1f1f7,
 SouthAfrica,South Africa,南非,/saʊθ ˈæfrɪkə/,countries,1f1ff_1f1e6,
 Kenya,Kenya,肯尼亚,/ˈkenjə/,countries,1f1f0_1f1ea,
@@ -1257,7 +1158,7 @@ sw-sometimes,sometimes,有时,/ˈsʌmtaɪmz/,sightwords,,sometimes
 sw-talk,talk,说话,/tɔːk/,sightwords,,talk
 sw-list,list,清单,/lɪst/,sightwords,,list
 sw-song,song,歌曲,/sɒŋ/,sightwords,,song
-sw-being,being,生物,/ˈbiːɪŋ/,sightwords,,being
+sw-being,being,存在,/ˈbiːɪŋ/,sightwords,,being
 sw-idea,idea,主意,/aɪˈdɪə/,sightwords,,idea
 sw-body,body,身体,/ˈbɒdi/,sightwords,,body
 sw-color,color,颜色,/ˈkʌlə(r)/,sightwords,,color
@@ -1376,7 +1277,7 @@ ag-wag,wag,摇（尾巴）,/wæɡ/,wordfamilies,,wag
 ag-lag,lag,落在后面,/læɡ/,wordfamilies,,lag
 am-ham,ham,火腿,/hæm/,wordfamilies,,ham
 am-ram,ram,公羊,/ræm/,wordfamilies,,ram
-am-yam,yam,红薯,/jæm/,wordfamilies,,yam
+am-yam,yam,山药,/jæm/,wordfamilies,,yam
 am-dam,dam,水坝,/dæm/,wordfamilies,,dam
 ab-cab,cab,出租车,/kæb/,wordfamilies,,cab
 ab-lab,lab,实验室,/læb/,wordfamilies,,lab
@@ -1999,3 +1900,102 @@ cv-whereareyougoing,where are you going,你要去哪里,/weə ɑː juː ˈɡəʊ
 cv-Imgoinghome,I'm going home,我要回家,/aɪm ˈɡəʊɪŋ həʊm/,conversation,,I'm going home
 cv-whatareyoudoing,what are you doing,你在做什么,/wɒt ɑː juː ˈduːɪŋ/,conversation,,what are you doing
 cv-Imreading,I'm reading,我在看书,/aɪm ˈriːdɪŋ/,conversation,,I'm reading
+golden,golden,金色,/ˈɡəʊldən/,colors,,golden
+silver,silver,银色,/ˈsɪlvə/,colors,,silver
+elbow,elbow,手肘,/ˈelbəʊ/,body,,elbow
+neck,neck,脖子,/nek/,body,,neck
+chest,chest,胸部,/tʃest/,body,,chest
+waist,waist,腰部,/weɪst/,body,,waist
+pomegranate,pomegranate,石榴,/ˈpɒmɪɡrænɪt/,fruits,,pomegranate
+fig,fig,无花果,/fɪɡ/,fruits,,fig
+guava,guava,番石榴,/ˈɡwɑːvə/,fruits,,guava
+papaya,papaya,木瓜,/pəˈpaɪə/,fruits,,papaya
+lychee,lychee,荔枝,/ˌliːˈtʃiː/,fruits,,lychee
+longan,longan,龙眼,/ˈlɒŋɡən/,fruits,,longan
+domino,domino,多米诺骨牌,/ˈdɒmɪnəʊ/,toys,,domino
+checkers,checkers,跳棋,/ˈtʃekəz/,toys,,checkers
+jumprope,jump rope,跳绳,/dʒʌmp rəʊp/,toys,,jump rope
+hulahoop,hula hoop,呼啦圈,/ˈhuːlə huːp/,toys,,hula hoop
+button,button,纽扣,/ˈbʌtn/,clothes,,button
+zipper,zipper,拉链,/ˈzɪpə/,clothes,,zipper
+pocket,pocket,口袋,/ˈpɒkɪt/,clothes,,pocket
+sleeve,sleeve,袖子,/sliːv/,clothes,,sleeve
+doorbell,doorbell,门铃,/ˈdɔːbel/,home,,doorbell
+bench,bench,长凳,/bentʃ/,home,,bench
+milktea,milk tea,奶茶,/mɪlk tiː/,drinks,,milk tea
+icedtea,iced tea,冰茶,/aɪst tiː/,drinks,,iced tea
+toffee,toffee,太妃糖,/ˈtɒfi/,desserts,,toffee
+sorbet,sorbet,雪葩,/ˈsɔːbeɪ/,desserts,,sorbet
+recess,recess,课间休息,/rɪˈses/,school,,recess
+class,class,班级,/klɑːs/,school,,class
+dimsum,dim sum,广式点心,/ˌdɪm ˈsʌm/,food,,dim sum
+hotpot,hot pot,火锅,/hɒt pɒt/,food,,hot pot
+yam,yam,山药,/jæm/,vegetables,,yam
+taro,taro,芋头,/ˈtɑːrəʊ/,vegetables,,taro
+friend,friend,朋友,/frend/,family,,friend
+bestfriend,best friend,最好的朋友,/best frend/,family,,best friend
+teacup,teacup,茶杯,/ˈtiːkʌp/,kitchen,,teacup
+dish,dish,碟子,/dɪʃ/,kitchen,,dish
+Monday,Monday,星期一,/ˈmʌndeɪ/,time,,Monday
+Tuesday,Tuesday,星期二,/ˈtjuːzdeɪ/,time,,Tuesday
+Wednesday,Wednesday,星期三,/ˈwenzdeɪ/,time,,Wednesday
+Thursday,Thursday,星期四,/ˈθɜːzdeɪ/,time,,Thursday
+Friday,Friday,星期五,/ˈfraɪdeɪ/,time,,Friday
+Saturday,Saturday,星期六,/ˈsætədeɪ/,time,,Saturday
+Sunday,Sunday,星期日,/ˈsʌndeɪ/,time,,Sunday
+storm,storm,风暴,/stɔːm/,nature,,storm
+sunshine,sunshine,阳光,/ˈsʌnʃaɪn/,nature,,sunshine
+lighthouse,lighthouse,灯塔,/ˈlaɪthaʊs/,places,,lighthouse
+harbor,harbor,海港,/ˈhɑːbə/,places,,harbor
+garbagetruck,garbage truck,垃圾车,/ˈɡɑːbɪdʒ trʌk/,vehicles,,garbage truck
+towtruck,tow truck,拖车,/təʊ trʌk/,vehicles,,tow truck
+tide,tide,潮汐,/taɪd/,ocean,,tide
+splash,splash,浪花,/splæʃ/,ocean,,splash
+nest,nest,鸟巢,/nest/,birds,,nest
+busstop,bus stop,公交车站,/bʌs stɒp/,city,,bus stop
+taxistand,taxi stand,出租车站,/ˈtæksi stænd/,city,,taxi stand
+city-square,city square,广场,/ˌsɪti ˈskweə/,city,,city square
+street,street,街道,/striːt/,city,,street
+willow,willow,柳树,/ˈwɪləʊ/,forest,,willow
+vine,vine,藤蔓,/vaɪn/,forest,,vine
+acorn,acorn,橡子,/ˈeɪkɔːn/,forest,,acorn
+pine,pine,松树,/paɪn/,forest,,pine
+herd,herd,兽群,/hɜːd/,farm,,herd
+termite,termite,白蚁,/ˈtɜːmaɪt/,insects,,termite
+moth,moth,飞蛾,/mɒθ/,insects,,moth
+flea,flea,跳蚤,/fliː/,insects,,flea
+locust,locust,蝗虫,/ˈləʊkəst/,insects,,locust
+robin,robin,知更鸟,/ˈrɒbɪn/,birds,,robin
+quail,quail,鹌鹑,/kweɪl/,birds,,quail
+toucan,toucan,巨嘴鸟,/ˈtuːkən/,birds,,toucan
+stingray,stingray,魟鱼,/ˈstɪŋreɪ/,ocean,,stingray
+swordfish,swordfish,剑鱼,/ˈsɔːdfɪʃ/,ocean,,swordfish
+harmonica,harmonica,口琴,/ˌhɑːməˈkɒnɪk/,music,,harmonica
+ukulele,ukulele,尤克里里,/ˌjuːkəˈleɪli/,music,,ukulele
+sorethroat,sore throat,嗓子疼,/sɔː θrəʊt/,health,,sore throat
+runnynose,runny nose,流鼻涕,/ˈrʌni nəʊz/,health,,runny nose
+toothache,toothache,牙疼,/ˈtuːθeɪk/,health,,toothache
+firstaid,first aid,急救,/fɜːst eɪd/,health,,first aid
+dancer,dancer,舞蹈家,/ˈdɑːnsə/,jobs,,dancer
+fisherman,fisherman,渔夫,/ˈfɪʃəmən/,jobs,,fisherman
+smartspeaker,smart speaker,智能音箱,/smɑːt ˈspiːkə/,electronics,,smart speaker
+powerbank,power bank,充电宝,/ˈpaʊə bæŋk/,electronics,,power bank
+evilqueen,evil queen,恶毒王后,/iːvl kwiːn/,story,,evil queen
+magicmirror,magic mirror,魔镜,/ˈmædʒɪk ˈmɪrə/,story,,magic mirror
+goldenegg,golden egg,金蛋,/ˈɡəʊldən eɡ/,story,,golden egg
+bigbadwolf,big bad wolf,大灰狼,/ˌbɪɡ bæd ˈwʊlf/,story,,big bad wolf
+happyending,happy ending,圆满结局,/ˈhæpi ˈendɪŋ/,story,,happy ending
+relieved,relieved,如释重负,/rɪˈliːvd/,emotions,1f60c,
+tasty,tasty,好吃极了,/ˈteɪsti/,emotions,1f60b,
+drowsy,drowsy,昏昏欲睡,/ˈdraʊzi/,emotions,1f62a,
+drool,drool,流口水,/druːl/,emotions,1f924,
+masked,masked,戴口罩,/mɑːskt/,emotions,1f637,
+unamused,unamused,无语,/ˌʌnəˈmjuːzd/,emotions,1f612,
+rolleyes,roll eyes,翻白眼,/rəʊl aɪz/,emotions,1f643,
+smirk,smirk,得意地笑,/smɜːk/,emotions,1f60f,
+pensive,pensive,心事重重,/ˈpensɪv/,emotions,1f614,
+weary,weary,疲惫不堪,/ˈwɪəri/,emotions,1f629,
+cube,cube,正方体,/kjuːb/,shapes,,cube
+cone,cone,圆锥体,/kəʊn/,shapes,,cone
+sw-noun,noun,名词,/naʊn/,sightwords,,noun
+sw-verb,verb,动词,/vɜːb/,sightwords,,verb
