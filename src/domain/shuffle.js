@@ -14,3 +14,13 @@ export function shuffle(arr, rng = Math.random) {
 export function pickOne(arr, rng = Math.random) {
   return arr[Math.floor(rng() * arr.length)]
 }
+
+/**
+ * 随机取一个，尽量避开 excludeKey（如上一把的结果），保证连续两次不重样。
+ * 只剩这一个可取时退回全量池，永不落空。
+ */
+export function pickOneExcept(arr, excludeKey, keyOf = (x) => x, rng = Math.random) {
+  if (!arr.length) return undefined
+  const fresh = excludeKey == null ? arr : arr.filter((x) => keyOf(x) !== excludeKey)
+  return pickOne(fresh.length ? fresh : arr, rng)
+}

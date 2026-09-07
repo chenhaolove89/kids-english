@@ -5,6 +5,7 @@
 import { STAGES, SUBJECTS, getLesson, lessonsForStage, normalizeStage, LESSONS } from '../content/catalog.js'
 import { isCategoryHidden } from '../content/lowAge.js'
 import { getStorage } from '../platform/storage.js'
+import { pickOneExcept } from '../domain/shuffle.js'
 
 export { STAGES, SUBJECTS, normalizeStage }
 
@@ -76,7 +77,7 @@ export function nextUpLesson(stageId, subjectId) {
   return pool.find((l) => !done.has(l.id)) || pool[0]
 }
 
-/** 首页「今天学什么」：每个科目一行 { subject, next, challenge } */
+/** 首页「今天学什么」：每个科目一行 { subject, next, challenge, randomCount } */
 export function stageQuickRows(stageId) {
   const st = normalizeStage(stageId)
   return SUBJECTS.map((subj) => {
@@ -85,8 +86,19 @@ export function stageQuickRows(stageId) {
       subject: subj,
       next: nextUpLesson(st, subj.id),
       challenge: ls.find((l) => l.kind === 'challenge') || null,
+      // 随机来一课的可选池大小（0 时该科不出现骰子按钮）
+      randomCount: ls.length,
     }
   })
+}
+
+/**
+ * 随机来一课：某阶段某科目可见课程里随机抽一课（学一学/挑战都在池内），
+ * excludeId 传上一把抽中的课，避免连续重样。
+ */
+export function randomLesson(stageId, subjectId, excludeId) {
+  const ls = lessonsForStage(normalizeStage(stageId), subjectId).filter(isVisible)
+  return pickOneExcept(ls, excludeId, (l) => l.id) || null
 }
 
 /** 全部对小孩可见的课程（低龄模式过滤后），家长页统计用同一口径 */

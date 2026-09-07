@@ -71,7 +71,7 @@
           <text class="quick-next" v-if="row.next">{{ row.next.title }}</text>
         </view>
         <view class="quick-btns">
-          <!-- 不识字也能懂：📖=学一学，⚡=挑战/练习 -->
+          <!-- 不识字也能懂：📖=学一学，⚡=挑战/练习，🎲=随机来一课 -->
           <view
             v-if="row.next"
             class="icon-btn"
@@ -86,6 +86,14 @@
             @tap="goLesson(row.challenge)"
           >
             <text class="icon-btn-emoji">⚡</text>
+          </view>
+          <view
+            v-if="row.randomCount"
+            class="icon-btn"
+            :style="{ background: row.subject.color + '26' }"
+            @tap="goRandom(row.subject.id)"
+          >
+            <text class="icon-btn-emoji">🎲</text>
           </view>
         </view>
       </view>
@@ -110,7 +118,7 @@ import { updatePrefs } from '@/content/lowAge.js'
 import { allowNavigate } from '@/platform/nav.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
-import { stageQuickRows, continueTarget, lessonUrl, normalizeStage, STAGES } from '@/services/curriculum.js'
+import { stageQuickRows, continueTarget, lessonUrl, normalizeStage, STAGES, randomLesson } from '@/services/curriculum.js'
 
 const stage = ref('qimeng')
 const quickRows = ref([])
@@ -118,6 +126,8 @@ const resume = ref(null)
 const reviewDue = ref(0)
 const summary = ref({ totalStars: 0, lessonsCompleted: 0, learnDoneCount: 0 })
 const stages = STAGES
+// 每科上一把随机抽中的课：连点骰子不重样
+const lastRandom = ref({})
 
 const resumeModeText = computed(() => {
   if (!resume.value) return ''
@@ -132,6 +142,7 @@ function refresh() {
   const store = getStorage()
   const prefs = store.get('prefs', {})
   stage.value = normalizeStage(prefs?.stage || stage.value)
+  lastRandom.value = prefs?.lastRandom || {}
   quickRows.value = stageQuickRows(stage.value)
   resume.value = continueTarget()
   summary.value = getProgressService().summary()
@@ -156,6 +167,18 @@ function goLesson(lesson) {
   const url = lessonUrl(lesson)
   // 连点节流：防止 navigateTo 叠出多层页面
   if (url && allowNavigate()) uni.navigateTo({ url })
+}
+
+/** 随机来一课：当前阶段该科随机抽一课，记录上把结果避免连续重样 */
+function goRandom(subjectId) {
+  if (!allowNavigate()) return
+  const lesson = randomLesson(stage.value, subjectId, lastRandom.value[subjectId])
+  if (!lesson) return
+  const next = { ...lastRandom.value, [subjectId]: lesson.id }
+  lastRandom.value = next
+  updatePrefs({ lastRandom: next })
+  const url = lessonUrl(lesson)
+  if (url) uni.navigateTo({ url })
 }
 
 function goResume() {
@@ -432,7 +455,7 @@ function goMap() {
   gap: 18rpx;
   flex-shrink: 0;
 }
-/* 图标圆钮：📖 学一学 / ⚡ 挑战，孩子看图点 */
+/* 图标圆钮：📖 学一学 / ⚡ 挑战 / 🎲 随机来一课，孩子看图点 */
 .icon-btn {
   width: 88rpx;
   height: 88rpx;
