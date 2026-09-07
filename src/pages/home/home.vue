@@ -54,6 +54,7 @@ function go(s) {
 <style scoped>
 .page {
   min-height: 100vh;
+  min-height: 100svh;
   padding: calc(40rpx + env(safe-area-inset-top)) 44rpx calc(50rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
@@ -68,6 +69,11 @@ function go(s) {
 .logo {
   width: 130rpx;
   height: 130rpx;
+  flex-shrink: 0;
+}
+.title-wrap {
+  flex: 1;
+  min-width: 0;
 }
 .title {
   display: block;
@@ -80,6 +86,9 @@ function go(s) {
   margin-top: 10rpx;
   font-size: 30rpx;
   color: #a2917d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .subjects {
   display: flex;
@@ -116,6 +125,7 @@ function go(s) {
   margin-top: 12rpx;
   font-size: 27rpx;
   color: #a89d8e;
+  white-space: nowrap;
 }
 .footer {
   flex: 1;

@@ -192,6 +192,9 @@ function goBack() {
   font-size: 40rpx;
   font-weight: 800;
   color: #4a3f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .score {
   min-width: 84rpx;
@@ -270,6 +273,22 @@ function goBack() {
 }
 .shake {
   animation: shake 0.45s;
+}
+/* 矮屏（iPhone SE 568px 等）压缩纵向空间，避免答题区被顶出首屏 */
+@media (max-height: 620px) {
+  .option {
+    height: 300rpx;
+  }
+  .options-text .option {
+    height: 230rpx;
+  }
+  .prompt {
+    margin-top: 14rpx;
+    padding: 26rpx;
+  }
+  .prompt-speaker {
+    font-size: 72rpx;
+  }
 }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }

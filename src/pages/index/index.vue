@@ -91,9 +91,12 @@ function goBack() {
 .title {
   flex: 1;
   text-align: center;
-  font-size: 46rpx;
+  font-size: 42rpx;
   font-weight: 800;
   color: #4a3f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .total {
   min-width: 84rpx;
@@ -125,6 +128,7 @@ function goBack() {
   gap: 16rpx;
   padding: 14rpx 30rpx 14rpx 14rpx;
   border-radius: 40rpx;
+  min-width: 0;
 }
 .level-icon {
   width: 60rpx;
@@ -135,9 +139,10 @@ function goBack() {
   font-weight: 800;
 }
 .level-quiz {
-  padding: 16rpx 34rpx;
+  padding: 16rpx 30rpx;
   border-radius: 40rpx;
   box-shadow: 0 8rpx 20rpx rgba(120, 90, 40, 0.12);
+  flex-shrink: 0;
 }
 .level-quiz:active {
   transform: scale(0.95);
@@ -146,6 +151,7 @@ function goBack() {
   color: #ffffff;
   font-size: 30rpx;
   font-weight: 800;
+  white-space: nowrap;
 }
 .grid {
   display: flex;
@@ -173,19 +179,29 @@ function goBack() {
   margin-top: 14rpx;
   font-size: 30rpx;
   font-weight: 800;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .cat-en {
   margin-top: 4rpx;
   font-size: 21rpx;
+  line-height: 1.2;
+  text-align: center;
   color: #8a8073;
   font-weight: 600;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .cat-count {
   margin-top: 6rpx;
   font-size: 21rpx;
   color: #a89d8e;
 }
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .cat-card {
     width: calc(33.33% - 19rpx);
   }

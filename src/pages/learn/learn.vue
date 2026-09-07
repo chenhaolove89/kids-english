@@ -15,7 +15,7 @@
             <view class="img-wrap">
               <image class="word-img" :src="it.image" mode="aspectFit" />
             </view>
-            <text class="word-en" :style="{ color: theme.color }">{{ it.main }}</text>
+            <text class="word-en" :style="{ color: theme.color, fontSize: enSize(it.main) }">{{ it.main }}</text>
             <text class="word-phonetic">{{ it.phon }}</text>
             <text class="word-zh">{{ it.sub }}</text>
             <view class="tap-hint">
@@ -88,6 +88,16 @@ function speakIdx(i) {
   const it = items.value[i]
   if (it) play(it.audio)
 }
+
+// 英文长短不一：单词 88rpx，长短语逐步缩号，保证最长词例（20 字符）单行放下
+function enSize(text) {
+  const len = (text || '').length
+  if (len <= 7) return '88rpx'
+  if (len <= 10) return '72rpx'
+  if (len <= 14) return '56rpx'
+  if (len <= 17) return '46rpx'
+  return '40rpx'
+}
 function speakExtra(i) {
   const it = items.value[i]
   if (it && it.extraAudio) play(it.extraAudio)
@@ -110,6 +120,7 @@ function goBack() {
 <style scoped>
 .page {
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -141,6 +152,9 @@ function goBack() {
   font-size: 40rpx;
   font-weight: 800;
   color: #4a3f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .progress {
   min-width: 84rpx;
@@ -148,6 +162,7 @@ function goBack() {
   font-size: 32rpx;
   font-weight: 700;
   color: #4a3f35;
+  flex-shrink: 0;
 }
 .swiper {
   flex: 1;
@@ -198,6 +213,9 @@ function goBack() {
   margin-top: 30rpx;
   font-size: 88rpx;
   font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  align-self: stretch;
 }
 .word-pinyin {
   margin-top: 20rpx;
@@ -221,9 +239,13 @@ function goBack() {
   background: #f7f3ec;
 }
 .word-zh {
+  margin-top: 16rpx;
   font-size: 46rpx;
   color: #4a3f35;
   font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  align-self: stretch;
 }
 .word-speaker {
   font-size: 34rpx;

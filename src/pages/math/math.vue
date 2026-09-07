@@ -71,6 +71,7 @@ function goBack() {
   align-items: center;
   justify-content: center;
   box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
+  flex-shrink: 0;
 }
 .back-icon {
   font-size: 44rpx;
@@ -80,9 +81,12 @@ function goBack() {
 .title {
   flex: 1;
   text-align: center;
-  font-size: 46rpx;
+  font-size: 42rpx;
   font-weight: 800;
   color: #4a3f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .total {
   min-width: 84rpx;
@@ -90,6 +94,7 @@ function goBack() {
   font-size: 28rpx;
   font-weight: 700;
   color: #a2917d;
+  flex-shrink: 0;
 }
 .tip {
   margin: 16rpx 4rpx 30rpx;
@@ -100,7 +105,7 @@ function goBack() {
 }
 .level-card {
   border-radius: 48rpx;
-  padding: 40rpx 36rpx;
+  padding: 40rpx 32rpx;
   margin-bottom: 30rpx;
   display: flex;
   align-items: center;
@@ -114,6 +119,8 @@ function goBack() {
   display: flex;
   align-items: center;
   gap: 26rpx;
+  flex: 1;
+  min-width: 0;
 }
 .level-num {
   width: 96rpx;
@@ -122,16 +129,21 @@ function goBack() {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .level-num-text {
   color: #ffffff;
   font-size: 48rpx;
   font-weight: 800;
 }
+.level-info {
+  min-width: 0;
+}
 .level-name {
   display: block;
   font-size: 40rpx;
   font-weight: 800;
+  white-space: nowrap;
 }
 .level-desc {
   display: block;
@@ -139,10 +151,15 @@ function goBack() {
   font-size: 26rpx;
   color: #8a8073;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .go-icon {
   font-size: 44rpx;
   color: #c9bba7;
   font-weight: 700;
+  flex-shrink: 0;
+  margin-left: 16rpx;
 }
 </style>

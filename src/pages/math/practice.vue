@@ -63,7 +63,7 @@
         <!-- 数字算式 / 数列 / 听音 -->
         <view v-else class="equation-wrap">
           <text v-if="q.kind === 'listen'" class="listen-icon">🔊</text>
-          <text v-else class="equation">{{ q.display }}</text>
+          <text v-else class="equation" :class="{ 'equation-seq': q.kind === 'sequence' }">{{ q.display }}</text>
         </view>
       </view>
 
@@ -339,6 +339,7 @@ function goBack() {
 <style scoped>
 .page {
   min-height: 100vh;
+  min-height: 100dvh;
   background: #fff8ec;
   box-sizing: border-box;
   padding-bottom: env(safe-area-inset-bottom);
@@ -369,6 +370,9 @@ function goBack() {
   font-size: 40rpx;
   font-weight: 800;
   color: #4a3f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .score {
   min-width: 84rpx;
@@ -406,13 +410,17 @@ function goBack() {
   font-size: 64rpx;
   line-height: 1.15;
 }
+/* 看图加/减法里两组圆点空间紧张，略缩保证并排 */
+.groups .dot-emoji {
+  font-size: 54rpx;
+}
 .dot-emoji.faded {
   opacity: 0.25;
 }
 .groups {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 20rpx;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -420,12 +428,13 @@ function goBack() {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12rpx;
-  max-width: 260rpx;
+  gap: 10rpx;
+  max-width: 280rpx;
 }
 .op-symbol {
-  font-size: 80rpx;
+  font-size: 72rpx;
   font-weight: 800;
+  flex-shrink: 0;
 }
 .compare {
   display: flex;
@@ -435,6 +444,7 @@ function goBack() {
 }
 .compare-card {
   flex: 1;
+  min-width: 0;
   min-height: 240rpx;
   border-radius: 36rpx;
   background: #fff8ec;
@@ -470,10 +480,16 @@ function goBack() {
   justify-content: center;
 }
 .equation {
-  font-size: 110rpx;
+  font-size: 96rpx;
   font-weight: 800;
   color: #4a3f35;
-  letter-spacing: 8rpx;
+  letter-spacing: 2rpx;
+  white-space: nowrap;
+}
+/* 数列题「10  12  ?  16」字符串最长，单独降号保证单行 */
+.equation-seq {
+  font-size: 68rpx;
+  letter-spacing: 0;
 }
 .listen-icon {
   font-size: 130rpx;

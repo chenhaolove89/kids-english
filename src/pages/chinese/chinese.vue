@@ -62,6 +62,7 @@ function goBack() {
 <style scoped>
 .page {
   min-height: 100vh;
+  min-height: 100svh;
   padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
@@ -79,6 +80,7 @@ function goBack() {
   align-items: center;
   justify-content: center;
   box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
+  flex-shrink: 0;
 }
 .back-icon {
   font-size: 44rpx;
@@ -91,6 +93,9 @@ function goBack() {
   font-size: 42rpx;
   font-weight: 800;
   color: #4a3f35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .total {
   min-width: 84rpx;
@@ -98,6 +103,7 @@ function goBack() {
   font-size: 28rpx;
   font-weight: 700;
   color: #a2917d;
+  flex-shrink: 0;
 }
 .tip {
   margin: 16rpx 4rpx 30rpx;
@@ -108,7 +114,7 @@ function goBack() {
 }
 .level-card {
   border-radius: 48rpx;
-  padding: 36rpx 36rpx;
+  padding: 36rpx 32rpx;
   margin-bottom: 30rpx;
   display: flex;
   align-items: center;
@@ -118,30 +124,40 @@ function goBack() {
 .level-left {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 22rpx;
+  flex: 1;
+  min-width: 0;
 }
 .level-icon {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx;
+  height: 96rpx;
+  flex-shrink: 0;
+}
+.level-info {
+  min-width: 0;
 }
 .level-name {
   display: block;
-  font-size: 40rpx;
+  font-size: 38rpx;
   font-weight: 800;
+  white-space: nowrap;
 }
 .level-chars {
   display: block;
   margin-top: 8rpx;
-  font-size: 26rpx;
+  font-size: 25rpx;
   color: #8a8073;
   font-weight: 600;
+  white-space: nowrap;
 }
 .level-btns {
   display: flex;
-  gap: 20rpx;
+  gap: 16rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
 }
 .level-btn {
-  padding: 18rpx 32rpx;
+  padding: 16rpx 26rpx;
   border-radius: 40rpx;
   box-shadow: 0 8rpx 18rpx rgba(120, 90, 40, 0.14);
 }
@@ -152,9 +168,10 @@ function goBack() {
   color: #ffffff;
 }
 .level-btn-text {
-  font-size: 30rpx;
+  font-size: 29rpx;
   font-weight: 800;
   color: #ffffff;
+  white-space: nowrap;
 }
 .level-btn.quiz {
   background: #ffffff;
