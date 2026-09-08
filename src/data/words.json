@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-07T16:20:36.538Z",
+ "generatedAt": "2026-09-08T00:02:40.252Z",
  "levels": [
   {
    "id": 1,
@@ -5379,9 +5379,9 @@
      "en": "sunshine",
      "zh": "阳光",
      "phonetic": "/ˈsʌnʃaɪn/",
-     "image": "/static/img/sunshine.svg",
+     "image": "/static/img/sunshine.png",
      "audio": "/static/audio/sunshine.mp3",
-     "card": "word"
+     "card": "emoji"
     }
    ]
   },
