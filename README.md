@@ -90,8 +90,12 @@ node tools/serve.mjs         # 预览生产构建 → http://127.0.0.1:4173
 
 ## 上线
 
-**GitHub Pages（发布脚本）**：`npm run build:h5` 后执行 `node tools/publish-github-pages.mjs`，
-产物复制到 `tmp/gh-publish/`（含 .nojekyll + 静态路径相对化 + webmanifest 修正），推送到公开仓 `kids-english-web`。
+**GitHub Pages 双轨（2026-09-08 起）**：`npm run build:h5` 后执行 `node tools/publish-github-pages.mjs`（子路径相对化 + .nojekyll + webmanifest 修正，两种产物都自动携带 LICENSE / LICENSE-CONTENT.md）。
+
+- **抢先版（默认）**：产物在 `tmp/gh-preview/`，以孤儿分支 `gh-pages` 推到本源码仓：
+  `cd tmp/gh-preview && git init -b gh-pages && git remote add origin git@github.com:chenhaolove89/kids-english.git && git add -A && git commit -m "preview" && git push -f origin gh-pages:gh-pages`
+  仓内已初始化过 .git，之后只需 add/commit/push。访问地址：`https://chenhaolove89.github.io/kids-english/`（首次需在 GitHub 仓设置 Pages：Deploy from a branch → gh-pages / root）。
+- **正式发布仓 `kids-english-web`**：`--target release` 产物在 `tmp/gh-publish/`（远端已配好）。**仅在明确要求同步正式站时才推送**，日常一律发抢先版。
 
 **uniCloud 前端网页托管（HBuilderX）**：HBuilderX 打开项目 → 发行 → 网站-PC Web 或手机 H5 → 勾选部署到 uniCloud 前端网页托管。
 

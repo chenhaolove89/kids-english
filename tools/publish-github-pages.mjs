@@ -1,9 +1,14 @@
 /**
  * 生成 GitHub Pages 发布目录（子路径部署版）：
- * 复制 dist/build/web → tmp/gh-publish/，并把产物里的根绝对路径 /static/...
+ * 复制 dist/build/h5 → 目标目录，并把产物里的根绝对路径 /static/...
  * 改写为相对路径 ./static/...（GitHub Pages 挂在仓库子路径下，不改则图片音频全 404）。
  * 只改构建产物文本，不动 src 源码。
- * 用法：npm run build:h5 之后 → node tools/publish-github-pages.mjs
+ *
+ * 双目标（2026-09-08 起）：
+ *   默认 preview —— 抢先版：源码仓 kids-english 的 gh-pages 分支，日常都发这里；
+ *   --target release —— 正式发布仓 kids-english-web，仅在用户明确要求同步时使用。
+ * 两种产物都自动携带 LICENSE 与 LICENSE-CONTENT.md，两仓开源策略保持一致。
+ * 用法：npm run build:h5 之后 → node tools/publish-github-pages.mjs [--target release]
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -11,7 +16,12 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = path.join(ROOT, 'dist/build/h5')
-const OUT = path.join(ROOT, 'tmp/gh-publish')
+const target = process.argv.includes('--target') ? process.argv[process.argv.indexOf('--target') + 1] : 'preview'
+if (!['preview', 'release'].includes(target)) {
+  console.error('未知 --target：', target, '（可用 preview | release）')
+  process.exit(1)
+}
+const OUT = path.join(ROOT, target === 'release' ? 'tmp/gh-publish' : 'tmp/gh-preview')
 
 if (!fs.existsSync(path.join(SRC, 'index.html'))) {
   console.error('未找到 dist/build/h5/index.html，请先 npm run build:h5')
@@ -60,6 +70,11 @@ for (const f of files) {
 // GitHub Pages 默认跑 Jekyll，会跳过下划线开头的文件（如 _plugin-*.js）→ 404。
 // 加空 .nojekyll 禁用 Jekyll。
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '')
+
+// 许可随行：两个部署仓都带同一套 PolyForm + CC BY-NC 声明，与源码仓策略一致
+for (const f of ['LICENSE', 'LICENSE-CONTENT.md']) {
+  if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f))
+}
 
 // webmanifest 内的路径相对 manifest 自身（位于 static/）解析，需再退一级
 for (const f of files) {
