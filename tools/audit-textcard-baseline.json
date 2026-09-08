@@ -132,18 +132,6 @@
   "storm",
   "sunshine"
  ],
- "places": [
-  "airport",
-  "park",
-  "zoo",
-  "cinema",
-  "museum",
-  "library",
-  "playground",
-  "temple",
-  "lighthouse",
-  "harbor"
- ],
  "time": [
   "today",
   "tomorrow",
@@ -164,24 +152,6 @@
  "music": [
   "harmonica",
   "ukulele"
- ],
- "jobs": [
-  "soldier",
-  "nurse",
-  "dentist",
-  "waiter",
-  "librarian",
-  "engineer",
-  "driver",
-  "postman",
-  "conductor",
-  "vet",
-  "captain",
-  "coach",
-  "reporter",
-  "tailor",
-  "dancer",
-  "fisherman"
  ],
  "space": [
   "blackhole",
