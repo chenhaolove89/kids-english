@@ -17,8 +17,9 @@ export function createReviewService(store, resolvers = null) {
   }
 
   /**
-   * 作答落本。meta: { subject: 'en'|'zh', text: 展示文本, lessonId }
+   * 作答落本。meta: { subject: 'en'|'zh'|'math', text: 展示文本, lessonId, payload: 重练还原所需的数据 }
    * 正确但不在本 → 不收录（错题本只收错过的）。
+   * payload（如数学整题快照）原样随条目存取——buildReviewPool 的 resolver 收到完整条目。
    */
   function recordResult(itemId, correct, meta = {}) {
     if (!itemId) return null
@@ -29,6 +30,7 @@ export function createReviewService(store, resolvers = null) {
     if (meta.subject) entry.subject = meta.subject
     if (meta.text) entry.text = meta.text
     if (meta.lessonId) entry.lessonId = meta.lessonId
+    if (meta.payload) entry.payload = meta.payload
     allMap[itemId] = entry
     // 超限时裁掉最久没动的条目
     const keys = Object.keys(allMap)
@@ -64,13 +66,13 @@ export function createReviewService(store, resolvers = null) {
       .slice(0, limit)
   }
 
-  /** 重练池：到期条目经 resolvers 还原成完整词卡对象，最多 10 个 */
+  /** 重练池：到期条目经 resolvers 还原成完整题目对象（数学传整条目，词卡按 id），最多 10 个 */
   function buildReviewPool(subject, ts = Date.now()) {
     if (!resolvers) throw new Error('review resolvers 未注入（应使用 services/review-pools.js）')
     const entries = dueEntries(subject, ts)
     const pool = []
     for (const e of entries) {
-      const item = resolvers[subject]?.(e.itemId)
+      const item = resolvers[subject]?.(e.itemId, e)
       if (item) pool.push(item)
       if (pool.length >= 10) break
     }

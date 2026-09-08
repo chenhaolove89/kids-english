@@ -140,7 +140,7 @@ onShow(() => {
   lastRandom.value = prefs?.lastRandom || {}
   resume.value = continueTarget()
   const reviewSvc = getReviewService()
-  reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh')
+  reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh') + reviewSvc.dueCount('math')
   totalStars.value = getProgressService().summary().totalStars
 })
 
@@ -177,8 +177,13 @@ function goResume() {
 function goReview() {
   if (!allowNavigate()) return
   const reviewSvc = getReviewService()
-  const subject = reviewSvc.dueCount('zh') > reviewSvc.dueCount('en') ? 'zh' : 'en'
-  uni.navigateTo({ url: `/pages/quiz/quiz?review=${subject}` })
+  // 三科里挑到期最多的先练；数学错题在练习页原题重放
+  const due = [
+    ['en', reviewSvc.dueCount('en')],
+    ['zh', reviewSvc.dueCount('zh')],
+    ['math', reviewSvc.dueCount('math')],
+  ].sort((a, b) => b[1] - a[1])[0][0]
+  uni.navigateTo({ url: due === 'math' ? '/pages/math/practice?review=1' : `/pages/quiz/quiz?review=${due}` })
 }
 
 function goCollection() {

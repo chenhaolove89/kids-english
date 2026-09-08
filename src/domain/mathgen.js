@@ -66,11 +66,13 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.seq = [A('zh-countit.mp3'), A('zh-total.mp3')]
     qz.options = numOptions(n, 3, rng)
     qz.answer = String(n)
+    qz.sig = `count:${n}`
   } else if (kind === 'listen') {
     const n = 1 + rnd(rng, 19)
     qz.seq = [A('zh-listen.mp3'), A(`n${n}.mp3`)]
     qz.options = numOptions(n, 4, rng)
     qz.answer = String(n)
+    qz.sig = `listen:${n}`
   } else if (kind === 'sequence') {
     const start = 1 + rnd(rng, 10)
     const step = pickOne([1, 2], rng)
@@ -80,6 +82,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.display = nums.map((v, i) => (i === hideIdx ? '?' : String(v))).join('  ')
     qz.seq = [A('zh-missing.mp3')]
     qz.options = numOptions(nums[hideIdx], 4, rng)
+    qz.sig = `sequence:${start}:${step}:${hideIdx}`
   } else if (kind === 'add') {
     const e = pickOne(EMOJIS, rng) // 同题同物：两组放一起才像"合起来数"
     const a = 1 + rnd(rng, 9)
@@ -89,6 +92,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.answer = String(a + b)
     qz.seq = [A(`n${a}.mp3`), A('zh-plus.mp3'), A(`n${b}.mp3`), A('zh-howmany.mp3')]
     qz.options = numOptions(a + b, 3, rng)
+    qz.sig = `add:${a}:${b}`
   } else if (kind === 'sub') {
     const e = pickOne(EMOJIS, rng)
     const a = 2 + rnd(rng, 9)
@@ -99,6 +103,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.answer = String(a - b)
     qz.seq = [A(`n${a}.mp3`), A('zh-minus.mp3'), A(`n${b}.mp3`), A('zh-howmany.mp3')]
     qz.options = numOptions(a - b, 3, rng)
+    qz.sig = `sub:${a}:${b}`
   } else if (kind === 'compare') {
     const e = pickOne(EMOJIS, rng) // 两边同物，比多少才直观
     const a = 1 + rnd(rng, 9)
@@ -113,6 +118,8 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     const target = qz.groups.findIndex((g) => g.n === (more ? Math.max(a, b) : Math.min(a, b)))
     qz.answer = String(target)
     qz.seq = [more ? A('zh-more.mp3') : A('zh-less.mp3')]
+    // 签名与两边渲染顺序无关：同一道「谁多谁少」只认数字与问法
+    qz.sig = `compare:${more ? 'more' : 'less'}:${Math.max(a, b)}:${Math.min(a, b)}`
   } else if (kind === 'add20') {
     const a = 3 + rnd(rng, 16)
     const b = 1 + rnd(rng, Math.max(1, 20 - a))
@@ -120,6 +127,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.display = `${a} + ${b} = ?`
     qz.seq = [A(`n${a}.mp3`), A('zh-plus.mp3'), A(`n${b}.mp3`), A('zh-howmany.mp3')]
     qz.options = numOptions(a + b, 4, rng)
+    qz.sig = `add20:${a}:${b}`
   } else if (kind === 'sub20') {
     const a = 8 + rnd(rng, 13)
     const b = 1 + rnd(rng, a - 2)
@@ -127,6 +135,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.display = `${a} − ${b} = ?`
     qz.seq = [A(`n${a}.mp3`), A('zh-minus.mp3'), A(`n${b}.mp3`), A('zh-howmany.mp3')]
     qz.options = numOptions(a - b, 4, rng)
+    qz.sig = `sub20:${a}:${b}`
   } else if (kind === 'missing') {
     const a = 2 + rnd(rng, 12)
     // 与 add20 同法收界：和不超过 20，符合「二十以内」关卡名义
@@ -135,6 +144,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.display = `${a} + ? = ${a + b}`
     qz.seq = [A(`n${a}.mp3`), A('zh-plus.mp3'), A('zh-ji.mp3'), A('zh-equals.mp3'), A(`n${a + b}.mp3`)]
     qz.options = numOptions(b, 4, rng)
+    qz.sig = `missing:${a}:${b}`
   } else if (kind === 'compareNum') {
     const a = 1 + rnd(rng, 19)
     let b = 1 + rnd(rng, 19)
@@ -148,6 +158,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     const target = qz.groups.findIndex((g) => g.n === (bigger ? Math.max(a, b) : Math.min(a, b)))
     qz.answer = String(target)
     qz.seq = [bigger ? A('zh-bigger.mp3') : A('zh-smaller.mp3')]
+    qz.sig = `compareNum:${bigger ? 'big' : 'small'}:${Math.max(a, b)}:${Math.min(a, b)}`
   } else if (kind === 'mul') {
     const a = 2 + rnd(rng, 8)
     const b = 2 + rnd(rng, 8)
@@ -155,6 +166,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.display = `${a} × ${b} = ?`
     qz.seq = [A(`n${a}.mp3`), A('zh-times.mp3'), A(`n${b}.mp3`), A('zh-howmany.mp3')]
     qz.options = numOptions(a * b, 4, rng)
+    qz.sig = `mul:${a}:${b}`
   } else if (kind === 'div') {
     const b = 2 + rnd(rng, 8)
     const c = 2 + rnd(rng, 8)
@@ -163,14 +175,42 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.display = `${a} ÷ ${b} = ?`
     qz.seq = [A(`n${a}.mp3`), A('zh-divided.mp3'), A(`n${b}.mp3`), A('zh-howmany.mp3')]
     qz.options = numOptions(c, 4, rng)
+    qz.sig = `div:${a}:${b}`
   }
   return qz
 }
 
+/** 错题本展示文本：优先算式原样，图形/听音题给人话描述（家长周报「最常错」用） */
+export function mathText(q) {
+  if (!q) return ''
+  if (q.display) return q.display
+  const kind = q.kind
+  if (kind === 'count') return `数一数：一共 ${q.answer} 个`
+  if (kind === 'listen') return `听音识数：${q.answer}`
+  if (kind === 'add') return `看图加法：${q.leftEmojis?.length ?? '?'} + ${q.rightEmojis?.length ?? '?'} = ?`
+  if (kind === 'sub') return `看图减法：${q.leftEmojis?.length ?? '?'} − ${q.rightEmojis?.length ?? '?'} = ?`
+  if (kind === 'compare') {
+    const [g1, g2] = q.groups || []
+    const ask = (q.seq?.[0] || '').includes('more') ? '多' : '少'
+    return `比多少：哪边${ask}（${g1?.n ?? '?'} 和 ${g2?.n ?? '?'}）`
+  }
+  if (kind === 'compareNum') {
+    const [g1, g2] = q.groups || []
+    const ask = (q.seq?.[0] || '').includes('bigger') ? '大' : '小'
+    return `比大小：哪个数${ask}（${g1?.n ?? '?'} 和 ${g2?.n ?? '?'}）`
+  }
+  return q.sig || kind
+}
+
+/** 错题本条目 id：关卡 + 题目签名，跨题不碰撞（纯答案 '13' 会把加减听音混为一谈） */
+export function mathItemId(levelId, q) {
+  return q?.sig ? `math-l${normalizeMathLevel(levelId)}:${q.sig}` : ''
+}
+
 /**
  * 出一组题（默认 10 题），同组内去重。
- * 题目数量按 kind|answer|display 去重；极端情况下生成空间过小会死循环，
- * 故加尝试上限，超过上限接受当前组（不会少于 1 题）。
+ * 题目按 sig（题型+参数）去重——「比一比」题没有算式，按答案去重会让每套最多剩 2 道；
+ * 极端情况下生成空间过小会死循环，故加尝试上限，超过上限接受当前组（不会少于 1 题）。
  */
 export function buildQuestions(lvId, { count = 10, rng = Math.random, audioBase = '/static/audio' } = {}) {
   const list = []
@@ -179,7 +219,7 @@ export function buildQuestions(lvId, { count = 10, rng = Math.random, audioBase 
   while (list.length < count && guard < count * 50) {
     guard++
     const qz = makeQuestion(lvId, { rng, audioBase })
-    const key = qz.kind + '|' + qz.answer + '|' + (qz.display || '')
+    const key = qz.sig || qz.kind + '|' + qz.answer + '|' + (qz.display || '')
     if (used.has(key)) continue
     used.add(key)
     list.push(qz)

@@ -184,7 +184,7 @@ function refresh() {
   lowAge.value = getLowAgeMode()
   accent.value = getAccent()
   qimengOrder.value = getQimengAudioOrder()
-  reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh')
+  reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh') + reviewSvc.dueCount('math')
   topWrongText.value = reviewSvc
     .topWrong(3)
     .map((e) => e.text || e.itemId)

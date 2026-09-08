@@ -23,6 +23,11 @@ const RESOLVERS = {
     if (w && w.zhAudio) return { ...w, audio: w.zhAudio }
     return null
   },
+  // 数学：条目里存着答错那道的整题快照（mathgen 产物可 JSON 序列化），原题重放
+  math: (id, entry) => {
+    const q = entry?.payload
+    return q && q.kind && Array.isArray(q.options || q.groups) ? { ...q, reviewItemId: id } : null
+  },
 }
 
 let _poolSvc = null

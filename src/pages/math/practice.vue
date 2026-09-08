@@ -4,7 +4,7 @@
       <view class="back" @tap="goBack">
         <text class="back-icon">←</text>
       </view>
-      <text class="title">{{ level.name }}</text>
+      <text class="title">{{ titleText }}</text>
       <text class="score">⭐ {{ firstCorrect }}</text>
     </view>
 
@@ -93,11 +93,11 @@
 
     <template v-else>
       <view class="result">
-        <text class="result-emoji">🎉</text>
-        <text class="result-score">一次答对 {{ firstCorrect }} / {{ questions.length }} 题</text>
-        <text class="result-stars">{{ starsText }}</text>
+        <text class="result-emoji">{{ reviewMode ? '✅' : '🎉' }}</text>
+        <text class="result-score">{{ resultText }}</text>
+        <text v-if="!reviewMode" class="result-stars">{{ starsText }}</text>
         <text class="result-note">{{ starsNote }}</text>
-        <view class="result-btn" @tap="restart">
+        <view v-if="!reviewMode" class="result-btn" @tap="restart">
           <text class="result-btn-text">再玩一次</text>
         </view>
         <view class="result-btn ghost" @tap="goBack">
@@ -113,11 +113,13 @@ import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { playSeq, preload, stopSeq } from '@/platform/audio.js'
 import { getLesson } from '@/content/catalog.js'
-import { buildQuestions, normalizeMathLevel, MATH_LEVELS } from '@/domain/mathgen.js'
+import { buildQuestions, normalizeMathLevel, mathText, mathItemId, MATH_LEVELS } from '@/domain/mathgen.js'
 import { isPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection.js'
+import { getReviewService } from '@/services/review.js'
+import { getReviewPool } from '@/services/review-pools.js'
 
 const level = ref(MATH_LEVELS[1])
 const questions = ref([])
@@ -130,18 +132,51 @@ const isRight = ref(false)
 const q = computed(() => questions.value[qIdx.value] || {})
 
 const svc = getSessionService()
+const review = getReviewService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口只玩不记录
+const reviewMode = ref(false) // 错题重练：?review=1——到期错题原题重放，不计课时会话
 const firstPickMap = new Map()
 
 const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.value, questions.value.length)))
-const starsNote = computed(() => `共 ${questions.value.length} 题 · 首次选对得星`)
+const titleText = computed(() => (reviewMode.value ? '错题重练' : level.value.name))
+const resultText = computed(() =>
+  reviewMode.value
+    ? `重练答对 ${firstCorrect.value} / ${questions.value.length} 题`
+    : `一次答对 ${firstCorrect.value} / ${questions.value.length} 题`,
+)
+const starsNote = computed(() =>
+  reviewMode.value ? '连对的错题会毕业，答错明天再见' : `共 ${questions.value.length} 题 · 首次选对得星`,
+)
 
 onLoad((query) => {
+  preload(['/static/audio/zh-great.mp3', '/static/audio/zh-try.mp3', '/static/audio/zh-awesome.mp3'])
+
+  // 错题重练模式：题目来自错题本到期条目（存的是答错那道的整题快照），原题重放
+  if (query.review === '1') {
+    reviewMode.value = true
+    const pool = getReviewPool('math')
+    if (!pool.length) {
+      uni.showToast({ title: '太棒了，暂无待复习', icon: 'none' })
+      // 直链进入无返回历史：回主页而不是 navigateBack
+      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
+      return
+    }
+    // 主题色按第一题所属关卡
+    const lvId = normalizeMathLevel((pool[0].reviewItemId || '').match(/^math-l(\d)/)?.[1])
+    level.value = MATH_LEVELS[lvId]
+    questions.value = pool
+    qIdx.value = 0
+    score.value = 0
+    firstCorrect.value = 0
+    finished.value = false
+    startQuestion()
+    return
+  }
+
   // 有 lessonId 时以课程目录的关卡为准，URL 参数不可信；非法关卡安全回退第 1 关
   const l = getLesson(query.lessonId)
   const lvId = normalizeMathLevel(l && l.ref?.kind === 'math-level' ? l.ref.id : query.level)
   level.value = MATH_LEVELS[lvId]
-  preload(['/static/audio/zh-great.mp3', '/static/audio/zh-try.mp3', '/static/audio/zh-awesome.mp3'])
 
   if (l) {
     lesson.value = l
@@ -201,12 +236,21 @@ function pickById(id) {
   const correct = isPickCorrect(q.value, id)
   let firstTry = true
   if (lesson.value) {
-    const attempt = svc.recordAttempt({ activityId: 'math-gen', order: qIdx.value, answer: id, correct, itemId: q.value.answer })
+    const attempt = svc.recordAttempt({ activityId: 'math-gen', order: qIdx.value, answer: id, correct, itemId: mathItemId(level.value.id, q.value) })
     firstTry = attempt ? attempt.firstTry : true
   } else {
     firstTry = !firstPickMap.has(qIdx.value)
     firstPickMap.set(qIdx.value, true)
   }
+  // 错题本：答错进本/归零，已在本的答对晋级（不在本的答对不收录）。
+  // 重练模式用条目原 id（reviewItemId），日常练习用「关卡:签名」定位整题
+  const itemId = q.value.reviewItemId || mathItemId(level.value.id, q.value)
+  review.recordResult(itemId, correct, {
+    subject: 'math',
+    text: mathText(q.value),
+    lessonId: lesson.value?.id,
+    payload: q.value,
+  })
   flash.value = id
   isRight.value = correct
   if (correct) {
