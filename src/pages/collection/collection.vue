@@ -134,13 +134,16 @@
             v-for="m in mathBadges"
             :key="m.lesson.id"
             class="badge-card"
-            :class="{ 'badge-done': m.done }"
+            :class="{ 'badge-done': m.done, 'badge-trophy': m.trophy }"
           >
-            <text class="badge-ribbon">{{ m.done ? '✨' : '？' }}</text>
+            <text class="badge-ribbon">{{ m.trophy ? '🏆' : m.done ? '✨' : '？' }}</text>
             <image class="badge-icon" :src="m.lesson.icon" mode="aspectFit" :class="{ gray: !m.done }" />
             <text class="badge-title">{{ m.lesson.title }}</text>
             <text class="badge-stars">{{ m.done ? starsBar(m.stars) : '未完成' }}</text>
           </view>
+        </view>
+        <view v-if="mathAllTrophies" class="math-crown">
+          <text class="math-crown-text">👑 数学全满贯！每关都拿到满星奖杯啦</text>
         </view>
       </scroll-view>
     </template>
@@ -189,7 +192,7 @@ import { isCategoryHidden, updatePrefs } from '@/content/lowAge.js'
 import { getStorage } from '@/platform/storage.js'
 import { playEn, play } from '@/platform/audio.js'
 import { starsText as starsBar } from '@/domain/progress.js'
-import { progressOf, isCategoryComplete, celebration } from '@/domain/collection.js'
+import { progressOf, isCategoryComplete, isMathTrophy, celebration } from '@/domain/collection.js'
 import { getCollectionService } from '@/services/collection.js'
 import { getProgressService } from '@/services/progress.js'
 
@@ -282,12 +285,14 @@ const zhWordGroups = computed(() => {
 const mathBadges = computed(() => {
   const doneSet = new Set(coll.value.math.done)
   const progMap = getProgressService().lessonProgressMap()
-  return mathLessons.value.map((l) => ({
-    lesson: l,
-    done: doneSet.has(l.id),
-    stars: progMap.get(l.id)?.bestStars || 0,
-  }))
+  return mathLessons.value.map((l) => {
+    const stars = progMap.get(l.id)?.bestStars || 0
+    const done = doneSet.has(l.id)
+    return { lesson: l, done, stars, trophy: isMathTrophy(done, stars) }
+  })
 })
+// 四关全部满星 → 数学全满贯横幅
+const mathAllTrophies = computed(() => mathBadges.value.length > 0 && mathBadges.value.every((m) => m.trophy))
 
 onShow(() => {
   const svc = getCollectionService()
@@ -654,6 +659,11 @@ function goLearn() {
   border: 4rpx solid #ffb84d;
   background: #fff3df;
 }
+/* 满星攻克：奖杯徽章再亮一档 */
+.badge-card.badge-trophy {
+  background: linear-gradient(180deg, #fffbe8, #fff3df);
+  border-color: #ffd76e;
+}
 .badge-ribbon {
   position: absolute;
   top: 14rpx;
@@ -682,6 +692,20 @@ function goLearn() {
   margin-top: 6rpx;
   font-size: 24rpx;
   color: #c99b52;
+}
+/* 四关全满贯横幅 */
+.math-crown {
+  margin-top: 26rpx;
+  background: linear-gradient(90deg, #ffd76e, #ffb84d);
+  border-radius: 36rpx;
+  padding: 22rpx 30rpx;
+  text-align: center;
+  box-shadow: 0 10rpx 24rpx rgba(200, 140, 40, 0.25);
+}
+.math-crown-text {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #6b4a17;
 }
 
 /* 详情浮层 */

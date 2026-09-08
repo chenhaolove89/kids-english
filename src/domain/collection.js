@@ -83,6 +83,14 @@ export function isCategoryComplete(p) {
 }
 
 /**
+ * 数学徽章奖杯口径：完成过该关且历史最佳 3 星（首答正确率 ≥90%）。
+ * 与英语/语文「分类卡全部掌握 → 🏆」同级：拿到满星才算攻克这一关。
+ */
+export function isMathTrophy(done, bestStars) {
+  return !!done && bestStars >= 3
+}
+
+/**
  * 庆祝判定：本次访问相对上次的新增量。
  * prev/cur 形如 { enSeen, enMastered, zhSeen, zhMastered, zhWordsSeen, zhWordsMastered, mathDone }（缺字段按 0）。
  * 返回 { newSeen, newMastered, total }；负数（清空数据后）按 0 处理。

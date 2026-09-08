@@ -83,6 +83,7 @@ import zhData from '@/data/hanzi.json'
 import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady } from '@/platform/audio.js'
 import { createThrottle } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
+import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
 import { nextLessonAfter, lessonUrl } from '@/services/curriculum.js'
 import { getSessionService } from '@/services/session.js'
@@ -113,10 +114,10 @@ function startAudioPreload(srcs) {
   })
 }
 
-/** 当前卡的主音频路径（与 speakIdx 的选路一致：启蒙英语先播中文） */
+/** 当前卡的主音频路径（=播放序列的第一条，「声音加载中」提示跟随先播的那条） */
 function mainAudioSrc(it) {
   if (!it) return ''
-  if (it.zhAudio) return it.zhAudio
+  if (it.zhAudio) return bilingualSeq(it)[0]
   return subject.value === 'en' ? accentEnSrc(it.audio) : it.audio
 }
 
@@ -160,7 +161,7 @@ onLoad((query) => {
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
-    // 启蒙阶段先中文再英文，需要中文配音；其他级别仍只念英文
+    // 启蒙阶段双语卡配中文读音（播放顺序家长中心可调）；其他级别仍只念英文
     const isQimeng = c.level === 1
     items.value = c.words.map((w) => ({
       id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio,
@@ -233,11 +234,17 @@ function completeLearn() {
 // 中文释义与英文读音之间的停顿：太短孩子来不及把两边对上
 const ZH_EN_GAP_MS = 400
 
+/** 启蒙双语卡的两段读音：默认先中文后英文；家长中心「启蒙读音顺序」可切先英后中 */
+function bilingualSeq(it) {
+  const en = accentEnSrc(it.audio)
+  return getQimengAudioOrder() === 'en-first' ? [en, it.zhAudio] : [it.zhAudio, en]
+}
+
 function speakIdx(i) {
   const it = items.value[i]
   if (!it) return
-  // 启蒙：先中文再英文。playSeq 内部走 play，英文腿需自己按所选口音解析路径
-  if (it.zhAudio) playSeq([it.zhAudio, accentEnSrc(it.audio)], null, { gapMs: ZH_EN_GAP_MS })
+  // 启蒙双语卡按家长所选顺序播；playSeq 内部走 play，英文腿需自己按所选口音解析路径
+  if (it.zhAudio) playSeq(bilingualSeq(it), null, { gapMs: ZH_EN_GAP_MS })
   // 英语按家长中心所选口音发音；语文不动
   else if (subject.value === 'en') playEn(it.audio)
   else play(it.audio)

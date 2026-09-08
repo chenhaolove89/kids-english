@@ -116,6 +116,17 @@
           </view>
         </view>
       </view>
+      <view class="meta-row">
+        <text class="meta-label">启蒙读音顺序</text>
+        <view class="accent-pills">
+          <view class="accent-pill" :class="{ on: qimengOrder === 'zh-first' }" @tap="setQimengOrder('zh-first')">
+            <text class="accent-pill-text">先中文后英文</text>
+          </view>
+          <view class="accent-pill" :class="{ on: qimengOrder === 'en-first' }" @tap="setQimengOrder('en-first')">
+            <text class="accent-pill-text">先英文后中文</text>
+          </view>
+        </view>
+      </view>
       <view v-if="lowAgeVisible" class="meta-row lowage-row">
         <text class="meta-label">低龄模式（隐藏惊悚角色类内容）</text>
         <switch :checked="lowAge" color="#3BB273" style="transform: scale(0.85)" @change="onLowAgeChange" />
@@ -137,7 +148,7 @@ import { onShow } from '@dcloudio/uni-app'
 import { getStorage } from '@/platform/storage.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
-import { getLowAgeMode, setLowAgeMode, updatePrefs } from '@/content/lowAge.js'
+import { getLowAgeMode, setLowAgeMode, updatePrefs, getQimengAudioOrder, setQimengAudioOrder } from '@/content/lowAge.js'
 import { getAccent, playEn } from '@/platform/audio.js'
 import { SUBJECTS, getLesson, catalog } from '@/content/catalog.js'
 import { visibleLessons } from '@/services/curriculum.js'
@@ -157,6 +168,7 @@ const topWrongText = ref('')
 const lowAge = ref(true)
 const lowAgeVisible = ref(false)
 const accent = ref('us')
+const qimengOrder = ref('zh-first')
 
 onShow(() => {
   refresh()
@@ -171,6 +183,7 @@ function refresh() {
   attemptCount.value = store.get('attempts', []).length
   lowAge.value = getLowAgeMode()
   accent.value = getAccent()
+  qimengOrder.value = getQimengAudioOrder()
   reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh')
   topWrongText.value = reviewSvc
     .topWrong(3)
@@ -228,6 +241,14 @@ function setAccent(a) {
   accent.value = a
   updatePrefs({ accent: a })
   playEn('/static/audio/great_job.mp3')
+}
+
+/** 切换启蒙单词读音顺序：学词页点卡片时按新顺序播 */
+function setQimengOrder(o) {
+  if (qimengOrder.value === o) return
+  qimengOrder.value = o
+  setQimengAudioOrder(o)
+  uni.showToast({ title: o === 'en-first' ? '已切换：先英文后中文' : '已切换：先中文后英文', icon: 'none' })
 }
 
 function fmtTime(ts) {
@@ -489,17 +510,26 @@ function clearRecords() {
   display: flex;
   gap: 12rpx;
 }
+/* 英语发音/启蒙读音顺序 胶囊等宽：两行按钮组左右边缘各自成列 */
 .accent-pill {
-  padding: 8rpx 22rpx;
+  min-width: 184rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 20rpx;
   border-radius: 30rpx;
   background: #f7f3ec;
+}
+.accent-pills {
+  flex-shrink: 0;
 }
 .accent-pill.on {
   background: #ffedd9;
   box-shadow: inset 0 0 0 3rpx #ffb84d;
 }
 .accent-pill-text {
-  font-size: 25rpx;
+  font-size: 24rpx;
   font-weight: 700;
   color: #4a3f35;
   white-space: nowrap;

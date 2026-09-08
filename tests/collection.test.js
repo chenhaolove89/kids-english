@@ -13,6 +13,7 @@ import {
   litState,
   progressOf,
   isCategoryComplete,
+  isMathTrophy,
   celebration,
   deriveFromHistory,
 } from '../src/domain/collection.js'
@@ -89,6 +90,14 @@ test('progressOf / isCategoryComplete：seen 含 mastered，集齐按 mastered',
   assert.equal(isCategoryComplete(p), false)
   assert.equal(isCategoryComplete(progressOf(['a', 'b'], seen, mastered)), true)
   assert.equal(isCategoryComplete({ total: 0, seen: 0, mastered: 0 }), false, '空分类不算集齐')
+})
+
+test('isMathTrophy：完成且最佳 3 星才给奖杯，缺一不可', () => {
+  assert.equal(isMathTrophy(true, 3), true)
+  assert.equal(isMathTrophy(true, 2), false, '2 星只是完成过，不算攻克')
+  assert.equal(isMathTrophy(false, 3), false, '没完成过不给杯')
+  assert.equal(isMathTrophy(true, 0), false)
+  assert.equal(isMathTrophy(false, 0), false)
 })
 
 test('celebration：只统计正增量，清空后（负数）归零', () => {
