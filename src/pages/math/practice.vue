@@ -212,7 +212,8 @@ function pickById(id) {
   if (correct) {
     score.value++
     if (firstTry) firstCorrect.value++
-    playSeq([`/static/audio/${Math.random() < 0.4 ? 'zh-awesome' : 'zh-great'}.mp3`], nextQuestion)
+    // 字符串拼接而非反引号模板：反引号路径发布脚本改写不到 → GitHub Pages 上 404
+    playSeq(["/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3"], nextQuestion)
   } else {
     playSeq(['/static/audio/zh-try.mp3'])
     setTimeout(() => {

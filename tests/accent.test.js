@@ -42,6 +42,34 @@ test('大写开头的英文音频同样切英式（星期/国家等专有名词�
   assert.equal(withAccent('/static/audio/CD.mp3', 'gb'), '/static/audio-gb/CD.mp3')
 })
 
+test('./ 前缀同样切英式（GitHub Pages 发布改写后的运行时形态）', () => {
+  assert.equal(withAccent('./static/audio/red.mp3', 'gb'), './static/audio-gb/red.mp3')
+  assert.equal(withAccent('./static/audio/Monday.mp3', 'gb'), './static/audio-gb/Monday.mp3')
+  // ./ 形态下语文/数学同样不改写
+  assert.equal(withAccent('./static/audio/zh-4e91.mp3', 'gb'), './static/audio/zh-4e91.mp3')
+  assert.equal(withAccent('./static/audio/n9.mp3', 'gb'), './static/audio/n9.mp3')
+})
+
+test('防回归：源码不得用反引号模板字符串拼 /static/ 路径（打包后原样保留，发布改写只认引号字符串 → 线上 404）', () => {
+  // audio-zh 字母音全挂的教训：`/static/audio-zh/${id}.mp3` 打包后仍是反引号模板，
+  // publish-github-pages 的 "/static/ 改写碰不到它，GitHub Pages 子路径部署下必 404。
+  // 运行时路径一律走数据 JSON（双引号）或普通字符串拼接（打包后统一为双引号被改写）。
+  const offenders = []
+  const scan = (dir) => {
+    for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, f.name)
+      if (f.isDirectory()) { scan(p); continue }
+      if (!/\.(vue|js)$/.test(f.name)) continue
+      const text = fs.readFileSync(p, 'utf8')
+      if (/`\/static\//.test(text)) offenders.push(path.relative(ROOT, p))
+    }
+  }
+  scan(path.join(ROOT, 'src', 'pages'))
+  scan(path.join(ROOT, 'src', 'platform'))
+  scan(path.join(ROOT, 'src', 'services'))
+  assert.deepEqual(offenders, [], `以下文件存在反引号拼的 /static/ 路径: ${offenders.join(', ')}`)
+})
+
 test('全量：每条英文音频都取得到真实存在的英式音轨', () => {
   const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
   const gaps = []

@@ -32,11 +32,17 @@ function lessonItemIds(lesson) {
   return null
 }
 
+/** 语文的点亮桶：识字课进 zh（字码点），词语课（ref=en-category）进 zhWords（词 id），分开统计不互混 */
+function collectionBucket(lesson) {
+  if (lesson.subject !== 'zh') return lesson.subject
+  return lesson.ref?.kind === 'en-category' ? 'zhWords' : 'zh'
+}
+
 /** 回填用课程解析器：目录 + 适配器展开（未知课程返回 null 跳过） */
 function lessonResolver(lessonId) {
   const lesson = getLesson(lessonId)
   if (!lesson) return null
-  return { subject: lesson.subject, kind: lesson.kind, itemIds: lessonItemIds(lesson) }
+  return { subject: collectionBucket(lesson), kind: lesson.kind, itemIds: lessonItemIds(lesson) }
 }
 
 export function createCollectionService(store) {
@@ -68,7 +74,7 @@ export function createCollectionService(store) {
     if (!lesson || lesson.kind !== 'learn' || lesson.subject === 'math') return
     const ids = lessonItemIds(lesson)
     if (!ids) return
-    save(addIds(load(), lesson.subject, 'seen', ids))
+    save(addIds(load(), collectionBucket(lesson), 'seen', ids))
   }
 
   /** 挑战完成：英语/语文首答答对条目进 mastered；数学点亮徽章 */
@@ -81,10 +87,10 @@ export function createCollectionService(store) {
     }
     const masters = deriveMastersFromAttempts(store.get('attempts', []), session.sessionId)
     if (!masters.length) return
-    save(addIds(load(), lesson.subject, 'mastered', masters))
+    save(addIds(load(), collectionBucket(lesson), 'mastered', masters))
   }
 
-  /** 五计数：庆祝条对比与页头统计用 */
+  /** 六计数：庆祝条对比与页头统计用 */
   function counts() {
     const c = load()
     return {
@@ -92,6 +98,8 @@ export function createCollectionService(store) {
       enMastered: c.en.mastered.length,
       zhSeen: c.zh.seen.length,
       zhMastered: c.zh.mastered.length,
+      zhWordsSeen: c.zhWords.seen.length,
+      zhWordsMastered: c.zhWords.mastered.length,
       mathDone: c.math.done.length,
     }
   }

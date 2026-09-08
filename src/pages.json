@@ -35,31 +35,35 @@
     {
       "path": "pages/quiz/quiz",
       "style": { "navigationStyle": "custom", "disableScroll": true }
+    },
+    {
+      "path": "pages/write/write",
+      "style": { "navigationStyle": "custom", "disableScroll": true }
     }
   ],
   "tabBar": {
     "color": "#a2917d",
     "selectedColor": "#FF8C42",
-    "backgroundColor": "#ffffff",
+    "backgroundColor": "#fffbf3",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/map/map",
         "text": "课程",
         "iconPath": "static/tab/map.png",
-        "selectedIconPath": "static/tab/map.png"
+        "selectedIconPath": "static/tab/map-on.png"
       },
       {
         "pagePath": "pages/collection/collection",
         "text": "收集",
         "iconPath": "static/tab/collection.png",
-        "selectedIconPath": "static/tab/collection.png"
+        "selectedIconPath": "static/tab/collection-on.png"
       },
       {
         "pagePath": "pages/parent/parent",
         "text": "家长",
         "iconPath": "static/tab/parent.png",
-        "selectedIconPath": "static/tab/parent.png"
+        "selectedIconPath": "static/tab/parent-on.png"
       }
     ]
   },

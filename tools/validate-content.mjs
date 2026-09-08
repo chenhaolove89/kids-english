@@ -147,13 +147,59 @@ for (const lv of hanzi.levels) {
     stage,
     kind: 'challenge',
     title: quizTitle(lv.zh),
-    subtitle: '听音识字 · 10 题',
+    subtitle: '混合题型 · 10 题',
     icon: lv.icon,
     color: lv.color,
     bg: lv.bg,
     sort: `l${lv.id}`,
     ref: { kind: 'zh-level', id: lv.id },
     skillIds: [`zh-char-l${lv.id}`],
+  })
+}
+
+// 语文词语课：复用英语分类的图片与中文释义做「看图识词」。
+// 英语教学构词类（字母/Sight words/词族/拼读/介词/会话）不进中文课，取舍配置在 curriculum.zhWords
+const zhSkip = new Set(source.zhWords?.skipCategories || [])
+for (const c of words.categories) {
+  if (zhSkip.has(c.id)) continue
+  const stage = mapping.zh.levelStage[String(c.level)]
+  if (!stage) { fail(`语文词语分类 ${c.id} level ${c.level} 无 stage 映射`); continue }
+  if (!c.words?.length) fail(`语文词语分类 ${c.id} 词数为空`)
+  c.words?.forEach((w) => {
+    if (!w.zh || !w.zh.trim()) { fail(`语文词语分类 ${c.id} 的词 ${w.id} 缺中文释义`); return }
+    if (!w.zhAudio) { fail(`语文词语分类 ${c.id} 的词 ${w.id} 缺 zhAudio（检查 gen-assets 与 curriculum.zhWords 是否一致）`); return }
+    const abs = path.join(ROOT, 'src', w.zhAudio.replace(/^\//, ''))
+    if (!fs.existsSync(abs)) { fail(`词 ${w.id} zhAudio 不存在: ${w.zhAudio}（先跑 npm run gen:learn-zh）`); return }
+    const real = fs.readdirSync(path.dirname(abs)).find((f) => f === path.basename(abs))
+    if (real === undefined) fail(`词 ${w.id} zhAudio 大小写不匹配: ${w.zhAudio}`)
+  })
+  pushLesson({
+    id: `zh-words-${c.id}`,
+    subject: 'zh',
+    stage,
+    kind: 'learn',
+    title: `词语 · ${c.zh}`,
+    subtitle: `${c.words?.length || 0} 个词语`,
+    icon: c.icon,
+    color: c.color,
+    bg: c.bg,
+    sort: `zw-${c.id}`,
+    ref: { kind: 'en-category', id: c.id },
+    skillIds: [`zh-word-${c.id}`],
+  })
+  pushLesson({
+    id: `zh-words-quiz-${c.id}`,
+    subject: 'zh',
+    stage,
+    kind: 'challenge',
+    title: `${c.zh}词语挑战`,
+    subtitle: '听音识图 · 10 题',
+    icon: c.icon,
+    color: c.color,
+    bg: c.bg,
+    sort: `zw-${c.id}`,
+    ref: { kind: 'en-category', id: c.id },
+    skillIds: [`zh-word-${c.id}`],
   })
 }
 

@@ -14,6 +14,7 @@ export const KNOWN_ROUTES = [
   '/pages/math/practice',
   '/pages/learn/learn',
   '/pages/quiz/quiz',
+  '/pages/write/write',
 ]
 
 // 首页即课程地图（v1.4 起移除独立首页，入口收敛到课程 Tab）

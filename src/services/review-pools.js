@@ -17,7 +17,11 @@ const RESOLVERS = {
   en: (id) => enById.get(id) || null,
   zh: (id) => {
     const c = zhById.get(id)
-    return c ? mapZhOption(c) : null
+    if (c) return mapZhOption(c)
+    // 语文词语课的错题：同一批词 id，重练时听中文选图
+    const w = enById.get(id)
+    if (w && w.zhAudio) return { ...w, audio: w.zhAudio }
+    return null
   },
 }
 

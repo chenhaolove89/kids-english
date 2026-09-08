@@ -66,3 +66,29 @@ test('科目映射与源配置一致：难度与年级解耦但映射存在', ()
   // 数学 L2/L3 同属 g12（二十以内属一二年级），这是有意的教学映射
   assert.equal(source.mapping.math.levelStage['2'], source.mapping.math.levelStage['3'])
 })
+
+test('语文词语课：覆盖分类成对出现、跳过分类一门没有', () => {
+  const skip = new Set(source.zhWords?.skipCategories || [])
+  const zhLearn = catalog.lessons.filter((l) => l.id.startsWith('zh-words-') && l.kind === 'learn')
+  const zhQuiz = catalog.lessons.filter((l) => l.id.startsWith('zh-words-quiz-'))
+  const covered = words.categories.filter((c) => !skip.has(c.id))
+  assert.equal(zhLearn.length, covered.length, '每个覆盖分类恰一门词语学一学')
+  assert.equal(zhQuiz.length, covered.length, '每个覆盖分类恰一门词语挑战')
+  for (const l of [...zhLearn, ...zhQuiz]) {
+    assert.equal(l.subject, 'zh')
+    assert.ok(!skip.has(l.ref.id), `${l.id} 引用了应跳过的分类 ${l.ref.id}`)
+    assert.ok(catalog.stages.some((s) => s.id === l.stage), `${l.id} stage 合法`)
+  }
+})
+
+test('语文词语音频：覆盖分类每词 zhAudio 存在且非空（TTS 失败会产出极小 mp3）', () => {
+  const skip = new Set(source.zhWords?.skipCategories || [])
+  const covered = words.categories.filter((c) => !skip.has(c.id)).flatMap((c) => c.words)
+  assert.ok(covered.length > 1000, `词语课覆盖词数异常: ${covered.length}`)
+  for (const w of covered) {
+    assert.ok(w.zhAudio, `词 ${w.id} 缺 zhAudio 字段`)
+    const abs = path.join(ROOT, 'src', w.zhAudio.replace(/^\//, ''))
+    assert.ok(fs.existsSync(abs), `词 ${w.id} 中文配音文件不存在: ${w.zhAudio}`)
+    assert.ok(fs.statSync(abs).size >= 900, `词 ${w.id} 中文配音过小（疑似 TTS 失败）: ${w.zhAudio}`)
+  }
+})

@@ -30,6 +30,10 @@
         <text class="stat-label">汉字掌握</text>
       </view>
       <view class="stat-item">
+        <text class="stat-num">{{ counts.zhWordsMastered }}/{{ zhTotalWords }}</text>
+        <text class="stat-label">词语掌握</text>
+      </view>
+      <view class="stat-item">
         <text class="stat-num">{{ counts.mathDone }}/{{ mathLessons.length }}</text>
         <text class="stat-label">数学徽章</text>
       </view>
@@ -94,6 +98,31 @@
             <image class="cat-icon" :src="g.level.icon" mode="aspectFit" />
             <text class="cat-name">识字 · {{ g.level.zh }}</text>
             <text class="cat-prog" :style="{ color: g.level.color }">{{ g.progress.mastered }}/{{ g.progress.total }}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- 词语图鉴：按级别分组的分类卡（与英语同图，点亮独立口径） -->
+      <scroll-view v-if="tab === 'zhWords'" class="list" scroll-y>
+        <view v-for="group in zhWordGroups" :key="group.level.id" class="group">
+          <view class="group-head">
+            <text class="group-name" :style="{ color: group.level.color }">{{ group.level.zh }}</text>
+            <text class="group-sub">Level {{ group.level.id }}</text>
+          </view>
+          <view class="cat-grid">
+            <view
+              v-for="c in group.cats"
+              :key="c.id"
+              class="cat-card"
+              :class="{ dim: c.progress.mastered === 0 && c.progress.seen === 0, done: c.progressComplete }"
+              :style="{ background: c.bg }"
+              @tap="openDetail('zhWords', c)"
+            >
+              <text v-if="c.progressComplete" class="cat-trophy">🏆</text>
+              <image class="cat-icon" :src="c.icon" mode="aspectFit" />
+              <text class="cat-name">{{ c.zh }}</text>
+              <text class="cat-prog" :style="{ color: c.color }">{{ c.progress.mastered }}/{{ c.progress.total }}</text>
+            </view>
           </view>
         </view>
       </scroll-view>
@@ -167,28 +196,36 @@ import { getProgressService } from '@/services/progress.js'
 const tabs = [
   { id: 'en', name: '英语图鉴', emoji: '🔤' },
   { id: 'zh', name: '汉字图鉴', emoji: '🈵' },
+  { id: 'zhWords', name: '词语图鉴', emoji: '📖' },
   { id: 'math', name: '数学徽章', emoji: '🔢' },
 ]
 const tab = ref('en')
-const counts = ref({ enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, mathDone: 0 })
+const counts = ref({ enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, zhWordsSeen: 0, zhWordsMastered: 0, mathDone: 0 })
 const celebrate = ref(null)
 const totalStars = ref(0)
 const detail = ref(null)
 // 每次进入页面刷新点亮集合的快照（record* 只增不减，这里只读）
-const coll = ref({ en: { seen: [], mastered: [] }, zh: { seen: [], mastered: [] }, math: { done: [] } })
+const coll = ref({ en: { seen: [], mastered: [] }, zh: { seen: [], mastered: [] }, zhWords: { seen: [], mastered: [] }, math: { done: [] } })
 
 const enTotalWords = computed(() =>
   enData.categories.filter((c) => !isCategoryHidden(c.id)).reduce((n, c) => n + c.words.length, 0),
 )
 const zhTotalChars = computed(() => zhData.levels.reduce((n, l) => n + l.chars.length, 0))
+// 语文词语总量：catalog 里有 zh 词语课的分类才算（与课程/音频覆盖范围同一口径）
+const zhWordCatIds = new Set(
+  LESSONS.filter((l) => l.subject === 'zh' && l.ref?.kind === 'en-category').map((l) => l.ref.id),
+)
+const zhTotalWords = computed(() =>
+  enData.categories.filter((c) => zhWordCatIds.has(c.id) && !isCategoryHidden(c.id)).reduce((n, c) => n + c.words.length, 0),
+)
 const mathLessons = computed(() => LESSONS.filter((l) => l.subject === 'math' && l.kind === 'challenge' && l.status === 'available'))
 
 const isEmpty = computed(
-  () => counts.value.enSeen === 0 && counts.value.zhSeen === 0 && counts.value.mathDone === 0,
+  () => counts.value.enSeen === 0 && counts.value.zhSeen === 0 && counts.value.zhWordsSeen === 0 && counts.value.mathDone === 0,
 )
 
 const bubbleText = computed(() => {
-  const lit = counts.value.enSeen + counts.value.zhSeen
+  const lit = counts.value.enSeen + counts.value.zhSeen + counts.value.zhWordsSeen
   if (lit === 0) return '先去学一课，点亮第一张卡片吧！'
   if (lit < 20) return '哇，已经开始收集啦，继续加油！'
   if (lit < 100) return '收集得不错，星星都变成图鉴啦！'
@@ -224,6 +261,24 @@ const zhGroups = computed(() => {
   })
 })
 
+/** 语文词语：与英语同图同分组，点亮读 zhWords 桶；分类范围与词语课一致 */
+const zhWordGroups = computed(() => {
+  const seen = new Set(coll.value.zhWords.seen)
+  const mastered = new Set(coll.value.zhWords.mastered)
+  return enData.levels
+    .map((lv) => ({
+      level: lv,
+      cats: enData.categories
+        .filter((c) => c.level === lv.id && zhWordCatIds.has(c.id) && !isCategoryHidden(c.id))
+        .map((c) => {
+          const ids = c.words.map((w) => w.id)
+          const p = progressOf(ids, seen, mastered)
+          return { id: c.id, zh: c.zh, en: c.en, color: c.color, bg: c.bg, icon: c.icon, words: c.words, progress: p, progressComplete: isCategoryComplete(p) }
+        }),
+    }))
+    .filter((g) => g.cats.length)
+})
+
 const mathBadges = computed(() => {
   const doneSet = new Set(coll.value.math.done)
   const progMap = getProgressService().lessonProgressMap()
@@ -247,6 +302,25 @@ onShow(() => {
 })
 
 function openDetail(kind, group) {
+  if (kind === 'zhWords') {
+    // 语文词语卡：主字段中文词、副字段英文，点击播中文
+    const seen = new Set(coll.value.zhWords.seen)
+    const mastered = new Set(coll.value.zhWords.mastered)
+    detail.value = {
+      kind,
+      title: `词语 · ${group.zh}`,
+      progress: group.progress,
+      tiles: group.words.map((w) => ({
+        id: w.id,
+        state: seen.has(w.id) ? (mastered.has(w.id) ? 'mastered' : 'seen') : 'locked',
+        main: w.zh,
+        sub: w.en,
+        image: w.image,
+        audio: w.zhAudio || w.audio,
+      })),
+    }
+    return
+  }
   if (kind === 'en') {
     const seen = new Set(coll.value.en.seen)
     const mastered = new Set(coll.value.en.mastered)
@@ -370,7 +444,7 @@ function goLearn() {
 /* 统计行 */
 .stats {
   display: flex;
-  gap: 18rpx;
+  gap: 12rpx;
   margin-bottom: 30rpx;
 }
 .stat-item {
@@ -378,21 +452,21 @@ function goLearn() {
   min-width: 0;
   background: #ffffff;
   border-radius: 32rpx;
-  padding: 18rpx 8rpx;
+  padding: 18rpx 4rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: 0 8rpx 24rpx rgba(120, 90, 40, 0.07);
 }
 .stat-num {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 800;
   color: #4a3f35;
   white-space: nowrap;
 }
 .stat-label {
   margin-top: 6rpx;
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #a89d8e;
   white-space: nowrap;
 }
@@ -437,22 +511,23 @@ function goLearn() {
   flex-shrink: 0;
 }
 
-/* 三段切换 */
+/* 四段切换：图标在上文字在下，横排四枚才不挤 */
 .seg-row {
   display: flex;
-  gap: 16rpx;
+  gap: 14rpx;
   margin-bottom: 26rpx;
 }
 .seg-chip {
   flex: 1;
   min-width: 0;
   background: #ffffff;
-  border-radius: 32rpx;
-  padding: 14rpx 6rpx;
+  border-radius: 28rpx;
+  padding: 14rpx 4rpx;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10rpx;
+  gap: 4rpx;
   border: 4rpx solid transparent;
   box-sizing: border-box;
   box-shadow: 0 6rpx 18rpx rgba(120, 90, 40, 0.07);
@@ -465,11 +540,11 @@ function goLearn() {
   transform: scale(0.96);
 }
 .seg-emoji {
-  font-size: 34rpx;
-  line-height: 1.1;
+  font-size: 38rpx;
+  line-height: 1.15;
 }
 .seg-name {
-  font-size: 26rpx;
+  font-size: 24rpx;
   font-weight: 800;
   color: #4a3f35;
   white-space: nowrap;

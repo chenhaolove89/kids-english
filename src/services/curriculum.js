@@ -42,7 +42,15 @@ export function lessonUrl(lesson) {
   if (!lesson || !lesson.ref) return ''
   const lid = encodeURIComponent(lesson.id)
   const r = lesson.ref
-  if (r.kind === 'en-category') return `/pages/learn/learn?subject=en&cat=${encodeURIComponent(r.id)}&lessonId=${lid}`
+  // en-category 被 en（词卡）与 zh（词语课）共用，按科目分流
+  if (r.kind === 'en-category') {
+    if (lesson.subject === 'zh') {
+      return lesson.kind === 'challenge'
+        ? `/pages/quiz/quiz?subject=zh&cat=${encodeURIComponent(r.id)}&lessonId=${lid}`
+        : `/pages/learn/learn?subject=zh&cat=${encodeURIComponent(r.id)}&lessonId=${lid}`
+    }
+    return `/pages/learn/learn?subject=en&cat=${encodeURIComponent(r.id)}&lessonId=${lid}`
+  }
   if (r.kind === 'en-level') return `/pages/quiz/quiz?subject=en&level=${r.id}&lessonId=${lid}`
   if (r.kind === 'zh-level' && lesson.kind === 'learn')
     return `/pages/learn/learn?subject=zh&level=${r.id}&lessonId=${lid}`

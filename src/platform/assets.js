@@ -21,9 +21,16 @@ export function assetUrl(p) {
  * 音频一律原样返回，即使调用方误传也不会读错科目。
  * 首字母必须兼容大写：Monday / China / CD 这类专有名词文件就是大写命名，
  * 只认小写会让 audio-gb 里现成的英式音轨永远取不到。
+ * 路径前缀兼容 ./：GitHub Pages 发布脚本会把 /static/ 改写成 ./static/（子路径部署），
+ * 锚死 ^/static/ 会让线上英式口音静默失效回退美音。
  */
 export function withAccent(src, accent) {
   if (accent !== 'gb' || !src) return src
-  if (!/^\/static\/audio\/(?!zh-)(?!n\d)[A-Za-z][A-Za-z0-9'_-]*\.mp3$/.test(src)) return src
-  return src.replace('/static/audio/', '/static/audio-gb/')
+  // 前缀兼容 ./：GitHub Pages 发布脚本会把 /static/ 改写成 ./static/（子路径部署），
+  // 锚死 ^/static/ 会让线上英式口音静默失效回退美音
+  const m = /^(\.\/|\/)static\/audio\//.exec(src)
+  if (!m) return src
+  const name = src.slice(m[0].length)
+  if (!/^(?!zh-)(?!n\d)[A-Za-z][A-Za-z0-9'_-]*\.mp3$/.test(name)) return src
+  return `${m[1]}static/audio-gb/${name}`
 }

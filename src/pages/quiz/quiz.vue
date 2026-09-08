@@ -8,10 +8,16 @@
       <text class="score">⭐ {{ firstCorrect }}</text>
     </view>
 
+    <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上 -->
+    <view v-if="audioTotal > 0 && audioDone < audioTotal" class="load-bar">
+      <view class="load-fill" :style="{ width: audioPercent + '%' }"></view>
+    </view>
+
     <template v-if="!finished">
-      <view class="prompt" @tap="speakQuestion">
-        <text class="prompt-speaker">🔊</text>
-        <text class="prompt-hint">{{ subject === 'zh' ? '听一听，选出对应的汉字' : '听一听，选出对应的图片' }}</text>
+      <view class="prompt" :class="{ 'prompt-loading': audioLoading }" @tap="speakQuestion">
+        <text v-if="stemText" class="stem" :class="roundKind === 'pinyin-to-char' ? 'stem-pinyin' : 'stem-char'">{{ stemText }}</text>
+        <text v-if="showSpeaker" class="prompt-speaker">🔊</text>
+        <text class="prompt-hint">{{ promptHint }}</text>
       </view>
 
       <view class="round-info">第 {{ roundIdx + 1 }} / {{ rounds.length }} 题</view>
@@ -24,8 +30,9 @@
           :class="{ right: flashId === opt.id && isRight, wrong: flashId === opt.id && !isRight, shake: flashId === opt.id && !isRight }"
           @tap="pick(opt)"
         >
-          <image v-if="subject === 'en'" class="opt-img" :src="opt.image" mode="aspectFit" />
-          <text v-else class="opt-char" :style="{ color: opt.color }">{{ opt.main }}</text>
+          <image v-if="opt.image" class="opt-img" :src="opt.image" mode="aspectFit" />
+          <text v-else-if="isCharOption" class="opt-char" :style="{ color: opt.color }">{{ opt.main || opt.label }}</text>
+          <text v-else class="opt-label">{{ opt.label }}</text>
         </view>
       </view>
     </template>
@@ -48,13 +55,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
-import { play, playEn, preload } from '@/platform/audio.js'
+import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, whenAudioReady } from '@/platform/audio.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
-import { buildListenPickRounds } from '@/domain/rounds.js'
+import { buildListenPickRounds, buildZhCharRounds } from '@/domain/rounds.js'
 import { isRoundPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
 import { getSessionService } from '@/services/session.js'
@@ -66,6 +73,7 @@ const ROUNDS = 10
 
 const subject = ref('en')
 const reviewMode = ref(false) // 错题重练模式：/?review=en|zh
+const zhWordsMode = ref(false) // 语文词语挑战：听中文音选图（池与英语分类同源）
 const pool = ref([])
 const rounds = ref([])
 const roundIdx = ref(0)
@@ -80,12 +88,65 @@ const svc = getSessionService()
 const review = getReviewService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口只玩不记录
 const firstPickMap = new Map() // 旧入口模式的「首答」标记
+// 声音预加载进度 + 当前题题干音频加载态（慢网下喇叭呼吸闪烁，防误以为没声音）
+const audioDone = ref(0)
+const audioTotal = ref(0)
+const audioLoading = ref(false)
+
+const audioPercent = computed(() => (audioTotal.value ? Math.round((audioDone.value / audioTotal.value) * 100) : 0))
+
+function startAudioPreload(srcs) {
+  const list = [...new Set(srcs.filter(Boolean))]
+  audioTotal.value = list.length
+  audioDone.value = 0
+  preloadWithProgress(list, (done) => {
+    audioDone.value = done
+  })
+}
+
+function refreshAudioLoading() {
+  const r = rounds.value[roundIdx.value]
+  if (!r || r.kind !== 'listen-pick') {
+    audioLoading.value = false
+    return
+  }
+  const src = subject.value === 'en' ? accentEnSrc(r.answer.audio) : r.answer.audio
+  audioLoading.value = !!src && !isAudioReady(src)
+  if (!src) return
+  whenAudioReady(src).then(() => {
+    const cur = rounds.value[roundIdx.value]
+    if (cur && (subject.value === 'en' ? accentEnSrc(cur.answer.audio) : cur.answer.audio) === src) {
+      audioLoading.value = false
+    }
+  })
+}
+watch([roundIdx, rounds], refreshAudioLoading)
 
 const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.value, rounds.value.length)))
 const starsNote = computed(() => `共 ${rounds.value.length} 题 · 首次选对得星`)
 const pageTitle = computed(() => {
   if (reviewMode.value) return '错题重练'
-  return subject.value === 'zh' ? '听音识字' : '听音选图'
+  if (subject.value === 'zh') return zhWordsMode.value ? '词语挑战' : '汉字挑战'
+  return '听音选图'
+})
+// 语文混合题型：当前轮的 kind 决定题干（字/拼音）与选项渲染（大字/文本）
+const roundKind = computed(() => rounds.value[roundIdx.value]?.kind || 'listen-pick')
+const stemText = computed(() => {
+  const r = rounds.value[roundIdx.value]
+  if (!r || r.kind === 'listen-pick') return ''
+  return r.kind === 'pinyin-to-char' ? r.answer.pinyin : r.answer.char
+})
+const showSpeaker = computed(() => roundKind.value === 'listen-pick')
+const isCharOption = computed(() => roundKind.value === 'listen-pick' || roundKind.value === 'pinyin-to-char')
+const promptHint = computed(() => {
+  if (zhWordsMode.value) return '听一听，选出对应的图片'
+  if (subject.value === 'en') return '听一听，选出对应的图片'
+  switch (roundKind.value) {
+    case 'char-to-pinyin': return '看一看，选出正确的读音'
+    case 'pinyin-to-char': return '读一读，选出对应的汉字'
+    case 'char-to-word': return '想一想，选出含这个字的词'
+    default: return '听一听，选出对应的汉字'
+  }
 })
 
 onLoad((query) => {
@@ -111,14 +172,19 @@ onLoad((query) => {
       const lv = l && l.ref?.kind === 'en-level' ? l.ref.id : Number(query.level) || 1
       p = resolveEnLevel(lv)
     }
+  } else if (query.cat) {
+    // 语文词语挑战：与英语分类同池，主音频换中文读音
+    zhWordsMode.value = true
+    const c = resolveEnCategory(query.cat)
+    p = (c?.words ?? []).map((w) => ({ ...w, audio: w.zhAudio || w.audio }))
   } else {
     const l = getLesson(query.lessonId)
     const lv = l && l.ref?.kind === 'zh-level' ? l.ref.id : Number(query.level) || 1
     const level = resolveZhLevel(lv)
     p = level.chars.map(mapZhOption)
-    preload(p.map((x) => x.audio))
   }
-  if (subject.value === 'zh') preload(p.map((x) => x.audio))
+  // 预加载走统一出口：重练/英语/词语/识字都覆盖，英语在此处按口音解析
+  startAudioPreload(p.map((x) => (subject.value === 'en' ? accentEnSrc(x.audio) : x.audio)))
   pool.value = p
   if (!p.length) {
     // 深链参数无效（分类/级别不存在）：提示后回课程页，而不是卡在空页面
@@ -164,7 +230,12 @@ function currentSnapshot() {
 
 function start() {
   // 出轮统一走 domain/rounds.js：与单测同一份实现，避免页面内重复实现将来漂移
-  rounds.value = buildListenPickRounds(pool.value, { count: ROUNDS })
+  // 语文汉字课（含纯汉字错题重练）走多题型；词语课/英语/混池错题走听音选图
+  const allChars = pool.value.length > 0 && pool.value.every((x) => typeof x.char === 'string' && typeof x.pinyin === 'string')
+  rounds.value =
+    subject.value === 'zh' && !zhWordsMode.value && allChars
+      ? buildZhCharRounds(pool.value, { count: ROUNDS })
+      : buildListenPickRounds(pool.value, { count: ROUNDS })
   roundIdx.value = 0
   score.value = 0
   firstCorrect.value = 0
@@ -183,6 +254,8 @@ function loadRound() {
 
 function speakQuestion() {
   if (finished.value) return
+  // 文本题干（看字选拼音等）不播音频：读了题干等于报答案
+  if (!showSpeaker.value) return
   // 英语按所选口音发音；语文听音选字不动
   if (subject.value === 'en') playEn(rounds.value[roundIdx.value].answer.audio)
   else play(rounds.value[roundIdx.value].answer.audio)
@@ -195,7 +268,7 @@ function pick(opt) {
   const itemId = round.answer.id
   let firstTry = true
   if (lesson.value) {
-    const attempt = svc.recordAttempt({ activityId: 'listen-pick', order: roundIdx.value, answer: opt.id, correct, itemId })
+    const attempt = svc.recordAttempt({ activityId: round.kind, order: roundIdx.value, answer: opt.id, correct, itemId })
     firstTry = attempt ? attempt.firstTry : true
   } else {
     firstTry = !firstPickMap.has(roundIdx.value)
@@ -204,7 +277,7 @@ function pick(opt) {
   // 错题本：答错进本（当天可重练），已在本的答对晋级；复习/课时/旧入口三种模式都生效
   review.recordResult(itemId, correct, {
     subject: subject.value,
-    text: subject.value === 'zh' ? round.answer.char : round.answer.en,
+    text: round.answer.char || round.answer.zh || round.answer.en,
     lessonId: lesson.value ? lesson.value.id : null,
   })
   flashId.value = opt.id
@@ -311,10 +384,43 @@ function goBack() {
 .prompt-speaker {
   font-size: 90rpx;
 }
+/* 题干音频还在下载：喇叭呼吸闪烁，孩子知道声音在来的路上 */
+.prompt-loading .prompt-speaker {
+  animation: speaker-pulse 1.1s ease-in-out infinite;
+}
+@keyframes speaker-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+/* 课内音频预加载进度条（顶栏下方细条） */
+.load-bar {
+  height: 6rpx;
+  margin: 0 48rpx 4rpx;
+  background: #f0e4d7;
+  border-radius: 3rpx;
+  overflow: hidden;
+}
+.load-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd76e, #ff8c42);
+  transition: width 0.25s;
+}
 .prompt-hint {
   margin-top: 12rpx;
   font-size: 30rpx;
   color: #a2917d;
+}
+.stem {
+  font-weight: 800;
+  color: #4a3f35;
+}
+.stem-char {
+  font-size: 120rpx;
+  line-height: 1.15;
+}
+.stem-pinyin {
+  font-size: 76rpx;
+  color: #ff8c42;
 }
 .round-info {
   margin-top: 22rpx;
@@ -362,6 +468,13 @@ function goBack() {
 .opt-char {
   font-size: 170rpx;
   font-weight: 800;
+}
+.opt-label {
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #4a3f35;
+  padding: 0 16rpx;
+  text-align: center;
 }
 .shake {
   animation: shake 0.45s;

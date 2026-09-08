@@ -33,8 +33,13 @@ const FORCE = process.argv.includes('--force')
 const GB_MODE = process.argv.includes('--gb')
 // --shapes：只重画形状卡（几何图形，非文字），不跑 TTS、不改数据
 const SHAPES_MODE = process.argv.includes('--shapes')
-// --learn-zh：只给启蒙（level 1）英文词补中文配音到 static/audio-zh/，不跑英文/图片/数据
+// --learn-zh：给中文词语课涉及的英文词补中文配音到 static/audio-zh/，不跑英文/图片/数据
 const LEARN_ZH_MODE = process.argv.includes('--learn-zh')
+
+// 中文词语课的分类取舍是内容配置，与 validate-content 共用 curriculum.json 单一来源
+const CURRICULUM = JSON.parse(fs.readFileSync(path.join(ROOT, 'content-packages/curriculum.json'), 'utf8'))
+const ZH_WORD_SKIP = new Set(CURRICULUM.zhWords?.skipCategories || [])
+const isZhWordCategory = (id) => !ZH_WORD_SKIP.has(id)
 
 const NOTO_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/png/512'
 // 国旗在 Noto 仓库里按 ISO 国家代码存放（CN.png），emoji 码点路径下没有
@@ -459,27 +464,27 @@ async function main() {
     return
   }
 
-  // ---------- 启蒙中文配音：只补 level 1 英文词的读音，不跑英文/图片/数据 ----------
+  // ---------- 中文词语配音：给中文词语课覆盖的词生成中文读音，不跑英文/图片/数据 ----------
   if (LEARN_ZH_MODE) {
     fs.mkdirSync(AUDIO_ZH_DIR, { recursive: true })
-    const l1 = words.filter((w) => CATEGORIES[w.category]?.level === 1)
+    const covered = words.filter((w) => isZhWordCategory(w.category))
     const jobs = []
-    for (const w of l1) {
+    for (const w of covered) {
       const out = path.join(AUDIO_ZH_DIR, `${w.id}.mp3`)
       if (!FORCE && fs.existsSync(out)) continue
       jobs.push({ id: `zhw-${w.id}`, text: w.zh, out })
     }
-    console.log(`== 启蒙中文配音（zh-CN）待生成：${jobs.length} / 共 ${l1.length} 词 ==`)
+    console.log(`== 中文词语配音（zh-CN）待生成：${jobs.length} / 共 ${covered.length} 词 ==`)
     if (jobs.length) await ttsPool('ZH-LEARN', ZH_VOICES, jobs, 3)
     let miss = 0
-    for (const w of l1) {
+    for (const w of covered) {
       if (!fs.existsSync(path.join(AUDIO_ZH_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺中文配音: ${w.id}（${w.zh}）`); miss++ }
     }
     if (miss) {
-      console.log(`启蒙中文配音仍缺 ${miss} 个，请重跑 npm run gen:learn-zh`)
+      console.log(`中文词语配音仍缺 ${miss} 个，请重跑 npm run gen:learn-zh`)
       process.exitCode = 1
     } else {
-      console.log(`✓ 启蒙 ${l1.length} 词中文配音全部就绪`)
+      console.log(`✓ ${covered.length} 词中文配音全部就绪`)
     }
     return
   }
@@ -649,6 +654,8 @@ async function main() {
       phonetic: w.phonetic || '',
       image: `/static/img/${w.id}.${w.emoji ? 'png' : 'svg'}`,
       audio: `/static/audio/${w.id}.mp3`,
+      // 中文词语课的中文读音路径只在覆盖分类上输出；validate-content 按此字段校验文件
+      ...(isZhWordCategory(id) ? { zhAudio: `/static/audio-zh/${w.id}.mp3` } : {}),
       card: w.emoji ? 'emoji' : 'word',
     }))
     return {

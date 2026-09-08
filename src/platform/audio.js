@@ -142,6 +142,74 @@ export function preload(srcList) {
   })
 }
 
+/** 某条音频是否已下载就绪（页面显示「加载中」态用） */
+export function isAudioReady(src) {
+  try {
+    const howl = cache.get(src)
+    return !!howl && howl.state() === 'loaded'
+  } catch (e) {
+    return false
+  }
+}
+
+/** 等某条音频就绪：已就绪立即返回 true；加载失败返回 false（调用方据此决定是否提示重试） */
+export function whenAudioReady(src) {
+  return new Promise((resolve) => {
+    let howl
+    try {
+      howl = getHowl(src)
+    } catch (e) {
+      resolve(false)
+      return
+    }
+    if (howl.state() === 'loaded') {
+      resolve(true)
+      return
+    }
+    howl.once('load', () => resolve(true))
+    howl.once('loaderror', () => resolve(false))
+  })
+}
+
+/**
+ * 批量预加载 + 进度回调：每条只报一次（load/loaderror 都算完成，失败不许卡死进度条）。
+ * 传给页面的 done/total 用于画「声音加载中」进度条——慢网下孩子能看到声音在来的路上。
+ */
+export function preloadWithProgress(srcList, onProgress) {
+  const list = [...new Set((srcList || []).filter(Boolean))]
+  const total = list.length
+  if (!total) return
+  let done = 0
+  const bump = () => {
+    done += 1
+    try {
+      onProgress?.(done, total)
+    } catch (e) {
+      /* 页面回调异常不扩散 */
+    }
+  }
+  list.forEach((src) => {
+    let howl
+    try {
+      howl = getHowl(src)
+    } catch (e) {
+      bump()
+      return
+    }
+    if (howl.state() === 'loaded') {
+      bump()
+      return
+    }
+    howl.once('load', bump)
+    howl.once('loaderror', bump)
+  })
+}
+
+/** 英文词批量预加载 + 进度（按当前口音解析路径） */
+export function preloadEnWithProgress(srcList, onProgress) {
+  preloadWithProgress((srcList || []).map((s) => accentEnSrc(s)), onProgress)
+}
+
 /** 英文词/反馈音播放：按当前口音取音频（家长中心切美式/英式，播放时即时生效） */
 export function playEn(src, onEnd) {
   return play(accentEnSrc(src), onEnd)

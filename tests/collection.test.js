@@ -17,10 +17,11 @@ import {
   deriveFromHistory,
 } from '../src/domain/collection.js'
 
-test('createEmpty：三科结构完整且互不共享引用', () => {
+test('createEmpty：各科结构完整且互不共享引用', () => {
   const a = createEmpty()
   a.en.seen.push('x')
   assert.deepEqual(a.zh.seen, [])
+  assert.deepEqual(a.zhWords.seen, [])
   assert.deepEqual(a.math.done, [])
 })
 
@@ -29,8 +30,18 @@ test('normalizeColl：脏数据/缺键归一化，数组去重', () => {
   assert.deepEqual(normalizeColl({ en: { seen: ['a', 'a'] } }), {
     en: { seen: ['a'], mastered: [] },
     zh: { seen: [], mastered: [] },
+    zhWords: { seen: [], mastered: [] },
     math: { done: [] },
   })
+})
+
+test('addIds：语文词语桶与汉字桶互不混（zhWords 独立）', () => {
+  let c = addIds(createEmpty(), 'zhWords', 'seen', ['red'])
+  assert.deepEqual(c.zhWords.seen, ['red'])
+  assert.deepEqual(c.zh.seen, [], '词语点亮不得进汉字桶')
+  c = addIds(c, 'zh', 'seen', ['4e00'])
+  assert.deepEqual(c.zhWords.seen, ['red'])
+  assert.deepEqual(c.zh.seen, ['4e00'])
 })
 
 test('addIds：去重合并、只增不减、过滤空值', () => {

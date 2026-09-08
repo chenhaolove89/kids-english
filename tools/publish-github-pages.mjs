@@ -45,7 +45,11 @@ for (const f of files) {
   if (!['.html', '.js', '.css', '.json', '.webmanifest'].includes(ext)) continue
   let text = fs.readFileSync(f, 'utf8')
   const before = text
+  // 三种引号形态都要改写：双引号（JSON/压缩后的 JS 字符串）、反引号（页面里模板字符串
+  // 拼的运行时路径，如 /static/audio-zh/${id}.mp3——漏掉就是线上 404）、单引号兜底
   text = text.replaceAll('"/static/', '"./static/')
+  text = text.replaceAll('`/static/', '`./static/')
+  text = text.replaceAll("'/static/", "'./static/")
   if (ext === '.webmanifest') {
     text = text.replaceAll('"start_url": "/"', '"start_url": "./"')
     text = text.replaceAll('"scope": "/"', '"scope": "./"')
@@ -70,7 +74,8 @@ for (const f of files) {
 
 const leftover = files.filter((f) => {
   const ext = path.extname(f).toLowerCase()
-  return ['.html', '.js', '.css', '.json', '.webmanifest'].includes(ext) && fs.readFileSync(f, 'utf8').includes('"/static/')
+  if (!['.html', '.js', '.css', '.json', '.webmanifest'].includes(ext)) return false
+  return /["'`]\/static\//.test(fs.readFileSync(f, 'utf8'))
 })
 
 console.log(`扫描 ${files.length} 个文件，改写 ${changed} 个`)

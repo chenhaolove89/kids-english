@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-08T00:02:40.256Z",
-  "contentVersion": "c1573a0098",
+  "generatedAt": "2026-09-08T06:33:39.295Z",
+  "contentVersion": "311e90bc08",
   "stages": [
     {
       "id": "qimeng",
@@ -280,12 +280,152 @@
     },
     {
       "status": "available",
+      "id": "zh-words-animals",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 动物",
+      "subtitle": "60 个词语",
+      "icon": "/static/img/cat-animals.png",
+      "color": "#3BB273",
+      "bg": "#E3F6E8",
+      "sort": "zw-animals",
+      "ref": {
+        "kind": "en-category",
+        "id": "animals"
+      },
+      "skillIds": [
+        "zh-word-animals"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-body",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 身体",
+      "subtitle": "24 个词语",
+      "icon": "/static/img/cat-body.png",
+      "color": "#C77D52",
+      "bg": "#F5EBE2",
+      "sort": "zw-body",
+      "ref": {
+        "kind": "en-category",
+        "id": "body"
+      },
+      "skillIds": [
+        "zh-word-body"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-colors",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 颜色",
+      "subtitle": "12 个词语",
+      "icon": "/static/img/cat-colors.png",
+      "color": "#F76BA8",
+      "bg": "#FDE3EE",
+      "sort": "zw-colors",
+      "ref": {
+        "kind": "en-category",
+        "id": "colors"
+      },
+      "skillIds": [
+        "zh-word-colors"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-fruits",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 水果",
+      "subtitle": "24 个词语",
+      "icon": "/static/img/cat-fruits.png",
+      "color": "#FF6B6B",
+      "bg": "#FFE9E9",
+      "sort": "zw-fruits",
+      "ref": {
+        "kind": "en-category",
+        "id": "fruits"
+      },
+      "skillIds": [
+        "zh-word-fruits"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-numbers",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 数字",
+      "subtitle": "21 个词语",
+      "icon": "/static/img/cat-numbers.png",
+      "color": "#9B5DE5",
+      "bg": "#F0E6FB",
+      "sort": "zw-numbers",
+      "ref": {
+        "kind": "en-category",
+        "id": "numbers"
+      },
+      "skillIds": [
+        "zh-word-numbers"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-shapes",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 形状",
+      "subtitle": "14 个词语",
+      "icon": "/static/img/cat-shapes.png",
+      "color": "#4ECDC4",
+      "bg": "#E2F5F3",
+      "sort": "zw-shapes",
+      "ref": {
+        "kind": "en-category",
+        "id": "shapes"
+      },
+      "skillIds": [
+        "zh-word-shapes"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-toys",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 玩具",
+      "subtitle": "23 个词语",
+      "icon": "/static/img/cat-toys.png",
+      "color": "#5FA8D3",
+      "bg": "#E5F2F8",
+      "sort": "zw-toys",
+      "ref": {
+        "kind": "en-category",
+        "id": "toys"
+      },
+      "skillIds": [
+        "zh-word-toys"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-quiz-l1",
       "subject": "zh",
       "stage": "qimeng",
       "kind": "challenge",
       "title": "启蒙起步挑战",
-      "subtitle": "听音识字 · 10 题",
+      "subtitle": "混合题型 · 10 题",
       "icon": "/static/img/level-1.png",
       "color": "#3BB273",
       "bg": "#E3F6E8",
@@ -296,6 +436,146 @@
       },
       "skillIds": [
         "zh-char-l1"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-animals",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "动物词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-animals.png",
+      "color": "#3BB273",
+      "bg": "#E3F6E8",
+      "sort": "zw-animals",
+      "ref": {
+        "kind": "en-category",
+        "id": "animals"
+      },
+      "skillIds": [
+        "zh-word-animals"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-body",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "身体词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-body.png",
+      "color": "#C77D52",
+      "bg": "#F5EBE2",
+      "sort": "zw-body",
+      "ref": {
+        "kind": "en-category",
+        "id": "body"
+      },
+      "skillIds": [
+        "zh-word-body"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-colors",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "颜色词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-colors.png",
+      "color": "#F76BA8",
+      "bg": "#FDE3EE",
+      "sort": "zw-colors",
+      "ref": {
+        "kind": "en-category",
+        "id": "colors"
+      },
+      "skillIds": [
+        "zh-word-colors"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-fruits",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "水果词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-fruits.png",
+      "color": "#FF6B6B",
+      "bg": "#FFE9E9",
+      "sort": "zw-fruits",
+      "ref": {
+        "kind": "en-category",
+        "id": "fruits"
+      },
+      "skillIds": [
+        "zh-word-fruits"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-numbers",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "数字词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-numbers.png",
+      "color": "#9B5DE5",
+      "bg": "#F0E6FB",
+      "sort": "zw-numbers",
+      "ref": {
+        "kind": "en-category",
+        "id": "numbers"
+      },
+      "skillIds": [
+        "zh-word-numbers"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-shapes",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "形状词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-shapes.png",
+      "color": "#4ECDC4",
+      "bg": "#E2F5F3",
+      "sort": "zw-shapes",
+      "ref": {
+        "kind": "en-category",
+        "id": "shapes"
+      },
+      "skillIds": [
+        "zh-word-shapes"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-toys",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "玩具词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-toys.png",
+      "color": "#5FA8D3",
+      "bg": "#E5F2F8",
+      "sort": "zw-toys",
+      "ref": {
+        "kind": "en-category",
+        "id": "toys"
+      },
+      "skillIds": [
+        "zh-word-toys"
       ]
     },
     {
@@ -580,12 +860,212 @@
     },
     {
       "status": "available",
+      "id": "zh-words-clothes",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 衣服",
+      "subtitle": "33 个词语",
+      "icon": "/static/img/cat-clothes.png",
+      "color": "#5C7CFA",
+      "bg": "#E8EDFF",
+      "sort": "zw-clothes",
+      "ref": {
+        "kind": "en-category",
+        "id": "clothes"
+      },
+      "skillIds": [
+        "zh-word-clothes"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-desserts",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 甜品",
+      "subtitle": "19 个词语",
+      "icon": "/static/img/cat-desserts.png",
+      "color": "#F06292",
+      "bg": "#FDE7F0",
+      "sort": "zw-desserts",
+      "ref": {
+        "kind": "en-category",
+        "id": "desserts"
+      },
+      "skillIds": [
+        "zh-word-desserts"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-drinks",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 饮品",
+      "subtitle": "12 个词语",
+      "icon": "/static/img/cat-drinks.png",
+      "color": "#26A69A",
+      "bg": "#E0F2F1",
+      "sort": "zw-drinks",
+      "ref": {
+        "kind": "en-category",
+        "id": "drinks"
+      },
+      "skillIds": [
+        "zh-word-drinks"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-emotions",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 表情",
+      "subtitle": "28 个词语",
+      "icon": "/static/img/cat-emotions.png",
+      "color": "#FAB005",
+      "bg": "#FFF3D6",
+      "sort": "zw-emotions",
+      "ref": {
+        "kind": "en-category",
+        "id": "emotions"
+      },
+      "skillIds": [
+        "zh-word-emotions"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-family",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 家人",
+      "subtitle": "18 个词语",
+      "icon": "/static/img/cat-family.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "zw-family",
+      "ref": {
+        "kind": "en-category",
+        "id": "family"
+      },
+      "skillIds": [
+        "zh-word-family"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-food",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 食物",
+      "subtitle": "52 个词语",
+      "icon": "/static/img/cat-food.png",
+      "color": "#FF8C42",
+      "bg": "#FFEDD9",
+      "sort": "zw-food",
+      "ref": {
+        "kind": "en-category",
+        "id": "food"
+      },
+      "skillIds": [
+        "zh-word-food"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-home",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 家居",
+      "subtitle": "50 个词语",
+      "icon": "/static/img/cat-home.png",
+      "color": "#C9A227",
+      "bg": "#F8F1DC",
+      "sort": "zw-home",
+      "ref": {
+        "kind": "en-category",
+        "id": "home"
+      },
+      "skillIds": [
+        "zh-word-home"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-kitchen",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 厨房",
+      "subtitle": "24 个词语",
+      "icon": "/static/img/cat-kitchen.png",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "sort": "zw-kitchen",
+      "ref": {
+        "kind": "en-category",
+        "id": "kitchen"
+      },
+      "skillIds": [
+        "zh-word-kitchen"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-school",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 学校",
+      "subtitle": "24 个词语",
+      "icon": "/static/img/cat-school.png",
+      "color": "#8A6BD1",
+      "bg": "#EEE7FB",
+      "sort": "zw-school",
+      "ref": {
+        "kind": "en-category",
+        "id": "school"
+      },
+      "skillIds": [
+        "zh-word-school"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-vegetables",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词语 · 蔬菜",
+      "subtitle": "23 个词语",
+      "icon": "/static/img/cat-vegetables.png",
+      "color": "#7CB342",
+      "bg": "#EFF5E3",
+      "sort": "zw-vegetables",
+      "ref": {
+        "kind": "en-category",
+        "id": "vegetables"
+      },
+      "skillIds": [
+        "zh-word-vegetables"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-quiz-l2",
       "subject": "zh",
       "stage": "g12",
       "kind": "challenge",
       "title": "日常生活挑战",
-      "subtitle": "听音识字 · 10 题",
+      "subtitle": "混合题型 · 10 题",
       "icon": "/static/img/level-2.png",
       "color": "#4D96FF",
       "bg": "#E3EEFF",
@@ -596,6 +1076,206 @@
       },
       "skillIds": [
         "zh-char-l2"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-clothes",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "衣服词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-clothes.png",
+      "color": "#5C7CFA",
+      "bg": "#E8EDFF",
+      "sort": "zw-clothes",
+      "ref": {
+        "kind": "en-category",
+        "id": "clothes"
+      },
+      "skillIds": [
+        "zh-word-clothes"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-desserts",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "甜品词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-desserts.png",
+      "color": "#F06292",
+      "bg": "#FDE7F0",
+      "sort": "zw-desserts",
+      "ref": {
+        "kind": "en-category",
+        "id": "desserts"
+      },
+      "skillIds": [
+        "zh-word-desserts"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-drinks",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "饮品词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-drinks.png",
+      "color": "#26A69A",
+      "bg": "#E0F2F1",
+      "sort": "zw-drinks",
+      "ref": {
+        "kind": "en-category",
+        "id": "drinks"
+      },
+      "skillIds": [
+        "zh-word-drinks"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-emotions",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "表情词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-emotions.png",
+      "color": "#FAB005",
+      "bg": "#FFF3D6",
+      "sort": "zw-emotions",
+      "ref": {
+        "kind": "en-category",
+        "id": "emotions"
+      },
+      "skillIds": [
+        "zh-word-emotions"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-family",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "家人词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-family.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "zw-family",
+      "ref": {
+        "kind": "en-category",
+        "id": "family"
+      },
+      "skillIds": [
+        "zh-word-family"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-food",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "食物词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-food.png",
+      "color": "#FF8C42",
+      "bg": "#FFEDD9",
+      "sort": "zw-food",
+      "ref": {
+        "kind": "en-category",
+        "id": "food"
+      },
+      "skillIds": [
+        "zh-word-food"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-home",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "家居词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-home.png",
+      "color": "#C9A227",
+      "bg": "#F8F1DC",
+      "sort": "zw-home",
+      "ref": {
+        "kind": "en-category",
+        "id": "home"
+      },
+      "skillIds": [
+        "zh-word-home"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-kitchen",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "厨房词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-kitchen.png",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "sort": "zw-kitchen",
+      "ref": {
+        "kind": "en-category",
+        "id": "kitchen"
+      },
+      "skillIds": [
+        "zh-word-kitchen"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-school",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "学校词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-school.png",
+      "color": "#8A6BD1",
+      "bg": "#EEE7FB",
+      "sort": "zw-school",
+      "ref": {
+        "kind": "en-category",
+        "id": "school"
+      },
+      "skillIds": [
+        "zh-word-school"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-vegetables",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "蔬菜词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-vegetables.png",
+      "color": "#7CB342",
+      "bg": "#EFF5E3",
+      "sort": "zw-vegetables",
+      "ref": {
+        "kind": "en-category",
+        "id": "vegetables"
+      },
+      "skillIds": [
+        "zh-word-vegetables"
       ]
     },
     {
@@ -880,12 +1560,232 @@
     },
     {
       "status": "available",
+      "id": "zh-words-birds",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 鸟类",
+      "subtitle": "20 个词语",
+      "icon": "/static/img/cat-birds.png",
+      "color": "#00ACC1",
+      "bg": "#E0F7FA",
+      "sort": "zw-birds",
+      "ref": {
+        "kind": "en-category",
+        "id": "birds"
+      },
+      "skillIds": [
+        "zh-word-birds"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-city",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 城市",
+      "subtitle": "10 个词语",
+      "icon": "/static/img/cat-city.png",
+      "color": "#546E7A",
+      "bg": "#ECEFF1",
+      "sort": "zw-city",
+      "ref": {
+        "kind": "en-category",
+        "id": "city"
+      },
+      "skillIds": [
+        "zh-word-city"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-countries",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 国家",
+      "subtitle": "94 个词语",
+      "icon": "/static/img/cat-countries.png",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "sort": "zw-countries",
+      "ref": {
+        "kind": "en-category",
+        "id": "countries"
+      },
+      "skillIds": [
+        "zh-word-countries"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-farm",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 农场",
+      "subtitle": "13 个词语",
+      "icon": "/static/img/cat-farm.png",
+      "color": "#8D6E63",
+      "bg": "#EFEBE9",
+      "sort": "zw-farm",
+      "ref": {
+        "kind": "en-category",
+        "id": "farm"
+      },
+      "skillIds": [
+        "zh-word-farm"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-forest",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 森林",
+      "subtitle": "17 个词语",
+      "icon": "/static/img/cat-forest.png",
+      "color": "#2E7D32",
+      "bg": "#E8F5E9",
+      "sort": "zw-forest",
+      "ref": {
+        "kind": "en-category",
+        "id": "forest"
+      },
+      "skillIds": [
+        "zh-word-forest"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-insects",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 昆虫",
+      "subtitle": "20 个词语",
+      "icon": "/static/img/cat-insects.png",
+      "color": "#7CB342",
+      "bg": "#EFF5E3",
+      "sort": "zw-insects",
+      "ref": {
+        "kind": "en-category",
+        "id": "insects"
+      },
+      "skillIds": [
+        "zh-word-insects"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-nature",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 自然",
+      "subtitle": "41 个词语",
+      "icon": "/static/img/cat-nature.png",
+      "color": "#2FA4A9",
+      "bg": "#E0F4F5",
+      "sort": "zw-nature",
+      "ref": {
+        "kind": "en-category",
+        "id": "nature"
+      },
+      "skillIds": [
+        "zh-word-nature"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-ocean",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 海洋",
+      "subtitle": "22 个词语",
+      "icon": "/static/img/cat-ocean.png",
+      "color": "#1E88E5",
+      "bg": "#E3F2FD",
+      "sort": "zw-ocean",
+      "ref": {
+        "kind": "en-category",
+        "id": "ocean"
+      },
+      "skillIds": [
+        "zh-word-ocean"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-places",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 场所",
+      "subtitle": "32 个词语",
+      "icon": "/static/img/cat-places.png",
+      "color": "#8A6BD1",
+      "bg": "#EEE7FB",
+      "sort": "zw-places",
+      "ref": {
+        "kind": "en-category",
+        "id": "places"
+      },
+      "skillIds": [
+        "zh-word-places"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-time",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 时间",
+      "subtitle": "27 个词语",
+      "icon": "/static/img/cat-time.png",
+      "color": "#FF7043",
+      "bg": "#FBE9E7",
+      "sort": "zw-time",
+      "ref": {
+        "kind": "en-category",
+        "id": "time"
+      },
+      "skillIds": [
+        "zh-word-time"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-vehicles",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "词语 · 交通工具",
+      "subtitle": "42 个词语",
+      "icon": "/static/img/cat-vehicles.png",
+      "color": "#4D96FF",
+      "bg": "#E3EEFF",
+      "sort": "zw-vehicles",
+      "ref": {
+        "kind": "en-category",
+        "id": "vehicles"
+      },
+      "skillIds": [
+        "zh-word-vehicles"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-quiz-l3",
       "subject": "zh",
       "stage": "g34",
       "kind": "challenge",
       "title": "快乐探索挑战",
-      "subtitle": "听音识字 · 10 题",
+      "subtitle": "混合题型 · 10 题",
       "icon": "/static/img/level-3.png",
       "color": "#FF8C42",
       "bg": "#FFEDD9",
@@ -896,6 +1796,226 @@
       },
       "skillIds": [
         "zh-char-l3"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-birds",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "鸟类词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-birds.png",
+      "color": "#00ACC1",
+      "bg": "#E0F7FA",
+      "sort": "zw-birds",
+      "ref": {
+        "kind": "en-category",
+        "id": "birds"
+      },
+      "skillIds": [
+        "zh-word-birds"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-city",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "城市词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-city.png",
+      "color": "#546E7A",
+      "bg": "#ECEFF1",
+      "sort": "zw-city",
+      "ref": {
+        "kind": "en-category",
+        "id": "city"
+      },
+      "skillIds": [
+        "zh-word-city"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-countries",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "国家词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-countries.png",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "sort": "zw-countries",
+      "ref": {
+        "kind": "en-category",
+        "id": "countries"
+      },
+      "skillIds": [
+        "zh-word-countries"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-farm",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "农场词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-farm.png",
+      "color": "#8D6E63",
+      "bg": "#EFEBE9",
+      "sort": "zw-farm",
+      "ref": {
+        "kind": "en-category",
+        "id": "farm"
+      },
+      "skillIds": [
+        "zh-word-farm"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-forest",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "森林词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-forest.png",
+      "color": "#2E7D32",
+      "bg": "#E8F5E9",
+      "sort": "zw-forest",
+      "ref": {
+        "kind": "en-category",
+        "id": "forest"
+      },
+      "skillIds": [
+        "zh-word-forest"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-insects",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "昆虫词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-insects.png",
+      "color": "#7CB342",
+      "bg": "#EFF5E3",
+      "sort": "zw-insects",
+      "ref": {
+        "kind": "en-category",
+        "id": "insects"
+      },
+      "skillIds": [
+        "zh-word-insects"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-nature",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "自然词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-nature.png",
+      "color": "#2FA4A9",
+      "bg": "#E0F4F5",
+      "sort": "zw-nature",
+      "ref": {
+        "kind": "en-category",
+        "id": "nature"
+      },
+      "skillIds": [
+        "zh-word-nature"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-ocean",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "海洋词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-ocean.png",
+      "color": "#1E88E5",
+      "bg": "#E3F2FD",
+      "sort": "zw-ocean",
+      "ref": {
+        "kind": "en-category",
+        "id": "ocean"
+      },
+      "skillIds": [
+        "zh-word-ocean"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-places",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "场所词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-places.png",
+      "color": "#8A6BD1",
+      "bg": "#EEE7FB",
+      "sort": "zw-places",
+      "ref": {
+        "kind": "en-category",
+        "id": "places"
+      },
+      "skillIds": [
+        "zh-word-places"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-time",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "时间词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-time.png",
+      "color": "#FF7043",
+      "bg": "#FBE9E7",
+      "sort": "zw-time",
+      "ref": {
+        "kind": "en-category",
+        "id": "time"
+      },
+      "skillIds": [
+        "zh-word-time"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-vehicles",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "交通工具词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-vehicles.png",
+      "color": "#4D96FF",
+      "bg": "#E3EEFF",
+      "sort": "zw-vehicles",
+      "ref": {
+        "kind": "en-category",
+        "id": "vehicles"
+      },
+      "skillIds": [
+        "zh-word-vehicles"
       ]
     },
     {
@@ -1400,12 +2520,372 @@
     },
     {
       "status": "available",
+      "id": "zh-words-actions",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 动作",
+      "subtitle": "82 个词语",
+      "icon": "/static/img/cat-actions.png",
+      "color": "#12B886",
+      "bg": "#E2F6EF",
+      "sort": "zw-actions",
+      "ref": {
+        "kind": "en-category",
+        "id": "actions"
+      },
+      "skillIds": [
+        "zh-word-actions"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-adjectives",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 形容词",
+      "subtitle": "122 个词语",
+      "icon": "/static/img/cat-adjectives.png",
+      "color": "#F76BA8",
+      "bg": "#FDE3EE",
+      "sort": "zw-adjectives",
+      "ref": {
+        "kind": "en-category",
+        "id": "adjectives"
+      },
+      "skillIds": [
+        "zh-word-adjectives"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-characters",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 角色",
+      "subtitle": "22 个词语",
+      "icon": "/static/img/cat-characters.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "zw-characters",
+      "ref": {
+        "kind": "en-category",
+        "id": "characters"
+      },
+      "skillIds": [
+        "zh-word-characters"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-electronics",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 电器",
+      "subtitle": "23 个词语",
+      "icon": "/static/img/cat-electronics.png",
+      "color": "#0288D1",
+      "bg": "#E1F5FE",
+      "sort": "zw-electronics",
+      "ref": {
+        "kind": "en-category",
+        "id": "electronics"
+      },
+      "skillIds": [
+        "zh-word-electronics"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-festivals",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 节日",
+      "subtitle": "18 个词语",
+      "icon": "/static/img/cat-festivals.png",
+      "color": "#E91E63",
+      "bg": "#FCE4EC",
+      "sort": "zw-festivals",
+      "ref": {
+        "kind": "en-category",
+        "id": "festivals"
+      },
+      "skillIds": [
+        "zh-word-festivals"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-greetings",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 礼貌用语",
+      "subtitle": "58 个词语",
+      "icon": "/static/img/cat-greetings.png",
+      "color": "#C2255C",
+      "bg": "#FDEEF4",
+      "sort": "zw-greetings",
+      "ref": {
+        "kind": "en-category",
+        "id": "greetings"
+      },
+      "skillIds": [
+        "zh-word-greetings"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-health",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 健康",
+      "subtitle": "18 个词语",
+      "icon": "/static/img/cat-health.png",
+      "color": "#43A047",
+      "bg": "#E8F5E9",
+      "sort": "zw-health",
+      "ref": {
+        "kind": "en-category",
+        "id": "health"
+      },
+      "skillIds": [
+        "zh-word-health"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-jobs",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 职业",
+      "subtitle": "32 个词语",
+      "icon": "/static/img/cat-jobs.png",
+      "color": "#F76707",
+      "bg": "#FFE8D9",
+      "sort": "zw-jobs",
+      "ref": {
+        "kind": "en-category",
+        "id": "jobs"
+      },
+      "skillIds": [
+        "zh-word-jobs"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-mathwords",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 数学词",
+      "subtitle": "22 个词语",
+      "icon": "/static/img/cat-mathwords.png",
+      "color": "#5F3DC4",
+      "bg": "#EAE2FD",
+      "sort": "zw-mathwords",
+      "ref": {
+        "kind": "en-category",
+        "id": "mathwords"
+      },
+      "skillIds": [
+        "zh-word-mathwords"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-music",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 乐器",
+      "subtitle": "16 个词语",
+      "icon": "/static/img/cat-music.png",
+      "color": "#C257B5",
+      "bg": "#F7E5F4",
+      "sort": "zw-music",
+      "ref": {
+        "kind": "en-category",
+        "id": "music"
+      },
+      "skillIds": [
+        "zh-word-music"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-opposites",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 反义词",
+      "subtitle": "50 个词语",
+      "icon": "/static/img/cat-opposites.png",
+      "color": "#7048E8",
+      "bg": "#EAE2FD",
+      "sort": "zw-opposites",
+      "ref": {
+        "kind": "en-category",
+        "id": "opposites"
+      },
+      "skillIds": [
+        "zh-word-opposites"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-ordinals",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 序数词",
+      "subtitle": "19 个词语",
+      "icon": "/static/img/cat-ordinals.png",
+      "color": "#E8590C",
+      "bg": "#FFE8D9",
+      "sort": "zw-ordinals",
+      "ref": {
+        "kind": "en-category",
+        "id": "ordinals"
+      },
+      "skillIds": [
+        "zh-word-ordinals"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-routine",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 日常作息",
+      "subtitle": "24 个词语",
+      "icon": "/static/img/cat-routine.png",
+      "color": "#E67700",
+      "bg": "#FFEEDD",
+      "sort": "zw-routine",
+      "ref": {
+        "kind": "en-category",
+        "id": "routine"
+      },
+      "skillIds": [
+        "zh-word-routine"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-space",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 太空",
+      "subtitle": "12 个词语",
+      "icon": "/static/img/cat-space.png",
+      "color": "#6741D9",
+      "bg": "#EDE7FC",
+      "sort": "zw-space",
+      "ref": {
+        "kind": "en-category",
+        "id": "space"
+      },
+      "skillIds": [
+        "zh-word-space"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-sports",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 运动",
+      "subtitle": "36 个词语",
+      "icon": "/static/img/cat-sports.png",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "sort": "zw-sports",
+      "ref": {
+        "kind": "en-category",
+        "id": "sports"
+      },
+      "skillIds": [
+        "zh-word-sports"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-story",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 故事词",
+      "subtitle": "30 个词语",
+      "icon": "/static/img/cat-story.png",
+      "color": "#A61E4D",
+      "bg": "#FDEEF4",
+      "sort": "zw-story",
+      "ref": {
+        "kind": "en-category",
+        "id": "story"
+      },
+      "skillIds": [
+        "zh-word-story"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-subjects",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 学科",
+      "subtitle": "18 个词语",
+      "icon": "/static/img/cat-subjects.png",
+      "color": "#0CA678",
+      "bg": "#E6FCF5",
+      "sort": "zw-subjects",
+      "ref": {
+        "kind": "en-category",
+        "id": "subjects"
+      },
+      "skillIds": [
+        "zh-word-subjects"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-tools",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "词语 · 工具",
+      "subtitle": "19 个词语",
+      "icon": "/static/img/cat-tools.png",
+      "color": "#795548",
+      "bg": "#EFEBE9",
+      "sort": "zw-tools",
+      "ref": {
+        "kind": "en-category",
+        "id": "tools"
+      },
+      "skillIds": [
+        "zh-word-tools"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-quiz-l4",
       "subject": "zh",
       "stage": "g56",
       "kind": "challenge",
       "title": "挑战进阶",
-      "subtitle": "听音识字 · 10 题",
+      "subtitle": "混合题型 · 10 题",
       "icon": "/static/img/level-4.png",
       "color": "#9B5DE5",
       "bg": "#F0E6FB",
@@ -1416,6 +2896,366 @@
       },
       "skillIds": [
         "zh-char-l4"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-actions",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "动作词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-actions.png",
+      "color": "#12B886",
+      "bg": "#E2F6EF",
+      "sort": "zw-actions",
+      "ref": {
+        "kind": "en-category",
+        "id": "actions"
+      },
+      "skillIds": [
+        "zh-word-actions"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-adjectives",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "形容词词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-adjectives.png",
+      "color": "#F76BA8",
+      "bg": "#FDE3EE",
+      "sort": "zw-adjectives",
+      "ref": {
+        "kind": "en-category",
+        "id": "adjectives"
+      },
+      "skillIds": [
+        "zh-word-adjectives"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-characters",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "角色词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-characters.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "zw-characters",
+      "ref": {
+        "kind": "en-category",
+        "id": "characters"
+      },
+      "skillIds": [
+        "zh-word-characters"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-electronics",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "电器词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-electronics.png",
+      "color": "#0288D1",
+      "bg": "#E1F5FE",
+      "sort": "zw-electronics",
+      "ref": {
+        "kind": "en-category",
+        "id": "electronics"
+      },
+      "skillIds": [
+        "zh-word-electronics"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-festivals",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "节日词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-festivals.png",
+      "color": "#E91E63",
+      "bg": "#FCE4EC",
+      "sort": "zw-festivals",
+      "ref": {
+        "kind": "en-category",
+        "id": "festivals"
+      },
+      "skillIds": [
+        "zh-word-festivals"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-greetings",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "礼貌用语词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-greetings.png",
+      "color": "#C2255C",
+      "bg": "#FDEEF4",
+      "sort": "zw-greetings",
+      "ref": {
+        "kind": "en-category",
+        "id": "greetings"
+      },
+      "skillIds": [
+        "zh-word-greetings"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-health",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "健康词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-health.png",
+      "color": "#43A047",
+      "bg": "#E8F5E9",
+      "sort": "zw-health",
+      "ref": {
+        "kind": "en-category",
+        "id": "health"
+      },
+      "skillIds": [
+        "zh-word-health"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-jobs",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "职业词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-jobs.png",
+      "color": "#F76707",
+      "bg": "#FFE8D9",
+      "sort": "zw-jobs",
+      "ref": {
+        "kind": "en-category",
+        "id": "jobs"
+      },
+      "skillIds": [
+        "zh-word-jobs"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-mathwords",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "数学词词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-mathwords.png",
+      "color": "#5F3DC4",
+      "bg": "#EAE2FD",
+      "sort": "zw-mathwords",
+      "ref": {
+        "kind": "en-category",
+        "id": "mathwords"
+      },
+      "skillIds": [
+        "zh-word-mathwords"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-music",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "乐器词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-music.png",
+      "color": "#C257B5",
+      "bg": "#F7E5F4",
+      "sort": "zw-music",
+      "ref": {
+        "kind": "en-category",
+        "id": "music"
+      },
+      "skillIds": [
+        "zh-word-music"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-opposites",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "反义词词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-opposites.png",
+      "color": "#7048E8",
+      "bg": "#EAE2FD",
+      "sort": "zw-opposites",
+      "ref": {
+        "kind": "en-category",
+        "id": "opposites"
+      },
+      "skillIds": [
+        "zh-word-opposites"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-ordinals",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "序数词词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-ordinals.png",
+      "color": "#E8590C",
+      "bg": "#FFE8D9",
+      "sort": "zw-ordinals",
+      "ref": {
+        "kind": "en-category",
+        "id": "ordinals"
+      },
+      "skillIds": [
+        "zh-word-ordinals"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-routine",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "日常作息词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-routine.png",
+      "color": "#E67700",
+      "bg": "#FFEEDD",
+      "sort": "zw-routine",
+      "ref": {
+        "kind": "en-category",
+        "id": "routine"
+      },
+      "skillIds": [
+        "zh-word-routine"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-space",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "太空词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-space.png",
+      "color": "#6741D9",
+      "bg": "#EDE7FC",
+      "sort": "zw-space",
+      "ref": {
+        "kind": "en-category",
+        "id": "space"
+      },
+      "skillIds": [
+        "zh-word-space"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-sports",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "运动词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-sports.png",
+      "color": "#E4573D",
+      "bg": "#FBE7E3",
+      "sort": "zw-sports",
+      "ref": {
+        "kind": "en-category",
+        "id": "sports"
+      },
+      "skillIds": [
+        "zh-word-sports"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-story",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "故事词词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-story.png",
+      "color": "#A61E4D",
+      "bg": "#FDEEF4",
+      "sort": "zw-story",
+      "ref": {
+        "kind": "en-category",
+        "id": "story"
+      },
+      "skillIds": [
+        "zh-word-story"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-subjects",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "学科词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-subjects.png",
+      "color": "#0CA678",
+      "bg": "#E6FCF5",
+      "sort": "zw-subjects",
+      "ref": {
+        "kind": "en-category",
+        "id": "subjects"
+      },
+      "skillIds": [
+        "zh-word-subjects"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-tools",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "工具词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-tools.png",
+      "color": "#795548",
+      "bg": "#EFEBE9",
+      "sort": "zw-tools",
+      "ref": {
+        "kind": "en-category",
+        "id": "tools"
+      },
+      "skillIds": [
+        "zh-word-tools"
       ]
     }
   ]

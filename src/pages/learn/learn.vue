@@ -8,6 +8,11 @@
       <text class="progress">{{ current + 1 }}/{{ items.length }}</text>
     </view>
 
+    <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上，而不是以为没声音 -->
+    <view v-if="audioTotal > 0 && audioDone < audioTotal" class="load-bar">
+      <view class="load-fill" :style="{ width: audioPercent + '%' }"></view>
+    </view>
+
     <swiper class="swiper" :current="current" duration="250" @change="onChange">
       <swiper-item v-for="(it, idx) in items" :key="it.id">
         <view class="card" @tap="speakIdx(idx)">
@@ -19,7 +24,20 @@
             <text class="word-phonetic">{{ it.phon }}</text>
             <text class="word-zh">{{ it.sub }}</text>
             <view class="tap-hint">
-              <text class="tap-hint-text">点一点卡片再听一次 🔊</text>
+              <text class="tap-hint-text" :class="{ 'hint-loading': audioLoading }">{{ cardHint }}</text>
+            </view>
+          </template>
+          <template v-else-if="wordsMode">
+            <view class="img-wrap">
+              <image class="word-img" :src="it.image" mode="aspectFit" />
+            </view>
+            <text class="word-en" :style="{ color: theme.color, fontSize: zhWordSize(it.main) }">{{ it.main }}</text>
+            <view class="word-row" @tap.stop="speakExtra(idx)">
+              <text class="word-zh word-sub">{{ it.phon }}</text>
+              <text class="word-speaker">🔊</text>
+            </view>
+            <view class="tap-hint">
+              <text class="tap-hint-text" :class="{ 'hint-loading': audioLoading }">{{ cardHint }}</text>
             </view>
           </template>
           <template v-else>
@@ -33,6 +51,9 @@
             <view class="word-row" @tap.stop="speakExtra(idx)">
               <text class="word-zh">{{ it.sub }}</text>
               <text class="word-speaker">🔊</text>
+            </view>
+            <view class="write-btn" @tap.stop="goWrite(it)">
+              <text class="write-btn-text">✍️ 写一写</text>
             </view>
             <view class="tap-hint">
               <text class="tap-hint-text">点字卡听发音，点词语听例词</text>
@@ -55,11 +76,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { play, playEn, playSeq, preload, preloadEn, accentEnSrc, stopSeq } from '@/platform/audio.js'
+import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady } from '@/platform/audio.js'
 import { createThrottle } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
@@ -72,6 +93,50 @@ const title = ref('')
 const theme = ref({ bg: '#FFF8EC', color: '#FF8C42' })
 const items = ref([])
 const current = ref(0)
+// 语文词语模式（subject=zh 且带 cat）：复用英语分类配图，主音频中文、小喇叭切英文
+const wordsMode = ref(false)
+// 声音预加载进度：进页面后并行下载本课音频，慢网下让孩子看到「声音在来的路上」
+const audioDone = ref(0)
+const audioTotal = ref(0)
+// 当前卡主音频是否还在下载：true 时提示「声音加载中」，防孩子误以为没声音
+const audioLoading = ref(false)
+
+const audioPercent = computed(() => (audioTotal.value ? Math.round((audioDone.value / audioTotal.value) * 100) : 0))
+
+/** 统一入口：排队列数即总数，每条 load/loaderror 都推进度（失败不许卡死进度条） */
+function startAudioPreload(srcs) {
+  const list = [...new Set(srcs.filter(Boolean))]
+  audioTotal.value = list.length
+  audioDone.value = 0
+  preloadWithProgress(list, (done) => {
+    audioDone.value = done
+  })
+}
+
+/** 当前卡的主音频路径（与 speakIdx 的选路一致：启蒙英语先播中文） */
+function mainAudioSrc(it) {
+  if (!it) return ''
+  if (it.zhAudio) return it.zhAudio
+  return subject.value === 'en' ? accentEnSrc(it.audio) : it.audio
+}
+
+function refreshAudioLoading() {
+  const src = mainAudioSrc(items.value[current.value])
+  audioLoading.value = !!src && !isAudioReady(src)
+  if (!src) return
+  whenAudioReady(src).then(() => {
+    // 只在还停在这张卡时清态：期间翻页了就让新卡的刷新逻辑接管
+    if (mainAudioSrc(items.value[current.value]) === src) audioLoading.value = false
+  })
+}
+watch(current, refreshAudioLoading)
+
+const cardHint = computed(() => {
+  if (audioLoading.value) return '🔊 声音加载中…'
+  if (subject.value === 'en') return '点一点卡片再听一次 🔊'
+  if (wordsMode.value) return '点卡片听中文，点小喇叭听英文'
+  return '点字卡听发音，点词语听例词'
+})
 
 const svc = getSessionService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口不记录
@@ -99,19 +164,39 @@ onLoad((query) => {
     const isQimeng = c.level === 1
     items.value = c.words.map((w) => ({
       id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio,
-      zhAudio: isQimeng ? `/static/audio-zh/${w.id}.mp3` : '',
+      // 字符串拼接而非反引号模板：反引号路径打包后原样保留，发布脚本改写不到 → 线上 404
+      zhAudio: isQimeng ? "/static/audio-zh/" + w.id + ".mp3" : '',
     }))
-    preloadEn(items.value.map((i) => i.audio))
-    if (isQimeng) preload(items.value.map((i) => i.zhAudio))
+    startAudioPreload(items.value.flatMap((i) => [accentEnSrc(i.audio), i.zhAudio]))
+  } else if (query.cat) {
+    // 语文词语课：与 en 词卡同一批图，主音频换中文（zhAudio 由内容管线保证存在）
+    const c = resolveEnCategory(query.cat) || resolveEnCategory(enData.categories[0]?.id)
+    if (!c) {
+      uni.showToast({ title: '内容准备中', icon: 'none' })
+      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+      return
+    }
+    resolvedCatId = c.id
+    entryRef = { kind: 'en-category', id: c.id }
+    wordsMode.value = true
+    const lv = enData.levels.find((l) => l.id === c.level)
+    theme.value = { bg: lv ? lv.bg : '#FDEBE7', color: c.color }
+    title.value = `词语 · ${c.zh}`
+    items.value = c.words.map((w) => ({
+      id: w.id, main: w.zh, phon: w.en, sub: '', image: w.image,
+      audio: w.zhAudio || '', extraAudio: w.audio, enExtra: true, emoji: '',
+    }))
+    startAudioPreload(items.value.map((i) => i.audio))
   } else {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
     entryRef = { kind: 'zh-level', id: String(lv.id) }
     theme.value = { bg: lv.bg, color: lv.color }
     title.value = `识字 · ${lv.zh}`
     items.value = lv.chars.map((h) => ({ id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio, emoji: h.emoji || '' }))
-    preload(items.value.flatMap((i) => [i.audio, i.extraAudio]))
+    startAudioPreload(items.value.flatMap((i) => [i.audio, i.extraAudio]))
   }
 
+  refreshAudioLoading()
   wireSession(query.lessonId, resolvedCatId)
   // 进页先播第一个（用户点卡片进来时已有点击手势，iOS 可正常发声）
   setTimeout(() => speakIdx(current.value), 400)
@@ -167,9 +252,27 @@ function enSize(text) {
   if (len <= 17) return '46rpx'
   return '40rpx'
 }
+// 中文词语长短不一：两字词大号，长词（最长「巴布亚新几内亚」7 字）逐步缩号
+function zhWordSize(text) {
+  const len = (text || '').length
+  if (len <= 2) return '88rpx'
+  if (len <= 4) return '72rpx'
+  return '48rpx'
+}
 function speakExtra(i) {
   const it = items.value[i]
-  if (it && it.extraAudio) play(it.extraAudio)
+  if (!it || !it.extraAudio) return
+  // 词语模式的小喇叭是英文读音，走口音解析；识字模式的例词是中文
+  if (it.enExtra) playEn(it.extraAudio)
+  else play(it.extraAudio)
+}
+
+/** 描红页：带字/码点/拼音/字音，纯练习不记会话 */
+function goWrite(it) {
+  if (!it || !it.id) return
+  uni.navigateTo({
+    url: `/pages/write/write?char=${encodeURIComponent(it.main)}&cp=${it.id}&pinyin=${encodeURIComponent(it.phon || '')}&audio=${encodeURIComponent(it.audio || '')}`,
+  })
 }
 function onChange(e) {
   current.value = e.detail.current
@@ -382,6 +485,27 @@ function goBack() {
 .word-speaker {
   font-size: 34rpx;
 }
+/* 词语模式：小喇叭行里的英文释义不再带 word-zh 的顶部间距 */
+.word-sub {
+  margin-top: 0;
+  font-size: 40rpx;
+}
+/* 识字卡：描红入口（词语卡不显示） */
+.write-btn {
+  margin-top: 18rpx;
+  padding: 10rpx 34rpx;
+  border-radius: 40rpx;
+  background: #e3f6e8;
+  border: 3rpx solid #3bb273;
+}
+.write-btn:active {
+  transform: scale(0.96);
+}
+.write-btn-text {
+  font-size: 27rpx;
+  font-weight: 800;
+  color: #2d8a55;
+}
 .tap-hint {
   margin-top: 34rpx;
   padding: 12rpx 36rpx;
@@ -391,6 +515,27 @@ function goBack() {
 .tap-hint-text {
   font-size: 26rpx;
   color: #c99b52;
+}
+/* 声音还没下载完：提示语呼吸闪烁，孩子知道声音在来的路上 */
+.hint-loading {
+  animation: hint-pulse 1.1s ease-in-out infinite;
+}
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.95; }
+  50% { opacity: 0.4; }
+}
+/* 课内音频预加载进度条（顶栏下方细条） */
+.load-bar {
+  height: 6rpx;
+  margin: 0 44rpx 4rpx;
+  background: #f0e4d7;
+  border-radius: 3rpx;
+  overflow: hidden;
+}
+.load-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd76e, #ff8c42);
+  transition: width 0.25s;
 }
 .footer {
   display: flex;
