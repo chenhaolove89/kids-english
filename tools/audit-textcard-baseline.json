@@ -115,30 +115,14 @@
   "dish"
  ],
  "school": [
-  "eraser",
-  "glue",
-  "chalk",
-  "blackboard",
-  "desk",
-  "marker",
-  "classroom",
-  "homework",
   "lesson",
   "recess",
   "class"
  ],
  "family": [
-  "family",
   "uncle",
   "aunt",
-  "cousin",
-  "twins",
-  "mom",
-  "dad",
-  "son",
-  "daughter",
-  "friend",
-  "bestfriend"
+  "cousin"
  ],
  "vehicles": [
   "garbagetruck",
@@ -148,51 +132,22 @@
   "storm",
   "sunshine"
  ],
- "ocean": [
-  "starfish",
-  "jellyfish",
-  "seahorse",
-  "walrus",
-  "orca",
-  "eel",
-  "seaweed",
-  "narwhal",
-  "tide",
-  "splash",
-  "stingray",
-  "swordfish"
- ],
- "insects": [
-  "worm",
-  "firefly",
-  "dragonfly",
-  "grasshopper",
-  "mantis",
-  "cicada",
-  "termite",
-  "moth",
-  "flea",
-  "locust"
- ],
  "birds": [
   "sparrow",
   "woodpecker",
   "kingfisher",
   "magpie",
   "crane",
-  "crow",
   "ostrich",
   "nightingale",
   "swallow",
   "seagull",
-  "nest",
   "robin",
   "quail",
   "toucan"
  ],
  "places": [
   "airport",
-  "trainstation",
   "park",
   "zoo",
   "cinema",
@@ -231,7 +186,6 @@
   "soldier",
   "nurse",
   "dentist",
-  "barber",
   "waiter",
   "librarian",
   "engineer",
@@ -266,7 +220,6 @@
  "electronics": [
   "tablet",
   "remotecontrol",
-  "speaker",
   "smartwatch",
   "e-reader",
   "drone",
@@ -275,12 +228,8 @@
  ],
  "health": [
   "medicine",
-  "fever",
   "cough",
-  "sneeze",
   "flu",
-  "injection",
-  "dizzy",
   "healthy",
   "headache",
   "vitamin",
