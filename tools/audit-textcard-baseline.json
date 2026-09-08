@@ -153,28 +153,6 @@
   "harmonica",
   "ukulele"
  ],
- "health": [
-  "medicine",
-  "cough",
-  "flu",
-  "healthy",
-  "headache",
-  "vitamin",
-  "sorethroat",
-  "runnynose",
-  "toothache",
-  "firstaid"
- ],
- "festivals": [
-  "Christmasstocking",
-  "candycane",
-  "partyhat",
-  "SpringFestival",
-  "Mid-AutumnFestival",
-  "DragonBoatFestival",
-  "LanternFestival",
-  "Easter"
- ],
  "actions": [
   "act-eat",
   "act-drink",
