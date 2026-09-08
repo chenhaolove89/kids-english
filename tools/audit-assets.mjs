@@ -220,11 +220,13 @@ for (const c of words.categories) {
   if (!pic) g.noPic.push(`${c.zh} ${c.id}(${text})`)
 }
 
-/* ---------- 7. 混合分类缺图词（基线锁） ---------- */
-// 有图的分类里不允许再出现文字卡词——那是「漏配图」（水果 7 词教训）：
-// 孩子翻到该词只有字没有图。存量缺图词锁在 baseline 里只减不增，新增即 fail。
+/* ---------- 7. 混合分类缺图词（认读白名单锁） ---------- */
+// 有图的分类里不允许出现「没有着落」的文字卡词——那是「漏配图」（水果 7 词教训）：
+// 孩子翻到该词只有字没有图。缺图词只有两种合法状态：① 已补图；② 在认读白名单里
+// （抽象词如 today/Monday/uncle、动作词 act-* 等，设计上不配图，走认读）。
+// 白名单外的缺图词一律 fail。历史上 312 词基线已随档2 铺图完成清空（2026-09-08）。
 // 整类无图的分类（认读类/字母数字等）不在此检查内，仍走上面的覆盖度报告。
-const BASELINE_FILE = path.join(ROOT, 'tools', 'audit-textcard-baseline.json')
+const WHITELIST_FILE = path.join(ROOT, 'tools', 'audit-textcard-whitelist.json')
 const mixedMissing = []
 for (const c of words.categories) {
   const noPic = c.words.filter((w) => !hasArt(w.image))
@@ -232,13 +234,13 @@ for (const c of words.categories) {
     mixedMissing.push({ cat: c.id, zh: c.zh, ids: noPic.map((w) => w.id) })
   }
 }
-const baseline = JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'))
+const whitelist = JSON.parse(fs.readFileSync(WHITELIST_FILE, 'utf8'))
 const newMissing = []
-const fixedInBaseline = []
+const fixedInWhitelist = []
 for (const m of mixedMissing) {
-  const base = new Set(baseline[m.cat] || [])
+  const base = new Set(whitelist[m.cat] || [])
   for (const id of m.ids) if (!base.has(id)) newMissing.push(`${m.cat}/${id}`)
-  for (const id of base) if (!m.ids.includes(id)) fixedInBaseline.push(`${m.cat}/${id}`)
+  for (const id of base) if (!m.ids.includes(id)) fixedInWhitelist.push(`${m.cat}/${id}`)
 }
 
 /* ---------- 输出 ---------- */
@@ -264,15 +266,15 @@ for (const [st, g] of Object.entries(byStage)) {
   const pct = Math.round((g.text / (g.pic + g.text)) * 100)
   console.log(`${st}: 分类${g.cats} 图片卡${g.pic} 文字卡${g.text}（${pct}%）| 整类无图: ${g.noPic.join('、') || '无'}`)
 }
-const mixedCount = mixedMissing.reduce((n, m) => n + m.ids.length, 0)
-console.log(`\n=== 混合分类缺图词（基线锁）：存量 ${mixedCount} 个 / ${mixedMissing.length} 类 ===`)
+const wlCount = Object.values(whitelist).reduce((n, v) => n + v.length, 0)
+console.log(`\n=== 混合分类缺图词（认读白名单）：白名单 ${wlCount} 个 / ${Object.keys(whitelist).length} 类 ===`)
 for (const m of mixedMissing) console.log(`  ${m.zh} ${m.cat} ${m.ids.length} 个: ${m.ids.join(' ')}`)
 if (newMissing.length) {
-  console.log(`  ✗ 基线外新增缺图词 ${newMissing.length} 个（必须补 emoji 码点或进自绘白名单）:`)
+  console.log(`  ✗ 白名单外缺图词 ${newMissing.length} 个（必须补 emoji 码点、进自绘图标库，或明确加入认读白名单）:`)
   for (const n of newMissing) console.log('    ' + n)
 }
-if (fixedInBaseline.length) {
-  console.log(`  ✓ 已补图可从基线移除 ${fixedInBaseline.length} 个: ${fixedInBaseline.slice(0, 30).join(' ')}${fixedInBaseline.length > 30 ? ' …' : ''}`)
+if (fixedInWhitelist.length) {
+  console.log(`  ✓ 已补图可从白名单移除 ${fixedInWhitelist.length} 个: ${fixedInWhitelist.slice(0, 30).join(' ')}${fixedInWhitelist.length > 30 ? ' …' : ''}`)
 }
 const fail = broken.length || gbMissing.length || zhLearnMissing.length || newMissing.length
 const failNote = [
