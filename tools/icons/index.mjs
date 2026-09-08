@@ -13,6 +13,7 @@ import { icons as fam, category as famCat } from './family.mjs'
 import { icons as oi, categories as oiCats } from './ocean-insects.mjs'
 import { icons as bt, categories as btCats } from './birds-time.mjs'
 import { icons as pj, categories as pjCats } from './places-jobs.mjs'
+import { icons as ste, categories as steCats } from './space-tools-electronics.mjs'
 
 function reg(list) {
   const icons = {}
@@ -38,6 +39,7 @@ const { icons: ICONS, cats: ICON_CATEGORY } = reg([
   { icons: oi, categories: oiCats },
   { icons: bt, categories: btCats },
   { icons: pj, categories: pjCats },
+  { icons: ste, categories: steCats },
 ])
 
 export { ICONS, ICON_CATEGORY }

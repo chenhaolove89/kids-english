@@ -153,32 +153,6 @@
   "harmonica",
   "ukulele"
  ],
- "space": [
-  "blackhole",
-  "spacestation",
-  "asteroid",
-  "meteor",
-  "orbit",
-  "spacesuit"
- ],
- "tools": [
-  "shovel",
-  "drill",
-  "nail",
-  "pliers",
-  "toolbox",
-  "tapemeasure",
-  "wheelbarrow"
- ],
- "electronics": [
-  "tablet",
-  "remotecontrol",
-  "smartwatch",
-  "e-reader",
-  "drone",
-  "smartspeaker",
-  "powerbank"
- ],
  "health": [
   "medicine",
   "cough",
