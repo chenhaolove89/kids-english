@@ -17,6 +17,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
+import { ICONS, ICON_CATEGORY } from './icons/index.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const STATIC_DIR = path.join(ROOT, 'src/static')
@@ -421,9 +422,10 @@ const DRAW_CATEGORY = {
   ...Object.fromEntries(Object.keys(SHAPE_KINDS).map((k) => [k, 'shapes'])),
   ...Object.fromEntries(Object.keys(METAL_HEARTS).map((k) => [k, 'colors'])),
   ...Object.fromEntries(Object.keys(FRUIT_BODIES).map((k) => [k, 'fruits'])),
+  ...ICON_CATEGORY,
 }
 
-/** 该词是否走语义自绘（几何形状或金属色心形）；否则只能画文字卡 */
+/** 该词是否走语义自绘（几何形状/金属色心形/缺图清理图标）；否则只能画文字卡 */
 function isDrawnCard(w) {
   const cat = DRAW_CATEGORY[w.draw]
   return !w.emoji && !!cat && w.category === cat
@@ -431,6 +433,7 @@ function isDrawnCard(w) {
 
 /** 自绘卡统一出口：--shapes 重画与常规生成路径共用，避免两处判据漂移 */
 function drawnCardSVG(w) {
+  if (ICONS[w.draw]) return ICONS[w.draw]
   const cat = DRAW_CATEGORY[w.draw]
   if (cat === 'colors') return heartSVG(w.draw)
   if (cat === 'fruits') return fruitSVG(w.draw)
