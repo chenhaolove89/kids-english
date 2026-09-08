@@ -132,20 +132,6 @@
   "storm",
   "sunshine"
  ],
- "birds": [
-  "sparrow",
-  "woodpecker",
-  "kingfisher",
-  "magpie",
-  "crane",
-  "ostrich",
-  "nightingale",
-  "swallow",
-  "seagull",
-  "robin",
-  "quail",
-  "toucan"
- ],
  "places": [
   "airport",
   "park",
@@ -162,9 +148,6 @@
   "today",
   "tomorrow",
   "yesterday",
-  "morning",
-  "afternoon",
-  "evening",
   "day",
   "week",
   "month",
