@@ -11,7 +11,7 @@ function makeStore() {
   return createStorage({ backend: memoryBackend() })
 }
 
-test('mathgen sig：四个关卡所有题型都有 sig，且以题型名开头', () => {
+test('mathgen sig：每个关卡所有题型都有 sig，且以题型名开头', () => {
   const seenKinds = new Set()
   for (const lv of Object.keys(MATH_LEVELS)) {
     for (let i = 0; i < 300; i++) {
@@ -23,7 +23,7 @@ test('mathgen sig：四个关卡所有题型都有 sig，且以题型名开头',
   }
   assert.deepEqual(
     [...seenKinds].sort(),
-    ['add', 'add20', 'compare', 'compareNum', 'count', 'div', 'listen', 'missing', 'mul', 'sequence', 'sub', 'sub20'],
+    ['add', 'add20', 'addBig', 'addDec', 'addFrac', 'compare', 'compareNum', 'count', 'div', 'listen', 'missing', 'missingBig', 'mul', 'sequence', 'sub', 'sub20', 'subBig', 'subDec'],
   )
 })
 

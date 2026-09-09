@@ -23,6 +23,7 @@ test('createEmpty：各科结构完整且互不共享引用', () => {
   a.en.seen.push('x')
   assert.deepEqual(a.zh.seen, [])
   assert.deepEqual(a.zhWords.seen, [])
+  assert.deepEqual(a.zhSentences.seen, [])
   assert.deepEqual(a.math.done, [])
 })
 
@@ -32,8 +33,18 @@ test('normalizeColl：脏数据/缺键归一化，数组去重', () => {
     en: { seen: ['a'], mastered: [] },
     zh: { seen: [], mastered: [] },
     zhWords: { seen: [], mastered: [] },
+    zhSentences: { seen: [], mastered: [] },
     math: { done: [] },
   })
+})
+
+test('addIds：小短句桶与汉字桶互不混（同是字码点，靠桶隔离）', () => {
+  let c = addIds(createEmpty(), 'zhSentences', 'seen', ['4e00'])
+  assert.deepEqual(c.zhSentences.seen, ['4e00'])
+  assert.deepEqual(c.zh.seen, [], '句子点亮不得进汉字桶')
+  c = addIds(c, 'zh', 'seen', ['4e00'])
+  assert.deepEqual(c.zhSentences.seen, ['4e00'])
+  assert.deepEqual(c.zh.seen, ['4e00'])
 })
 
 test('addIds：语文词语桶与汉字桶互不混（zhWords 独立）', () => {

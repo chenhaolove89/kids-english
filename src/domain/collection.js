@@ -6,6 +6,7 @@
  *   { en: { seen: [wordId], mastered: [wordId] },
  *     zh: { seen: [charCodePoint], mastered: [charCodePoint] },
  *     zhWords: { seen: [wordId], mastered: [wordId] },
+ *     zhSentences: { seen: [charCodePoint], mastered: [charCodePoint] },
  *     math: { done: [lessonId] } }
  * 两级点亮：学一学完成 → seen（认识）；挑战首答答对 → mastered（掌握）。
  * 集合只增不减（attempts 有裁剪上限，点亮结果必须持久化）。
@@ -16,6 +17,7 @@ export function createEmpty() {
     en: { seen: [], mastered: [] },
     zh: { seen: [], mastered: [] },
     zhWords: { seen: [], mastered: [] },
+    zhSentences: { seen: [], mastered: [] },
     math: { done: [] },
   }
 }
@@ -24,7 +26,7 @@ export function createEmpty() {
 export function normalizeColl(coll) {
   const base = createEmpty()
   if (!coll || typeof coll !== 'object') return base
-  for (const s of ['en', 'zh', 'zhWords']) {
+  for (const s of ['en', 'zh', 'zhWords', 'zhSentences']) {
     if (coll[s] && Array.isArray(coll[s].seen)) base[s].seen = [...new Set(coll[s].seen)]
     if (coll[s] && Array.isArray(coll[s].mastered)) base[s].mastered = [...new Set(coll[s].mastered)]
   }
@@ -97,8 +99,8 @@ export function isMathTrophy(done, bestStars) {
  */
 export function celebration(prev, cur) {
   const d = (k) => Math.max(0, (cur?.[k] || 0) - (prev?.[k] || 0))
-  const newSeen = d('enSeen') + d('zhSeen') + d('zhWordsSeen')
-  const newMastered = d('enMastered') + d('zhMastered') + d('zhWordsMastered')
+  const newSeen = d('enSeen') + d('zhSeen') + d('zhWordsSeen') + d('zhSentencesSeen')
+  const newMastered = d('enMastered') + d('zhMastered') + d('zhWordsMastered') + d('zhSentencesMastered')
   return { newSeen, newMastered, mathNew: d('mathDone'), total: newSeen + newMastered + d('mathDone') }
 }
 

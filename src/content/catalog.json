@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-09T05:27:08.918Z",
-  "contentVersion": "604f4a92e1",
+  "generatedAt": "2026-09-09T06:06:39.765Z",
+  "contentVersion": "4ae271fd41",
   "stages": [
     {
       "id": "qimeng",
@@ -1080,6 +1080,26 @@
     },
     {
       "status": "available",
+      "id": "zh-sentences-l2",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "小短句 · 日常生活",
+      "subtitle": "80 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#8A6BD1",
+      "bg": "#F1ECFB",
+      "sort": "zz-sentences",
+      "ref": {
+        "kind": "zh-sentences",
+        "id": 2
+      },
+      "skillIds": [
+        "zh-sentence-l2"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-quiz-l2",
       "subject": "zh",
       "stage": "g12",
@@ -1560,6 +1580,26 @@
     },
     {
       "status": "available",
+      "id": "math-practice-l5",
+      "subject": "math",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "万以内加减",
+      "subtitle": "三位数加减、填空",
+      "icon": "/static/img/level-5.png",
+      "color": "#12B886",
+      "bg": "#E2F6EF",
+      "sort": "l5",
+      "ref": {
+        "kind": "math-level",
+        "id": 5
+      },
+      "skillIds": [
+        "math-l5"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-learn-l3",
       "subject": "zh",
       "stage": "g34",
@@ -1796,6 +1836,26 @@
       },
       "skillIds": [
         "zh-word-vehicles"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-sentences-l3",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "小短句 · 快乐探索",
+      "subtitle": "99 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#8A6BD1",
+      "bg": "#F1ECFB",
+      "sort": "zz-sentences",
+      "ref": {
+        "kind": "zh-sentences",
+        "id": 3
+      },
+      "skillIds": [
+        "zh-sentence-l3"
       ]
     },
     {
@@ -2520,6 +2580,26 @@
     },
     {
       "status": "available",
+      "id": "math-practice-l6",
+      "subject": "math",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "小数与分数",
+      "subtitle": "小数加减、同分母分数",
+      "icon": "/static/img/level-6.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "l6",
+      "ref": {
+        "kind": "math-level",
+        "id": 6
+      },
+      "skillIds": [
+        "math-l6"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-learn-l4",
       "subject": "zh",
       "stage": "g56",
@@ -2896,6 +2976,26 @@
       },
       "skillIds": [
         "zh-word-tools"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-sentences-l4",
+      "subject": "zh",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "小短句 · 挑战进阶",
+      "subtitle": "70 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#8A6BD1",
+      "bg": "#F1ECFB",
+      "sort": "zz-sentences",
+      "ref": {
+        "kind": "zh-sentences",
+        "id": 4
+      },
+      "skillIds": [
+        "zh-sentence-l4"
       ]
     },
     {

@@ -41,6 +41,8 @@ const levels = ref([
   { id: 2, name: '十以内加减', desc: '看图数一数，算一算', color: '#4D96FF', bg: '#E3EEFF' },
   { id: 3, name: '二十以内', desc: '进位加减、比大小、找搭档', color: '#FF8C42', bg: '#FFEDD9' },
   { id: 4, name: '乘除进阶', desc: '乘法口诀、平均分', color: '#9B5DE5', bg: '#F0E6FB' },
+  { id: 5, name: '万以内加减', desc: '三位数加减、填空', color: '#12B886', bg: '#E2F6EF' },
+  { id: 6, name: '小数与分数', desc: '小数加减、同分母分数', color: '#D6336C', bg: '#FBE3EC' },
 ])
 
 function go(lv) {

@@ -34,6 +34,10 @@
         <text class="stat-label">词语掌握</text>
       </view>
       <view class="stat-item">
+        <text class="stat-num">{{ counts.zhSentencesSeen }}/{{ zhTotalSentences }}</text>
+        <text class="stat-label">句子认识</text>
+      </view>
+      <view class="stat-item">
         <text class="stat-num">{{ counts.mathDone }}/{{ mathLessons.length }}</text>
         <text class="stat-label">数学徽章</text>
       </view>
@@ -127,6 +131,25 @@
         </view>
       </scroll-view>
 
+      <!-- 句子图鉴：按级别（小短句课只在已开放级别出现） -->
+      <scroll-view v-if="tab === 'zhSentences'" class="list" scroll-y>
+        <view class="cat-grid cat-grid-zh">
+          <view
+            v-for="g in sentenceGroups"
+            :key="g.level.id"
+            class="cat-card"
+            :class="{ dim: g.progress.mastered === 0 && g.progress.seen === 0, done: g.progressComplete }"
+            :style="{ background: g.level.bg }"
+            @tap="openDetail('zhSentences', g)"
+          >
+            <text v-if="g.progressComplete" class="cat-trophy">🏆</text>
+            <image class="cat-icon" :src="g.level.icon" mode="aspectFit" />
+            <text class="cat-name">小短句 · {{ g.level.zh }}</text>
+            <text class="cat-prog" :style="{ color: g.level.color }">{{ g.progress.seen }}/{{ g.progress.total }}</text>
+          </view>
+        </view>
+      </scroll-view>
+
       <!-- 数学徽章 -->
       <scroll-view v-if="tab === 'math'" class="list" scroll-y>
         <view class="badge-grid">
@@ -154,10 +177,30 @@
         <view class="sheet-head">
           <view class="sheet-back" @tap="closeDetail"><text class="sheet-back-icon">←</text></view>
           <text class="sheet-title">{{ detail.title }}</text>
-          <text class="sheet-prog">⭐ {{ detail.progress.mastered }}/{{ detail.progress.total }}</text>
+          <!-- 小短句还没有挑战，"掌握"恒为 0，进度按"认识"口径显示才不误导 -->
+          <text v-if="detail.kind === 'zhSentences'" class="sheet-prog">💬 {{ detail.progress.seen }}/{{ detail.progress.total }}</text>
+          <text v-else class="sheet-prog">⭐ {{ detail.progress.mastered }}/{{ detail.progress.total }}</text>
         </view>
         <scroll-view class="sheet-body" scroll-y>
-          <view class="tile-grid">
+          <!-- 句子图鉴：句子长，用竖排列表（格子会截断），未学的只显示 ? -->
+          <view v-if="detail.kind === 'zhSentences'" class="sent-list">
+            <view
+              v-for="t in detail.tiles"
+              :key="t.id"
+              class="sent-item"
+              :class="'tile-' + t.state"
+              @tap="tapTile(t)"
+            >
+              <template v-if="t.state !== 'locked'">
+                <image class="sent-item-img" :src="t.image" mode="aspectFit" />
+                <text class="sent-item-text">{{ t.main }}</text>
+              </template>
+              <template v-else>
+                <text class="sent-item-locked">?</text>
+              </template>
+            </view>
+          </view>
+          <view v-else class="tile-grid">
             <view
               v-for="t in detail.tiles"
               :key="t.id"
@@ -200,15 +243,22 @@ const tabs = [
   { id: 'en', name: '英语图鉴', emoji: '🔤' },
   { id: 'zh', name: '汉字图鉴', emoji: '🈵' },
   { id: 'zhWords', name: '词语图鉴', emoji: '📖' },
+  { id: 'zhSentences', name: '句子图鉴', emoji: '💬' },
   { id: 'math', name: '数学徽章', emoji: '🔢' },
 ]
 const tab = ref('en')
-const counts = ref({ enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, zhWordsSeen: 0, zhWordsMastered: 0, mathDone: 0 })
+const counts = ref({ enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, zhWordsSeen: 0, zhWordsMastered: 0, zhSentencesSeen: 0, zhSentencesMastered: 0, mathDone: 0 })
 const celebrate = ref(null)
 const totalStars = ref(0)
 const detail = ref(null)
 // 每次进入页面刷新点亮集合的快照（record* 只增不减，这里只读）
-const coll = ref({ en: { seen: [], mastered: [] }, zh: { seen: [], mastered: [] }, zhWords: { seen: [], mastered: [] }, math: { done: [] } })
+const coll = ref({
+  en: { seen: [], mastered: [] },
+  zh: { seen: [], mastered: [] },
+  zhWords: { seen: [], mastered: [] },
+  zhSentences: { seen: [], mastered: [] },
+  math: { done: [] },
+})
 
 const enTotalWords = computed(() =>
   enData.categories.filter((c) => !isCategoryHidden(c.id)).reduce((n, c) => n + c.words.length, 0),
@@ -223,12 +273,27 @@ const zhTotalWords = computed(() =>
 )
 const mathLessons = computed(() => LESSONS.filter((l) => l.subject === 'math' && l.kind === 'challenge' && l.status === 'available'))
 
+// 小短句只统计已开放句子课的级别（口径与课程目录一致，未开放级别不进分母）
+const sentenceLevelIds = new Set(
+  LESSONS.filter((l) => l.subject === 'zh' && l.ref?.kind === 'zh-sentences').map((l) => Number(l.ref.id)),
+)
+const zhTotalSentences = computed(() =>
+  zhData.levels
+    .filter((l) => sentenceLevelIds.has(Number(l.id)))
+    .reduce((n, l) => n + l.chars.filter((h) => h.sentenceAudio).length, 0),
+)
+
 const isEmpty = computed(
-  () => counts.value.enSeen === 0 && counts.value.zhSeen === 0 && counts.value.zhWordsSeen === 0 && counts.value.mathDone === 0,
+  () =>
+    counts.value.enSeen === 0 &&
+    counts.value.zhSeen === 0 &&
+    counts.value.zhWordsSeen === 0 &&
+    counts.value.zhSentencesSeen === 0 &&
+    counts.value.mathDone === 0,
 )
 
 const bubbleText = computed(() => {
-  const lit = counts.value.enSeen + counts.value.zhSeen + counts.value.zhWordsSeen
+  const lit = counts.value.enSeen + counts.value.zhSeen + counts.value.zhWordsSeen + counts.value.zhSentencesSeen
   if (lit === 0) return '先去学一课，点亮第一张卡片吧！'
   if (lit < 20) return '哇，已经开始收集啦，继续加油！'
   if (lit < 100) return '收集得不错，星星都变成图鉴啦！'
@@ -282,6 +347,19 @@ const zhWordGroups = computed(() => {
     .filter((g) => g.cats.length)
 })
 
+/** 小短句：只显示已开放句子课的级别；还没有挑战，完成度按"认识"算 */
+const sentenceGroups = computed(() => {
+  const seen = new Set(coll.value.zhSentences.seen)
+  const mastered = new Set(coll.value.zhSentences.mastered)
+  return zhData.levels
+    .filter((l) => sentenceLevelIds.has(Number(l.id)))
+    .map((lv) => {
+      const chars = lv.chars.filter((h) => h.sentenceAudio)
+      const p = progressOf(chars.map((h) => h.id), seen, mastered)
+      return { level: lv, chars, progress: p, progressComplete: p.total > 0 && p.seen >= p.total }
+    })
+})
+
 const mathBadges = computed(() => {
   const doneSet = new Set(coll.value.math.done)
   const progMap = getProgressService().lessonProgressMap()
@@ -307,6 +385,25 @@ onShow(() => {
 })
 
 function openDetail(kind, group) {
+  if (kind === 'zhSentences') {
+    // 小短句卡：主字段整句、配句意图，点击播整句
+    const seen = new Set(coll.value.zhSentences.seen)
+    const mastered = new Set(coll.value.zhSentences.mastered)
+    detail.value = {
+      kind,
+      title: `小短句 · ${group.level.zh}`,
+      progress: group.progress,
+      tiles: group.chars.map((h) => ({
+        id: h.id,
+        state: seen.has(h.id) ? (mastered.has(h.id) ? 'mastered' : 'seen') : 'locked',
+        main: h.sentence,
+        sub: '',
+        image: h.sentenceEmoji || h.emoji || group.level.icon,
+        audio: h.sentenceAudio,
+      })),
+    }
+    return
+  }
   if (kind === 'zhWords') {
     // 语文词语卡：主字段中文词、副字段英文，点击播中文
     const seen = new Set(coll.value.zhWords.seen)
@@ -839,5 +936,49 @@ function goLearn() {
 }
 .tile-mastered {
   border: 3rpx solid #ffd76e;
+}
+/* 句子图鉴：竖排列表（句子长，格子会截断），未学的只留 ? */
+.sent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sent-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  padding: 16rpx 24rpx;
+  min-height: 120rpx;
+  box-sizing: border-box;
+}
+.sent-item:active {
+  transform: scale(0.98);
+}
+.sent-item-img {
+  width: 88rpx;
+  height: 88rpx;
+  flex-shrink: 0;
+}
+.sent-item-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #4a3f35;
+  line-height: 1.35;
+}
+.sent-item-locked {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  background: #ece5d8;
+  color: #b3a492;
+  font-size: 48rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 </style>

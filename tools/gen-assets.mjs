@@ -66,7 +66,6 @@ const LEVELS = {
   3: { id: 3, zh: '快乐探索', en: 'Level 3', color: '#FF8C42', bg: '#FFEDD9', icon: '1f9ed' },
   4: { id: 4, zh: '挑战进阶', en: 'Level 4', color: '#9B5DE5', bg: '#F0E6FB', icon: '1f680' },
 }
-
 const CATEGORIES = {
   // L1 启蒙起步
   colors: { zh: '颜色', en: 'Colors', icon: '1f308', color: '#F76BA8', bg: '#FDE3EE', level: 1 },
@@ -723,6 +722,15 @@ async function main() {
         if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push('cat-sentences(1f4ac)')
       })
     }
+  }
+  // 数学新增关卡图标（L5/L6）：课程目录引用 /static/img/level-{id}.png，与识字级别图标同目录
+  for (const [id, code] of Object.entries({ 5: '1f9ee', 6: '1f4d0' })) {
+    const out = path.join(IMG_DIR, `level-${id}.png`)
+    if (!FORCE && fs.existsSync(out)) continue
+    needImg.push(async () => {
+      const buf = await fetchEmoji(code)
+      if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`level-${id}(${code})`)
+    })
   }
   for (const [sid, code] of Object.entries(SUBJECTS)) {
     const out = path.join(IMG_DIR, `subject-${sid}.png`)

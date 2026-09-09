@@ -29,13 +29,21 @@ function lessonItemIds(lesson) {
     const lv = resolveZhLevel(r.id)
     return lv ? lv.chars.map((h) => h.id) : null
   }
+  // 小短句按字码点点亮（一字节一句），与识字课分开成桶
+  if (r.kind === 'zh-sentences') {
+    const lv = resolveZhLevel(r.id)
+    return lv ? lv.chars.filter((h) => h.sentenceAudio).map((h) => h.id) : null
+  }
   return null
 }
 
-/** 语文的点亮桶：识字课进 zh（字码点），词语课（ref=en-category）进 zhWords（词 id），分开统计不互混 */
+/** 语文的点亮桶：识字课进 zh（字码点），词语课（ref=en-category）进 zhWords（词 id），
+ *  小短句（ref=zh-sentences）进 zhSentences，三者分开统计不互混 */
 function collectionBucket(lesson) {
   if (lesson.subject !== 'zh') return lesson.subject
-  return lesson.ref?.kind === 'en-category' ? 'zhWords' : 'zh'
+  if (lesson.ref?.kind === 'en-category') return 'zhWords'
+  if (lesson.ref?.kind === 'zh-sentences') return 'zhSentences'
+  return 'zh'
 }
 
 /** 回填用课程解析器：目录 + 适配器展开（未知课程返回 null 跳过） */
@@ -90,7 +98,7 @@ export function createCollectionService(store) {
     save(addIds(load(), collectionBucket(lesson), 'mastered', masters))
   }
 
-  /** 六计数：庆祝条对比与页头统计用 */
+  /** 各桶计数：庆祝条对比与页头统计用 */
   function counts() {
     const c = load()
     return {
@@ -100,6 +108,8 @@ export function createCollectionService(store) {
       zhMastered: c.zh.mastered.length,
       zhWordsSeen: c.zhWords.seen.length,
       zhWordsMastered: c.zhWords.mastered.length,
+      zhSentencesSeen: c.zhSentences.seen.length,
+      zhSentencesMastered: c.zhSentences.mastered.length,
       mathDone: c.math.done.length,
     }
   }

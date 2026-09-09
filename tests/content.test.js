@@ -39,7 +39,7 @@ test('课程引用可解析：ref 都能落到真实数据', () => {
     if (r.kind === 'en-category') assert.ok(enCats.has(r.id), `${l.id} 引用分类 ${r.id} 不存在`)
     if (r.kind === 'en-level') assert.ok([1, 2, 3, 4].includes(Number(r.id)), `${l.id} 引用级别非法`)
     if (r.kind === 'zh-level') assert.ok(zhLevels.has(Number(r.id)), `${l.id} 引用级别非法`)
-    if (r.kind === 'math-level') assert.ok([1, 2, 3, 4].includes(Number(r.id)), `${l.id} 引用级别非法`)
+    if (r.kind === 'math-level') assert.ok([1, 2, 3, 4, 5, 6].includes(Number(r.id)), `${l.id} 引用级别非法`)
   }
 })
 
