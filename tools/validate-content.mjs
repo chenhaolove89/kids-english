@@ -157,6 +157,42 @@ for (const lv of hanzi.levels) {
   })
 }
 
+// 语文小短句：只念例句、不混排字词的独立卡片。开放级别配置在 curriculum.zhSentences
+// （目前只开启蒙 level 1），数据源是 hanzi 每字的 sentence/sentenceAudio
+// （tools/hanzi-sentences.csv + Azure 音轨）。
+const sentenceLevels = new Set((source.zhSentences?.levels || []).map(Number))
+for (const lv of hanzi.levels) {
+  if (!sentenceLevels.has(Number(lv.id))) continue
+  const stage = mapping.zh.levelStage[String(lv.id)]
+  if (!stage) { fail(`语文级别 ${lv.id} 无 stage 映射`); continue }
+  const chars = lv.chars.filter((h) => h.sentence && h.sentenceAudio)
+  if (chars.length !== lv.chars.length) {
+    fail(`语文级别 ${lv.id} 有 ${lv.chars.length - chars.length} 个字缺例句或例句音（小短句课要求逐字齐全）`)
+    continue
+  }
+  for (const h of chars) {
+    const abs = path.join(ROOT, 'src', h.sentenceAudio.replace(/^\//, ''))
+    if (!fs.existsSync(abs)) { fail(`字 ${h.char} 例句音不存在: ${h.sentenceAudio}（先跑 npm run gen:zh-azure）`); continue }
+    const real = fs.readdirSync(path.dirname(abs)).find((f) => f === path.basename(abs))
+    if (real === undefined) fail(`字 ${h.char} 例句音大小写不匹配: ${h.sentenceAudio}`)
+  }
+  pushLesson({
+    id: `zh-sentences-l${lv.id}`,
+    subject: 'zh',
+    stage,
+    kind: 'learn',
+    title: `小短句 · ${lv.zh}`,
+    subtitle: `${chars.length} 个句子`,
+    icon: '/static/img/cat-sentences.png',
+    color: '#8A6BD1',
+    bg: '#F1ECFB',
+    // 排序落在识字课与词语课之后：字 → 词 → 句 的难度递进
+    sort: 'zz-sentences',
+    ref: { kind: 'zh-sentences', id: lv.id },
+    skillIds: [`zh-sentence-l${lv.id}`],
+  })
+}
+
 // 语文词语课：复用英语分类的图片与中文释义做「看图识词」。
 // 英语教学构词类（字母/Sight words/词族/拼读/介词/会话）不进中文课，取舍配置在 curriculum.zhWords
 const zhSkip = new Set(source.zhWords?.skipCategories || [])
@@ -235,6 +271,7 @@ for (const l of lessons) {
   if (r.kind === 'en-category' && !enCatById.has(r.id)) fail(`课程 ${l.id} 引用不存在的分类 ${r.id}`)
   if (r.kind === 'en-level' && !enLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的英语级别 ${r.id}`)
   if (r.kind === 'zh-level' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
+  if (r.kind === 'zh-sentences' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'math-level' && ![1, 2, 3, 4].includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
 }
 

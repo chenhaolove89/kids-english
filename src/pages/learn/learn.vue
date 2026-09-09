@@ -40,6 +40,17 @@
               <text class="tap-hint-text" :class="{ 'hint-loading': audioLoading }">{{ cardHint }}</text>
             </view>
           </template>
+          <template v-else-if="sentencesMode">
+            <view class="sent-wrap">
+              <text class="sent-text" :style="{ color: theme.color, fontSize: sentSize(it.main) }">{{ it.main }}</text>
+              <view class="sent-play">
+                <text class="sent-speaker">🔊</text>
+              </view>
+            </view>
+            <view class="tap-hint">
+              <text class="tap-hint-text" :class="{ 'hint-loading': audioLoading }">{{ cardHint }}</text>
+            </view>
+          </template>
           <template v-else>
             <view class="char-wrap" :class="{ 'has-emoji': it.emoji }">
               <view v-if="it.emoji" class="hz-emoji-tile">
@@ -96,6 +107,8 @@ const items = ref([])
 const current = ref(0)
 // 语文词语模式（subject=zh 且带 cat）：复用英语分类配图，主音频中文、小喇叭切英文
 const wordsMode = ref(false)
+// 语文小短句模式（subject=zh 且带 sentences）：只念例句，不混排字词
+const sentencesMode = ref(false)
 // 声音预加载进度：进页面后并行下载本课音频，慢网下让孩子看到「声音在来的路上」
 const audioDone = ref(0)
 const audioTotal = ref(0)
@@ -136,6 +149,7 @@ const cardHint = computed(() => {
   if (audioLoading.value) return '🔊 声音加载中…'
   if (subject.value === 'en') return '点一点卡片再听一次 🔊'
   if (wordsMode.value) return '点卡片听中文，点小喇叭听英文'
+  if (sentencesMode.value) return '点一点卡片，再听一遍句子 🔊'
   return '点字卡听发音，点词语听例词'
 })
 
@@ -188,12 +202,34 @@ onLoad((query) => {
       audio: w.zhAudio || '', extraAudio: w.audio, enExtra: true, emoji: '',
     }))
     startAudioPreload(items.value.map((i) => i.audio))
+  } else if (query.sentences) {
+    // 小短句：只念整句，不带字卡/拼音/例词/描红（那是识字课的事）
+    const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
+    const chars = lv.chars.filter((h) => h.sentence && h.sentenceAudio)
+    if (!chars.length) {
+      uni.showToast({ title: '内容准备中', icon: 'none' })
+      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+      return
+    }
+    entryRef = { kind: 'zh-sentences', id: String(lv.id) }
+    sentencesMode.value = true
+    theme.value = { bg: lv.bg, color: lv.color }
+    title.value = `小短句 · ${lv.zh}`
+    // 每句配目标字的图：孩子先看图猜意，再听整句，图文对应
+    items.value = chars.map((h) => ({
+      id: h.id, main: h.sentence, phon: '', sub: '', audio: h.sentenceAudio,
+      extraAudio: '', emoji: h.emoji || '',
+    }))
+    startAudioPreload(items.value.map((i) => i.audio))
   } else {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
     entryRef = { kind: 'zh-level', id: String(lv.id) }
     theme.value = { bg: lv.bg, color: lv.color }
     title.value = `识字 · ${lv.zh}`
-    items.value = lv.chars.map((h) => ({ id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio, emoji: h.emoji || '' }))
+    items.value = lv.chars.map((h) => ({
+      id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio,
+      emoji: h.emoji || '',
+    }))
     startAudioPreload(items.value.flatMap((i) => [i.audio, i.extraAudio]))
   }
 
@@ -265,6 +301,14 @@ function zhWordSize(text) {
   if (len <= 2) return '88rpx'
   if (len <= 4) return '72rpx'
   return '48rpx'
+}
+// 小短句 7~9 字，按长度缩号保证一句一行放下（最窄机型也尽量不折行）
+function sentSize(text) {
+  const len = (text || '').length
+  if (len <= 6) return '88rpx'
+  if (len <= 7) return '76rpx'
+  if (len <= 8) return '66rpx'
+  return '58rpx'
 }
 function speakExtra(i) {
   const it = items.value[i]
@@ -491,6 +535,37 @@ function goBack() {
 }
 .word-speaker {
   font-size: 34rpx;
+}
+/* 小短句卡：整句居中大字，喇叭另起一行居中，不与文字抢视线 */
+.sent-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+.sent-text {
+  font-size: 76rpx;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+}
+.sent-play {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  background: #f4f0fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sent-speaker {
+  font-size: 52rpx;
 }
 /* 词语模式：小喇叭行里的英文释义不再带 word-zh 的顶部间距 */
 .word-sub {

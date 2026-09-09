@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-08T06:33:39.295Z",
-  "contentVersion": "311e90bc08",
+  "generatedAt": "2026-09-09T03:49:27.609Z",
+  "contentVersion": "0424a88bf1",
   "stages": [
     {
       "id": "qimeng",
@@ -416,6 +416,26 @@
       },
       "skillIds": [
         "zh-word-toys"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-sentences-l1",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "小短句 · 启蒙起步",
+      "subtitle": "48 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#8A6BD1",
+      "bg": "#F1ECFB",
+      "sort": "zz-sentences",
+      "ref": {
+        "kind": "zh-sentences",
+        "id": 1
+      },
+      "skillIds": [
+        "zh-sentence-l1"
       ]
     },
     {

@@ -35,6 +35,8 @@ const GB_MODE = process.argv.includes('--gb')
 const SHAPES_MODE = process.argv.includes('--shapes')
 // --learn-zh：给中文词语课涉及的英文词补中文配音到 static/audio-zh/，不跑英文/图片/数据
 const LEARN_ZH_MODE = process.argv.includes('--learn-zh')
+// --zh-char：用同音字替身重生成汉字字音（读错的字换同音同调替身喂 TTS），不跑英文/图片/数据
+const ZH_CHAR_MODE = process.argv.includes('--zh-char')
 
 // 中文词语课的分类取舍是内容配置，与 validate-content 共用 curriculum.json 单一来源
 const CURRICULUM = JSON.parse(fs.readFileSync(path.join(ROOT, 'content-packages/curriculum.json'), 'utf8'))
@@ -48,6 +50,15 @@ const EN_VOICES = ['en-US-AnaNeural', 'en-US-JennyNeural']
 // 英式对应童声 Maisie（≈Ana 的 en-GB 版），不可用时降级成年女声 Sonia
 const EN_GB_VOICES = ['en-GB-MaisieNeural', 'en-GB-SoniaNeural']
 const ZH_VOICES = ['zh-CN-XiaoxiaoNeural', 'zh-CN-XiaoyiNeural']
+
+// 汉字字音注音表（tools/zh_pron_overrides.py 生成）：多音字裸读会错的字，
+// 用「同音同调且使用实证无歧义」的替身字喂 TTS——音频里只有声音没有文字。
+// Edge 免费端点拒收 phoneme/sub 等 SSML 注音标签（见 tools/phoneme-probe.mjs 探针），
+// 同音字替身是端点原生可行的唯一注音方式。
+const ZH_PRON_OVERRIDES = fs.existsSync(path.join(ROOT, 'tools/zh-pron-overrides.json'))
+  ? JSON.parse(fs.readFileSync(path.join(ROOT, 'tools/zh-pron-overrides.json'), 'utf8'))
+  : {}
+const zhCharText = (h) => ZH_PRON_OVERRIDES[h.char]?.sub || h.char
 
 const LEVELS = {
   1: { id: 1, zh: '启蒙起步', en: 'Level 1', color: '#3BB273', bg: '#E3F6E8', icon: '1f331' },
@@ -176,6 +187,19 @@ function readHanzi() {
     const cp = char.codePointAt(0).toString(16).padStart(4, '0')
     return { id: cp, char, pinyin, word, level: String(level).trim() }
   })
+}
+
+// 汉字例句表（tools/hanzi-sentences.csv）：char,sentence，句内只用全角标点
+function readHanziSentences() {
+  const file = path.join(ROOT, 'tools/hanzi-sentences.csv')
+  const lines = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').trim().split(/\r?\n/)
+  if (lines[0].toLowerCase().startsWith('char,')) lines.shift()
+  const map = new Map()
+  for (const l of lines) {
+    const [char, sentence] = l.split(',')
+    if (char && sentence) map.set(char.trim(), sentence.trim())
+  }
+  return map
 }
 
 // 字→图标映射（识字卡图文搭配）：char,NotoEmoji码点。没映射的字卡片回退纯文字排版。
@@ -450,6 +474,15 @@ async function main() {
   const words = readCSV(path.join(ROOT, 'tools/words.csv'))
   const hanzi = readHanzi()
   const hanziEmoji = readHanziEmoji()
+  // 例句逐字必须齐且含目标字，缺一处就整体失败（内容零容错）
+  const sentences = readHanziSentences()
+  let sentenceBad = 0
+  for (const h of hanzi) {
+    const s = sentences.get(h.char)
+    if (!s || !s.includes(h.char)) { console.log(`✗ 例句缺失或不含目标字: ${h.char}`); sentenceBad++; continue }
+    h.sentence = s
+  }
+  if (sentenceBad) { console.log(`例句表问题 ${sentenceBad} 处，先修 tools/hanzi-sentences.csv`); process.exitCode = 1; return }
   console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字\n`)
 
   // ---------- 自绘卡模式：只重画形状卡与金银心形卡，不跑 TTS、不改数据 ----------
@@ -485,6 +518,30 @@ async function main() {
       process.exitCode = 1
     } else {
       console.log(`✓ ${covered.length} 词中文配音全部就绪`)
+    }
+    return
+  }
+
+  // ---------- 字音注音重生成：只重生成注音表命中的汉字字音，不碰例词/图片/数据 ----------
+  if (ZH_CHAR_MODE) {
+    const jobs = []
+    for (const h of hanzi) {
+      const sub = ZH_PRON_OVERRIDES[h.char]?.sub
+      if (!sub) continue
+      jobs.push({ id: `zh-${h.id}`, text: sub, out: path.join(AUDIO_DIR, `zh-${h.id}.mp3`), char: h.char })
+    }
+    console.log(`== 字音注音重生成（同音字替身）待生成：${jobs.length} ==`)
+    jobs.forEach((j) => console.log(`   ${j.char} -> ${ZH_PRON_OVERRIDES[j.char].sub} (${j.id}.mp3)`))
+    if (jobs.length) await ttsPool('ZH-CHAR', ZH_VOICES, jobs, 3)
+    let miss = 0
+    for (const j of jobs) {
+      if (!fs.existsSync(j.out)) { console.log(`✗ 缺字音: ${j.out}`); miss++ }
+    }
+    if (miss) {
+      console.log(`字音重生成仍缺 ${miss} 个，请重跑 npm run gen:zh-char`)
+      process.exitCode = 1
+    } else {
+      console.log(`✓ ${jobs.length} 个字音已按注音表重生成`)
     }
     return
   }
@@ -534,7 +591,8 @@ async function main() {
   for (const h of hanzi) {
     const charOut = path.join(AUDIO_DIR, `zh-${h.id}.mp3`)
     const wordOut = path.join(AUDIO_DIR, `zh-${h.id}w.mp3`)
-    if (FORCE || !fs.existsSync(charOut)) zhJobs.push({ id: `zh-${h.id}`, text: h.char, out: charOut })
+    // 字音用注音表的替身字（多音字裸读会错的字，音频即正确读音）；例词是词语上下文，保持原文
+    if (FORCE || !fs.existsSync(charOut)) zhJobs.push({ id: `zh-${h.id}`, text: zhCharText(h), out: charOut })
     if (FORCE || !fs.existsSync(wordOut)) zhJobs.push({ id: `zh-${h.id}w`, text: h.word, out: wordOut })
   }
   for (let n = 0; n <= 100; n++) {
@@ -621,6 +679,16 @@ async function main() {
       if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`level-${lv.id}(${lv.icon})`)
     })
   }
+  // 小短句课程图标（说话气泡）：与分类图标同级，避免手放文件被 --force 冲掉
+  {
+    const out = path.join(IMG_DIR, 'cat-sentences.png')
+    if (FORCE || !fs.existsSync(out)) {
+      needImg.push(async () => {
+        const buf = await fetchEmoji('1f4ac')
+        if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push('cat-sentences(1f4ac)')
+      })
+    }
+  }
   for (const [sid, code] of Object.entries(SUBJECTS)) {
     const out = path.join(IMG_DIR, `subject-${sid}.png`)
     if (!FORCE && fs.existsSync(out)) continue
@@ -676,6 +744,9 @@ async function main() {
       id: h.id, char: h.char, pinyin: h.pinyin, word: h.word,
       audio: `/static/audio/zh-${h.id}.mp3`,
       wordAudio: `/static/audio/zh-${h.id}w.mp3`,
+      sentence: h.sentence,
+      // 例句音频走 Azure 管线（tools/gen-zh-azure.mjs），不在本脚本生成
+      sentenceAudio: `/static/audio/zh-${h.id}s.mp3`,
       emoji: hanziEmoji.has(h.char) ? `/static/img/hz-${h.id}.png` : '',
     })),
   }))
@@ -696,6 +767,7 @@ async function main() {
   for (const h of hanzi) {
     if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}.mp3`))) { console.log(`✗ 缺字音: ${h.char}`); bad++ }
     if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}w.mp3`))) { console.log(`✗ 缺词音: ${h.word}`); bad++ }
+    if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}s.mp3`))) { console.log(`✗ 缺例句音: ${h.char}(${h.sentence})`); bad++ }
   }
   for (let n = 0; n <= 100; n++) {
     if (!fs.existsSync(path.join(AUDIO_DIR, `n${n}.mp3`))) { console.log(`✗ 缺数字音: n${n}`); bad++ }

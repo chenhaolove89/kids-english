@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-08T06:33:39.295Z",
+ "generatedAt": "2026-09-09T03:49:27.609Z",
  "total": 297,
  "levels": [
   {
@@ -16,6 +16,8 @@
      "word": "一起",
      "audio": "/static/audio/zh-4e00.mp3",
      "wordAudio": "/static/audio/zh-4e00w.mp3",
+     "sentence": "我们一起去公园。",
+     "sentenceAudio": "/static/audio/zh-4e00s.mp3",
      "emoji": "/static/img/hz-4e00.png"
     },
     {
@@ -25,6 +27,8 @@
      "word": "二月",
      "audio": "/static/audio/zh-4e8c.mp3",
      "wordAudio": "/static/audio/zh-4e8cw.mp3",
+     "sentence": "二月天气还很冷。",
+     "sentenceAudio": "/static/audio/zh-4e8cs.mp3",
      "emoji": "/static/img/hz-4e8c.png"
     },
     {
@@ -34,6 +38,8 @@
      "word": "三个",
      "audio": "/static/audio/zh-4e09.mp3",
      "wordAudio": "/static/audio/zh-4e09w.mp3",
+     "sentence": "我有三个苹果。",
+     "sentenceAudio": "/static/audio/zh-4e09s.mp3",
      "emoji": "/static/img/hz-4e09.png"
     },
     {
@@ -43,6 +49,8 @@
      "word": "四季",
      "audio": "/static/audio/zh-56db.mp3",
      "wordAudio": "/static/audio/zh-56dbw.mp3",
+     "sentence": "一年有四个季节。",
+     "sentenceAudio": "/static/audio/zh-56dbs.mp3",
      "emoji": "/static/img/hz-56db.png"
     },
     {
@@ -52,6 +60,8 @@
      "word": "五星",
      "audio": "/static/audio/zh-4e94.mp3",
      "wordAudio": "/static/audio/zh-4e94w.mp3",
+     "sentence": "妹妹今年五岁了。",
+     "sentenceAudio": "/static/audio/zh-4e94s.mp3",
      "emoji": "/static/img/hz-4e94.png"
     },
     {
@@ -61,6 +71,8 @@
      "word": "六月",
      "audio": "/static/audio/zh-516d.mp3",
      "wordAudio": "/static/audio/zh-516dw.mp3",
+     "sentence": "六月我们放暑假。",
+     "sentenceAudio": "/static/audio/zh-516ds.mp3",
      "emoji": "/static/img/hz-516d.png"
     },
     {
@@ -70,6 +82,8 @@
      "word": "七天",
      "audio": "/static/audio/zh-4e03.mp3",
      "wordAudio": "/static/audio/zh-4e03w.mp3",
+     "sentence": "一个星期有七天。",
+     "sentenceAudio": "/static/audio/zh-4e03s.mp3",
      "emoji": "/static/img/hz-4e03.png"
     },
     {
@@ -79,6 +93,8 @@
      "word": "八岁",
      "audio": "/static/audio/zh-516b.mp3",
      "wordAudio": "/static/audio/zh-516bw.mp3",
+     "sentence": "弟弟今年八岁。",
+     "sentenceAudio": "/static/audio/zh-516bs.mp3",
      "emoji": "/static/img/hz-516b.png"
     },
     {
@@ -88,6 +104,8 @@
      "word": "九月",
      "audio": "/static/audio/zh-4e5d.mp3",
      "wordAudio": "/static/audio/zh-4e5dw.mp3",
+     "sentence": "九月一号开学啦。",
+     "sentenceAudio": "/static/audio/zh-4e5ds.mp3",
      "emoji": "/static/img/hz-4e5d.png"
     },
     {
@@ -97,6 +115,8 @@
      "word": "十个",
      "audio": "/static/audio/zh-5341.mp3",
      "wordAudio": "/static/audio/zh-5341w.mp3",
+     "sentence": "我有十个手指。",
+     "sentenceAudio": "/static/audio/zh-5341s.mp3",
      "emoji": "/static/img/hz-5341.png"
     },
     {
@@ -106,6 +126,8 @@
      "word": "大人",
      "audio": "/static/audio/zh-4eba.mp3",
      "wordAudio": "/static/audio/zh-4ebaw.mp3",
+     "sentence": "公园里人很多。",
+     "sentenceAudio": "/static/audio/zh-4ebas.mp3",
      "emoji": "/static/img/hz-4eba.png"
     },
     {
@@ -115,6 +137,8 @@
      "word": "口水",
      "audio": "/static/audio/zh-53e3.mp3",
      "wordAudio": "/static/audio/zh-53e3w.mp3",
+     "sentence": "小宝宝流口水。",
+     "sentenceAudio": "/static/audio/zh-53e3s.mp3",
      "emoji": "/static/img/hz-53e3.png"
     },
     {
@@ -124,6 +148,8 @@
      "word": "小手",
      "audio": "/static/audio/zh-624b.mp3",
      "wordAudio": "/static/audio/zh-624bw.mp3",
+     "sentence": "我的小手真干净。",
+     "sentenceAudio": "/static/audio/zh-624bs.mp3",
      "emoji": "/static/img/hz-624b.png"
     },
     {
@@ -133,6 +159,8 @@
      "word": "足球",
      "audio": "/static/audio/zh-8db3.mp3",
      "wordAudio": "/static/audio/zh-8db3w.mp3",
+     "sentence": "我和爸爸踢足球。",
+     "sentenceAudio": "/static/audio/zh-8db3s.mp3",
      "emoji": "/static/img/hz-8db3.png"
     },
     {
@@ -142,6 +170,8 @@
      "word": "耳朵",
      "audio": "/static/audio/zh-8033.mp3",
      "wordAudio": "/static/audio/zh-8033w.mp3",
+     "sentence": "大象的耳朵像扇子。",
+     "sentenceAudio": "/static/audio/zh-8033s.mp3",
      "emoji": "/static/img/hz-8033.png"
     },
     {
@@ -151,6 +181,8 @@
      "word": "目光",
      "audio": "/static/audio/zh-76ee.mp3",
      "wordAudio": "/static/audio/zh-76eew.mp3",
+     "sentence": "老师的目光很温暖。",
+     "sentenceAudio": "/static/audio/zh-76ees.mp3",
      "emoji": "/static/img/hz-76ee.png"
     },
     {
@@ -160,6 +192,8 @@
      "word": "生日",
      "audio": "/static/audio/zh-65e5.mp3",
      "wordAudio": "/static/audio/zh-65e5w.mp3",
+     "sentence": "今天是我的生日。",
+     "sentenceAudio": "/static/audio/zh-65e5s.mp3",
      "emoji": "/static/img/hz-65e5.png"
     },
     {
@@ -169,6 +203,8 @@
      "word": "月亮",
      "audio": "/static/audio/zh-6708.mp3",
      "wordAudio": "/static/audio/zh-6708w.mp3",
+     "sentence": "月亮弯弯像小船。",
+     "sentenceAudio": "/static/audio/zh-6708s.mp3",
      "emoji": "/static/img/hz-6708.png"
     },
     {
@@ -178,6 +214,8 @@
      "word": "水壶",
      "audio": "/static/audio/zh-6c34.mp3",
      "wordAudio": "/static/audio/zh-6c34w.mp3",
+     "sentence": "多喝水身体好。",
+     "sentenceAudio": "/static/audio/zh-6c34s.mp3",
      "emoji": "/static/img/hz-6c34.png"
     },
     {
@@ -187,6 +225,8 @@
      "word": "火车",
      "audio": "/static/audio/zh-706b.mp3",
      "wordAudio": "/static/audio/zh-706bw.mp3",
+     "sentence": "火车轰隆隆开过。",
+     "sentenceAudio": "/static/audio/zh-706bs.mp3",
      "emoji": "/static/img/hz-706b.png"
     },
     {
@@ -196,6 +236,8 @@
      "word": "大山",
      "audio": "/static/audio/zh-5c71.mp3",
      "wordAudio": "/static/audio/zh-5c71w.mp3",
+     "sentence": "周末我们去爬山。",
+     "sentenceAudio": "/static/audio/zh-5c71s.mp3",
      "emoji": "/static/img/hz-5c71.png"
     },
     {
@@ -205,6 +247,8 @@
      "word": "木头",
      "audio": "/static/audio/zh-6728.mp3",
      "wordAudio": "/static/audio/zh-6728w.mp3",
+     "sentence": "我用积木搭城堡。",
+     "sentenceAudio": "/static/audio/zh-6728s.mp3",
      "emoji": "/static/img/hz-6728.png"
     },
     {
@@ -214,6 +258,8 @@
      "word": "土地",
      "audio": "/static/audio/zh-571f.mp3",
      "wordAudio": "/static/audio/zh-571fw.mp3",
+     "sentence": "种子埋进土里。",
+     "sentenceAudio": "/static/audio/zh-571fs.mp3",
      "emoji": ""
     },
     {
@@ -223,6 +269,8 @@
      "word": "田地",
      "audio": "/static/audio/zh-7530.mp3",
      "wordAudio": "/static/audio/zh-7530w.mp3",
+     "sentence": "爷爷在田里种菜。",
+     "sentenceAudio": "/static/audio/zh-7530s.mp3",
      "emoji": "/static/img/hz-7530.png"
     },
     {
@@ -232,6 +280,8 @@
      "word": "天空",
      "audio": "/static/audio/zh-5929.mp3",
      "wordAudio": "/static/audio/zh-5929w.mp3",
+     "sentence": "飞机飞上天空。",
+     "sentenceAudio": "/static/audio/zh-5929s.mp3",
      "emoji": "/static/img/hz-5929.png"
     },
     {
@@ -241,6 +291,8 @@
      "word": "白云",
      "audio": "/static/audio/zh-4e91.mp3",
      "wordAudio": "/static/audio/zh-4e91w.mp3",
+     "sentence": "白云像棉花糖。",
+     "sentenceAudio": "/static/audio/zh-4e91s.mp3",
      "emoji": "/static/img/hz-4e91.png"
     },
     {
@@ -250,6 +302,8 @@
      "word": "风车",
      "audio": "/static/audio/zh-98ce.mp3",
      "wordAudio": "/static/audio/zh-98cew.mp3",
+     "sentence": "今天风真大呀。",
+     "sentenceAudio": "/static/audio/zh-98ces.mp3",
      "emoji": "/static/img/hz-98ce.png"
     },
     {
@@ -259,6 +313,8 @@
      "word": "下雨",
      "audio": "/static/audio/zh-96e8.mp3",
      "wordAudio": "/static/audio/zh-96e8w.mp3",
+     "sentence": "下雨了快收衣服。",
+     "sentenceAudio": "/static/audio/zh-96e8s.mp3",
      "emoji": "/static/img/hz-96e8.png"
     },
     {
@@ -268,6 +324,8 @@
      "word": "大家",
      "audio": "/static/audio/zh-5927.mp3",
      "wordAudio": "/static/audio/zh-5927w.mp3",
+     "sentence": "大家一起来唱歌。",
+     "sentenceAudio": "/static/audio/zh-5927s.mp3",
      "emoji": ""
     },
     {
@@ -277,6 +335,8 @@
      "word": "小心",
      "audio": "/static/audio/zh-5c0f.mp3",
      "wordAudio": "/static/audio/zh-5c0fw.mp3",
+     "sentence": "过马路要小心。",
+     "sentenceAudio": "/static/audio/zh-5c0fs.mp3",
      "emoji": "/static/img/hz-5c0f.png"
     },
     {
@@ -286,6 +346,8 @@
      "word": "许多",
      "audio": "/static/audio/zh-591a.mp3",
      "wordAudio": "/static/audio/zh-591aw.mp3",
+     "sentence": "天上有许多星星。",
+     "sentenceAudio": "/static/audio/zh-591as.mp3",
      "emoji": ""
     },
     {
@@ -295,6 +357,8 @@
      "word": "多少",
      "audio": "/static/audio/zh-5c11.mp3",
      "wordAudio": "/static/audio/zh-5c11w.mp3",
+     "sentence": "公园里人不少。",
+     "sentenceAudio": "/static/audio/zh-5c11s.mp3",
      "emoji": ""
     },
     {
@@ -304,6 +368,8 @@
      "word": "上学",
      "audio": "/static/audio/zh-4e0a.mp3",
      "wordAudio": "/static/audio/zh-4e0aw.mp3",
+     "sentence": "铅笔放在桌上。",
+     "sentenceAudio": "/static/audio/zh-4e0as.mp3",
      "emoji": "/static/img/hz-4e0a.png"
     },
     {
@@ -313,6 +379,8 @@
      "word": "下山",
      "audio": "/static/audio/zh-4e0b.mp3",
      "wordAudio": "/static/audio/zh-4e0bw.mp3",
+     "sentence": "太阳慢慢下山了。",
+     "sentenceAudio": "/static/audio/zh-4e0bs.mp3",
      "emoji": "/static/img/hz-4e0b.png"
     },
     {
@@ -322,6 +390,8 @@
      "word": "花朵",
      "audio": "/static/audio/zh-82b1.mp3",
      "wordAudio": "/static/audio/zh-82b1w.mp3",
+     "sentence": "公园里花朵开了。",
+     "sentenceAudio": "/static/audio/zh-82b1s.mp3",
      "emoji": "/static/img/hz-82b1.png"
     },
     {
@@ -331,6 +401,8 @@
      "word": "飞鸟",
      "audio": "/static/audio/zh-9e1f.mp3",
      "wordAudio": "/static/audio/zh-9e1fw.mp3",
+     "sentence": "小鸟在枝头唱歌。",
+     "sentenceAudio": "/static/audio/zh-9e1fs.mp3",
      "emoji": "/static/img/hz-9e1f.png"
     },
     {
@@ -340,6 +412,8 @@
      "word": "小鱼",
      "audio": "/static/audio/zh-9c7c.mp3",
      "wordAudio": "/static/audio/zh-9c7cw.mp3",
+     "sentence": "小鱼在水里游。",
+     "sentenceAudio": "/static/audio/zh-9c7cs.mp3",
      "emoji": "/static/img/hz-9c7c.png"
     },
     {
@@ -349,6 +423,8 @@
      "word": "虫子",
      "audio": "/static/audio/zh-866b.mp3",
      "wordAudio": "/static/audio/zh-866bw.mp3",
+     "sentence": "虫子在叶子上爬。",
+     "sentenceAudio": "/static/audio/zh-866bs.mp3",
      "emoji": "/static/img/hz-866b.png"
     },
     {
@@ -358,6 +434,8 @@
      "word": "爸爸",
      "audio": "/static/audio/zh-7238.mp3",
      "wordAudio": "/static/audio/zh-7238w.mp3",
+     "sentence": "我爱爸爸和妈妈。",
+     "sentenceAudio": "/static/audio/zh-7238s.mp3",
      "emoji": "/static/img/hz-7238.png"
     },
     {
@@ -367,6 +445,8 @@
      "word": "妈妈",
      "audio": "/static/audio/zh-5988.mp3",
      "wordAudio": "/static/audio/zh-5988w.mp3",
+     "sentence": "妈妈做的饭真香。",
+     "sentenceAudio": "/static/audio/zh-5988s.mp3",
      "emoji": "/static/img/hz-5988.png"
     },
     {
@@ -376,6 +456,8 @@
      "word": "马车",
      "audio": "/static/audio/zh-9a6c.mp3",
      "wordAudio": "/static/audio/zh-9a6cw.mp3",
+     "sentence": "小马在草地上跑。",
+     "sentenceAudio": "/static/audio/zh-9a6cs.mp3",
      "emoji": "/static/img/hz-9a6c.png"
     },
     {
@@ -385,6 +467,8 @@
      "word": "小牛",
      "audio": "/static/audio/zh-725b.mp3",
      "wordAudio": "/static/audio/zh-725bw.mp3",
+     "sentence": "小牛低头吃青草。",
+     "sentenceAudio": "/static/audio/zh-725bs.mp3",
      "emoji": "/static/img/hz-725b.png"
     },
     {
@@ -394,6 +478,8 @@
      "word": "山羊",
      "audio": "/static/audio/zh-7f8a.mp3",
      "wordAudio": "/static/audio/zh-7f8aw.mp3",
+     "sentence": "山羊在山顶吃草。",
+     "sentenceAudio": "/static/audio/zh-7f8as.mp3",
      "emoji": "/static/img/hz-7f8a.png"
     },
     {
@@ -403,6 +489,8 @@
      "word": "女孩",
      "audio": "/static/audio/zh-5973.mp3",
      "wordAudio": "/static/audio/zh-5973w.mp3",
+     "sentence": "小女孩在跳舞。",
+     "sentenceAudio": "/static/audio/zh-5973s.mp3",
      "emoji": "/static/img/hz-5973.png"
     },
     {
@@ -412,6 +500,8 @@
      "word": "孩子",
      "audio": "/static/audio/zh-5b50.mp3",
      "wordAudio": "/static/audio/zh-5b50w.mp3",
+     "sentence": "孩子们在做游戏。",
+     "sentenceAudio": "/static/audio/zh-5b50s.mp3",
      "emoji": "/static/img/hz-5b50.png"
     },
     {
@@ -421,6 +511,8 @@
      "word": "好人",
      "audio": "/static/audio/zh-597d.mp3",
      "wordAudio": "/static/audio/zh-597dw.mp3",
+     "sentence": "好朋友手拉手。",
+     "sentenceAudio": "/static/audio/zh-597ds.mp3",
      "emoji": "/static/img/hz-597d.png"
     },
     {
@@ -430,6 +522,8 @@
      "word": "白天",
      "audio": "/static/audio/zh-767d.mp3",
      "wordAudio": "/static/audio/zh-767dw.mp3",
+     "sentence": "小白兔爱吃萝卜。",
+     "sentenceAudio": "/static/audio/zh-767ds.mp3",
      "emoji": "/static/img/hz-767d.png"
     },
     {
@@ -439,6 +533,8 @@
      "word": "石头",
      "audio": "/static/audio/zh-77f3.mp3",
      "wordAudio": "/static/audio/zh-77f3w.mp3",
+     "sentence": "河边有许多石头。",
+     "sentenceAudio": "/static/audio/zh-77f3s.mp3",
      "emoji": "/static/img/hz-77f3.png"
     }
    ]
@@ -457,6 +553,8 @@
      "word": "吃饭",
      "audio": "/static/audio/zh-5403.mp3",
      "wordAudio": "/static/audio/zh-5403w.mp3",
+     "sentence": "我大口大口吃饭。",
+     "sentenceAudio": "/static/audio/zh-5403s.mp3",
      "emoji": "/static/img/hz-5403.png"
     },
     {
@@ -466,6 +564,8 @@
      "word": "喝水",
      "audio": "/static/audio/zh-559d.mp3",
      "wordAudio": "/static/audio/zh-559dw.mp3",
+     "sentence": "口渴了要喝水。",
+     "sentenceAudio": "/static/audio/zh-559ds.mp3",
      "emoji": "/static/img/hz-559d.png"
     },
     {
@@ -475,6 +575,8 @@
      "word": "跑步",
      "audio": "/static/audio/zh-8dd1.mp3",
      "wordAudio": "/static/audio/zh-8dd1w.mp3",
+     "sentence": "小狗跑得真快。",
+     "sentenceAudio": "/static/audio/zh-8dd1s.mp3",
      "emoji": "/static/img/hz-8dd1.png"
     },
     {
@@ -484,6 +586,8 @@
      "word": "跳高",
      "audio": "/static/audio/zh-8df3.mp3",
      "wordAudio": "/static/audio/zh-8df3w.mp3",
+     "sentence": "小青蛙跳得真高。",
+     "sentenceAudio": "/static/audio/zh-8df3s.mp3",
      "emoji": "/static/img/hz-8df3.png"
     },
     {
@@ -493,6 +597,8 @@
      "word": "飞机",
      "audio": "/static/audio/zh-98de.mp3",
      "wordAudio": "/static/audio/zh-98dew.mp3",
+     "sentence": "飞机在天上飞。",
+     "sentenceAudio": "/static/audio/zh-98des.mp3",
      "emoji": "/static/img/hz-98de.png"
     },
     {
@@ -502,6 +608,8 @@
      "word": "走路",
      "audio": "/static/audio/zh-8d70.mp3",
      "wordAudio": "/static/audio/zh-8d70w.mp3",
+     "sentence": "我走路去上学。",
+     "sentenceAudio": "/static/audio/zh-8d70s.mp3",
      "emoji": "/static/img/hz-8d70.png"
     },
     {
@@ -511,6 +619,8 @@
      "word": "坐下",
      "audio": "/static/audio/zh-5750.mp3",
      "wordAudio": "/static/audio/zh-5750w.mp3",
+     "sentence": "坐公交车要抓好扶手。",
+     "sentenceAudio": "/static/audio/zh-5750s.mp3",
      "emoji": "/static/img/hz-5750.png"
     },
     {
@@ -520,6 +630,8 @@
      "word": "立正",
      "audio": "/static/audio/zh-7acb.mp3",
      "wordAudio": "/static/audio/zh-7acbw.mp3",
+     "sentence": "立正站好，不乱动。",
+     "sentenceAudio": "/static/audio/zh-7acbs.mp3",
      "emoji": "/static/img/hz-7acb.png"
     },
     {
@@ -529,6 +641,8 @@
      "word": "睡觉",
      "audio": "/static/audio/zh-7761.mp3",
      "wordAudio": "/static/audio/zh-7761w.mp3",
+     "sentence": "天黑了要睡觉。",
+     "sentenceAudio": "/static/audio/zh-7761s.mp3",
      "emoji": "/static/img/hz-7761.png"
     },
     {
@@ -538,6 +652,8 @@
      "word": "起床",
      "audio": "/static/audio/zh-8d77.mp3",
      "wordAudio": "/static/audio/zh-8d77w.mp3",
+     "sentence": "我早上七点起床。",
+     "sentenceAudio": "/static/audio/zh-8d77s.mp3",
      "emoji": ""
     },
     {
@@ -547,6 +663,8 @@
      "word": "来到",
      "audio": "/static/audio/zh-6765.mp3",
      "wordAudio": "/static/audio/zh-6765w.mp3",
+     "sentence": "我等妈妈回来。",
+     "sentenceAudio": "/static/audio/zh-6765s.mp3",
      "emoji": "/static/img/hz-6765.png"
     },
     {
@@ -556,6 +674,8 @@
      "word": "回去",
      "audio": "/static/audio/zh-53bb.mp3",
      "wordAudio": "/static/audio/zh-53bbw.mp3",
+     "sentence": "我们去动物园看熊猫。",
+     "sentenceAudio": "/static/audio/zh-53bbs.mp3",
      "emoji": "/static/img/hz-53bb.png"
     },
     {
@@ -565,6 +685,8 @@
      "word": "出门",
      "audio": "/static/audio/zh-51fa.mp3",
      "wordAudio": "/static/audio/zh-51faw.mp3",
+     "sentence": "小鸡从蛋壳里钻出来了。",
+     "sentenceAudio": "/static/audio/zh-51fas.mp3",
      "emoji": "/static/img/hz-51fa.png"
     },
     {
@@ -574,6 +696,8 @@
      "word": "入场",
      "audio": "/static/audio/zh-5165.mp3",
      "wordAudio": "/static/audio/zh-5165w.mp3",
+     "sentence": "我们排队入场。",
+     "sentenceAudio": "/static/audio/zh-5165s.mp3",
      "emoji": "/static/img/hz-5165.png"
     },
     {
@@ -583,6 +707,8 @@
      "word": "开门",
      "audio": "/static/audio/zh-5f00.mp3",
      "wordAudio": "/static/audio/zh-5f00w.mp3",
+     "sentence": "我会自己开门。",
+     "sentenceAudio": "/static/audio/zh-5f00s.mp3",
      "emoji": "/static/img/hz-5f00.png"
     },
     {
@@ -592,6 +718,8 @@
      "word": "关门",
      "audio": "/static/audio/zh-5173.mp3",
      "wordAudio": "/static/audio/zh-5173w.mp3",
+     "sentence": "晚上睡觉要关门。",
+     "sentenceAudio": "/static/audio/zh-5173s.mp3",
      "emoji": "/static/img/hz-5173.png"
     },
     {
@@ -601,6 +729,8 @@
      "word": "大门",
      "audio": "/static/audio/zh-95e8.mp3",
      "wordAudio": "/static/audio/zh-95e8w.mp3",
+     "sentence": "弟弟在门口等我。",
+     "sentenceAudio": "/static/audio/zh-95e8s.mp3",
      "emoji": "/static/img/hz-95e8.png"
     },
     {
@@ -610,6 +740,8 @@
      "word": "窗户",
      "audio": "/static/audio/zh-7a97.mp3",
      "wordAudio": "/static/audio/zh-7a97w.mp3",
+     "sentence": "打开窗户透透气。",
+     "sentenceAudio": "/static/audio/zh-7a97s.mp3",
      "emoji": "/static/img/hz-7a97.png"
     },
     {
@@ -619,6 +751,8 @@
      "word": "小床",
      "audio": "/static/audio/zh-5e8a.mp3",
      "wordAudio": "/static/audio/zh-5e8aw.mp3",
+     "sentence": "我躺在床上听故事。",
+     "sentenceAudio": "/static/audio/zh-5e8as.mp3",
      "emoji": "/static/img/hz-5e8a.png"
     },
     {
@@ -628,6 +762,8 @@
      "word": "房子",
      "audio": "/static/audio/zh-623f.mp3",
      "wordAudio": "/static/audio/zh-623fw.mp3",
+     "sentence": "我们家的房子很大。",
+     "sentenceAudio": "/static/audio/zh-623fs.mp3",
      "emoji": "/static/img/hz-623f.png"
     },
     {
@@ -637,6 +773,8 @@
      "word": "汽车",
      "audio": "/static/audio/zh-8f66.mp3",
      "wordAudio": "/static/audio/zh-8f66w.mp3",
+     "sentence": "马路上的汽车真多。",
+     "sentenceAudio": "/static/audio/zh-8f66s.mp3",
      "emoji": "/static/img/hz-8f66.png"
     },
     {
@@ -646,6 +784,8 @@
      "word": "小船",
      "audio": "/static/audio/zh-8239.mp3",
      "wordAudio": "/static/audio/zh-8239w.mp3",
+     "sentence": "湖面上有一条小船。",
+     "sentenceAudio": "/static/audio/zh-8239s.mp3",
      "emoji": "/static/img/hz-8239.png"
     },
     {
@@ -655,6 +795,8 @@
      "word": "雨伞",
      "audio": "/static/audio/zh-4f1e.mp3",
      "wordAudio": "/static/audio/zh-4f1ew.mp3",
+     "sentence": "出门带把小雨伞。",
+     "sentenceAudio": "/static/audio/zh-4f1es.mp3",
      "emoji": "/static/img/hz-4f1e.png"
     },
     {
@@ -664,6 +806,8 @@
      "word": "书本",
      "audio": "/static/audio/zh-4e66.mp3",
      "wordAudio": "/static/audio/zh-4e66w.mp3",
+     "sentence": "我和爸爸一起看书。",
+     "sentenceAudio": "/static/audio/zh-4e66s.mp3",
      "emoji": "/static/img/hz-4e66.png"
     },
     {
@@ -673,6 +817,8 @@
      "word": "画画",
      "audio": "/static/audio/zh-753b.mp3",
      "wordAudio": "/static/audio/zh-753bw.mp3",
+     "sentence": "我喜欢画画。",
+     "sentenceAudio": "/static/audio/zh-753bs.mp3",
      "emoji": "/static/img/hz-753b.png"
     },
     {
@@ -682,6 +828,8 @@
      "word": "白纸",
      "audio": "/static/audio/zh-7eb8.mp3",
      "wordAudio": "/static/audio/zh-7eb8w.mp3",
+     "sentence": "白纸上画了一朵花。",
+     "sentenceAudio": "/static/audio/zh-7eb8s.mp3",
      "emoji": "/static/img/hz-7eb8.png"
     },
     {
@@ -691,6 +839,8 @@
      "word": "毛笔",
      "audio": "/static/audio/zh-7b14.mp3",
      "wordAudio": "/static/audio/zh-7b14w.mp3",
+     "sentence": "我用铅笔写字。",
+     "sentenceAudio": "/static/audio/zh-7b14s.mp3",
      "emoji": "/static/img/hz-7b14.png"
     },
     {
@@ -700,6 +850,8 @@
      "word": "爷爷",
      "audio": "/static/audio/zh-7237.mp3",
      "wordAudio": "/static/audio/zh-7237w.mp3",
+     "sentence": "爷爷给我讲故事。",
+     "sentenceAudio": "/static/audio/zh-7237s.mp3",
      "emoji": "/static/img/hz-7237.png"
     },
     {
@@ -709,6 +861,8 @@
      "word": "牛奶",
      "audio": "/static/audio/zh-5976.mp3",
      "wordAudio": "/static/audio/zh-5976w.mp3",
+     "sentence": "我每天喝一杯牛奶。",
+     "sentenceAudio": "/static/audio/zh-5976s.mp3",
      "emoji": "/static/img/hz-5976.png"
     },
     {
@@ -718,6 +872,8 @@
      "word": "哥哥",
      "audio": "/static/audio/zh-54e5.mp3",
      "wordAudio": "/static/audio/zh-54e5w.mp3",
+     "sentence": "哥哥的个子真高。",
+     "sentenceAudio": "/static/audio/zh-54e5s.mp3",
      "emoji": "/static/img/hz-54e5.png"
     },
     {
@@ -727,6 +883,8 @@
      "word": "弟弟",
      "audio": "/static/audio/zh-5f1f.mp3",
      "wordAudio": "/static/audio/zh-5f1fw.mp3",
+     "sentence": "弟弟在搭积木。",
+     "sentenceAudio": "/static/audio/zh-5f1fs.mp3",
      "emoji": "/static/img/hz-5f1f.png"
     },
     {
@@ -736,6 +894,8 @@
      "word": "姐姐",
      "audio": "/static/audio/zh-59d0.mp3",
      "wordAudio": "/static/audio/zh-59d0w.mp3",
+     "sentence": "姐姐会弹钢琴。",
+     "sentenceAudio": "/static/audio/zh-59d0s.mp3",
      "emoji": "/static/img/hz-59d0.png"
     },
     {
@@ -745,6 +905,8 @@
      "word": "妹妹",
      "audio": "/static/audio/zh-59b9.mp3",
      "wordAudio": "/static/audio/zh-59b9w.mp3",
+     "sentence": "我陪妹妹玩游戏。",
+     "sentenceAudio": "/static/audio/zh-59b9s.mp3",
      "emoji": "/static/img/hz-59b9.png"
     },
     {
@@ -754,6 +916,8 @@
      "word": "叔叔",
      "audio": "/static/audio/zh-53d4.mp3",
      "wordAudio": "/static/audio/zh-53d4w.mp3",
+     "sentence": "叔叔会修自行车。",
+     "sentenceAudio": "/static/audio/zh-53d4s.mp3",
      "emoji": "/static/img/hz-53d4.png"
     },
     {
@@ -763,6 +927,8 @@
      "word": "阿姨",
      "audio": "/static/audio/zh-59e8.mp3",
      "wordAudio": "/static/audio/zh-59e8w.mp3",
+     "sentence": "阿姨做的蛋糕真好吃。",
+     "sentenceAudio": "/static/audio/zh-59e8s.mp3",
      "emoji": "/static/img/hz-59e8.png"
     },
     {
@@ -772,6 +938,8 @@
      "word": "小猫",
      "audio": "/static/audio/zh-732b.mp3",
      "wordAudio": "/static/audio/zh-732bw.mp3",
+     "sentence": "小猫在窝里睡觉。",
+     "sentenceAudio": "/static/audio/zh-732bs.mp3",
      "emoji": "/static/img/hz-732b.png"
     },
     {
@@ -781,6 +949,8 @@
      "word": "小狗",
      "audio": "/static/audio/zh-72d7.mp3",
      "wordAudio": "/static/audio/zh-72d7w.mp3",
+     "sentence": "小狗见到我摇尾巴。",
+     "sentenceAudio": "/static/audio/zh-72d7s.mp3",
      "emoji": "/static/img/hz-72d7.png"
     },
     {
@@ -790,6 +960,8 @@
      "word": "小鸡",
      "audio": "/static/audio/zh-9e21.mp3",
      "wordAudio": "/static/audio/zh-9e21w.mp3",
+     "sentence": "小鸡跟着鸡妈妈。",
+     "sentenceAudio": "/static/audio/zh-9e21s.mp3",
      "emoji": "/static/img/hz-9e21.png"
     },
     {
@@ -799,6 +971,8 @@
      "word": "鸭子",
      "audio": "/static/audio/zh-9e2d.mp3",
      "wordAudio": "/static/audio/zh-9e2dw.mp3",
+     "sentence": "鸭子在池塘里游水。",
+     "sentenceAudio": "/static/audio/zh-9e2ds.mp3",
      "emoji": "/static/img/hz-9e2d.png"
     },
     {
@@ -808,6 +982,8 @@
      "word": "白鹅",
      "audio": "/static/audio/zh-9e45.mp3",
      "wordAudio": "/static/audio/zh-9e45w.mp3",
+     "sentence": "白鹅在水里游泳。",
+     "sentenceAudio": "/static/audio/zh-9e45s.mp3",
      "emoji": "/static/img/hz-9e45.png"
     },
     {
@@ -817,6 +993,8 @@
      "word": "小猪",
      "audio": "/static/audio/zh-732a.mp3",
      "wordAudio": "/static/audio/zh-732aw.mp3",
+     "sentence": "小猪在泥里打滚。",
+     "sentenceAudio": "/static/audio/zh-732as.mp3",
      "emoji": "/static/img/hz-732a.png"
     },
     {
@@ -826,6 +1004,8 @@
      "word": "白兔",
      "audio": "/static/audio/zh-5154.mp3",
      "wordAudio": "/static/audio/zh-5154w.mp3",
+     "sentence": "小兔子爱吃胡萝卜。",
+     "sentenceAudio": "/static/audio/zh-5154s.mp3",
      "emoji": "/static/img/hz-5154.png"
     },
     {
@@ -835,6 +1015,8 @@
      "word": "猴子",
      "audio": "/static/audio/zh-7334.mp3",
      "wordAudio": "/static/audio/zh-7334w.mp3",
+     "sentence": "猴子爱吃桃子。",
+     "sentenceAudio": "/static/audio/zh-7334s.mp3",
      "emoji": "/static/img/hz-7334.png"
     },
     {
@@ -844,6 +1026,8 @@
      "word": "春天",
      "audio": "/static/audio/zh-6625.mp3",
      "wordAudio": "/static/audio/zh-6625w.mp3",
+     "sentence": "春天来了，花开了。",
+     "sentenceAudio": "/static/audio/zh-6625s.mp3",
      "emoji": "/static/img/hz-6625.png"
     },
     {
@@ -853,6 +1037,8 @@
      "word": "夏天",
      "audio": "/static/audio/zh-590f.mp3",
      "wordAudio": "/static/audio/zh-590fw.mp3",
+     "sentence": "夏天我爱吃西瓜。",
+     "sentenceAudio": "/static/audio/zh-590fs.mp3",
      "emoji": "/static/img/hz-590f.png"
     },
     {
@@ -862,6 +1048,8 @@
      "word": "秋天",
      "audio": "/static/audio/zh-79cb.mp3",
      "wordAudio": "/static/audio/zh-79cbw.mp3",
+     "sentence": "秋天果子熟了。",
+     "sentenceAudio": "/static/audio/zh-79cbs.mp3",
      "emoji": "/static/img/hz-79cb.png"
     },
     {
@@ -871,6 +1059,8 @@
      "word": "冬天",
      "audio": "/static/audio/zh-51ac.mp3",
      "wordAudio": "/static/audio/zh-51acw.mp3",
+     "sentence": "冬天下雪真好玩。",
+     "sentenceAudio": "/static/audio/zh-51acs.mp3",
      "emoji": "/static/img/hz-51ac.png"
     },
     {
@@ -880,6 +1070,8 @@
      "word": "东方",
      "audio": "/static/audio/zh-4e1c.mp3",
      "wordAudio": "/static/audio/zh-4e1cw.mp3",
+     "sentence": "太阳从东方升起。",
+     "sentenceAudio": "/static/audio/zh-4e1cs.mp3",
      "emoji": "/static/img/hz-4e1c.png"
     },
     {
@@ -889,6 +1081,8 @@
      "word": "西瓜",
      "audio": "/static/audio/zh-897f.mp3",
      "wordAudio": "/static/audio/zh-897fw.mp3",
+     "sentence": "夏天我爱吃西瓜。",
+     "sentenceAudio": "/static/audio/zh-897fs.mp3",
      "emoji": "/static/img/hz-897f.png"
     },
     {
@@ -898,6 +1092,8 @@
      "word": "南方",
      "audio": "/static/audio/zh-5357.mp3",
      "wordAudio": "/static/audio/zh-5357w.mp3",
+     "sentence": "大雁飞去南方过冬。",
+     "sentenceAudio": "/static/audio/zh-5357s.mp3",
      "emoji": "/static/img/hz-5357.png"
     },
     {
@@ -907,6 +1103,8 @@
      "word": "北方",
      "audio": "/static/audio/zh-5317.mp3",
      "wordAudio": "/static/audio/zh-5317w.mp3",
+     "sentence": "北方的冬天会下雪。",
+     "sentenceAudio": "/static/audio/zh-5317s.mp3",
      "emoji": "/static/img/hz-5317.png"
     },
     {
@@ -916,6 +1114,8 @@
      "word": "红花",
      "audio": "/static/audio/zh-7ea2.mp3",
      "wordAudio": "/static/audio/zh-7ea2w.mp3",
+     "sentence": "花园里开满红花。",
+     "sentenceAudio": "/static/audio/zh-7ea2s.mp3",
      "emoji": "/static/img/hz-7ea2.png"
     },
     {
@@ -925,6 +1125,8 @@
      "word": "黄色",
      "audio": "/static/audio/zh-9ec4.mp3",
      "wordAudio": "/static/audio/zh-9ec4w.mp3",
+     "sentence": "香蕉是黄色的。",
+     "sentenceAudio": "/static/audio/zh-9ec4s.mp3",
      "emoji": "/static/img/hz-9ec4.png"
     },
     {
@@ -934,6 +1136,8 @@
      "word": "蓝天",
      "audio": "/static/audio/zh-84dd.mp3",
      "wordAudio": "/static/audio/zh-84ddw.mp3",
+     "sentence": "蓝天上飘着白云。",
+     "sentenceAudio": "/static/audio/zh-84dds.mp3",
      "emoji": "/static/img/hz-84dd.png"
     },
     {
@@ -943,6 +1147,8 @@
      "word": "绿叶",
      "audio": "/static/audio/zh-7eff.mp3",
      "wordAudio": "/static/audio/zh-7effw.mp3",
+     "sentence": "树上长满绿叶。",
+     "sentenceAudio": "/static/audio/zh-7effs.mp3",
      "emoji": "/static/img/hz-7eff.png"
     },
     {
@@ -952,6 +1158,8 @@
      "word": "黑夜",
      "audio": "/static/audio/zh-9ed1.mp3",
      "wordAudio": "/static/audio/zh-9ed1w.mp3",
+     "sentence": "黑夜里星星亮晶晶。",
+     "sentenceAudio": "/static/audio/zh-9ed1s.mp3",
      "emoji": "/static/img/hz-9ed1.png"
     },
     {
@@ -961,6 +1169,8 @@
      "word": "老师",
      "audio": "/static/audio/zh-5e08.mp3",
      "wordAudio": "/static/audio/zh-5e08w.mp3",
+     "sentence": "老师教我们唱歌。",
+     "sentenceAudio": "/static/audio/zh-5e08s.mp3",
      "emoji": "/static/img/hz-5e08.png"
     },
     {
@@ -970,6 +1180,8 @@
      "word": "学生",
      "audio": "/static/audio/zh-751f.mp3",
      "wordAudio": "/static/audio/zh-751fw.mp3",
+     "sentence": "我是一年级的小学生。",
+     "sentenceAudio": "/static/audio/zh-751fs.mp3",
      "emoji": "/static/img/hz-751f.png"
     },
     {
@@ -979,6 +1191,8 @@
      "word": "朋友",
      "audio": "/static/audio/zh-670b.mp3",
      "wordAudio": "/static/audio/zh-670bw.mp3",
+     "sentence": "我和好朋友一起玩。",
+     "sentenceAudio": "/static/audio/zh-670bs.mp3",
      "emoji": "/static/img/hz-670b.png"
     },
     {
@@ -988,6 +1202,8 @@
      "word": "好友",
      "audio": "/static/audio/zh-53cb.mp3",
      "wordAudio": "/static/audio/zh-53cbw.mp3",
+     "sentence": "我有一个好朋友。",
+     "sentenceAudio": "/static/audio/zh-53cbs.mp3",
      "emoji": "/static/img/hz-53cb.png"
     },
     {
@@ -997,6 +1213,8 @@
      "word": "谢谢",
      "audio": "/static/audio/zh-8c22.mp3",
      "wordAudio": "/static/audio/zh-8c22w.mp3",
+     "sentence": "收到礼物要说谢谢。",
+     "sentenceAudio": "/static/audio/zh-8c22s.mp3",
      "emoji": "/static/img/hz-8c22.png"
     },
     {
@@ -1006,6 +1224,8 @@
      "word": "请坐",
      "audio": "/static/audio/zh-8bf7.mp3",
      "wordAudio": "/static/audio/zh-8bf7w.mp3",
+     "sentence": "客人来了，请他坐下。",
+     "sentenceAudio": "/static/audio/zh-8bf7s.mp3",
      "emoji": "/static/img/hz-8bf7.png"
     },
     {
@@ -1015,6 +1235,8 @@
      "word": "大米",
      "audio": "/static/audio/zh-7c73.mp3",
      "wordAudio": "/static/audio/zh-7c73w.mp3",
+     "sentence": "热腾腾的米饭真香。",
+     "sentenceAudio": "/static/audio/zh-7c73s.mp3",
      "emoji": "/static/img/hz-7c73.png"
     },
     {
@@ -1024,6 +1246,8 @@
      "word": "豆子",
      "audio": "/static/audio/zh-8c46.mp3",
      "wordAudio": "/static/audio/zh-8c46w.mp3",
+     "sentence": "我帮奶奶剥豆子。",
+     "sentenceAudio": "/static/audio/zh-8c46s.mp3",
      "emoji": "/static/img/hz-8c46.png"
     },
     {
@@ -1033,6 +1257,8 @@
      "word": "水果",
      "audio": "/static/audio/zh-679c.mp3",
      "wordAudio": "/static/audio/zh-679cw.mp3",
+     "sentence": "饭后吃点水果。",
+     "sentenceAudio": "/static/audio/zh-679cs.mp3",
      "emoji": "/static/img/hz-679c.png"
     },
     {
@@ -1042,6 +1268,8 @@
      "word": "西瓜",
      "audio": "/static/audio/zh-74dc.mp3",
      "wordAudio": "/static/audio/zh-74dcw.mp3",
+     "sentence": "外婆家种的南瓜熟了。",
+     "sentenceAudio": "/static/audio/zh-74dcs.mp3",
      "emoji": "/static/img/hz-74dc.png"
     },
     {
@@ -1051,6 +1279,8 @@
      "word": "青菜",
      "audio": "/static/audio/zh-83dc.mp3",
      "wordAudio": "/static/audio/zh-83dcw.mp3",
+     "sentence": "小兔子爱吃青菜。",
+     "sentenceAudio": "/static/audio/zh-83dcs.mp3",
      "emoji": "/static/img/hz-83dc.png"
     },
     {
@@ -1060,6 +1290,8 @@
      "word": "说话",
      "audio": "/static/audio/zh-8bf4.mp3",
      "wordAudio": "/static/audio/zh-8bf4w.mp3",
+     "sentence": "妹妹爱学人说话。",
+     "sentenceAudio": "/static/audio/zh-8bf4s.mp3",
      "emoji": "/static/img/hz-8bf4.png"
     },
     {
@@ -1069,6 +1301,8 @@
      "word": "听话",
      "audio": "/static/audio/zh-8bdd.mp3",
      "wordAudio": "/static/audio/zh-8bddw.mp3",
+     "sentence": "妈妈在打电话。",
+     "sentenceAudio": "/static/audio/zh-8bdds.mp3",
      "emoji": "/static/img/hz-8bdd.png"
     },
     {
@@ -1078,6 +1312,8 @@
      "word": "好听",
      "audio": "/static/audio/zh-542c.mp3",
      "wordAudio": "/static/audio/zh-542cw.mp3",
+     "sentence": "这首歌真好听。",
+     "sentenceAudio": "/static/audio/zh-542cs.mp3",
      "emoji": "/static/img/hz-542c.png"
     },
     {
@@ -1087,6 +1323,8 @@
      "word": "看见",
      "audio": "/static/audio/zh-770b.mp3",
      "wordAudio": "/static/audio/zh-770bw.mp3",
+     "sentence": "我看见一只小蝴蝶。",
+     "sentenceAudio": "/static/audio/zh-770bs.mp3",
      "emoji": "/static/img/hz-770b.png"
     },
     {
@@ -1096,6 +1334,8 @@
      "word": "写字",
      "audio": "/static/audio/zh-5199.mp3",
      "wordAudio": "/static/audio/zh-5199w.mp3",
+     "sentence": "我会写自己的名字。",
+     "sentenceAudio": "/static/audio/zh-5199s.mp3",
      "emoji": "/static/img/hz-5199.png"
     },
     {
@@ -1105,6 +1345,8 @@
      "word": "读书",
      "audio": "/static/audio/zh-8bfb.mp3",
      "wordAudio": "/static/audio/zh-8bfbw.mp3",
+     "sentence": "睡前读一个小故事。",
+     "sentenceAudio": "/static/audio/zh-8bfbs.mp3",
      "emoji": "/static/img/hz-8bfb.png"
     },
     {
@@ -1114,6 +1356,8 @@
      "word": "你好",
      "audio": "/static/audio/zh-4f60.mp3",
      "wordAudio": "/static/audio/zh-4f60w.mp3",
+     "sentence": "见到老师要说你好。",
+     "sentenceAudio": "/static/audio/zh-4f60s.mp3",
      "emoji": "/static/img/hz-4f60.png"
     },
     {
@@ -1123,6 +1367,8 @@
      "word": "我们",
      "audio": "/static/audio/zh-6211.mp3",
      "wordAudio": "/static/audio/zh-6211w.mp3",
+     "sentence": "我们一起做游戏。",
+     "sentenceAudio": "/static/audio/zh-6211s.mp3",
      "emoji": "/static/img/hz-6211.png"
     },
     {
@@ -1132,6 +1378,8 @@
      "word": "他们",
      "audio": "/static/audio/zh-4ed6.mp3",
      "wordAudio": "/static/audio/zh-4ed6w.mp3",
+     "sentence": "他们在荡秋千。",
+     "sentenceAudio": "/static/audio/zh-4ed6s.mp3",
      "emoji": "/static/img/hz-4ed6.png"
     },
     {
@@ -1141,6 +1389,8 @@
      "word": "她们",
      "audio": "/static/audio/zh-5979.mp3",
      "wordAudio": "/static/audio/zh-5979w.mp3",
+     "sentence": "她扎着两个小辫子。",
+     "sentenceAudio": "/static/audio/zh-5979s.mp3",
      "emoji": "/static/img/hz-5979.png"
     },
     {
@@ -1150,6 +1400,8 @@
      "word": "明天",
      "audio": "/static/audio/zh-660e.mp3",
      "wordAudio": "/static/audio/zh-660ew.mp3",
+     "sentence": "明天我们去春游。",
+     "sentenceAudio": "/static/audio/zh-660es.mp3",
      "emoji": "/static/img/hz-660e.png"
     },
     {
@@ -1159,6 +1411,8 @@
      "word": "晚上",
      "audio": "/static/audio/zh-665a.mp3",
      "wordAudio": "/static/audio/zh-665aw.mp3",
+     "sentence": "晚上睡觉前要刷牙。",
+     "sentenceAudio": "/static/audio/zh-665as.mp3",
      "emoji": "/static/img/hz-665a.png"
     },
     {
@@ -1168,6 +1422,8 @@
      "word": "早上",
      "audio": "/static/audio/zh-65e9.mp3",
      "wordAudio": "/static/audio/zh-65e9w.mp3",
+     "sentence": "早上空气真新鲜。",
+     "sentenceAudio": "/static/audio/zh-65e9s.mp3",
      "emoji": "/static/img/hz-65e9.png"
     }
    ]
@@ -1186,6 +1442,8 @@
      "word": "大树",
      "audio": "/static/audio/zh-6811.mp3",
      "wordAudio": "/static/audio/zh-6811w.mp3",
+     "sentence": "大树上有个鸟窝。",
+     "sentenceAudio": "/static/audio/zh-6811s.mp3",
      "emoji": "/static/img/hz-6811.png"
     },
     {
@@ -1195,6 +1453,8 @@
      "word": "青草",
      "audio": "/static/audio/zh-8349.mp3",
      "wordAudio": "/static/audio/zh-8349w.mp3",
+     "sentence": "小羊在山坡吃青草。",
+     "sentenceAudio": "/static/audio/zh-8349s.mp3",
      "emoji": "/static/img/hz-8349.png"
     },
     {
@@ -1204,6 +1464,8 @@
      "word": "树叶",
      "audio": "/static/audio/zh-53f6.mp3",
      "wordAudio": "/static/audio/zh-53f6w.mp3",
+     "sentence": "我捡了一片树叶。",
+     "sentenceAudio": "/static/audio/zh-53f6s.mp3",
      "emoji": "/static/img/hz-53f6.png"
     },
     {
@@ -1213,6 +1475,8 @@
      "word": "森林",
      "audio": "/static/audio/zh-68ee.mp3",
      "wordAudio": "/static/audio/zh-68eew.mp3",
+     "sentence": "森林里住着小鹿。",
+     "sentenceAudio": "/static/audio/zh-68ees.mp3",
      "emoji": "/static/img/hz-68ee.png"
     },
     {
@@ -1222,6 +1486,8 @@
      "word": "竹林",
      "audio": "/static/audio/zh-6797.mp3",
      "wordAudio": "/static/audio/zh-6797w.mp3",
+     "sentence": "熊猫在竹林里吃竹子。",
+     "sentenceAudio": "/static/audio/zh-6797s.mp3",
      "emoji": "/static/img/hz-6797.png"
     },
     {
@@ -1231,6 +1497,8 @@
      "word": "小河",
      "audio": "/static/audio/zh-6cb3.mp3",
      "wordAudio": "/static/audio/zh-6cb3w.mp3",
+     "sentence": "小河的水清清的。",
+     "sentenceAudio": "/static/audio/zh-6cb3s.mp3",
      "emoji": "/static/img/hz-6cb3.png"
     },
     {
@@ -1240,6 +1508,8 @@
      "word": "大海",
      "audio": "/static/audio/zh-6d77.mp3",
      "wordAudio": "/static/audio/zh-6d77w.mp3",
+     "sentence": "我想去看看大海。",
+     "sentenceAudio": "/static/audio/zh-6d77s.mp3",
      "emoji": "/static/img/hz-6d77.png"
     },
     {
@@ -1249,6 +1519,8 @@
      "word": "海洋",
      "audio": "/static/audio/zh-6d0b.mp3",
      "wordAudio": "/static/audio/zh-6d0bw.mp3",
+     "sentence": "海洋里有很多鱼。",
+     "sentenceAudio": "/static/audio/zh-6d0bs.mp3",
      "emoji": "/static/img/hz-6d0b.png"
     },
     {
@@ -1258,6 +1530,8 @@
      "word": "海岛",
      "audio": "/static/audio/zh-5c9b.mp3",
      "wordAudio": "/static/audio/zh-5c9bw.mp3",
+     "sentence": "海岛四周都是大海。",
+     "sentenceAudio": "/static/audio/zh-5c9bs.mp3",
      "emoji": "/static/img/hz-5c9b.png"
     },
     {
@@ -1267,6 +1541,8 @@
      "word": "水池",
      "audio": "/static/audio/zh-6c60.mp3",
      "wordAudio": "/static/audio/zh-6c60w.mp3",
+     "sentence": "水池里养着金鱼。",
+     "sentenceAudio": "/static/audio/zh-6c60s.mp3",
      "emoji": "/static/img/hz-6c60.png"
     },
     {
@@ -1276,6 +1552,8 @@
      "word": "晴天",
      "audio": "/static/audio/zh-6674.mp3",
      "wordAudio": "/static/audio/zh-6674w.mp3",
+     "sentence": "今天是个大晴天。",
+     "sentenceAudio": "/static/audio/zh-6674s.mp3",
      "emoji": "/static/img/hz-6674.png"
     },
     {
@@ -1285,6 +1563,8 @@
      "word": "阴天",
      "audio": "/static/audio/zh-9634.mp3",
      "wordAudio": "/static/audio/zh-9634w.mp3",
+     "sentence": "阴天可能要下雨。",
+     "sentenceAudio": "/static/audio/zh-9634s.mp3",
      "emoji": "/static/img/hz-9634.png"
     },
     {
@@ -1294,6 +1574,8 @@
      "word": "雪花",
      "audio": "/static/audio/zh-96ea.mp3",
      "wordAudio": "/static/audio/zh-96eaw.mp3",
+     "sentence": "雪花落在我手心上。",
+     "sentenceAudio": "/static/audio/zh-96eas.mp3",
      "emoji": "/static/img/hz-96ea.png"
     },
     {
@@ -1303,6 +1585,8 @@
      "word": "电视",
      "audio": "/static/audio/zh-7535.mp3",
      "wordAudio": "/static/audio/zh-7535w.mp3",
+     "sentence": "看电视要离远一点。",
+     "sentenceAudio": "/static/audio/zh-7535s.mp3",
      "emoji": "/static/img/hz-7535.png"
     },
     {
@@ -1312,6 +1596,8 @@
      "word": "大雾",
      "audio": "/static/audio/zh-96fe.mp3",
      "wordAudio": "/static/audio/zh-96few.mp3",
+     "sentence": "早晨的大雾白茫茫。",
+     "sentenceAudio": "/static/audio/zh-96fes.mp3",
      "emoji": "/static/img/hz-96fe.png"
     },
     {
@@ -1321,6 +1607,8 @@
      "word": "彩虹",
      "audio": "/static/audio/zh-8679.mp3",
      "wordAudio": "/static/audio/zh-8679w.mp3",
+     "sentence": "雨后天空有彩虹。",
+     "sentenceAudio": "/static/audio/zh-8679s.mp3",
      "emoji": "/static/img/hz-8679.png"
     },
     {
@@ -1330,6 +1618,8 @@
      "word": "时间",
      "audio": "/static/audio/zh-65f6.mp3",
      "wordAudio": "/static/audio/zh-65f6w.mp3",
+     "sentence": "到时间该睡觉了。",
+     "sentenceAudio": "/static/audio/zh-65f6s.mp3",
      "emoji": "/static/img/hz-65f6.png"
     },
     {
@@ -1339,6 +1629,8 @@
      "word": "分钟",
      "audio": "/static/audio/zh-5206.mp3",
      "wordAudio": "/static/audio/zh-5206w.mp3",
+     "sentence": "再玩五分钟就回家。",
+     "sentenceAudio": "/static/audio/zh-5206s.mp3",
      "emoji": "/static/img/hz-5206.png"
     },
     {
@@ -1348,6 +1640,8 @@
      "word": "今天",
      "audio": "/static/audio/zh-4eca.mp3",
      "wordAudio": "/static/audio/zh-4ecaw.mp3",
+     "sentence": "今天妈妈接我放学。",
+     "sentenceAudio": "/static/audio/zh-4ecas.mp3",
      "emoji": "/static/img/hz-4eca.png"
     },
     {
@@ -1357,6 +1651,8 @@
      "word": "昨天",
      "audio": "/static/audio/zh-6628.mp3",
      "wordAudio": "/static/audio/zh-6628w.mp3",
+     "sentence": "昨天我学会了跳绳。",
+     "sentenceAudio": "/static/audio/zh-6628s.mp3",
      "emoji": "/static/img/hz-6628.png"
     },
     {
@@ -1366,6 +1662,8 @@
      "word": "大象",
      "audio": "/static/audio/zh-8c61.mp3",
      "wordAudio": "/static/audio/zh-8c61w.mp3",
+     "sentence": "大象的鼻子会喷水。",
+     "sentenceAudio": "/static/audio/zh-8c61s.mp3",
      "emoji": "/static/img/hz-8c61.png"
     },
     {
@@ -1375,6 +1673,8 @@
      "word": "狮子",
      "audio": "/static/audio/zh-72ee.mp3",
      "wordAudio": "/static/audio/zh-72eew.mp3",
+     "sentence": "狮子是森林之王。",
+     "sentenceAudio": "/static/audio/zh-72ees.mp3",
      "emoji": "/static/img/hz-72ee.png"
     },
     {
@@ -1384,6 +1684,8 @@
      "word": "小熊",
      "audio": "/static/audio/zh-718a.mp3",
      "wordAudio": "/static/audio/zh-718aw.mp3",
+     "sentence": "小熊抱着蜂蜜罐子。",
+     "sentenceAudio": "/static/audio/zh-718as.mp3",
      "emoji": "/static/img/hz-718a.png"
     },
     {
@@ -1393,6 +1695,8 @@
      "word": "大灰狼",
      "audio": "/static/audio/zh-72fc.mp3",
      "wordAudio": "/static/audio/zh-72fcw.mp3",
+     "sentence": "大灰狼假装成外婆。",
+     "sentenceAudio": "/static/audio/zh-72fcs.mp3",
      "emoji": "/static/img/hz-72fc.png"
     },
     {
@@ -1402,6 +1706,8 @@
      "word": "小鹿",
      "audio": "/static/audio/zh-9e7f.mp3",
      "wordAudio": "/static/audio/zh-9e7fw.mp3",
+     "sentence": "小鹿轻轻地走过草地。",
+     "sentenceAudio": "/static/audio/zh-9e7fs.mp3",
      "emoji": "/static/img/hz-9e7f.png"
     },
     {
@@ -1411,6 +1717,8 @@
      "word": "蟒蛇",
      "audio": "/static/audio/zh-86c7.mp3",
      "wordAudio": "/static/audio/zh-86c7w.mp3",
+     "sentence": "蟒蛇的身体长长的。",
+     "sentenceAudio": "/static/audio/zh-86c7s.mp3",
      "emoji": "/static/img/hz-86c7.png"
     },
     {
@@ -1420,6 +1728,8 @@
      "word": "老鼠",
      "audio": "/static/audio/zh-9f20.mp3",
      "wordAudio": "/static/audio/zh-9f20w.mp3",
+     "sentence": "老鼠最爱偷米吃。",
+     "sentenceAudio": "/static/audio/zh-9f20s.mp3",
      "emoji": "/static/img/hz-9f20.png"
     },
     {
@@ -1429,6 +1739,8 @@
      "word": "蚂蚁",
      "audio": "/static/audio/zh-8681.mp3",
      "wordAudio": "/static/audio/zh-8681w.mp3",
+     "sentence": "蚂蚁一起搬豆子。",
+     "sentenceAudio": "/static/audio/zh-8681s.mp3",
      "emoji": "/static/img/hz-8681.png"
     },
     {
@@ -1438,6 +1750,8 @@
      "word": "蝴蝶",
      "audio": "/static/audio/zh-8776.mp3",
      "wordAudio": "/static/audio/zh-8776w.mp3",
+     "sentence": "蝴蝶在花丛中飞舞。",
+     "sentenceAudio": "/static/audio/zh-8776s.mp3",
      "emoji": "/static/img/hz-8776.png"
     },
     {
@@ -1447,6 +1761,8 @@
      "word": "蜜蜂",
      "audio": "/static/audio/zh-8702.mp3",
      "wordAudio": "/static/audio/zh-8702w.mp3",
+     "sentence": "蜜蜂嗡嗡飞进花园。",
+     "sentenceAudio": "/static/audio/zh-8702s.mp3",
      "emoji": "/static/img/hz-8702.png"
     },
     {
@@ -1456,6 +1772,8 @@
      "word": "蝉鸣",
      "audio": "/static/audio/zh-8749.mp3",
      "wordAudio": "/static/audio/zh-8749w.mp3",
+     "sentence": "蝉在树上吱吱叫。",
+     "sentenceAudio": "/static/audio/zh-8749s.mp3",
      "emoji": ""
     },
     {
@@ -1465,6 +1783,8 @@
      "word": "眉毛",
      "audio": "/static/audio/zh-7709.mp3",
      "wordAudio": "/static/audio/zh-7709w.mp3",
+     "sentence": "弟弟的眉毛弯弯的。",
+     "sentenceAudio": "/static/audio/zh-7709s.mp3",
      "emoji": ""
     },
     {
@@ -1474,6 +1794,8 @@
      "word": "开心",
      "audio": "/static/audio/zh-5fc3.mp3",
      "wordAudio": "/static/audio/zh-5fc3w.mp3",
+     "sentence": "我今天很开心。",
+     "sentenceAudio": "/static/audio/zh-5fc3s.mp3",
      "emoji": "/static/img/hz-5fc3.png"
     },
     {
@@ -1483,6 +1805,8 @@
      "word": "肠胃",
      "audio": "/static/audio/zh-80c3.mp3",
      "wordAudio": "/static/audio/zh-80c3w.mp3",
+     "sentence": "吃饭太快胃会疼。",
+     "sentenceAudio": "/static/audio/zh-80c3s.mp3",
      "emoji": ""
     },
     {
@@ -1492,6 +1816,8 @@
      "word": "骨头",
      "audio": "/static/audio/zh-9aa8.mp3",
      "wordAudio": "/static/audio/zh-9aa8w.mp3",
+     "sentence": "小狗爱啃骨头。",
+     "sentenceAudio": "/static/audio/zh-9aa8s.mp3",
      "emoji": "/static/img/hz-9aa8.png"
     },
     {
@@ -1501,6 +1827,8 @@
      "word": "牛肉",
      "audio": "/static/audio/zh-8089.mp3",
      "wordAudio": "/static/audio/zh-8089w.mp3",
+     "sentence": "妈妈买了新鲜牛肉。",
+     "sentenceAudio": "/static/audio/zh-8089s.mp3",
      "emoji": "/static/img/hz-8089.png"
     },
     {
@@ -1510,6 +1838,8 @@
      "word": "学校",
      "audio": "/static/audio/zh-6821.mp3",
      "wordAudio": "/static/audio/zh-6821w.mp3",
+     "sentence": "我喜欢我的学校。",
+     "sentenceAudio": "/static/audio/zh-6821s.mp3",
      "emoji": "/static/img/hz-6821.png"
     },
     {
@@ -1519,6 +1849,8 @@
      "word": "班级",
      "audio": "/static/audio/zh-73ed.mp3",
      "wordAudio": "/static/audio/zh-73edw.mp3",
+     "sentence": "我们班来了新同学。",
+     "sentenceAudio": "/static/audio/zh-73eds.mp3",
      "emoji": "/static/img/hz-73ed.png"
     },
     {
@@ -1528,6 +1860,8 @@
      "word": "上课",
      "audio": "/static/audio/zh-8bfe.mp3",
      "wordAudio": "/static/audio/zh-8bfew.mp3",
+     "sentence": "上课要认真听讲。",
+     "sentenceAudio": "/static/audio/zh-8bfes.mp3",
      "emoji": "/static/img/hz-8bfe.png"
     },
     {
@@ -1537,6 +1871,8 @@
      "word": "课本",
      "audio": "/static/audio/zh-672c.mp3",
      "wordAudio": "/static/audio/zh-672cw.mp3",
+     "sentence": "上学要带好课本。",
+     "sentenceAudio": "/static/audio/zh-672cs.mp3",
      "emoji": "/static/img/hz-672c.png"
     },
     {
@@ -1546,6 +1882,8 @@
      "word": "生字",
      "audio": "/static/audio/zh-5b57.mp3",
      "wordAudio": "/static/audio/zh-5b57w.mp3",
+     "sentence": "老师教我写生字。",
+     "sentenceAudio": "/static/audio/zh-5b57s.mp3",
      "emoji": "/static/img/hz-5b57.png"
     },
     {
@@ -1555,6 +1893,8 @@
      "word": "词语",
      "audio": "/static/audio/zh-8bcd.mp3",
      "wordAudio": "/static/audio/zh-8bcdw.mp3",
+     "sentence": "我今天学了三个新词语。",
+     "sentenceAudio": "/static/audio/zh-8bcds.mp3",
      "emoji": ""
     },
     {
@@ -1564,6 +1904,8 @@
      "word": "句子",
      "audio": "/static/audio/zh-53e5.mp3",
      "wordAudio": "/static/audio/zh-53e5w.mp3",
+     "sentence": "我会造一个句子。",
+     "sentenceAudio": "/static/audio/zh-53e5s.mp3",
      "emoji": "/static/img/hz-53e5.png"
     },
     {
@@ -1573,6 +1915,8 @@
      "word": "帮忙",
      "audio": "/static/audio/zh-5e2e.mp3",
      "wordAudio": "/static/audio/zh-5e2ew.mp3",
+     "sentence": "我帮妈妈拿拖鞋。",
+     "sentenceAudio": "/static/audio/zh-5e2es.mp3",
      "emoji": ""
     },
     {
@@ -1582,6 +1926,8 @@
      "word": "助手",
      "audio": "/static/audio/zh-52a9.mp3",
      "wordAudio": "/static/audio/zh-52a9w.mp3",
+     "sentence": "我是妈妈的小助手。",
+     "sentenceAudio": "/static/audio/zh-52a9s.mp3",
      "emoji": ""
     },
     {
@@ -1591,6 +1937,8 @@
      "word": "教书",
      "audio": "/static/audio/zh-6559.mp3",
      "wordAudio": "/static/audio/zh-6559w.mp3",
+     "sentence": "老师教书特别认真。",
+     "sentenceAudio": "/static/audio/zh-6559s.mp3",
      "emoji": "/static/img/hz-6559.png"
     },
     {
@@ -1600,6 +1948,8 @@
      "word": "学习",
      "audio": "/static/audio/zh-5b66.mp3",
      "wordAudio": "/static/audio/zh-5b66w.mp3",
+     "sentence": "好好学习，天天向上。",
+     "sentenceAudio": "/static/audio/zh-5b66s.mp3",
      "emoji": ""
     },
     {
@@ -1609,6 +1959,8 @@
      "word": "问题",
      "audio": "/static/audio/zh-95ee.mp3",
      "wordAudio": "/static/audio/zh-95eew.mp3",
+     "sentence": "有不懂的就问老师。",
+     "sentenceAudio": "/static/audio/zh-95ees.mp3",
      "emoji": "/static/img/hz-95ee.png"
     },
     {
@@ -1618,6 +1970,8 @@
      "word": "回答",
      "audio": "/static/audio/zh-7b54.mp3",
      "wordAudio": "/static/audio/zh-7b54w.mp3",
+     "sentence": "我大声回答问题。",
+     "sentenceAudio": "/static/audio/zh-7b54s.mp3",
      "emoji": "/static/img/hz-7b54.png"
     },
     {
@@ -1627,6 +1981,8 @@
      "word": "高兴",
      "audio": "/static/audio/zh-9ad8.mp3",
      "wordAudio": "/static/audio/zh-9ad8w.mp3",
+     "sentence": "收到礼物真高兴。",
+     "sentenceAudio": "/static/audio/zh-9ad8s.mp3",
      "emoji": "/static/img/hz-9ad8.png"
     },
     {
@@ -1636,6 +1992,8 @@
      "word": "兴奋",
      "audio": "/static/audio/zh-5174.mp3",
      "wordAudio": "/static/audio/zh-5174w.mp3",
+     "sentence": "我兴奋得跳了起来。",
+     "sentenceAudio": "/static/audio/zh-5174s.mp3",
      "emoji": "/static/img/hz-5174.png"
     },
     {
@@ -1645,6 +2003,8 @@
      "word": "大哭",
      "audio": "/static/audio/zh-54ed.mp3",
      "wordAudio": "/static/audio/zh-54edw.mp3",
+     "sentence": "不要哭，勇敢一点。",
+     "sentenceAudio": "/static/audio/zh-54eds.mp3",
      "emoji": "/static/img/hz-54ed.png"
     },
     {
@@ -1654,6 +2014,8 @@
      "word": "大笑",
      "audio": "/static/audio/zh-7b11.mp3",
      "wordAudio": "/static/audio/zh-7b11w.mp3",
+     "sentence": "弟弟被逗得哈哈大笑。",
+     "sentenceAudio": "/static/audio/zh-7b11s.mp3",
      "emoji": "/static/img/hz-7b11.png"
     },
     {
@@ -1663,6 +2025,8 @@
      "word": "害怕",
      "audio": "/static/audio/zh-6015.mp3",
      "wordAudio": "/static/audio/zh-6015w.mp3",
+     "sentence": "我不怕打雷了。",
+     "sentenceAudio": "/static/audio/zh-6015s.mp3",
      "emoji": "/static/img/hz-6015.png"
     },
     {
@@ -1672,6 +2036,8 @@
      "word": "城市",
      "audio": "/static/audio/zh-57ce.mp3",
      "wordAudio": "/static/audio/zh-57cew.mp3",
+     "sentence": "城市的晚上灯真亮。",
+     "sentenceAudio": "/static/audio/zh-57ces.mp3",
      "emoji": "/static/img/hz-57ce.png"
     },
     {
@@ -1681,6 +2047,8 @@
      "word": "农村",
      "audio": "/static/audio/zh-6751.mp3",
      "wordAudio": "/static/audio/zh-6751w.mp3",
+     "sentence": "农村的空气特别好。",
+     "sentenceAudio": "/static/audio/zh-6751s.mp3",
      "emoji": "/static/img/hz-6751.png"
     },
     {
@@ -1690,6 +2058,8 @@
      "word": "街道",
      "audio": "/static/audio/zh-8857.mp3",
      "wordAudio": "/static/audio/zh-8857w.mp3",
+     "sentence": "街道上人来人往。",
+     "sentenceAudio": "/static/audio/zh-8857s.mp3",
      "emoji": "/static/img/hz-8857.png"
     },
     {
@@ -1699,6 +2069,8 @@
      "word": "医院",
      "audio": "/static/audio/zh-533b.mp3",
      "wordAudio": "/static/audio/zh-533bw.mp3",
+     "sentence": "生病了要去医院。",
+     "sentenceAudio": "/static/audio/zh-533bs.mp3",
      "emoji": "/static/img/hz-533b.png"
     },
     {
@@ -1708,6 +2080,8 @@
      "word": "院子",
      "audio": "/static/audio/zh-9662.mp3",
      "wordAudio": "/static/audio/zh-9662w.mp3",
+     "sentence": "爷爷在院子里浇花。",
+     "sentenceAudio": "/static/audio/zh-9662s.mp3",
      "emoji": "/static/img/hz-9662.png"
     },
     {
@@ -1717,6 +2091,8 @@
      "word": "商店",
      "audio": "/static/audio/zh-5e97.mp3",
      "wordAudio": "/static/audio/zh-5e97w.mp3",
+     "sentence": "我去商店买文具。",
+     "sentenceAudio": "/static/audio/zh-5e97s.mp3",
      "emoji": "/static/img/hz-5e97.png"
     },
     {
@@ -1726,6 +2102,8 @@
      "word": "面包",
      "audio": "/static/audio/zh-9762.mp3",
      "wordAudio": "/static/audio/zh-9762w.mp3",
+     "sentence": "早餐有牛奶和面包。",
+     "sentenceAudio": "/static/audio/zh-9762s.mp3",
      "emoji": "/static/img/hz-9762.png"
     },
     {
@@ -1735,6 +2113,8 @@
      "word": "米饭",
      "audio": "/static/audio/zh-996d.mp3",
      "wordAudio": "/static/audio/zh-996dw.mp3",
+     "sentence": "吃饭前要洗手。",
+     "sentenceAudio": "/static/audio/zh-996ds.mp3",
      "emoji": "/static/img/hz-996d.png"
     },
     {
@@ -1744,6 +2124,8 @@
      "word": "鸡蛋",
      "audio": "/static/audio/zh-86cb.mp3",
      "wordAudio": "/static/audio/zh-86cbw.mp3",
+     "sentence": "我每天吃一个鸡蛋。",
+     "sentenceAudio": "/static/audio/zh-86cbs.mp3",
      "emoji": "/static/img/hz-86cb.png"
     },
     {
@@ -1753,6 +2135,8 @@
      "word": "加油",
      "audio": "/static/audio/zh-6cb9.mp3",
      "wordAudio": "/static/audio/zh-6cb9w.mp3",
+     "sentence": "比赛时大家喊加油。",
+     "sentenceAudio": "/static/audio/zh-6cb9s.mp3",
      "emoji": "/static/img/hz-6cb9.png"
     },
     {
@@ -1762,6 +2146,8 @@
      "word": "盐巴",
      "audio": "/static/audio/zh-76d0.mp3",
      "wordAudio": "/static/audio/zh-76d0w.mp3",
+     "sentence": "汤里放一点盐。",
+     "sentenceAudio": "/static/audio/zh-76d0s.mp3",
      "emoji": "/static/img/hz-76d0.png"
     },
     {
@@ -1771,6 +2157,8 @@
      "word": "糖果",
      "audio": "/static/audio/zh-7cd6.mp3",
      "wordAudio": "/static/audio/zh-7cd6w.mp3",
+     "sentence": "糖果好吃不多吃。",
+     "sentenceAudio": "/static/audio/zh-7cd6s.mp3",
      "emoji": "/static/img/hz-7cd6.png"
     },
     {
@@ -1780,6 +2168,8 @@
      "word": "喝茶",
      "audio": "/static/audio/zh-8336.mp3",
      "wordAudio": "/static/audio/zh-8336w.mp3",
+     "sentence": "爷爷喝茶看报纸。",
+     "sentenceAudio": "/static/audio/zh-8336s.mp3",
      "emoji": "/static/img/hz-8336.png"
     },
     {
@@ -1789,6 +2179,8 @@
      "word": "课桌",
      "audio": "/static/audio/zh-684c.mp3",
      "wordAudio": "/static/audio/zh-684cw.mp3",
+     "sentence": "我的课桌擦得真干净。",
+     "sentenceAudio": "/static/audio/zh-684cs.mp3",
      "emoji": ""
     },
     {
@@ -1798,6 +2190,8 @@
      "word": "椅子",
      "audio": "/static/audio/zh-6905.mp3",
      "wordAudio": "/static/audio/zh-6905w.mp3",
+     "sentence": "请把椅子摆整齐。",
+     "sentenceAudio": "/static/audio/zh-6905s.mp3",
      "emoji": "/static/img/hz-6905.png"
     },
     {
@@ -1807,6 +2201,8 @@
      "word": "饭碗",
      "audio": "/static/audio/zh-7897.mp3",
      "wordAudio": "/static/audio/zh-7897w.mp3",
+     "sentence": "我帮妈妈摆碗筷。",
+     "sentenceAudio": "/static/audio/zh-7897s.mp3",
      "emoji": "/static/img/hz-7897.png"
     },
     {
@@ -1816,6 +2212,8 @@
      "word": "盘子",
      "audio": "/static/audio/zh-76d8.mp3",
      "wordAudio": "/static/audio/zh-76d8w.mp3",
+     "sentence": "盘子里的苹果切好了。",
+     "sentenceAudio": "/static/audio/zh-76d8s.mp3",
      "emoji": "/static/img/hz-76d8.png"
     },
     {
@@ -1825,6 +2223,8 @@
      "word": "水杯",
      "audio": "/static/audio/zh-676f.mp3",
      "wordAudio": "/static/audio/zh-676fw.mp3",
+     "sentence": "喝完水要把杯子放好。",
+     "sentenceAudio": "/static/audio/zh-676fs.mp3",
      "emoji": "/static/img/hz-676f.png"
     },
     {
@@ -1834,6 +2234,8 @@
      "word": "铁锅",
      "audio": "/static/audio/zh-9505.mp3",
      "wordAudio": "/static/audio/zh-9505w.mp3",
+     "sentence": "妈妈用铁锅炒菜。",
+     "sentenceAudio": "/static/audio/zh-9505s.mp3",
      "emoji": "/static/img/hz-9505.png"
     },
     {
@@ -1843,6 +2245,8 @@
      "word": "电灯",
      "audio": "/static/audio/zh-706f.mp3",
      "wordAudio": "/static/audio/zh-706fw.mp3",
+     "sentence": "天黑了要开电灯。",
+     "sentenceAudio": "/static/audio/zh-706fs.mp3",
      "emoji": "/static/img/hz-706f.png"
     },
     {
@@ -1852,6 +2256,8 @@
      "word": "沙子",
      "audio": "/static/audio/zh-6c99.mp3",
      "wordAudio": "/static/audio/zh-6c99w.mp3",
+     "sentence": "小螃蟹藏在沙子里。",
+     "sentenceAudio": "/static/audio/zh-6c99s.mp3",
      "emoji": "/static/img/hz-6c99.png"
     },
     {
@@ -1861,6 +2267,8 @@
      "word": "阳光",
      "audio": "/static/audio/zh-5149.mp3",
      "wordAudio": "/static/audio/zh-5149w.mp3",
+     "sentence": "阳光照在身上暖暖的。",
+     "sentenceAudio": "/static/audio/zh-5149s.mp3",
      "emoji": "/static/img/hz-5149.png"
     },
     {
@@ -1870,6 +2278,8 @@
      "word": "影子",
      "audio": "/static/audio/zh-5f71.mp3",
      "wordAudio": "/static/audio/zh-5f71w.mp3",
+     "sentence": "影子跟着我走。",
+     "sentenceAudio": "/static/audio/zh-5f71s.mp3",
      "emoji": ""
     },
     {
@@ -1879,6 +2289,8 @@
      "word": "声音",
      "audio": "/static/audio/zh-58f0.mp3",
      "wordAudio": "/static/audio/zh-58f0w.mp3",
+     "sentence": "钢琴的声音真好听。",
+     "sentenceAudio": "/static/audio/zh-58f0s.mp3",
      "emoji": "/static/img/hz-58f0.png"
     },
     {
@@ -1888,6 +2300,8 @@
      "word": "颜色",
      "audio": "/static/audio/zh-8272.mp3",
      "wordAudio": "/static/audio/zh-8272w.mp3",
+     "sentence": "彩虹有七种颜色。",
+     "sentenceAudio": "/static/audio/zh-8272s.mp3",
      "emoji": "/static/img/hz-8272.png"
     },
     {
@@ -1897,6 +2311,8 @@
      "word": "香甜",
      "audio": "/static/audio/zh-751c.mp3",
      "wordAudio": "/static/audio/zh-751cw.mp3",
+     "sentence": "苹果甜甜的真好吃。",
+     "sentenceAudio": "/static/audio/zh-751cs.mp3",
      "emoji": "/static/img/hz-751c.png"
     },
     {
@@ -1906,6 +2322,8 @@
      "word": "苦瓜",
      "audio": "/static/audio/zh-82e6.mp3",
      "wordAudio": "/static/audio/zh-82e6w.mp3",
+     "sentence": "药有点苦，也要喝下去。",
+     "sentenceAudio": "/static/audio/zh-82e6s.mp3",
      "emoji": "/static/img/hz-82e6.png"
     },
     {
@@ -1915,6 +2333,8 @@
      "word": "麻辣",
      "audio": "/static/audio/zh-8fa3.mp3",
      "wordAudio": "/static/audio/zh-8fa3w.mp3",
+     "sentence": "辣椒太辣我不敢吃。",
+     "sentenceAudio": "/static/audio/zh-8fa3s.mp3",
      "emoji": "/static/img/hz-8fa3.png"
     },
     {
@@ -1924,6 +2344,8 @@
      "word": "圆圆",
      "audio": "/static/audio/zh-5706.mp3",
      "wordAudio": "/static/audio/zh-5706w.mp3",
+     "sentence": "十五的月亮圆圆的。",
+     "sentenceAudio": "/static/audio/zh-5706s.mp3",
      "emoji": "/static/img/hz-5706.png"
     },
     {
@@ -1933,6 +2355,8 @@
      "word": "方圆",
      "audio": "/static/audio/zh-65b9.mp3",
      "wordAudio": "/static/audio/zh-65b9w.mp3",
+     "sentence": "积木有方的也有圆的。",
+     "sentenceAudio": "/static/audio/zh-65b9s.mp3",
      "emoji": "/static/img/hz-65b9.png"
     },
     {
@@ -1942,6 +2366,8 @@
      "word": "飞快",
      "audio": "/static/audio/zh-5feb.mp3",
      "wordAudio": "/static/audio/zh-5febw.mp3",
+     "sentence": "小马跑得飞快。",
+     "sentenceAudio": "/static/audio/zh-5febs.mp3",
      "emoji": "/static/img/hz-5feb.png"
     },
     {
@@ -1951,6 +2377,8 @@
      "word": "慢慢",
      "audio": "/static/audio/zh-6162.mp3",
      "wordAudio": "/static/audio/zh-6162w.mp3",
+     "sentence": "上楼梯要慢慢走。",
+     "sentenceAudio": "/static/audio/zh-6162s.mp3",
      "emoji": "/static/img/hz-6162.png"
     },
     {
@@ -1960,6 +2388,8 @@
      "word": "远近",
      "audio": "/static/audio/zh-8fdc.mp3",
      "wordAudio": "/static/audio/zh-8fdcw.mp3",
+     "sentence": "山离我们很远。",
+     "sentenceAudio": "/static/audio/zh-8fdcs.mp3",
      "emoji": "/static/img/hz-8fdc.png"
     },
     {
@@ -1969,6 +2399,8 @@
      "word": "近处",
      "audio": "/static/audio/zh-8fd1.mp3",
      "wordAudio": "/static/audio/zh-8fd1w.mp3",
+     "sentence": "学校离我家很近。",
+     "sentenceAudio": "/static/audio/zh-8fd1s.mp3",
      "emoji": "/static/img/hz-8fd1.png"
     },
     {
@@ -1978,6 +2410,8 @@
      "word": "家里",
      "audio": "/static/audio/zh-91cc.mp3",
      "wordAudio": "/static/audio/zh-91ccw.mp3",
+     "sentence": "家里来了小客人。",
+     "sentenceAudio": "/static/audio/zh-91ccs.mp3",
      "emoji": ""
     },
     {
@@ -1987,6 +2421,8 @@
      "word": "外面",
      "audio": "/static/audio/zh-5916.mp3",
      "wordAudio": "/static/audio/zh-5916w.mp3",
+     "sentence": "外面刮大风了。",
+     "sentenceAudio": "/static/audio/zh-5916s.mp3",
      "emoji": ""
     },
     {
@@ -1996,6 +2432,8 @@
      "word": "年岁",
      "audio": "/static/audio/zh-5c81.mp3",
      "wordAudio": "/static/audio/zh-5c81w.mp3",
+     "sentence": "我今年六岁了。",
+     "sentenceAudio": "/static/audio/zh-5c81s.mp3",
      "emoji": ""
     },
     {
@@ -2005,6 +2443,8 @@
      "word": "美丽",
      "audio": "/static/audio/zh-7f8e.mp3",
      "wordAudio": "/static/audio/zh-7f8ew.mp3",
+     "sentence": "蝴蝶的翅膀真美丽。",
+     "sentenceAudio": "/static/audio/zh-7f8es.mp3",
      "emoji": "/static/img/hz-7f8e.png"
     },
     {
@@ -2014,6 +2454,8 @@
      "word": "小丑",
      "audio": "/static/audio/zh-4e11.mp3",
      "wordAudio": "/static/audio/zh-4e11w.mp3",
+     "sentence": "小丑的表演真滑稽。",
+     "sentenceAudio": "/static/audio/zh-4e11s.mp3",
      "emoji": "/static/img/hz-4e11.png"
     },
     {
@@ -2023,6 +2465,8 @@
      "word": "新年",
      "audio": "/static/audio/zh-65b0.mp3",
      "wordAudio": "/static/audio/zh-65b0w.mp3",
+     "sentence": "新年到了，放鞭炮啦。",
+     "sentenceAudio": "/static/audio/zh-65b0s.mp3",
      "emoji": "/static/img/hz-65b0.png"
     },
     {
@@ -2032,6 +2476,8 @@
      "word": "旧书",
      "audio": "/static/audio/zh-65e7.mp3",
      "wordAudio": "/static/audio/zh-65e7w.mp3",
+     "sentence": "这本旧书是爸爸的。",
+     "sentenceAudio": "/static/audio/zh-65e7s.mp3",
      "emoji": "/static/img/hz-65e7.png"
     },
     {
@@ -2041,6 +2487,8 @@
      "word": "干净",
      "audio": "/static/audio/zh-5e72.mp3",
      "wordAudio": "/static/audio/zh-5e72w.mp3",
+     "sentence": "把小手洗得干干净净。",
+     "sentenceAudio": "/static/audio/zh-5e72s.mp3",
      "emoji": ""
     },
     {
@@ -2050,6 +2498,8 @@
      "word": "洁净",
      "audio": "/static/audio/zh-51c0.mp3",
      "wordAudio": "/static/audio/zh-51c0w.mp3",
+     "sentence": "把手洗干净再吃饭。",
+     "sentenceAudio": "/static/audio/zh-51c0s.mp3",
      "emoji": "/static/img/hz-51c0.png"
     },
     {
@@ -2059,6 +2509,8 @@
      "word": "弄脏",
      "audio": "/static/audio/zh-810f.mp3",
      "wordAudio": "/static/audio/zh-810fw.mp3",
+     "sentence": "别把衣服弄脏了。",
+     "sentenceAudio": "/static/audio/zh-810fs.mp3",
      "emoji": "/static/img/hz-810f.png"
     },
     {
@@ -2068,6 +2520,8 @@
      "word": "满意",
      "audio": "/static/audio/zh-6ee1.mp3",
      "wordAudio": "/static/audio/zh-6ee1w.mp3",
+     "sentence": "花瓶里插满了花。",
+     "sentenceAudio": "/static/audio/zh-6ee1s.mp3",
      "emoji": "/static/img/hz-6ee1.png"
     }
    ]
@@ -2086,6 +2540,8 @@
      "word": "百万",
      "audio": "/static/audio/zh-767e.mp3",
      "wordAudio": "/static/audio/zh-767ew.mp3",
+     "sentence": "我数数能数到一百。",
+     "sentenceAudio": "/static/audio/zh-767es.mp3",
      "emoji": "/static/img/hz-767e.png"
     },
     {
@@ -2095,6 +2551,8 @@
      "word": "千秋",
      "audio": "/static/audio/zh-5343.mp3",
      "wordAudio": "/static/audio/zh-5343w.mp3",
+     "sentence": "一千比一百多得多。",
+     "sentenceAudio": "/static/audio/zh-5343s.mp3",
      "emoji": ""
     },
     {
@@ -2104,6 +2562,8 @@
      "word": "一元",
      "audio": "/static/audio/zh-5143.mp3",
      "wordAudio": "/static/audio/zh-5143w.mp3",
+     "sentence": "妈妈给了我一元钱。",
+     "sentenceAudio": "/static/audio/zh-5143s.mp3",
      "emoji": "/static/img/hz-5143.png"
     },
     {
@@ -2113,6 +2573,8 @@
      "word": "一角",
      "audio": "/static/audio/zh-89d2.mp3",
      "wordAudio": "/static/audio/zh-89d2w.mp3",
+     "sentence": "我把一角硬币存起来。",
+     "sentenceAudio": "/static/audio/zh-89d2s.mp3",
      "emoji": ""
     },
     {
@@ -2122,6 +2584,8 @@
      "word": "公斤",
      "audio": "/static/audio/zh-65a4.mp3",
      "wordAudio": "/static/audio/zh-65a4w.mp3",
+     "sentence": "一公斤等于两斤。",
+     "sentenceAudio": "/static/audio/zh-65a4s.mp3",
      "emoji": "/static/img/hz-65a4.png"
     },
     {
@@ -2131,6 +2595,8 @@
      "word": "音乐",
      "audio": "/static/audio/zh-97f3.mp3",
      "wordAudio": "/static/audio/zh-97f3w.mp3",
+     "sentence": "我喜欢听音乐。",
+     "sentenceAudio": "/static/audio/zh-97f3s.mp3",
      "emoji": "/static/img/hz-97f3.png"
     },
     {
@@ -2140,6 +2606,8 @@
      "word": "唱歌",
      "audio": "/static/audio/zh-6b4c.mp3",
      "wordAudio": "/static/audio/zh-6b4cw.mp3",
+     "sentence": "我学会了一首新歌。",
+     "sentenceAudio": "/static/audio/zh-6b4cs.mp3",
      "emoji": "/static/img/hz-6b4c.png"
     },
     {
@@ -2149,6 +2617,8 @@
      "word": "跳舞",
      "audio": "/static/audio/zh-821e.mp3",
      "wordAudio": "/static/audio/zh-821ew.mp3",
+     "sentence": "小妹妹跳舞真好看。",
+     "sentenceAudio": "/static/audio/zh-821es.mp3",
      "emoji": "/static/img/hz-821e.png"
     },
     {
@@ -2158,6 +2628,8 @@
      "word": "皮球",
      "audio": "/static/audio/zh-7403.mp3",
      "wordAudio": "/static/audio/zh-7403w.mp3",
+     "sentence": "我和爸爸拍皮球。",
+     "sentenceAudio": "/static/audio/zh-7403s.mp3",
      "emoji": "/static/img/hz-7403.png"
     },
     {
@@ -2167,6 +2639,8 @@
      "word": "排队",
      "audio": "/static/audio/zh-961f.mp3",
      "wordAudio": "/static/audio/zh-961fw.mp3",
+     "sentence": "排队喝水不推挤。",
+     "sentenceAudio": "/static/audio/zh-961fs.mp3",
      "emoji": ""
     },
     {
@@ -2176,6 +2650,8 @@
      "word": "比赛",
      "audio": "/static/audio/zh-8d5b.mp3",
      "wordAudio": "/static/audio/zh-8d5bw.mp3",
+     "sentence": "跑步比赛我得了第一。",
+     "sentenceAudio": "/static/audio/zh-8d5bs.mp3",
      "emoji": "/static/img/hz-8d5b.png"
     },
     {
@@ -2185,6 +2661,8 @@
      "word": "运动",
      "audio": "/static/audio/zh-8fd0.mp3",
      "wordAudio": "/static/audio/zh-8fd0w.mp3",
+     "sentence": "多运动身体棒。",
+     "sentenceAudio": "/static/audio/zh-8fd0s.mp3",
      "emoji": "/static/img/hz-8fd0.png"
     },
     {
@@ -2194,6 +2672,8 @@
      "word": "动手",
      "audio": "/static/audio/zh-52a8.mp3",
      "wordAudio": "/static/audio/zh-52a8w.mp3",
+     "sentence": "我爱动手做手工。",
+     "sentenceAudio": "/static/audio/zh-52a8s.mp3",
      "emoji": ""
     },
     {
@@ -2203,6 +2683,8 @@
      "word": "亚洲",
      "audio": "/static/audio/zh-6d32.mp3",
      "wordAudio": "/static/audio/zh-6d32w.mp3",
+     "sentence": "亚洲是最大的洲。",
+     "sentenceAudio": "/static/audio/zh-6d32s.mp3",
      "emoji": "/static/img/hz-6d32.png"
     },
     {
@@ -2212,6 +2694,8 @@
      "word": "陆地",
      "audio": "/static/audio/zh-9646.mp3",
      "wordAudio": "/static/audio/zh-9646w.mp3",
+     "sentence": "大象是最大的陆地动物。",
+     "sentenceAudio": "/static/audio/zh-9646s.mp3",
      "emoji": "/static/img/hz-9646.png"
     },
     {
@@ -2221,6 +2705,8 @@
      "word": "山谷",
      "audio": "/static/audio/zh-8c37.mp3",
      "wordAudio": "/static/audio/zh-8c37w.mp3",
+     "sentence": "山谷里有回声。",
+     "sentenceAudio": "/static/audio/zh-8c37s.mp3",
      "emoji": ""
     },
     {
@@ -2230,6 +2716,8 @@
      "word": "力气",
      "audio": "/static/audio/zh-529b.mp3",
      "wordAudio": "/static/audio/zh-529bw.mp3",
+     "sentence": "大象的力气真大。",
+     "sentenceAudio": "/static/audio/zh-529bs.mp3",
      "emoji": "/static/img/hz-529b.png"
     },
     {
@@ -2239,6 +2727,8 @@
      "word": "霜降",
      "audio": "/static/audio/zh-971c.mp3",
      "wordAudio": "/static/audio/zh-971cw.mp3",
+     "sentence": "冬天窗户上有霜花。",
+     "sentenceAudio": "/static/audio/zh-971cs.mp3",
      "emoji": "/static/img/hz-971c.png"
     },
     {
@@ -2248,6 +2738,8 @@
      "word": "露水",
      "audio": "/static/audio/zh-9732.mp3",
      "wordAudio": "/static/audio/zh-9732w.mp3",
+     "sentence": "草叶上挂着露珠。",
+     "sentenceAudio": "/static/audio/zh-9732s.mp3",
      "emoji": "/static/img/hz-9732.png"
     },
     {
@@ -2257,6 +2749,8 @@
      "word": "打雷",
      "audio": "/static/audio/zh-96f7.mp3",
      "wordAudio": "/static/audio/zh-96f7w.mp3",
+     "sentence": "打雷了快回家。",
+     "sentenceAudio": "/static/audio/zh-96f7s.mp3",
      "emoji": "/static/img/hz-96f7.png"
     },
     {
@@ -2266,6 +2760,8 @@
      "word": "清晨",
      "audio": "/static/audio/zh-6668.mp3",
      "wordAudio": "/static/audio/zh-6668w.mp3",
+     "sentence": "清晨鸟儿喳喳叫。",
+     "sentenceAudio": "/static/audio/zh-6668s.mp3",
      "emoji": "/static/img/hz-6668.png"
     },
     {
@@ -2275,6 +2771,8 @@
      "word": "夜晚",
      "audio": "/static/audio/zh-591c.mp3",
      "wordAudio": "/static/audio/zh-591cw.mp3",
+     "sentence": "夜晚的星星数不清。",
+     "sentenceAudio": "/static/audio/zh-591cs.mp3",
      "emoji": "/static/img/hz-591c.png"
     },
     {
@@ -2284,6 +2782,8 @@
      "word": "军人",
      "audio": "/static/audio/zh-519b.mp3",
      "wordAudio": "/static/audio/zh-519bw.mp3",
+     "sentence": "解放军叔叔站得真直。",
+     "sentenceAudio": "/static/audio/zh-519bs.mp3",
      "emoji": "/static/img/hz-519b.png"
     },
     {
@@ -2293,6 +2793,8 @@
      "word": "警察",
      "audio": "/static/audio/zh-8b66.mp3",
      "wordAudio": "/static/audio/zh-8b66w.mp3",
+     "sentence": "警察叔叔指挥交通。",
+     "sentenceAudio": "/static/audio/zh-8b66s.mp3",
      "emoji": "/static/img/hz-8b66.png"
     },
     {
@@ -2302,6 +2804,8 @@
      "word": "农民",
      "audio": "/static/audio/zh-519c.mp3",
      "wordAudio": "/static/audio/zh-519cw.mp3",
+     "sentence": "农民伯伯在田里干活。",
+     "sentenceAudio": "/static/audio/zh-519cs.mp3",
      "emoji": "/static/img/hz-519c.png"
     },
     {
@@ -2311,6 +2815,8 @@
      "word": "工人",
      "audio": "/static/audio/zh-5de5.mp3",
      "wordAudio": "/static/audio/zh-5de5w.mp3",
+     "sentence": "工人叔叔在盖高楼。",
+     "sentenceAudio": "/static/audio/zh-5de5s.mp3",
      "emoji": "/static/img/hz-5de5.png"
     },
     {
@@ -2320,6 +2826,8 @@
      "word": "商场",
      "audio": "/static/audio/zh-5546.mp3",
      "wordAudio": "/static/audio/zh-5546w.mp3",
+     "sentence": "我和妈妈逛商场。",
+     "sentenceAudio": "/static/audio/zh-5546s.mp3",
      "emoji": "/static/img/hz-5546.png"
     },
     {
@@ -2329,6 +2837,8 @@
      "word": "礼貌",
      "audio": "/static/audio/zh-793c.mp3",
      "wordAudio": "/static/audio/zh-793cw.mp3",
+     "sentence": "见面问好有礼貌。",
+     "sentenceAudio": "/static/audio/zh-793cs.mp3",
      "emoji": "/static/img/hz-793c.png"
     },
     {
@@ -2338,6 +2848,8 @@
      "word": "让座",
      "audio": "/static/audio/zh-8ba9.mp3",
      "wordAudio": "/static/audio/zh-8ba9w.mp3",
+     "sentence": "公交车上我让座。",
+     "sentenceAudio": "/static/audio/zh-8ba9s.mp3",
      "emoji": "/static/img/hz-8ba9.png"
     },
     {
@@ -2347,6 +2859,8 @@
      "word": "勇敢",
      "audio": "/static/audio/zh-52c7.mp3",
      "wordAudio": "/static/audio/zh-52c7w.mp3",
+     "sentence": "我是个勇敢的孩子。",
+     "sentenceAudio": "/static/audio/zh-52c7s.mp3",
      "emoji": "/static/img/hz-52c7.png"
     },
     {
@@ -2356,6 +2870,8 @@
      "word": "敢于",
      "audio": "/static/audio/zh-6562.mp3",
      "wordAudio": "/static/audio/zh-6562w.mp3",
+     "sentence": "我敢举手发言了。",
+     "sentenceAudio": "/static/audio/zh-6562s.mp3",
      "emoji": ""
     },
     {
@@ -2365,6 +2881,8 @@
      "word": "诚实",
      "audio": "/static/audio/zh-8bda.mp3",
      "wordAudio": "/static/audio/zh-8bdaw.mp3",
+     "sentence": "诚实的孩子人人夸。",
+     "sentenceAudio": "/static/audio/zh-8bdas.mp3",
      "emoji": ""
     },
     {
@@ -2374,6 +2892,8 @@
      "word": "惊喜",
      "audio": "/static/audio/zh-60ca.mp3",
      "wordAudio": "/static/audio/zh-60caw.mp3",
+     "sentence": "妈妈给了我一个惊喜。",
+     "sentenceAudio": "/static/audio/zh-60cas.mp3",
      "emoji": "/static/img/hz-60ca.png"
     },
     {
@@ -2383,6 +2903,8 @@
      "word": "欢喜",
      "audio": "/static/audio/zh-559c.mp3",
      "wordAudio": "/static/audio/zh-559cw.mp3",
+     "sentence": "我喜欢看书。",
+     "sentenceAudio": "/static/audio/zh-559cs.mp3",
      "emoji": "/static/img/hz-559c.png"
     },
     {
@@ -2392,6 +2914,8 @@
      "word": "提问",
      "audio": "/static/audio/zh-63d0.mp3",
      "wordAudio": "/static/audio/zh-63d0w.mp3",
+     "sentence": "老师提问我举手。",
+     "sentenceAudio": "/static/audio/zh-63d0s.mp3",
      "emoji": ""
     },
     {
@@ -2401,6 +2925,8 @@
      "word": "搬家",
      "audio": "/static/audio/zh-642c.mp3",
      "wordAudio": "/static/audio/zh-642cw.mp3",
+     "sentence": "我帮爷爷搬花盆。",
+     "sentenceAudio": "/static/audio/zh-642cs.mp3",
      "emoji": "/static/img/hz-642c.png"
     },
     {
@@ -2410,6 +2936,8 @@
      "word": "挑选",
      "audio": "/static/audio/zh-6311.mp3",
      "wordAudio": "/static/audio/zh-6311w.mp3",
+     "sentence": "挑一个最大的苹果。",
+     "sentenceAudio": "/static/audio/zh-6311s.mp3",
      "emoji": ""
     },
     {
@@ -2419,6 +2947,8 @@
      "word": "抬头",
      "audio": "/static/audio/zh-62ac.mp3",
      "wordAudio": "/static/audio/zh-62acw.mp3",
+     "sentence": "抬头就能看到蓝天。",
+     "sentenceAudio": "/static/audio/zh-62acs.mp3",
      "emoji": ""
     },
     {
@@ -2428,6 +2958,8 @@
      "word": "接住",
      "audio": "/static/audio/zh-63a5.mp3",
      "wordAudio": "/static/audio/zh-63a5w.mp3",
+     "sentence": "我稳稳接住了球。",
+     "sentenceAudio": "/static/audio/zh-63a5s.mp3",
      "emoji": "/static/img/hz-63a5.png"
     },
     {
@@ -2437,6 +2969,8 @@
      "word": "送货",
      "audio": "/static/audio/zh-9001.mp3",
      "wordAudio": "/static/audio/zh-9001w.mp3",
+     "sentence": "快递员送货到家。",
+     "sentenceAudio": "/static/audio/zh-9001s.mp3",
      "emoji": "/static/img/hz-9001.png"
     },
     {
@@ -2446,6 +2980,8 @@
      "word": "顽皮",
      "audio": "/static/audio/zh-987d.mp3",
      "wordAudio": "/static/audio/zh-987dw.mp3",
+     "sentence": "顽皮的小猴子荡秋千。",
+     "sentenceAudio": "/static/audio/zh-987ds.mp3",
      "emoji": "/static/img/hz-987d.png"
     },
     {
@@ -2455,6 +2991,8 @@
      "word": "顽皮",
      "audio": "/static/audio/zh-76ae.mp3",
      "wordAudio": "/static/audio/zh-76aew.mp3",
+     "sentence": "芒果要削皮才能吃。",
+     "sentenceAudio": "/static/audio/zh-76aes.mp3",
      "emoji": "/static/img/hz-76ae.png"
     },
     {
@@ -2464,6 +3002,8 @@
      "word": "勤劳",
      "audio": "/static/audio/zh-52e4.mp3",
      "wordAudio": "/static/audio/zh-52e4w.mp3",
+     "sentence": "小蜜蜂真勤劳。",
+     "sentenceAudio": "/static/audio/zh-52e4s.mp3",
      "emoji": "/static/img/hz-52e4.png"
     },
     {
@@ -2473,6 +3013,8 @@
      "word": "劳动",
      "audio": "/static/audio/zh-52b3.mp3",
      "wordAudio": "/static/audio/zh-52b3w.mp3",
+     "sentence": "爱劳动的孩子最棒。",
+     "sentenceAudio": "/static/audio/zh-52b3s.mp3",
      "emoji": "/static/img/hz-52b3.png"
     },
     {
@@ -2482,6 +3024,8 @@
      "word": "温度",
      "audio": "/static/audio/zh-5ea6.mp3",
      "wordAudio": "/static/audio/zh-5ea6w.mp3",
+     "sentence": "今天的温度刚刚好。",
+     "sentenceAudio": "/static/audio/zh-5ea6s.mp3",
      "emoji": "/static/img/hz-5ea6.png"
     },
     {
@@ -2491,6 +3035,8 @@
      "word": "秒针",
      "audio": "/static/audio/zh-79d2.mp3",
      "wordAudio": "/static/audio/zh-79d2w.mp3",
+     "sentence": "秒针滴答滴答跑。",
+     "sentenceAudio": "/static/audio/zh-79d2s.mp3",
      "emoji": "/static/img/hz-79d2.png"
     },
     {
@@ -2500,6 +3046,8 @@
      "word": "被子",
      "audio": "/static/audio/zh-88ab.mp3",
      "wordAudio": "/static/audio/zh-88abw.mp3",
+     "sentence": "睡觉要盖好被子。",
+     "sentenceAudio": "/static/audio/zh-88abs.mp3",
      "emoji": ""
     },
     {
@@ -2509,6 +3057,8 @@
      "word": "把手",
      "audio": "/static/audio/zh-628a.mp3",
      "wordAudio": "/static/audio/zh-628aw.mp3",
+     "sentence": "我把玩具收拾好了。",
+     "sentenceAudio": "/static/audio/zh-628as.mp3",
      "emoji": ""
     },
     {
@@ -2518,6 +3068,8 @@
      "word": "邻居",
      "audio": "/static/audio/zh-90bb.mp3",
      "wordAudio": "/static/audio/zh-90bbw.mp3",
+     "sentence": "邻居阿姨送来热饺子。",
+     "sentenceAudio": "/static/audio/zh-90bbs.mp3",
      "emoji": "/static/img/hz-90bb.png"
     },
     {
@@ -2527,6 +3079,8 @@
      "word": "居住",
      "audio": "/static/audio/zh-5c45.mp3",
      "wordAudio": "/static/audio/zh-5c45w.mp3",
+     "sentence": "鸟儿居住在大树上。",
+     "sentenceAudio": "/static/audio/zh-5c45s.mp3",
      "emoji": "/static/img/hz-5c45.png"
     },
     {
@@ -2536,6 +3090,8 @@
      "word": "国家",
      "audio": "/static/audio/zh-56fd.mp3",
      "wordAudio": "/static/audio/zh-56fdw.mp3",
+     "sentence": "我爱我的国家。",
+     "sentenceAudio": "/static/audio/zh-56fds.mp3",
      "emoji": "/static/img/hz-56fd.png"
     },
     {
@@ -2545,6 +3101,8 @@
      "word": "国旗",
      "audio": "/static/audio/zh-65d7.mp3",
      "wordAudio": "/static/audio/zh-65d7w.mp3",
+     "sentence": "升国旗时要立正。",
+     "sentenceAudio": "/static/audio/zh-65d7s.mp3",
      "emoji": "/static/img/hz-65d7.png"
     },
     {
@@ -2554,6 +3112,8 @@
      "word": "庆祝",
      "audio": "/static/audio/zh-5e86.mp3",
      "wordAudio": "/static/audio/zh-5e86w.mp3",
+     "sentence": "全班一起庆祝六一。",
+     "sentenceAudio": "/static/audio/zh-5e86s.mp3",
      "emoji": "/static/img/hz-5e86.png"
     },
     {
@@ -2563,6 +3123,8 @@
      "word": "祝福",
      "audio": "/static/audio/zh-795d.mp3",
      "wordAudio": "/static/audio/zh-795dw.mp3",
+     "sentence": "祝你生日快乐。",
+     "sentenceAudio": "/static/audio/zh-795ds.mp3",
      "emoji": "/static/img/hz-795d.png"
     },
     {
@@ -2572,6 +3134,8 @@
      "word": "贺卡",
      "audio": "/static/audio/zh-8d3a.mp3",
      "wordAudio": "/static/audio/zh-8d3aw.mp3",
+     "sentence": "我亲手做了一张贺卡。",
+     "sentenceAudio": "/static/audio/zh-8d3as.mp3",
      "emoji": "/static/img/hz-8d3a.png"
     },
     {
@@ -2581,6 +3145,8 @@
      "word": "拳头",
      "audio": "/static/audio/zh-62f3.mp3",
      "wordAudio": "/static/audio/zh-62f3w.mp3",
+     "sentence": "握紧拳头，为自己加油。",
+     "sentenceAudio": "/static/audio/zh-62f3s.mp3",
      "emoji": "/static/img/hz-62f3.png"
     },
     {
@@ -2590,6 +3156,8 @@
      "word": "手掌",
      "audio": "/static/audio/zh-638c.mp3",
      "wordAudio": "/static/audio/zh-638cw.mp3",
+     "sentence": "妈妈的手掌很温暖。",
+     "sentenceAudio": "/static/audio/zh-638cs.mp3",
      "emoji": "/static/img/hz-638c.png"
     },
     {
@@ -2599,6 +3167,8 @@
      "word": "弹琴",
      "audio": "/static/audio/zh-7434.mp3",
      "wordAudio": "/static/audio/zh-7434w.mp3",
+     "sentence": "我每天练二十分钟琴。",
+     "sentenceAudio": "/static/audio/zh-7434s.mp3",
      "emoji": "/static/img/hz-7434.png"
     },
     {
@@ -2608,6 +3178,8 @@
      "word": "下棋",
      "audio": "/static/audio/zh-68cb.mp3",
      "wordAudio": "/static/audio/zh-68cbw.mp3",
+     "sentence": "我和爷爷下象棋。",
+     "sentenceAudio": "/static/audio/zh-68cbs.mp3",
      "emoji": "/static/img/hz-68cb.png"
     },
     {
@@ -2617,6 +3189,8 @@
      "word": "墨水",
      "audio": "/static/audio/zh-58a8.mp3",
      "wordAudio": "/static/audio/zh-58a8w.mp3",
+     "sentence": "写毛笔字要蘸墨水。",
+     "sentenceAudio": "/static/audio/zh-58a8s.mp3",
      "emoji": "/static/img/hz-58a8.png"
     },
     {
@@ -2626,6 +3200,8 @@
      "word": "砚台",
      "audio": "/static/audio/zh-781a.mp3",
      "wordAudio": "/static/audio/zh-781aw.mp3",
+     "sentence": "砚台是磨墨的文具。",
+     "sentenceAudio": "/static/audio/zh-781as.mp3",
      "emoji": ""
     },
     {
@@ -2635,6 +3211,8 @@
      "word": "古诗",
      "audio": "/static/audio/zh-8bd7.mp3",
      "wordAudio": "/static/audio/zh-8bd7w.mp3",
+     "sentence": "我会背三首古诗。",
+     "sentenceAudio": "/static/audio/zh-8bd7s.mp3",
      "emoji": "/static/img/hz-8bd7.png"
     },
     {
@@ -2644,6 +3222,8 @@
      "word": "聪明",
      "audio": "/static/audio/zh-806a.mp3",
      "wordAudio": "/static/audio/zh-806aw.mp3",
+     "sentence": "小猴子真聪明。",
+     "sentenceAudio": "/static/audio/zh-806as.mp3",
      "emoji": ""
     },
     {
@@ -2653,6 +3233,8 @@
      "word": "智力",
      "audio": "/static/audio/zh-667a.mp3",
      "wordAudio": "/static/audio/zh-667aw.mp3",
+     "sentence": "拼图锻炼我的智力。",
+     "sentenceAudio": "/static/audio/zh-667as.mp3",
      "emoji": "/static/img/hz-667a.png"
     },
     {
@@ -2662,6 +3244,8 @@
      "word": "智慧",
      "audio": "/static/audio/zh-6167.mp3",
      "wordAudio": "/static/audio/zh-6167w.mp3",
+     "sentence": "动脑筋的人最有智慧。",
+     "sentenceAudio": "/static/audio/zh-6167s.mp3",
      "emoji": "/static/img/hz-6167.png"
     },
     {
@@ -2671,6 +3255,8 @@
      "word": "善良",
      "audio": "/static/audio/zh-826f.mp3",
      "wordAudio": "/static/audio/zh-826fw.mp3",
+     "sentence": "做个善良的好孩子。",
+     "sentenceAudio": "/static/audio/zh-826fs.mp3",
      "emoji": "/static/img/hz-826f.png"
     },
     {
@@ -2680,6 +3266,8 @@
      "word": "友善",
      "audio": "/static/audio/zh-5584.mp3",
      "wordAudio": "/static/audio/zh-5584w.mp3",
+     "sentence": "对小伙伴要友善。",
+     "sentenceAudio": "/static/audio/zh-5584s.mp3",
      "emoji": "/static/img/hz-5584.png"
     },
     {
@@ -2689,6 +3277,8 @@
      "word": "信心",
      "audio": "/static/audio/zh-4fe1.mp3",
      "wordAudio": "/static/audio/zh-4fe1w.mp3",
+     "sentence": "有信心就能学会。",
+     "sentenceAudio": "/static/audio/zh-4fe1s.mp3",
      "emoji": "/static/img/hz-4fe1.png"
     },
     {
@@ -2698,6 +3288,8 @@
      "word": "想念",
      "audio": "/static/audio/zh-5ff5.mp3",
      "wordAudio": "/static/audio/zh-5ff5w.mp3",
+     "sentence": "我想念远方的奶奶。",
+     "sentenceAudio": "/static/audio/zh-5ff5s.mp3",
      "emoji": "/static/img/hz-5ff5.png"
     },
     {
@@ -2707,6 +3299,8 @@
      "word": "感激",
      "audio": "/static/audio/zh-6fc0.mp3",
      "wordAudio": "/static/audio/zh-6fc0w.mp3",
+     "sentence": "我很感激老师的帮助。",
+     "sentenceAudio": "/static/audio/zh-6fc0s.mp3",
      "emoji": ""
     }
    ]

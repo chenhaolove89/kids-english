@@ -1,0 +1,27 @@
+{
+ "子": {
+  "pinyin": "zǐ",
+  "sub": "紫",
+  "evidence": 34
+ },
+ "喝": {
+  "pinyin": "hē",
+  "sub": null,
+  "note": "候选实证不足:[(2, '诃'), (1, '嗬')]"
+ },
+ "教": {
+  "pinyin": "jiāo",
+  "sub": "交",
+  "evidence": 122
+ },
+ "干": {
+  "pinyin": "gān",
+  "sub": "甘",
+  "evidence": 52
+ },
+ "脏": {
+  "pinyin": "zāng",
+  "sub": "赃",
+  "evidence": 12
+ }
+}

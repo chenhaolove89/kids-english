@@ -18,5 +18,8 @@
   },
   "zhWords": {
     "skipCategories": ["alphabet", "sightwords", "wordfamilies", "digraphs", "prepositions", "conversation"]
+  },
+  "zhSentences": {
+    "levels": [1]
   }
 }
