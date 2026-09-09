@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-09T06:30:49.021Z",
+ "generatedAt": "2026-09-09T08:35:30.468Z",
  "total": 297,
  "levels": [
   {
@@ -1177,7 +1177,7 @@
      "word": "西瓜",
      "audio": "/static/audio/zh-897f.mp3",
      "wordAudio": "/static/audio/zh-897fw.mp3",
-     "sentence": "夏天我爱吃西瓜。",
+     "sentence": "太阳从西边落下。",
      "sentenceAudio": "/static/audio/zh-897fs.mp3",
      "sentenceEmoji": "/static/img/sent-897f.png",
      "emoji": "/static/img/hz-897f.png"

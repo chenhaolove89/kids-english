@@ -14,6 +14,7 @@
  *   node tools/gen-zh-azure.mjs --test         # 生成 5 个易错字样例到 .tmp-azure-test/,人工试听
  *   node tools/gen-zh-azure.mjs --chars        # 只重生成字音+例词(audio/zh-*.mp3)
  *   node tools/gen-zh-azure.mjs --words        # 只重生成词语课(audio-zh/*.mp3,与现存文件取交集)
+ *   node tools/gen-zh-azure.mjs --only zh-897fs   # 只重生成指定条目(改单条例句/字音时用,避免整批重写产生无关 diff)
  *   node tools/gen-zh-azure.mjs --all          # 全部(默认)
  *
  * 凭据:AZURE_SPEECH_KEY / AZURE_SPEECH_REGION,取自环境变量或项目根 .env.local(git 已忽略)。
@@ -38,6 +39,12 @@ const DRY_RUN = argv.has('--dry-run')
 const TEST_MODE = argv.has('--test')
 const CHARS_ONLY = argv.has('--chars')
 const WORDS_ONLY = argv.has('--words')
+// --only zh-897fs,zh-4e00w：精确重生成指定条目（改单条内容时用，避免整批重写）
+const ONLY = (() => {
+  const i = process.argv.indexOf('--only')
+  if (i < 0 || !process.argv[i + 1]) return null
+  return new Set(process.argv[i + 1].split(',').map((s) => s.trim()).filter(Boolean))
+})()
 
 // ---- 凭据 ----
 function loadCreds() {
@@ -137,7 +144,14 @@ async function main() {
   const wordIds = Object.keys(items).filter((id) => id.startsWith('zhw-') && existingWords.has(id.slice(4)))
 
   let targets
-  if (CHARS_ONLY) targets = charIds
+  if (ONLY) {
+    const missing = [...ONLY].filter((id) => !items[id])
+    if (missing.length) {
+      console.error(`--only 指定了不存在的条目: ${missing.join(', ')}`)
+      process.exit(1)
+    }
+    targets = [...ONLY]
+  } else if (CHARS_ONLY) targets = charIds
   else if (WORDS_ONLY) targets = wordIds
   else targets = [...charIds, ...wordIds]
 
