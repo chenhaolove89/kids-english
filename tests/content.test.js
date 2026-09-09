@@ -84,6 +84,11 @@ test('语文小短句课：开放级别逐字有例句音，未开放级别一�
       const abs = path.join(ROOT, 'src', h.sentenceAudio.replace(/^\//, ''))
       assert.ok(fs.existsSync(abs), `字 ${h.char} 例句音不存在: ${h.sentenceAudio}`)
       assert.ok(fs.statSync(abs).size >= 900, `字 ${h.char} 例句音过小（疑似 TTS 失败）`)
+      // 句意图画的是句子本身，缺图会让短句卡只剩文字
+      assert.ok(h.sentenceEmoji, `字 ${h.char} 缺句意图字段`)
+      const img = path.join(ROOT, 'src', h.sentenceEmoji.replace(/^\//, ''))
+      assert.ok(fs.existsSync(img), `字 ${h.char} 句意图不存在: ${h.sentenceEmoji}`)
+      assert.ok(fs.statSync(img).size >= 1000, `字 ${h.char} 句意图过小（疑似下载失败）`)
     }
   }
 })

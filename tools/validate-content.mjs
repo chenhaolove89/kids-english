@@ -158,23 +158,25 @@ for (const lv of hanzi.levels) {
 }
 
 // 语文小短句：只念例句、不混排字词的独立卡片。开放级别配置在 curriculum.zhSentences
-// （目前只开启蒙 level 1），数据源是 hanzi 每字的 sentence/sentenceAudio
-// （tools/hanzi-sentences.csv + Azure 音轨）。
+// （目前只开启蒙 level 1），数据源是 hanzi 每字的 sentence/sentenceAudio/sentenceEmoji
+// （tools/hanzi-sentences.csv + tools/hanzi-sentence-emoji.csv + Azure 音轨）。
 const sentenceLevels = new Set((source.zhSentences?.levels || []).map(Number))
 for (const lv of hanzi.levels) {
   if (!sentenceLevels.has(Number(lv.id))) continue
   const stage = mapping.zh.levelStage[String(lv.id)]
   if (!stage) { fail(`语文级别 ${lv.id} 无 stage 映射`); continue }
-  const chars = lv.chars.filter((h) => h.sentence && h.sentenceAudio)
+  const chars = lv.chars.filter((h) => h.sentence && h.sentenceAudio && h.sentenceEmoji)
   if (chars.length !== lv.chars.length) {
-    fail(`语文级别 ${lv.id} 有 ${lv.chars.length - chars.length} 个字缺例句或例句音（小短句课要求逐字齐全）`)
+    fail(`语文级别 ${lv.id} 有 ${lv.chars.length - chars.length} 个字缺例句/例句音/句意图（小短句课要求逐字齐全）`)
     continue
   }
   for (const h of chars) {
-    const abs = path.join(ROOT, 'src', h.sentenceAudio.replace(/^\//, ''))
-    if (!fs.existsSync(abs)) { fail(`字 ${h.char} 例句音不存在: ${h.sentenceAudio}（先跑 npm run gen:zh-azure）`); continue }
-    const real = fs.readdirSync(path.dirname(abs)).find((f) => f === path.basename(abs))
-    if (real === undefined) fail(`字 ${h.char} 例句音大小写不匹配: ${h.sentenceAudio}`)
+    for (const [label, p] of [['例句音', h.sentenceAudio], ['句意图', h.sentenceEmoji]]) {
+      const abs = path.join(ROOT, 'src', p.replace(/^\//, ''))
+      if (!fs.existsSync(abs)) { fail(`字 ${h.char} ${label}不存在: ${p}`); continue }
+      const real = fs.readdirSync(path.dirname(abs)).find((f) => f === path.basename(abs))
+      if (real === undefined) fail(`字 ${h.char} ${label}大小写不匹配: ${p}`)
+    }
   }
   pushLesson({
     id: `zh-sentences-l${lv.id}`,

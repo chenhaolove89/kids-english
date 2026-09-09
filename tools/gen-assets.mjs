@@ -216,6 +216,21 @@ function readHanziEmoji() {
   return map
 }
 
+// 小短句配图表（tools/hanzi-sentence-emoji.csv）：char,NotoEmoji码点。
+// 图必须画句子本身（不是目标字）——「我们一起去公园」配公园，不是配「一」的手势。
+function readHanziSentenceEmoji() {
+  const file = path.join(ROOT, 'tools/hanzi-sentence-emoji.csv')
+  if (!fs.existsSync(file)) return new Map()
+  const lines = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').trim().split(/\r?\n/).filter((l) => l.trim())
+  if (lines[0].toLowerCase().startsWith('char,')) lines.shift()
+  const map = new Map()
+  for (const l of lines) {
+    const [char, emoji] = l.split(',')
+    if (char && emoji) map.set(char.trim(), emoji.trim())
+  }
+  return map
+}
+
 // ---------- TTS ----------
 async function makeTTS(voices) {
   let lastErr
@@ -474,6 +489,7 @@ async function main() {
   const words = readCSV(path.join(ROOT, 'tools/words.csv'))
   const hanzi = readHanzi()
   const hanziEmoji = readHanziEmoji()
+  const hanziSentEmoji = readHanziSentenceEmoji()
   // 例句逐字必须齐且含目标字，缺一处就整体失败（内容零容错）
   const sentences = readHanziSentences()
   let sentenceBad = 0
@@ -483,6 +499,15 @@ async function main() {
     h.sentence = s
   }
   if (sentenceBad) { console.log(`例句表问题 ${sentenceBad} 处，先修 tools/hanzi-sentences.csv`); process.exitCode = 1; return }
+  // 小短句配图：开放级别（curriculum.zhSentences.levels）逐字必须有句意图，缺一个就失败
+  const sentenceLevels = new Set((CURRICULUM.zhSentences?.levels || []).map(String))
+  let sentImgBad = 0
+  for (const h of hanzi) {
+    const code = hanziSentEmoji.get(h.char)
+    if (code) { h.sentenceEmoji = code; continue }
+    if (sentenceLevels.has(h.level)) { console.log(`✗ 小短句缺配图映射: ${h.char}（${h.sentence}）`); sentImgBad++ }
+  }
+  if (sentImgBad) { console.log(`小短句配图表问题 ${sentImgBad} 处，先修 tools/hanzi-sentence-emoji.csv`); process.exitCode = 1; return }
   console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字\n`)
 
   // ---------- 自绘卡模式：只重画形状卡与金银心形卡，不跑 TTS、不改数据 ----------
@@ -663,6 +688,16 @@ async function main() {
       if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`hz-${h.id}(${h.char},${code})`)
     })
   }
+  // 小短句配图（句意图标，与目标字图标分开命名，互不覆盖）
+  for (const h of hanzi) {
+    if (!h.sentenceEmoji) continue
+    const out = path.join(IMG_DIR, `sent-${h.id}.png`)
+    if (!FORCE && fs.existsSync(out)) { imgSkip++; continue }
+    needImg.push(async () => {
+      const buf = await fetchEmoji(h.sentenceEmoji)
+      if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`sent-${h.id}(${h.char},${h.sentenceEmoji})`)
+    })
+  }
   for (const [id, meta] of Object.entries(CATEGORIES)) {
     const out = path.join(IMG_DIR, `cat-${id}.png`)
     if (!FORCE && fs.existsSync(out)) continue
@@ -747,6 +782,8 @@ async function main() {
       sentence: h.sentence,
       // 例句音频走 Azure 管线（tools/gen-zh-azure.mjs），不在本脚本生成
       sentenceAudio: `/static/audio/zh-${h.id}s.mp3`,
+      // 句意图标：画句子本身，与目标字图标 emoji 分开（只开放级别有）
+      sentenceEmoji: h.sentenceEmoji ? `/static/img/sent-${h.id}.png` : '',
       emoji: hanziEmoji.has(h.char) ? `/static/img/hz-${h.id}.png` : '',
     })),
   }))
@@ -768,6 +805,7 @@ async function main() {
     if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}.mp3`))) { console.log(`✗ 缺字音: ${h.char}`); bad++ }
     if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}w.mp3`))) { console.log(`✗ 缺词音: ${h.word}`); bad++ }
     if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}s.mp3`))) { console.log(`✗ 缺例句音: ${h.char}(${h.sentence})`); bad++ }
+    if (h.sentenceEmoji && !fs.existsSync(path.join(IMG_DIR, `sent-${h.id}.png`))) { console.log(`✗ 缺例句配图: ${h.char}(${h.sentence})`); bad++ }
   }
   for (let n = 0; n <= 100; n++) {
     if (!fs.existsSync(path.join(AUDIO_DIR, `n${n}.mp3`))) { console.log(`✗ 缺数字音: n${n}`); bad++ }

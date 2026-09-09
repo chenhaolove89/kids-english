@@ -42,6 +42,9 @@
           </template>
           <template v-else-if="sentencesMode">
             <view class="sent-wrap">
+              <view v-if="it.image" class="sent-img-tile">
+                <image class="sent-img" :src="it.image" mode="aspectFit" />
+              </view>
               <text class="sent-text" :style="{ color: theme.color, fontSize: sentSize(it.main) }">{{ it.main }}</text>
               <view class="sent-play">
                 <text class="sent-speaker">🔊</text>
@@ -215,10 +218,10 @@ onLoad((query) => {
     sentencesMode.value = true
     theme.value = { bg: lv.bg, color: lv.color }
     title.value = `小短句 · ${lv.zh}`
-    // 每句配目标字的图：孩子先看图猜意，再听整句，图文对应
+    // 每句配句意图（画句子本身，不是目标字）：孩子先看图猜意，再听整句，图文对应
     items.value = chars.map((h) => ({
       id: h.id, main: h.sentence, phon: '', sub: '', audio: h.sentenceAudio,
-      extraAudio: '', emoji: h.emoji || '',
+      extraAudio: '', image: h.sentenceEmoji || '', emoji: h.emoji || '',
     }))
     startAudioPreload(items.value.map((i) => i.audio))
   } else {
@@ -536,7 +539,7 @@ function goBack() {
 .word-speaker {
   font-size: 34rpx;
 }
-/* 小短句卡：整句居中大字，喇叭另起一行居中，不与文字抢视线 */
+/* 小短句卡：句意图在上、整句居中大字、喇叭居中在下，三者不抢视线 */
 .sent-wrap {
   flex: 1;
   min-height: 0;
@@ -545,9 +548,26 @@ function goBack() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 48rpx;
+  gap: 34rpx;
   padding: 0 20rpx;
   box-sizing: border-box;
+}
+/* 句意图：与识字卡图标同款白底圆角卡，视觉口径一致 */
+.sent-img-tile {
+  width: 288rpx;
+  height: 288rpx;
+  border-radius: 64rpx;
+  background: #ffffff;
+  box-shadow: 0 12rpx 26rpx rgba(120, 90, 40, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-3deg);
+  flex-shrink: 0;
+}
+.sent-img {
+  width: 216rpx;
+  height: 216rpx;
 }
 .sent-text {
   font-size: 76rpx;
@@ -563,6 +583,7 @@ function goBack() {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .sent-speaker {
   font-size: 52rpx;
