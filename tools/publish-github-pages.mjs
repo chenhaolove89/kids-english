@@ -76,6 +76,25 @@ for (const f of ['LICENSE', 'LICENSE-CONTENT.md']) {
   if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f))
 }
 
+// PWA 运行时缓存：sw.js 写在产物根（scope=站点根），index.html 注入注册。
+// 缓存代次取 contentVersion——内容批次更新后旧代整清，配合 SWR 双保险。
+// 仅注入发布产物，dev 不装 SW（避免缓存干扰开发调试）。
+const swTemplate = fs.readFileSync(path.join(ROOT, 'tools', 'sw-template.js'), 'utf8')
+const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'content', 'catalog.json'), 'utf8'))
+fs.writeFileSync(path.join(OUT, 'sw.js'), swTemplate.replaceAll('__VERSION__', 'kx-' + catalog.contentVersion))
+const indexPath = path.join(OUT, 'index.html')
+let indexHtml = fs.readFileSync(indexPath, 'utf8')
+if (!indexHtml.includes('serviceWorker')) {
+  const regScript = '<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})})}</script>'
+  const closeAt = indexHtml.lastIndexOf('</body>')
+  if (closeAt === -1) {
+    console.error('index.html 未找到 </body>，SW 注册注入失败')
+    process.exit(1)
+  }
+  indexHtml = indexHtml.slice(0, closeAt) + regScript + indexHtml.slice(closeAt)
+  fs.writeFileSync(indexPath, indexHtml)
+}
+
 // webmanifest 内的路径相对 manifest 自身（位于 static/）解析，需再退一级
 for (const f of files) {
   if (path.extname(f).toLowerCase() !== '.webmanifest') continue
