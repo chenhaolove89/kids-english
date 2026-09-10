@@ -19,7 +19,8 @@
     "build:content": "node tools/validate-content.mjs",
     "validate:content": "node tools/validate-content.mjs --check",
     "audit:assets": "node tools/audit-assets.mjs",
-    "test": "node --test \"tests/*.test.js\""
+    "test": "node --test \"tests/*.test.js\"",
+    "opt:img": "node tools/optimize-img.mjs"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-5020420260813003",
@@ -38,6 +39,7 @@
     "msedge-tts": "^2.0.7",
     "pinyin-pro": "^3.29.3",
     "pngjs": "^7.0.0",
+    "sharp": "^0.35.4",
     "vite": "5.2.8"
   }
 }
