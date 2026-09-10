@@ -310,6 +310,9 @@ const MATH_LEVELS = {
   4: { name: '乘除进阶', desc: '乘法口诀、平均分', color: '#9B5DE5', bg: '#F0E6FB', icon: '/static/img/level-4.png' },
   5: { name: '万以内加减', desc: '三位数加减、填空', color: '#12B886', bg: '#E2F6EF', icon: '/static/img/level-5.png' },
   6: { name: '小数与分数', desc: '小数加减、同分母分数', color: '#D6336C', bg: '#FBE3EC', icon: '/static/img/level-6.png' },
+  7: { name: '图形规律', desc: '看图找规律，接下一个', color: '#E8A33D', bg: '#FCF1DD', icon: '/static/img/level-7.png' },
+  8: { name: '应用题', desc: '读一读小故事，算一算', color: '#5C7CFA', bg: '#E8EDFF', icon: '/static/img/level-8.png' },
+  9: { name: '四则混合', desc: '先乘除，有括号先算', color: '#0CA678', bg: '#E0F5EC', icon: '/static/img/level-9.png' },
 }
 for (const [lv, meta] of Object.entries(MATH_LEVELS)) {
   const stage = mapping.math.levelStage[String(lv)]
@@ -338,7 +341,7 @@ for (const l of lessons) {
   if (r.kind === 'zh-level' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-sentences' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-poem' && !poemStageIds.has(r.id)) fail(`课程 ${l.id} 引用不存在的古诗阶段 ${r.id}`)
-  if (r.kind === 'math-level' && ![1, 2, 3, 4, 5, 6].includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
+  if (r.kind === 'math-level' && ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
 }
 
 // 每个 stage 至少要有一科可用，否则映射一定配错了

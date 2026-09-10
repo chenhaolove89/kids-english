@@ -70,6 +70,11 @@
           </view>
         </view>
 
+        <!-- 应用题：读一句小故事再选答案（长句用小字可换行） -->
+        <view v-else-if="q.kind === 'wordAdd' || q.kind === 'wordSub' || q.kind === 'wordMul'" class="equation-wrap">
+          <text class="word-problem">{{ q.display }}</text>
+        </view>
+
         <!-- 数字算式 / 数列 / 听音 -->
         <view v-else class="equation-wrap">
           <text v-if="q.kind === 'listen'" class="listen-icon">🔊</text>
@@ -472,6 +477,15 @@ function goBack() {
   color: #4a3f35;
   letter-spacing: 2rpx;
   white-space: nowrap;
+}
+/* 应用题题干：一句小故事，小字号可换行 */
+.word-problem {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #4a3f35;
+  line-height: 1.7;
+  text-align: left;
+  white-space: normal;
 }
 /* 数列题「10  12  ?  16」字符串最长，单独降号保证单行 */
 .equation-seq {

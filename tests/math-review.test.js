@@ -23,7 +23,7 @@ test('mathgen sig：每个关卡所有题型都有 sig，且以题型名开头',
   }
   assert.deepEqual(
     [...seenKinds].sort(),
-    ['add', 'add20', 'addBig', 'addDec', 'addFrac', 'compare', 'compareNum', 'count', 'div', 'listen', 'missing', 'missingBig', 'mul', 'sequence', 'sub', 'sub20', 'subBig', 'subDec'],
+    ['add', 'add20', 'addBig', 'addDec', 'addFrac', 'compare', 'compareNum', 'count', 'div', 'listen', 'missing', 'missingBig', 'mixed2', 'mul', 'pattern', 'sequence', 'sub', 'sub20', 'subBig', 'subDec', 'wordAdd', 'wordMul', 'wordSub'],
   )
 })
 

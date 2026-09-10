@@ -14,7 +14,7 @@
   "mapping": {
     "en": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g34", "4": "g56" }, "levelLabel": { "1": "启蒙词汇", "2": "生活词汇", "3": "拓展词汇", "4": "进阶词汇" } },
     "zh": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g34", "4": "g56" }, "levelLabel": {} },
-    "math": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g12", "4": "g34", "5": "g34", "6": "g56" }, "levelLabel": {} }
+    "math": { "levelStage": { "1": "qimeng", "2": "g12", "3": "g12", "4": "g34", "5": "g34", "6": "g56", "7": "qimeng", "8": "g34", "9": "g56" }, "levelLabel": {} }
   },
   "zhWords": {
     "skipCategories": ["alphabet", "sightwords", "wordfamilies", "digraphs", "prepositions", "conversation"]

@@ -12,6 +12,9 @@ export const MATH_LEVELS = {
   4: { id: 4, name: '乘除进阶', color: '#9B5DE5', bg: '#F0E6FB' },
   5: { id: 5, name: '万以内加减', color: '#12B886', bg: '#E2F6EF' },
   6: { id: 6, name: '小数与分数', color: '#D6336C', bg: '#FBE3EC' },
+  7: { id: 7, name: '图形规律', color: '#E8A33D', bg: '#FCF1DD' },
+  8: { id: 8, name: '应用题', color: '#5C7CFA', bg: '#E8EDFF' },
+  9: { id: 9, name: '四则混合', color: '#0CA678', bg: '#E0F5EC' },
 }
 
 const KINDS_BY_LEVEL = {
@@ -22,6 +25,10 @@ const KINDS_BY_LEVEL = {
   // 5/6 关是算式题（三位数、小数、分数都没有现成音轨），用「请选一选」当统一语音提示
   5: ['addBig', 'subBig', 'missingBig'],
   6: ['addDec', 'subDec', 'addFrac'],
+  // 7 图形规律 / 8 应用题 / 9 四则混合：同样无逐数音轨，统一走提示音
+  7: ['pattern'],
+  8: ['wordAdd', 'wordSub', 'wordMul'],
+  9: ['mixed2'],
 }
 
 // 点数/加减的物品池：挑孩子一眼就喜欢的（水果零食、玩具、动物、交通工具），
@@ -285,6 +292,72 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.seq = [A('zh-choose.mp3')]
     qz.options = fracOptions(n1 + n2, den, 4, rng)
     qz.sig = `addFrac:${n1}:${n2}:${den}`
+  } else if (kind === 'pattern') {
+    // 图形规律（启蒙）：二元循环模式接下一个，看 4 个图形找周期
+    const glyphs = ['●', '▲', '■', '★', '◆', '♥']
+    const [g1, g2] = shuffle(glyphs, rng).slice(0, 2)
+    const pattern = pickOne([[g1, g2], [g1, g1, g2], [g1, g2, g2]], rng)
+    const shown = Array.from({ length: 4 }, (_, i) => pattern[i % pattern.length])
+    qz.answer = pattern[4 % pattern.length]
+    qz.display = shown.join(' ') + '  ?'
+    qz.seq = [A('zh-choose.mp3')]
+    const distractors = shuffle(glyphs.filter((g) => g !== qz.answer), rng).slice(0, 3)
+    qz.options = shuffle([qz.answer, ...distractors], rng).map((g) => ({ id: g, label: g }))
+    qz.sig = `pattern:${pattern.join('')}`
+  } else if (kind === 'wordAdd' || kind === 'wordSub' || kind === 'wordMul') {
+    // 应用题（3-4 年级）：生活场景一步题，考读题理解
+    const NAMES = ['小明', '小红', '小刚', '小丽', '乐乐', '悦悦']
+    const THINGS = ['颗糖', '本书', '支铅笔', '个苹果', '张贴纸', '块饼干']
+    const name = pickOne(NAMES, rng)
+    const thing = pickOne(THINGS, rng)
+    let a, b, ans
+    if (kind === 'wordAdd') {
+      a = 12 + rnd(rng, 60)
+      b = 8 + rnd(rng, 40)
+      ans = a + b
+      qz.display = `${name}有 ${a} ${thing}，爸爸又买来 ${b} ${thing}，现在一共有多少${thing}？`
+    } else if (kind === 'wordSub') {
+      a = 30 + rnd(rng, 60)
+      b = 5 + rnd(rng, Math.max(1, a - 10))
+      ans = a - b
+      qz.display = `${name}有 ${a} ${thing}，送给同学 ${b} ${thing}，还剩多少${thing}？`
+    } else {
+      a = 3 + rnd(rng, 8)
+      b = 4 + rnd(rng, 8)
+      ans = a * b
+      qz.display = `每盒装 ${a} ${thing}，${b} 盒一共装多少${thing}？`
+    }
+    qz.answer = String(ans)
+    qz.seq = [A('zh-choose.mp3')]
+    qz.options = numOptions(ans, 4, rng)
+    qz.sig = `${kind}:${a}:${b}`
+  } else if (kind === 'mixed2') {
+    // 四则混合（5-6 年级）：两级运算，考运算顺序（先乘除、有括号先算）
+    const form = pickOne(['mulAdd', 'subMul', 'paren'], rng)
+    let ans
+    if (form === 'mulAdd') {
+      const a = 3 + rnd(rng, 12)
+      const b = 3 + rnd(rng, 12)
+      const c = 5 + rnd(rng, 40)
+      ans = a * b + c
+      qz.display = `${a} × ${b} + ${c} = ?`
+    } else if (form === 'subMul') {
+      const b = 2 + rnd(rng, 9)
+      const c = 3 + rnd(rng, 9)
+      const a = b * c + 10 + rnd(rng, 20)
+      ans = a - b * c
+      qz.display = `${a} − ${b} × ${c} = ?`
+    } else {
+      const a = 2 + rnd(rng, 20)
+      const b = 2 + rnd(rng, 20)
+      const c = 2 + rnd(rng, 9)
+      ans = (a + b) * c
+      qz.display = `(${a} + ${b}) × ${c} = ?`
+    }
+    qz.answer = String(ans)
+    qz.seq = [A('zh-choose.mp3')]
+    qz.options = bigOptions(ans, 4, rng)
+    qz.sig = `mixed2:${form}:${qz.display}`
   }
   return qz
 }
@@ -308,6 +381,7 @@ export function mathText(q) {
     const ask = (q.seq?.[0] || '').includes('bigger') ? '大' : '小'
     return `比大小：哪个数${ask}（${g1?.n ?? '?'} 和 ${g2?.n ?? '?'}）`
   }
+  if (kind === 'pattern') return `图形规律：下一个是 ${q.answer}`
   return q.sig || kind
 }
 

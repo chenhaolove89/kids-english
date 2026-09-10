@@ -178,3 +178,79 @@ test('isPickCorrect：答案以字符串规整比较（防 id 类型不一致）
   assert.equal(isPickCorrect({ answer: '7' }, 8), false)
   assert.equal(isPickCorrect(null, '7'), false)
 })
+
+test('新关卡 7/8/9：关卡可解析、出题结构完整、选项含答案', () => {
+  for (const lv of [7, 8, 9]) {
+    assert.ok(MATH_LEVELS[lv], `关卡 ${lv} 元信息存在`)
+    const qs = buildQuestions(lv, { rng: seededRng(lv * 13 + 5) })
+    assert.equal(qs.length, 10, `level ${lv} 应出 10 题`)
+    for (const q of qs) {
+      assert.ok(Array.isArray(q.seq) && q.seq.length > 0, '音频序列非空')
+      const ids = q.options.map((o) => o.id)
+      assert.ok(ids.includes(q.answer), `答案 ${q.answer} 在选项中（${q.display}）`)
+      assert.equal(new Set(ids).size, ids.length, '选项不重复')
+      assert.ok(q.sig, '签名存在（错题本依赖）')
+    }
+  }
+})
+
+test('图形规律：二元周期、答案可从展示序列推出、选项都是图形', () => {
+  for (let i = 0; i < 30; i++) {
+    const q = makeQuestion(7, { rng: seededRng(100 + i) })
+    assert.equal(q.kind, 'pattern')
+    const parts = q.display.split(/\s+/).filter(Boolean)
+    assert.equal(parts[parts.length - 1], '?', '末位是问号')
+    const shown = parts.slice(0, -1)
+    assert.equal(shown.length, 4, '展示 4 个图形')
+    // 周期性：答案必须等于按周期推出的下一个图形
+    const cycleLens = [2, 3]
+    const okCycle = cycleLens.some((L) => shown.every((g, idx) => g === shown[idx % L]) && q.answer === shown[4 % L])
+    assert.ok(okCycle, `周期可推导: ${q.display} 答案 ${q.answer}`)
+    for (const o of q.options) assert.match(o.label, /^[●▲■★◆♥]$/, `选项为图形: ${o.label}`)
+    assert.equal(new Set(q.options.map((o) => o.label)).size, q.options.length, '图形选项不重复')
+  }
+})
+
+test('应用题：答案与题意一致（加减乘）、无负数选项、数值域合理', () => {
+  for (let i = 0; i < 40; i++) {
+    const q = makeQuestion(8, { rng: seededRng(300 + i) })
+    assert.ok(['wordAdd', 'wordSub', 'wordMul'].includes(q.kind), `题型 ${q.kind}`)
+    assert.ok(q.display.endsWith('？'), `题干是完整问句: ${q.display}`)
+    const ans = Number(q.answer)
+    assert.ok(ans > 0 && ans <= 200, `答案在合理范围: ${ans}`)
+    for (const o of q.options) assert.ok(Number(o.label) > 0, '无 0/负数选项')
+    // 乘法题的答案必须等于某盒数×盒装数（题干两个数相乘）
+    if (q.kind === 'wordMul') {
+      const m = q.display.match(/每盒装 (\d+) .*?(\d+) 盒/)
+      assert.ok(m, `乘法题干格式: ${q.display}`)
+      assert.equal(ans, Number(m[1]) * Number(m[2]), '乘法答案正确')
+    }
+    if (q.kind === 'wordAdd') {
+      const m = q.display.match(/有 (\d+) .*?买来 (\d+) /)
+      assert.ok(m, `加法题干格式: ${q.display}`)
+      assert.equal(ans, Number(m[1]) + Number(m[2]), '加法答案正确')
+    }
+    if (q.kind === 'wordSub') {
+      const m = q.display.match(/有 (\d+) .*?送给同学 (\d+) /)
+      assert.ok(m, `减法题干格式: ${q.display}`)
+      assert.equal(ans, Number(m[1]) - Number(m[2]), '减法答案正确且不为负')
+    }
+  }
+})
+
+test('四则混合：按运算顺序求值（先乘除/括号优先）', () => {
+  for (let i = 0; i < 40; i++) {
+    const q = makeQuestion(9, { rng: seededRng(900 + i) })
+    assert.equal(q.kind, 'mixed2')
+    let expect
+    let m = q.display.match(/^(\d+) × (\d+) \+ (\d+) = \?$/)
+    if (m) expect = Number(m[1]) * Number(m[2]) + Number(m[3])
+    m = q.display.match(/^(\d+) − (\d+) × (\d+) = \?$/)
+    if (m) expect = Number(m[1]) - Number(m[2]) * Number(m[3])
+    m = q.display.match(/^\((\d+) \+ (\d+)\) × (\d+) = \?$/)
+    if (m) expect = (Number(m[1]) + Number(m[2])) * Number(m[3])
+    assert.ok(expect !== undefined, `算式格式可解析: ${q.display}`)
+    assert.equal(String(expect), q.answer, `按运算顺序求值: ${q.display}`)
+    assert.ok(Number(q.answer) > 0, '结果为正')
+  }
+})

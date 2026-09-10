@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-09T08:35:30.468Z",
-  "contentVersion": "b92d6f4017",
+  "contentVersion": "efc67e990c",
   "stages": [
     {
       "id": "qimeng",
@@ -256,6 +256,26 @@
       },
       "skillIds": [
         "math-l1"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l7",
+      "subject": "math",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "图形规律",
+      "subtitle": "看图找规律，接下一个",
+      "icon": "/static/img/level-7.png",
+      "color": "#E8A33D",
+      "bg": "#FCF1DD",
+      "sort": "l7",
+      "ref": {
+        "kind": "math-level",
+        "id": 7
+      },
+      "skillIds": [
+        "math-l7"
       ]
     },
     {
@@ -1640,6 +1660,26 @@
     },
     {
       "status": "available",
+      "id": "math-practice-l8",
+      "subject": "math",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "应用题",
+      "subtitle": "读一读小故事，算一算",
+      "icon": "/static/img/level-8.png",
+      "color": "#5C7CFA",
+      "bg": "#E8EDFF",
+      "sort": "l8",
+      "ref": {
+        "kind": "math-level",
+        "id": 8
+      },
+      "skillIds": [
+        "math-l8"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-learn-l3",
       "subject": "zh",
       "stage": "g34",
@@ -2636,6 +2676,26 @@
       },
       "skillIds": [
         "math-l6"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l9",
+      "subject": "math",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "四则混合",
+      "subtitle": "先乘除，有括号先算",
+      "icon": "/static/img/level-9.png",
+      "color": "#0CA678",
+      "bg": "#E0F5EC",
+      "sort": "l9",
+      "ref": {
+        "kind": "math-level",
+        "id": 9
+      },
+      "skillIds": [
+        "math-l9"
       ]
     },
     {
