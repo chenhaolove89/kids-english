@@ -95,6 +95,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
 import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady } from '@/platform/audio.js'
+import { assetUrl } from '@/platform/assets.js'
 import { createThrottle } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
@@ -183,7 +184,7 @@ onLoad((query) => {
     items.value = c.words.map((w) => ({
       id: w.id, main: w.en, phon: w.phonetic, sub: w.zh, image: w.image, audio: w.audio,
       // 字符串拼接而非反引号模板：反引号路径打包后原样保留，发布脚本改写不到 → 线上 404
-      zhAudio: isQimeng ? "/static/audio-zh/" + w.id + ".mp3" : '',
+      zhAudio: isQimeng ? assetUrl("/static/audio-zh/" + w.id + ".mp3") : '',
     }))
     startAudioPreload(items.value.flatMap((i) => [accentEnSrc(i.audio), i.zhAudio]))
   } else if (query.cat) {

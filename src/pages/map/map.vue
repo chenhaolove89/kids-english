@@ -102,6 +102,7 @@
 import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getStorage } from '@/platform/storage.js'
+import { assetUrl } from '@/platform/assets.js'
 import { updatePrefs } from '@/content/lowAge.js'
 import { allowNavigate } from '@/platform/nav.js'
 import { getProgressService } from '@/services/progress.js'
@@ -109,9 +110,9 @@ import { getReviewService } from '@/services/review.js'
 import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES } from '@/services/curriculum.js'
 
 const explore = [
-  { id: 'en', zh: '学英语', color: '#FF8C42', bg: '#FFF3E4', icon: '/static/img/subject-english.png' },
-  { id: 'zh', zh: '学语文', color: '#E4573D', bg: '#FDEBE7', icon: '/static/img/subject-chinese.png' },
-  { id: 'math', zh: '学数学', color: '#4D96FF', bg: '#E9F2FF', icon: '/static/img/subject-math.png' },
+  { id: 'en', zh: '学英语', color: '#FF8C42', bg: '#FFF3E4', icon: assetUrl('/static/img/subject-english.png') },
+  { id: 'zh', zh: '学语文', color: '#E4573D', bg: '#FDEBE7', icon: assetUrl('/static/img/subject-chinese.png') },
+  { id: 'math', zh: '学数学', color: '#4D96FF', bg: '#E9F2FF', icon: assetUrl('/static/img/subject-math.png') },
 ]
 
 const stages = STAGES

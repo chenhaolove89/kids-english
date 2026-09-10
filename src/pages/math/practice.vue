@@ -112,6 +112,7 @@
 import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { playSeq, preload, stopSeq } from '@/platform/audio.js'
+import { assetUrl } from '@/platform/assets.js'
 import { getLesson } from '@/content/catalog.js'
 import { buildQuestions, normalizeMathLevel, mathText, mathItemId, MATH_LEVELS } from '@/domain/mathgen.js'
 import { isPickCorrect } from '@/domain/judge.js'
@@ -149,7 +150,7 @@ const starsNote = computed(() =>
 )
 
 onLoad((query) => {
-  preload(['/static/audio/zh-great.mp3', '/static/audio/zh-try.mp3', '/static/audio/zh-awesome.mp3'])
+  preload([assetUrl('/static/audio/zh-great.mp3'), assetUrl('/static/audio/zh-try.mp3'), assetUrl('/static/audio/zh-awesome.mp3')])
 
   // 错题重练模式：题目来自错题本到期条目（存的是答错那道的整题快照），原题重放
   if (query.review === '1') {
@@ -210,7 +211,7 @@ function currentSnapshot() {
 }
 
 function startFresh() {
-  questions.value = buildQuestions(level.value.id)
+  questions.value = buildQuestions(level.value.id, { audioBase: assetUrl('/static/audio') })
   qIdx.value = 0
   score.value = 0
   firstCorrect.value = 0
@@ -257,9 +258,9 @@ function pickById(id) {
     score.value++
     if (firstTry) firstCorrect.value++
     // 字符串拼接而非反引号模板：反引号路径发布脚本改写不到 → GitHub Pages 上 404
-    playSeq(["/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3"], nextQuestion)
+    playSeq([assetUrl("/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3")], nextQuestion)
   } else {
-    playSeq(['/static/audio/zh-try.mp3'])
+    playSeq([assetUrl('/static/audio/zh-try.mp3')])
     setTimeout(() => {
       flash.value = ''
     }, 900)

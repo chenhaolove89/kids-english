@@ -43,6 +43,7 @@ import { ref } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import HanziWriter from 'hanzi-writer'
 import { play, preload } from '@/platform/audio.js'
+import { assetUrl } from '@/platform/assets.js'
 
 const char = ref('')
 const pinyin = ref('')
@@ -89,8 +90,8 @@ function setupWriter() {
     leniency: 1.3,
     showHintAfterMisses: 2,
     charDataLoader: (c, onComplete, onError) => {
-      // 字符串拼接而非反引号模板：发布脚本的 /static/ → ./static/ 改写只认引号字符串
-      fetch("/static/hanzi-data/" + cp + ".json")
+      // 引号字符串拼接而非反引号模板：发布脚本的 /static/ → ./static/ 改写只认引号字符串
+      fetch(assetUrl("/static/hanzi-data/") + cp + ".json")
         .then((r) => {
           if (!r.ok) throw new Error('no data')
           return r.json()
@@ -132,7 +133,7 @@ function startQuiz() {
     onComplete: () => {
       done.value = true
       hintText.value = '太棒了，再写一遍巩固一下！'
-      play('/static/audio/zh-great.mp3')
+      play(assetUrl('/static/audio/zh-great.mp3'))
     },
   })
 }

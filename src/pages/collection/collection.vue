@@ -2,7 +2,7 @@
   <view class="page">
     <view class="header">
       <view class="mascot-wrap">
-        <image class="mascot" src="/static/img/star.png" mode="aspectFit" />
+        <image class="mascot" :src="assetUrl('/static/img/star.png')" mode="aspectFit" />
       </view>
       <view class="head-text">
         <text class="title">我的百宝箱</text>
@@ -234,6 +234,7 @@ import { LESSONS } from '@/content/catalog.js'
 import { isCategoryHidden, updatePrefs } from '@/content/lowAge.js'
 import { getStorage } from '@/platform/storage.js'
 import { playEn, play } from '@/platform/audio.js'
+import { assetUrl } from '@/platform/assets.js'
 import { starsText as starsBar } from '@/domain/progress.js'
 import { progressOf, isCategoryComplete, isMathTrophy, celebration } from '@/domain/collection.js'
 import { getCollectionService } from '@/services/collection.js'

@@ -70,6 +70,27 @@ test('防回归：源码不得用反引号模板字符串拼 /static/ 路径（�
   assert.deepEqual(offenders, [], `以下文件存在反引号拼的 /static/ 路径: ${offenders.join(', ')}`)
 })
 
+test('防回归：页面运行时路径必须走 assetUrl（小程序 CDN 化的唯一切换点）', () => {
+  // 页面里引号字符串形态的 /static/ 若不经 assetUrl 包裹，将来切 CDN 前缀时页面要逐个再改。
+  // 数据 JSON / domain 层默认参数（mathgen audioBase）/ 发布脚本自身不在扫描范围。
+  const offenders = []
+  const scan = (dir) => {
+    for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, f.name)
+      if (f.isDirectory()) { scan(p); continue }
+      if (!/\.vue$/.test(f.name)) continue
+      const lines = fs.readFileSync(p, 'utf8').split('\n')
+      lines.forEach((line, i) => {
+        if (/['"]\/?\.?\/?static\//.test(line) && !/assetUrl\(/.test(line)) {
+          offenders.push(`${path.relative(ROOT, p)}:${i + 1}: ${line.trim().slice(0, 80)}`)
+        }
+      })
+    }
+  }
+  scan(path.join(ROOT, 'src', 'pages'))
+  assert.deepEqual(offenders, [], `以下行存在未走 assetUrl 的 /static/ 引用:\n${offenders.join('\n')}`)
+})
+
 test('全量：每条英文音频都取得到真实存在的英式音轨', () => {
   const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
   const gaps = []

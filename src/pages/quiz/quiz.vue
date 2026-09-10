@@ -58,6 +58,7 @@
 import { ref, computed, watch } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, whenAudioReady } from '@/platform/audio.js'
+import { assetUrl } from '@/platform/assets.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
@@ -154,7 +155,7 @@ onLoad((query) => {
   reviewMode.value = query.review === 'en' || query.review === 'zh'
   subject.value = reviewMode.value ? query.review : query.subject || 'en'
   // 反馈语音用中文：孩子听不懂英文夸奖（口音试听仍用英文，见家长中心）
-  preload(['/static/audio/zh-great.mp3', '/static/audio/zh-try.mp3'])
+  preload([assetUrl('/static/audio/zh-great.mp3'), assetUrl('/static/audio/zh-try.mp3')])
   let p = []
   if (reviewMode.value) {
     p = getReviewPool(subject.value)
@@ -287,10 +288,10 @@ function pick(opt) {
     if (firstTry) firstCorrect.value++
     // 立即落快照：答对后有 1.5s 才进下一题，期间退出的话恢复不能丢这一题的进度
     if (lesson.value) svc.saveSnapshot(currentSnapshot())
-    play('/static/audio/zh-great.mp3')
+    play(assetUrl('/static/audio/zh-great.mp3'))
     setTimeout(nextRound, 1500)
   } else {
-    play('/static/audio/zh-try.mp3')
+    play(assetUrl('/static/audio/zh-try.mp3'))
     setTimeout(() => {
       flashId.value = ''
     }, 1000)

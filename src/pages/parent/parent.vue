@@ -150,6 +150,7 @@ import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
 import { getLowAgeMode, setLowAgeMode, updatePrefs, getQimengAudioOrder, setQimengAudioOrder } from '@/content/lowAge.js'
 import { getAccent, playEn } from '@/platform/audio.js'
+import { assetUrl } from '@/platform/assets.js'
 import { SUBJECTS, getLesson, catalog } from '@/content/catalog.js'
 import { visibleLessons } from '@/services/curriculum.js'
 import { starsForFirstAttempt } from '@/domain/progress.js'
@@ -240,7 +241,7 @@ function setAccent(a) {
   if (accent.value === a) return
   accent.value = a
   updatePrefs({ accent: a })
-  playEn('/static/audio/great_job.mp3')
+  playEn(assetUrl('/static/audio/great_job.mp3'))
 }
 
 /** 切换启蒙单词读音顺序：学词页点卡片时按新顺序播 */
