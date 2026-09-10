@@ -19,7 +19,9 @@ const SIZE = 96 // uni h5 tabbar 图标约 26px CSS，96px 覆盖 3x 屏
 const ICONS = [
   { file: 'map', emoji: '📚', color: [0xff, 0x8c, 0x42] },
   { file: 'collection', emoji: '⭐', color: [0xf7, 0xb5, 0x00] },
-  { file: 'parent', emoji: '👪', color: [0x3b, 0xb2, 0x73] },
+  // 家长：👪 一家四口缩到 96px 剪影化后糊成实心方块（2026-09 视觉验收抓到），
+  // 👥 双人剪影天生就是头+肩造型，缩小后仍然成形
+  { file: 'parent', emoji: '👥', color: [0x3b, 0xb2, 0x73] },
 ]
 // 未选中剪影色（暖灰，与 tabBar 文字色 #a2917d 同族）
 const GRAY = [0xb4, 0xa6, 0x96]
@@ -110,7 +112,8 @@ function selectedIcon(glyph, [r, g, b]) {
   const oy = ox
   for (let y = 0; y < inner; y++) {
     for (let x = 0; x < inner; x++) {
-      const si = (y * inner + x) * 4
+      // glyph 是 SIZE×SIZE：步长必须用 glyph.width，用 inner 会把读位错乱成横向条纹
+      const si = (y * glyph.width + x) * 4
       const sa = glyph.data[si + 3]
       if (sa === 0) continue
       const di = ((oy + y) * SIZE + ox + x) * 4

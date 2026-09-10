@@ -280,9 +280,13 @@ function go(s) {
   font-size: 38rpx;
   font-weight: 800;
   color: #4a3f35;
-  white-space: nowrap;
+  /* 与 unit-title 同规：两行截断，长课名（必背古诗 · 点读）不再被省略号拦腰 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.3;
+  word-break: break-word;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 /* ▶ 播放圆钮：不识字的孩子也知道"点它开始" */
 .play-btn {
@@ -495,8 +499,12 @@ function go(s) {
   font-weight: 800;
   max-width: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* 两行截断：三列卡放不下「动物 · Animals」整行，单行省略号会拦腰截断英文名 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.25;
+  word-break: break-word;
 }
 .unit-sub {
   margin-top: 4rpx;
