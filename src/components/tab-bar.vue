@@ -1,22 +1,34 @@
 <template>
   <view class="tabbar">
-    <view class="tab-item" :class="{ active: active === 'map' }" @tap="go('/pages/map/map')">
-      <image class="tab-icon" :src="assetUrl('/static/tab/map' + (active === 'map' ? '-on' : '') + '.png')" mode="aspectFit" />
-      <text class="tab-label" :style="active === 'map' ? 'color:#FF8C42' : ''">课程</text>
-    </view>
+    <!-- 曲线剪影：顶缘两侧平、中间上扬兜住圆钮（viewBox=rpx 单位，随屏宽等比缩放） -->
+    <svg class="tab-shape" viewBox="0 0 694 150" preserveAspectRatio="none" aria-hidden="true">
+      <path
+        d="M 0 110 L 0 96 Q 0 46 50 46 L 235 46 C 279 46 283 6 347 6 C 411 6 415 46 459 46 L 644 46 Q 694 46 694 96 L 694 110 Q 694 150 654 150 L 40 150 Q 0 150 0 110 Z"
+        fill="#fffcf5"
+        stroke="#f6ead8"
+        stroke-width="3"
+      />
+    </svg>
 
-    <!-- 中间凸起：收集百宝箱，金色圆钮 + 白星描形 -->
-    <view class="tab-fab-wrap" @tap="go('/pages/collection/collection')">
-      <view class="tab-fab" :class="{ glow: active === 'collection' }">
-        <image class="fab-glyph" :src="assetUrl('/static/tab/collection-glyph.png')" mode="aspectFit" />
+    <view class="tab-row">
+      <view class="tab-item" :class="{ active: active === 'map' }" @tap="go('/pages/map/map')">
+        <image class="tab-icon" :src="assetUrl('/static/tab/map' + (active === 'map' ? '-on' : '') + '.png')" mode="aspectFit" />
+        <text class="tab-label" :style="active === 'map' ? 'color:#FF8C42' : ''">课程</text>
       </view>
-      <text class="fab-label" :class="{ on: active === 'collection' }">收集</text>
+
+      <view class="tab-fab-spacer"></view>
+
+      <view class="tab-item" :class="{ active: active === 'parent' }" @tap="go('/pages/parent/parent')">
+        <image class="tab-icon" :src="assetUrl('/static/tab/parent' + (active === 'parent' ? '-on' : '') + '.png')" mode="aspectFit" />
+        <text class="tab-label" :style="active === 'parent' ? 'color:#3BB273' : ''">家长</text>
+      </view>
     </view>
 
-    <view class="tab-item" :class="{ active: active === 'parent' }" @tap="go('/pages/parent/parent')">
-      <image class="tab-icon" :src="assetUrl('/static/tab/parent' + (active === 'parent' ? '-on' : '') + '.png')" mode="aspectFit" />
-      <text class="tab-label" :style="active === 'parent' ? 'color:#3BB273' : ''">家长</text>
+    <!-- 中间凸起：坐在曲线凹口的正中 -->
+    <view class="tab-fab" :class="{ glow: active === 'collection' }" @tap="go('/pages/collection/collection')">
+      <image class="fab-glyph" :src="assetUrl('/static/tab/collection-glyph.png')" mode="aspectFit" />
     </view>
+    <text class="fab-label" :class="{ on: active === 'collection' }" @tap="go('/pages/collection/collection')">收集</text>
   </view>
 </template>
 
@@ -38,15 +50,28 @@ function go(url) {
   position: fixed;
   left: 28rpx;
   right: 28rpx;
-  bottom: calc(14rpx + env(safe-area-inset-bottom));
+  /* 贴底（只抬安全区）：悬浮缝隙会露出滚动内容，贴底 + 沿曲线的投影同样有层次 */
+  bottom: env(safe-area-inset-bottom);
+  height: 150rpx;
+  z-index: 999;
+  /* drop-shadow 沿 SVG 剪影投影，曲线轮廓也有阴影 */
+  filter: drop-shadow(0 10rpx 20rpx rgba(120, 90, 40, 0.18));
+}
+.tab-shape {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.tab-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 104rpx;
-  background: #fffcf5;
-  border: 2rpx solid #f6ead8;
-  border-radius: 999rpx;
-  box-shadow: 0 12rpx 32rpx rgba(120, 90, 40, 0.18);
   display: flex;
   align-items: center;
-  z-index: 999;
 }
 .tab-item {
   flex: 1;
@@ -54,7 +79,9 @@ function go(url) {
   flex-direction: column;
   align-items: center;
   gap: 2rpx;
-  padding-top: 6rpx;
+}
+.tab-fab-spacer {
+  width: 190rpx;
 }
 .tab-icon {
   width: 52rpx;
@@ -66,15 +93,12 @@ function go(url) {
   color: #b4a696;
   line-height: 1.2;
 }
-/* 中间凸起圆钮：上浮出胶囊栏，白圈描边制造「从栏里长出来」的一体感 */
-.tab-fab-wrap {
-  width: 150rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: -64rpx;
-}
+/* 凸起圆钮：嵌在曲线凹口正中，白圈让它和曲线之间有一圈呼吸缝 */
 .tab-fab {
+  position: absolute;
+  top: 8rpx;
+  left: 50%;
+  transform: translateX(-50%);
   width: 116rpx;
   height: 116rpx;
   border-radius: 50%;
@@ -97,7 +121,10 @@ function go(url) {
   height: 64rpx;
 }
 .fab-label {
-  margin-top: 4rpx;
+  position: absolute;
+  top: 126rpx;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 20rpx;
   font-weight: 700;
   color: #b4a696;
