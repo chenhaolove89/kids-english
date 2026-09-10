@@ -37,6 +37,15 @@ const MOVES = {
   crayon: 'school',
   scissors: 'school',
   book: 'school',
+  // 2026-09-10 内容审计（8 条）：归位到孩子/家长直觉的分类
+  milk: 'drinks',         // food → drinks（牛奶是饮品）
+  milkshake: 'drinks',    // desserts → drinks（奶昔是饮品）
+  backpack: 'school',     // clothes → school（书包是学习用品）
+  umbrella: 'clothes',    // nature → clothes（雨伞是随身物品，不是自然）
+  paint: 'school',        // toys → school（颜料是美术用品）
+  party: 'festivals',     // toys → festivals（派对是活动场景）
+  gift: 'festivals',      // toys → festivals（礼物贴节日场景）
+  policeofficer: 'jobs',  // characters → jobs（警察是职业不是装扮角色）
 }
 
 function slug(id) {

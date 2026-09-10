@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-09T08:35:30.460Z",
+ "generatedAt": "2026-09-10T02:38:58.858Z",
  "levels": [
   {
    "id": 1,
@@ -1936,26 +1936,6 @@
      "card": "emoji"
     },
     {
-     "id": "gift",
-     "en": "gift",
-     "zh": "礼物",
-     "phonetic": "/ɡɪft/",
-     "image": "/static/img/gift.png",
-     "audio": "/static/audio/gift.mp3",
-     "zhAudio": "/static/audio-zh/gift.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "party",
-     "en": "party",
-     "zh": "派对",
-     "phonetic": "/ˈpɑːti/",
-     "image": "/static/img/party.png",
-     "audio": "/static/audio/party.mp3",
-     "zhAudio": "/static/audio-zh/party.mp3",
-     "card": "emoji"
-    },
-    {
      "id": "yoyo",
      "en": "yo-yo",
      "zh": "悠悠球",
@@ -1983,16 +1963,6 @@
      "image": "/static/img/puzzle.png",
      "audio": "/static/audio/puzzle.mp3",
      "zhAudio": "/static/audio-zh/puzzle.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "paint",
-     "en": "paint",
-     "zh": "颜料",
-     "phonetic": "/peɪnt/",
-     "image": "/static/img/paint.png",
-     "audio": "/static/audio/paint.mp3",
-     "zhAudio": "/static/audio-zh/paint.mp3",
      "card": "emoji"
     },
     {
@@ -2204,16 +2174,6 @@
      "image": "/static/img/hotdog.png",
      "audio": "/static/audio/hotdog.mp3",
      "zhAudio": "/static/audio-zh/hotdog.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "milk",
-     "en": "milk",
-     "zh": "牛奶",
-     "phonetic": "/mɪlk/",
-     "image": "/static/img/milk.png",
-     "audio": "/static/audio/milk.mp3",
-     "zhAudio": "/static/audio-zh/milk.mp3",
      "card": "emoji"
     },
     {
@@ -3019,16 +2979,6 @@
      "card": "word"
     },
     {
-     "id": "milkshake",
-     "en": "milkshake",
-     "zh": "奶昔",
-     "phonetic": "/ˈmɪlkʃeɪk/",
-     "image": "/static/img/milkshake.svg",
-     "audio": "/static/audio/milkshake.mp3",
-     "zhAudio": "/static/audio-zh/milkshake.mp3",
-     "card": "word"
-    },
-    {
      "id": "brownie",
      "en": "brownie",
      "zh": "布朗尼",
@@ -3119,6 +3069,26 @@
    "level": 2,
    "icon": "/static/img/cat-drinks.png",
    "words": [
+    {
+     "id": "milk",
+     "en": "milk",
+     "zh": "牛奶",
+     "phonetic": "/mɪlk/",
+     "image": "/static/img/milk.png",
+     "audio": "/static/audio/milk.mp3",
+     "zhAudio": "/static/audio-zh/milk.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "milkshake",
+     "en": "milkshake",
+     "zh": "奶昔",
+     "phonetic": "/ˈmɪlkʃeɪk/",
+     "image": "/static/img/milkshake.svg",
+     "audio": "/static/audio/milkshake.mp3",
+     "zhAudio": "/static/audio-zh/milkshake.mp3",
+     "card": "word"
+    },
     {
      "id": "juice",
      "en": "juice",
@@ -3250,6 +3220,16 @@
    "level": 2,
    "icon": "/static/img/cat-clothes.png",
    "words": [
+    {
+     "id": "umbrella",
+     "en": "umbrella",
+     "zh": "雨伞",
+     "phonetic": "/ʌmˈbrelə/",
+     "image": "/static/img/umbrella.png",
+     "audio": "/static/audio/umbrella.mp3",
+     "zhAudio": "/static/audio-zh/umbrella.mp3",
+     "card": "emoji"
+    },
     {
      "id": "tshirt",
      "en": "T-shirt",
@@ -3408,16 +3388,6 @@
      "image": "/static/img/watch.png",
      "audio": "/static/audio/watch.mp3",
      "zhAudio": "/static/audio-zh/watch.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "backpack",
-     "en": "backpack",
-     "zh": "书包",
-     "phonetic": "/ˈbækpæk/",
-     "image": "/static/img/backpack.png",
-     "audio": "/static/audio/backpack.mp3",
-     "zhAudio": "/static/audio-zh/backpack.mp3",
      "card": "emoji"
     },
     {
@@ -4354,6 +4324,16 @@
    "icon": "/static/img/cat-school.png",
    "words": [
     {
+     "id": "backpack",
+     "en": "backpack",
+     "zh": "书包",
+     "phonetic": "/ˈbækpæk/",
+     "image": "/static/img/backpack.png",
+     "audio": "/static/audio/backpack.mp3",
+     "zhAudio": "/static/audio-zh/backpack.mp3",
+     "card": "emoji"
+    },
+    {
      "id": "book",
      "en": "book",
      "zh": "书",
@@ -4391,6 +4371,16 @@
      "image": "/static/img/scissors.png",
      "audio": "/static/audio/scissors.mp3",
      "zhAudio": "/static/audio-zh/scissors.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "paint",
+     "en": "paint",
+     "zh": "颜料",
+     "phonetic": "/peɪnt/",
+     "image": "/static/img/paint.png",
+     "audio": "/static/audio/paint.mp3",
+     "zhAudio": "/static/audio-zh/paint.mp3",
      "card": "emoji"
     },
     {
@@ -5595,16 +5585,6 @@
      "image": "/static/img/snowflake.png",
      "audio": "/static/audio/snowflake.mp3",
      "zhAudio": "/static/audio-zh/snowflake.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "umbrella",
-     "en": "umbrella",
-     "zh": "雨伞",
-     "phonetic": "/ʌmˈbrelə/",
-     "image": "/static/img/umbrella.png",
-     "audio": "/static/audio/umbrella.mp3",
-     "zhAudio": "/static/audio-zh/umbrella.mp3",
      "card": "emoji"
     },
     {
@@ -9130,6 +9110,16 @@
    "icon": "/static/img/cat-jobs.png",
    "words": [
     {
+     "id": "policeofficer",
+     "en": "police officer",
+     "zh": "警察",
+     "phonetic": "/pəˈliːs ˈɒfɪsər/",
+     "image": "/static/img/policeofficer.png",
+     "audio": "/static/audio/policeofficer.mp3",
+     "zhAudio": "/static/audio-zh/policeofficer.mp3",
+     "card": "emoji"
+    },
+    {
      "id": "doctor",
      "en": "doctor",
      "zh": "医生",
@@ -9649,16 +9639,6 @@
      "image": "/static/img/santa.png",
      "audio": "/static/audio/santa.mp3",
      "zhAudio": "/static/audio-zh/santa.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "policeofficer",
-     "en": "police officer",
-     "zh": "警察",
-     "phonetic": "/pəˈliːs ˈɒfɪsər/",
-     "image": "/static/img/policeofficer.png",
-     "audio": "/static/audio/policeofficer.mp3",
-     "zhAudio": "/static/audio-zh/policeofficer.mp3",
      "card": "emoji"
     },
     {
@@ -10455,6 +10435,26 @@
    "level": 4,
    "icon": "/static/img/cat-festivals.png",
    "words": [
+    {
+     "id": "gift",
+     "en": "gift",
+     "zh": "礼物",
+     "phonetic": "/ɡɪft/",
+     "image": "/static/img/gift.png",
+     "audio": "/static/audio/gift.mp3",
+     "zhAudio": "/static/audio-zh/gift.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "party",
+     "en": "party",
+     "zh": "派对",
+     "phonetic": "/ˈpɑːti/",
+     "image": "/static/img/party.png",
+     "audio": "/static/audio/party.mp3",
+     "zhAudio": "/static/audio-zh/party.mp3",
+     "card": "emoji"
+    },
     {
      "id": "Christmastree",
      "en": "Christmas tree",
