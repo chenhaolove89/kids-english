@@ -16,6 +16,7 @@
  *   node tools/gen-zh-azure.mjs --words        # 只重生成词语课(audio-zh/*.mp3,与现存文件取交集)
  *   node tools/gen-zh-azure.mjs --only zh-897fs   # 只重生成指定条目(改单条例句/字音时用,避免整批重写产生无关 diff)
  *   node tools/gen-zh-azure.mjs --poems        # 古诗音频(整首+逐句,src/data/poems.json,落到 static/audio-poem/)
+ *   node tools/gen-zh-azure.mjs --labels       # 按钮指令朗读(工具内 BUTTON_LABELS 清单,落到 audio/zh-btn-*.mp3)
  *   node tools/gen-zh-azure.mjs --all          # 全部(默认)
  *
  * 凭据:AZURE_SPEECH_KEY / AZURE_SPEECH_REGION,取自环境变量或项目根 .env.local(git 已忽略)。
@@ -41,6 +42,7 @@ const TEST_MODE = argv.has('--test')
 const CHARS_ONLY = argv.has('--chars')
 const WORDS_ONLY = argv.has('--words')
 const POEMS_MODE = argv.has('--poems')
+const LABELS_MODE = argv.has('--labels')
 // --only zh-897fs,zh-4e00w：精确重生成指定条目（改单条内容时用，避免整批重写）
 const ONLY = (() => {
   const i = process.argv.indexOf('--only')
@@ -208,7 +210,51 @@ async function runPoems() {
   }
 }
 
+// ---- 按钮指令朗读（--labels）：不识字的孩子点按钮先听到它在说什么 ----
+// 标签与页面按钮文案一一对应；改文案必须同步这里并重新生成（zh-btn-*.mp3，口音改写天然跳过 zh- 前缀）
+const BUTTON_LABELS = [
+  ['btn-resume', '继续上次'],
+  ['btn-next', '下一课'],
+  ['btn-first', '开始第一课'],
+  ['btn-review', '重练错题'],
+  ['btn-en', '学英语'],
+  ['btn-zh', '学语文'],
+  ['btn-math', '学数学'],
+  ['btn-again', '再玩一次'],
+  ['btn-back', '返回'],
+]
+
+function labelJobs() {
+  return BUTTON_LABELS.map(([id, text]) => ({ id: `zh-${id}`, text, pinyin: null, out: path.join(AUDIO_DIR, `zh-${id}.mp3`) }))
+}
+
+async function runLabels() {
+  const jobs = labelJobs()
+  console.log(`== 按钮指令朗读: ${jobs.length} 条 ==`)
+  if (DRY_RUN) {
+    for (const j of jobs) console.log(`[${j.id}] ${j.text}`)
+    return
+  }
+  const creds = loadCreds()
+  if (!creds.key || !creds.region) {
+    console.error('缺少 AZURE_SPEECH_KEY / AZURE_SPEECH_REGION(环境变量或 .env.local)')
+    process.exit(1)
+  }
+  const worker = async (job) => fs.writeFileSync(job.out, await synth(buildSsml(job.text, null), creds))
+  let failures = await pool('LABEL', jobs, worker)
+  if (failures.length) {
+    const retryIds = new Set(failures.map((f) => f.id))
+    failures = await pool('LABEL-RETRY', jobs.filter((j) => retryIds.has(j.id)), worker)
+  }
+  console.log(`\n== 完成 == 成功 ${jobs.length - failures.length} / ${jobs.length} 条`)
+  if (failures.length) {
+    for (const f of failures) console.log(`  ✗ ${f.id}: ${f.error}`)
+    process.exitCode = 1
+  }
+}
+
 async function main() {
+  if (LABELS_MODE) return runLabels()
   if (POEMS_MODE) return runPoems()
   const { items } = JSON.parse(fs.readFileSync(PINYIN_FILE, 'utf8'))
   const charIds = Object.keys(items).filter((id) => /^zh-[0-9a-f]{4}[ws]?$/.test(id))

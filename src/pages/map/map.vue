@@ -103,6 +103,7 @@ import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getStorage } from '@/platform/storage.js'
 import { assetUrl } from '@/platform/assets.js'
+import { play, preload } from '@/platform/audio.js'
 import { updatePrefs } from '@/content/lowAge.js'
 import { allowNavigate } from '@/platform/nav.js'
 import { getProgressService } from '@/services/progress.js'
@@ -133,6 +134,16 @@ const resumeModeText = computed(() => {
   if (!resume.value) return ''
   return { 'resume-active': '继续上次', 'resume-paused': '继续上次', next: '下一课', start: '开始第一课' }[resume.value.mode] || '继续'
 })
+
+// 指令朗读：不识字的孩子点按钮先听到它在说什么（音频 zh-btn-*.mp3，gen-zh-azure --labels 生成）
+const RESUME_LABEL_KEY = { 'resume-active': 'resume', 'resume-paused': 'resume', next: 'next', start: 'first' }
+const say = (k) => play(assetUrl('/static/audio/zh-btn-' + k + '.mp3'))
+preload([
+  assetUrl('/static/audio/zh-btn-resume.mp3'), assetUrl('/static/audio/zh-btn-next.mp3'),
+  assetUrl('/static/audio/zh-btn-first.mp3'), assetUrl('/static/audio/zh-btn-review.mp3'),
+  assetUrl('/static/audio/zh-btn-en.mp3'), assetUrl('/static/audio/zh-btn-zh.mp3'),
+  assetUrl('/static/audio/zh-btn-math.mp3'),
+])
 
 onShow(() => {
   const store = getStorage()
@@ -172,10 +183,12 @@ function goRandom(subjectId) {
 }
 
 function goResume() {
+  say(RESUME_LABEL_KEY[resume.value?.mode] || 'resume')
   goLesson(resume.value?.lesson)
 }
 
 function goReview() {
+  say('review')
   if (!allowNavigate()) return
   const reviewSvc = getReviewService()
   // 三科里挑到期最多的先练；数学错题在练习页原题重放
@@ -193,6 +206,7 @@ function goCollection() {
 }
 
 function go(s) {
+  say(s.id)
   if (!allowNavigate()) return
   if (s.id === 'en') uni.navigateTo({ url: '/pages/index/index' })
   else if (s.id === 'zh') uni.navigateTo({ url: '/pages/chinese/chinese' })

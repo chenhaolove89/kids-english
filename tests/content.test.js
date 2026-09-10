@@ -39,7 +39,7 @@ test('课程引用可解析：ref 都能落到真实数据', () => {
     if (r.kind === 'en-category') assert.ok(enCats.has(r.id), `${l.id} 引用分类 ${r.id} 不存在`)
     if (r.kind === 'en-level') assert.ok([1, 2, 3, 4].includes(Number(r.id)), `${l.id} 引用级别非法`)
     if (r.kind === 'zh-level') assert.ok(zhLevels.has(Number(r.id)), `${l.id} 引用级别非法`)
-    if (r.kind === 'math-level') assert.ok([1, 2, 3, 4, 5, 6].includes(Number(r.id)), `${l.id} 引用级别非法`)
+    if (r.kind === 'math-level') assert.ok([1, 2, 3, 4, 5, 6, 7, 8, 9].includes(Number(r.id)), `${l.id} 引用级别非法`)
   }
 })
 
@@ -138,5 +138,14 @@ test('古诗课：poems.json 与目录课卡一致，句音/整首音齐全且�
       assert.ok(fs.existsSync(f), `古诗 ${p.title} 第 ${i + 1} 句音缺失`)
       assert.ok(fs.statSync(f).size >= 2500, `古诗 ${p.title} 第 ${i + 1} 句音过小（疑似 TTS 失败）: ${line}`)
     })
+  }
+})
+
+test('按钮指令朗读：zh-btn-*.mp3 齐全且非空（gen-zh-azure --labels 产物）', () => {
+  const ids = ['resume', 'next', 'first', 'review', 'en', 'zh', 'math', 'again', 'back']
+  for (const id of ids) {
+    const f = path.join(ROOT, 'src', 'static', 'audio', `zh-btn-${id}.mp3`)
+    assert.ok(fs.existsSync(f), `缺少 zh-btn-${id}.mp3（跑 node tools/gen-zh-azure.mjs --labels）`)
+    assert.ok(fs.statSync(f).size >= 2000, `zh-btn-${id}.mp3 过小（疑似 TTS 失败）`)
   }
 })

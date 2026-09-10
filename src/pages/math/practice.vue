@@ -287,6 +287,7 @@ function nextQuestion() {
 }
 
 function restart() {
+  playSeq([assetUrl('/static/audio/zh-btn-again.mp3')])
   if (lesson.value) {
     // 重开必须重新建会话，否则这一局的作答会被静默丢弃
     svc.clearActive()
@@ -295,6 +296,7 @@ function restart() {
   startFresh()
 }
 function goBack() {
+  playSeq([assetUrl('/static/audio/zh-btn-back.mp3')])
   uni.navigateBack()
 }
 </script>
