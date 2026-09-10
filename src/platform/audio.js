@@ -19,10 +19,11 @@ const cache = new Map()
 // 英式与美音分开实测，同名文件响度不同，各查各的表。
 const DEFAULT_VOLUME = 1.2
 
-/** 当前英语口音：prefs.accent，'us'（默认）| 'gb'。家长中心切换，播放时即时生效 */
+/** 当前英语口音：prefs.accent，'us'（默认）| 'gb'（英式）| 'az'（Azure 课堂音）。家长中心切换，播放时即时生效 */
 export function getAccent() {
   try {
-    return getStorage().get('prefs', {})?.accent === 'gb' ? 'gb' : 'us'
+    const a = getStorage().get('prefs', {})?.accent
+    return a === 'gb' || a === 'az' ? a : 'us'
   } catch (e) {
     return 'us'
   }

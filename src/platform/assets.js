@@ -16,21 +16,24 @@ export function assetUrl(p) {
 }
 
 /**
- * 英语发音口音重写：/static/audio/x.mp3 → /static/audio-gb/x.mp3（两目录文件名一致）。
+ * 英语发音口音重写：/static/audio/x.mp3 → 对应口音镜像目录。
+ * us=原样；gb=audio-gb（Edge 英式）；az=audio-azure（Azure Jenny 课堂音，更慢更清晰）。
  * 只放行英文词/反馈音（字母开头、非 zh- 前缀、非 n数字、非四位码点）——语文与数学
  * 音频一律原样返回，即使调用方误传也不会读错科目。
  * 首字母必须兼容大写：Monday / China / CD 这类专有名词文件就是大写命名，
- * 只认小写会让 audio-gb 里现成的英式音轨永远取不到。
+ * 只认小写会让现成的英式/课堂音轨永远取不到。
  * 路径前缀兼容 ./：GitHub Pages 发布脚本会把 /static/ 改写成 ./static/（子路径部署），
- * 锚死 ^/static/ 会让线上英式口音静默失效回退美音。
+ * 锚死 ^/static/ 会让线上口音切换静默失效回美音。
  */
 export function withAccent(src, accent) {
-  if (accent !== 'gb' || !src) return src
+  if ((!accent || accent === 'us') || !src) return src
+  const dir = accent === 'gb' ? 'audio-gb' : accent === 'az' ? 'audio-azure' : null
+  if (!dir) return src
   // 前缀兼容 ./：GitHub Pages 发布脚本会把 /static/ 改写成 ./static/（子路径部署），
-  // 锚死 ^/static/ 会让线上英式口音静默失效回退美音
+  // 锚死 ^/static/ 会让线上口音切换静默失效回美音
   const m = /^(\.\/|\/)static\/audio\//.exec(src)
   if (!m) return src
   const name = src.slice(m[0].length)
   if (!/^(?!zh-)(?!n\d)[A-Za-z][A-Za-z0-9'_-]*\.mp3$/.test(name)) return src
-  return `${m[1]}static/audio-gb/${name}`
+  return `${m[1]}static/${dir}/${name}`
 }

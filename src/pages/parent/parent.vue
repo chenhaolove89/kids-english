@@ -105,17 +105,21 @@
         <text class="meta-label">累计作答</text>
         <text class="meta-value">{{ attemptCount }} 次</text>
       </view>
-      <view class="meta-row">
-        <text class="meta-label">英语发音</text>
-        <view class="accent-pills">
-          <view class="accent-pill" :class="{ on: accent === 'us' }" @tap="setAccent('us')">
-            <text class="accent-pill-text">🇺🇸 美式</text>
-          </view>
-          <view class="accent-pill" :class="{ on: accent === 'gb' }" @tap="setAccent('gb')">
-            <text class="accent-pill-text">🇬🇧 英式</text>
+        <!-- 三胶囊放不进单行（会挤压竖排标签）：标签独占一行，胶囊整行在下 -->
+        <view class="meta-row stacked">
+          <text class="meta-label">英语发音</text>
+          <view class="accent-pills">
+            <view class="accent-pill" :class="{ on: accent === 'us' }" @tap="setAccent('us')">
+              <text class="accent-pill-text">🇺🇸 美式</text>
+            </view>
+            <view class="accent-pill" :class="{ on: accent === 'gb' }" @tap="setAccent('gb')">
+              <text class="accent-pill-text">🇬🇧 英式</text>
+            </view>
+            <view class="accent-pill" :class="{ on: accent === 'az' }" @tap="setAccent('az')">
+              <text class="accent-pill-text">🏫 课堂</text>
+            </view>
           </view>
         </view>
-      </view>
       <view class="meta-row">
         <text class="meta-label">启蒙读音顺序</text>
         <view class="accent-pills">
@@ -501,6 +505,12 @@ function clearRecords() {
 }
 .meta-row + .meta-row {
   border-top: 2rpx solid #f7f3ec;
+}
+/* 三胶囊的行：标签横排在上，胶囊整行在下（压成单行会把标签挤成竖排字） */
+.meta-row.stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14rpx;
 }
 .meta-label {
   font-size: 27rpx;

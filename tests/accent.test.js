@@ -13,6 +13,17 @@ test('英式口音：英文词/反馈音重写到 audio-gb 目录', () => {
   assert.equal(withAccent('/static/audio/great_job.mp3', 'gb'), '/static/audio-gb/great_job.mp3')
 })
 
+test('课堂口音（az）：英文词/反馈音重写到 audio-azure 目录', () => {
+  assert.equal(withAccent('/static/audio/red.mp3', 'az'), '/static/audio-azure/red.mp3')
+  assert.equal(withAccent('/static/audio/watermelon.mp3', 'az'), '/static/audio-azure/watermelon.mp3')
+  assert.equal(withAccent('/static/audio/great_job.mp3', 'az'), '/static/audio-azure/great_job.mp3')
+  assert.equal(withAccent('./static/audio/red.mp3', 'az'), './static/audio-azure/red.mp3')
+  // 非法口音值与语文/数学音频一律原样
+  assert.equal(withAccent('/static/audio/red.mp3', 'xx'), '/static/audio/red.mp3')
+  assert.equal(withAccent('/static/audio/zh-great.mp3', 'az'), '/static/audio/zh-great.mp3')
+  assert.equal(withAccent('/static/audio/n9.mp3', 'az'), '/static/audio/n9.mp3')
+})
+
 test('美式口音（默认）：路径一律原样', () => {
   assert.equal(withAccent('/static/audio/red.mp3', 'us'), '/static/audio/red.mp3')
   assert.equal(withAccent('/static/audio/red.mp3', undefined), '/static/audio/red.mp3')
@@ -91,14 +102,16 @@ test('防回归：页面运行时路径必须走 assetUrl（小程序 CDN 化的
   assert.deepEqual(offenders, [], `以下行存在未走 assetUrl 的 /static/ 引用:\n${offenders.join('\n')}`)
 })
 
-test('全量：每条英文音频都取得到真实存在的英式音轨', () => {
+test('全量：每条英文音频都取得到真实存在的英式/课堂音轨', () => {
   const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
   const gaps = []
   for (const c of words.categories) {
     for (const w of c.words) {
-      const gb = withAccent(w.audio, 'gb')
-      if (gb === w.audio) gaps.push(`${c.id}/${w.id} 未被改写：${w.audio}`)
-      else if (!fs.existsSync(path.join(ROOT, 'src', gb.slice(1)))) gaps.push(`${c.id}/${w.id} 英式文件缺失：${gb}`)
+      for (const [label, dir] of [['英式', 'audio-gb'], ['课堂', 'audio-azure']]) {
+        const mirrored = withAccent(w.audio, label === '英式' ? 'gb' : 'az')
+        if (mirrored === w.audio) gaps.push(`${c.id}/${w.id} 未被改写（${label}）：${w.audio}`)
+        else if (!fs.existsSync(path.join(ROOT, 'src', mirrored.slice(1)))) gaps.push(`${c.id}/${w.id} ${label}文件缺失：${mirrored}`)
+      }
     }
   }
   assert.deepEqual(gaps, [])
