@@ -18,3 +18,13 @@ const pageNavGate = createThrottle(700)
 export function allowNavigate() {
   return pageNavGate()
 }
+
+/**
+ * 返回按钮统一出口：页面栈只剩当前页（学完自动跳下一关的 redirectTo/直链/reLaunch 进入）
+ * 时 navigateBack 无栈可回——降级为回课程主页，按钮永不变「死」。
+ */
+export function goBackOrHome() {
+  const pages = typeof getCurrentPages === 'function' ? getCurrentPages() : []
+  if (pages && pages.length > 1) uni.navigateBack()
+  else uni.reLaunch({ url: '/pages/map/map' })
+}

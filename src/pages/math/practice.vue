@@ -118,6 +118,7 @@ import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { playSeq, preload, stopSeq } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
+import { goBackOrHome } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { buildQuestions, normalizeMathLevel, mathText, mathItemId, MATH_LEVELS } from '@/domain/mathgen.js'
 import { isPickCorrect } from '@/domain/judge.js'
@@ -306,7 +307,7 @@ function restart() {
 }
 function goBack() {
   playSeq([assetUrl('/static/audio/zh-btn-back.mp3')])
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 

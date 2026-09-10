@@ -51,6 +51,7 @@ import { ref, computed } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { play, stopSeq, preloadWithProgress } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
+import { goBackOrHome } from '@/platform/nav.js'
 import poemsData from '@/data/poems.json'
 
 const CARD_STYLES = [
@@ -147,7 +148,7 @@ function goBack() {
     playingFull.value = false
     return
   }
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 

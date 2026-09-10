@@ -96,7 +96,7 @@ import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
 import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
-import { createThrottle } from '@/platform/nav.js'
+import { createThrottle, goBackOrHome } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
@@ -362,14 +362,18 @@ function findCurrentLesson() {
     && String(l.ref.id) === entryRef.id) || null
 }
 
-/** 翻到最后再点「→」：toast 过渡 600ms 后切下一课；科目学完回课程页 */
+/** 翻到最后再点「→」：toast 过渡 600ms 后切下一课；科目学完回课程页。
+ * 用 redirectTo 而不是 reLaunch：reLaunch 清空页面栈，下一课的返回键会失效（用户实测） */
 function goNextLesson() {
   if (advancing) return
   advancing = true
   const cur = findCurrentLesson()
   const nxt = cur && nextLessonAfter(cur.id)
   uni.showToast({ title: nxt ? '学完啦！去下一个 ✨' : '本科目全部学完啦 🏆', icon: 'none', duration: 900 })
-  setTimeout(() => uni.reLaunch({ url: nxt ? lessonUrl(nxt) : '/pages/map/map' }), 600)
+  setTimeout(() => {
+    if (nxt) uni.redirectTo({ url: lessonUrl(nxt) })
+    else uni.reLaunch({ url: '/pages/map/map' })
+  }, 600)
 }
 onUnload(() => {
   // 中文→英文之间有停顿：不作废序列，孩子退出后还会在页面外念出英文
@@ -380,7 +384,7 @@ onUnload(() => {
   }
 })
 function goBack() {
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 

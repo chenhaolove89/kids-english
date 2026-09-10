@@ -44,6 +44,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import HanziWriter from 'hanzi-writer'
 import { play, preload } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
+import { goBackOrHome } from '@/platform/nav.js'
 
 const char = ref('')
 const pinyin = ref('')
@@ -139,7 +140,7 @@ function startQuiz() {
 }
 
 function goBack() {
-  uni.navigateBack()
+  goBackOrHome()
 }
 
 onUnload(() => {

@@ -59,6 +59,7 @@ import { ref, computed, watch } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, whenAudioReady } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
+import { goBackOrHome } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
@@ -359,7 +360,7 @@ function restart() {
 }
 function goBack() {
   play(assetUrl('/static/audio/zh-btn-back.mp3'))
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 
