@@ -129,6 +129,25 @@ function selectedIcon(glyph, [r, g, b]) {
   return out
 }
 
+/** 白色描形透明底（悬浮凸起圆钮用：CSS 画渐变圆，图标只叠白色形状）。
+ * 不做内裁：星星等不对称 pad 的 emoji 中心裁切会缺角，整图缩放才完整 */
+function glyphIcon(glyph) {
+  const out = new PNG({ width: SIZE, height: SIZE })
+  for (let y = 0; y < SIZE; y++) {
+    for (let x = 0; x < SIZE; x++) {
+      const si = (y * glyph.width + x) * 4
+      const sa = glyph.data[si + 3]
+      if (sa === 0) continue
+      const di = (y * SIZE + x) * 4
+      out.data[di] = 255
+      out.data[di + 1] = 255
+      out.data[di + 2] = 255
+      out.data[di + 3] = sa
+    }
+  }
+  return out
+}
+
 const force = process.argv.includes('--force')
 fs.mkdirSync(OUT, { recursive: true })
 for (const ic of ICONS) {
@@ -138,7 +157,8 @@ for (const ic of ICONS) {
   // 未选中：暖灰剪影；选中：彩色圆底 + 白色描形（recolor 只改 RGB 不动 alpha，描形按 alpha 合成）
   fs.writeFileSync(path.join(OUT, `${ic.file}.png`), PNG.sync.write(recolor(glyph, GRAY)))
   fs.writeFileSync(path.join(OUT, `${ic.file}-on.png`), PNG.sync.write(selectedIcon(glyph, ic.color)))
+  fs.writeFileSync(path.join(OUT, `${ic.file}-glyph.png`), PNG.sync.write(glyphIcon(glyph)))
   fs.rmSync(raw, { force: true })
-  console.log(`✓ ${ic.file}.png（暖灰）+ ${ic.file}-on.png（彩色圆底）← ${ic.emoji}`)
+  console.log(`✓ ${ic.file}.png（暖灰）+ ${ic.file}-on.png（彩色圆底）+ ${ic.file}-glyph.png（白色描形）← ${ic.emoji}`)
 }
 console.log('完成：src/static/tab/')

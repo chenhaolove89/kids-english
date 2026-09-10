@@ -222,6 +222,8 @@
         </scroll-view>
       </view>
     </view>
+
+    <TabBar active="collection" />
   </view>
 </template>
 
@@ -234,6 +236,7 @@ import { LESSONS } from '@/content/catalog.js'
 import { isCategoryHidden, updatePrefs } from '@/content/lowAge.js'
 import { getStorage } from '@/platform/storage.js'
 import { playEn, play } from '@/platform/audio.js'
+import TabBar from '@/components/tab-bar.vue'
 import { assetUrl } from '@/platform/assets.js'
 import { starsText as starsBar } from '@/domain/progress.js'
 import { progressOf, isCategoryComplete, isMathTrophy, celebration } from '@/domain/collection.js'
@@ -374,6 +377,8 @@ const mathBadges = computed(() => {
 const mathAllTrophies = computed(() => mathBadges.value.length > 0 && mathBadges.value.every((m) => m.trophy))
 
 onShow(() => {
+  // 自定义悬浮底栏替代原生 tabBar
+  try { uni.hideTabBar({ animation: false }) } catch (e) { /* 已隐藏时静默 */ }
   const svc = getCollectionService()
   coll.value = svc.get()
   const cur = svc.counts()
@@ -481,7 +486,7 @@ function goLearn() {
 .page {
   min-height: 100vh;
   min-height: 100svh;
-  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom));
+  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

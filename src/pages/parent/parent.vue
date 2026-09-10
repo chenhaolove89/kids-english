@@ -139,6 +139,8 @@
     <view class="footer">
       <text class="footer-text">星级按「第一次就答对」计算，鼓励不刷分 🌟</text>
     </view>
+
+    <TabBar active="parent" />
   </view>
 </template>
 
@@ -150,6 +152,7 @@ import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
 import { getLowAgeMode, setLowAgeMode, updatePrefs, getQimengAudioOrder, setQimengAudioOrder } from '@/content/lowAge.js'
 import { getAccent, playEn } from '@/platform/audio.js'
+import TabBar from '@/components/tab-bar.vue'
 import { assetUrl } from '@/platform/assets.js'
 import { SUBJECTS, getLesson, catalog } from '@/content/catalog.js'
 import { visibleLessons } from '@/services/curriculum.js'
@@ -172,6 +175,8 @@ const accent = ref('us')
 const qimengOrder = ref('zh-first')
 
 onShow(() => {
+  // 自定义悬浮底栏替代原生 tabBar
+  try { uni.hideTabBar({ animation: false }) } catch (e) { /* 已隐藏时静默 */ }
   refresh()
 })
 
@@ -285,7 +290,7 @@ function clearRecords() {
 .page {
   min-height: 100vh;
   min-height: 100svh;
-  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
+  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 .header {

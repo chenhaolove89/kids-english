@@ -95,6 +95,8 @@
         <text class="explore-name" :style="{ color: s.color }">{{ s.zh }}</text>
       </view>
     </view>
+
+    <TabBar active="map" />
   </view>
 </template>
 
@@ -109,6 +111,7 @@ import { allowNavigate } from '@/platform/nav.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
 import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES } from '@/services/curriculum.js'
+import TabBar from '@/components/tab-bar.vue'
 
 const explore = [
   { id: 'en', zh: '学英语', color: '#FF8C42', bg: '#FFF3E4', icon: assetUrl('/static/img/subject-english.png') },
@@ -146,6 +149,8 @@ preload([
 ])
 
 onShow(() => {
+  // 自定义悬浮底栏替代原生 tabBar（uni.hideTabBar 在 H5 收起原生栏，switchTab 不受影响）
+  try { uni.hideTabBar({ animation: false }) } catch (e) { /* 已隐藏时静默 */ }
   const store = getStorage()
   const prefs = store.get('prefs', {})
   stage.value = normalizeStage(prefs?.stage || stage.value)
@@ -218,7 +223,7 @@ function go(s) {
 .page {
   min-height: 100vh;
   min-height: 100svh;
-  padding: calc(44rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
+  padding: calc(44rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 /* 星数胶囊：贴在续学卡片右侧，尽量压小以免挤占卡片宽度 */
