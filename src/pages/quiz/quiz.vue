@@ -15,7 +15,7 @@
 
     <template v-if="!finished">
       <view class="prompt" :class="{ 'prompt-loading': audioLoading }" @tap="speakQuestion">
-        <text v-if="stemText" class="stem" :class="roundKind === 'pinyin-to-char' ? 'stem-pinyin' : 'stem-char'">{{ stemText }}</text>
+        <text v-if="stemText" class="stem" :class="roundKind === 'pinyin-to-char' ? 'stem-pinyin' : roundKind === 'poem-fill' ? 'stem-line' : 'stem-char'">{{ stemText }}</text>
         <text v-if="showSpeaker" class="prompt-speaker">🔊</text>
         <text class="prompt-hint">{{ promptHint }}</text>
       </view>
@@ -62,7 +62,8 @@ import { assetUrl } from '@/platform/assets.js'
 import { getLesson } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
-import { buildListenPickRounds, buildZhCharRounds } from '@/domain/rounds.js'
+import { buildListenPickRounds, buildZhCharRounds, buildPoemFillRounds } from '@/domain/rounds.js'
+import poemsData from '@/data/poems.json'
 import { isRoundPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
 import { getSessionService } from '@/services/session.js'
@@ -75,6 +76,7 @@ const ROUNDS = 10
 const subject = ref('en')
 const reviewMode = ref(false) // 错题重练模式：/?review=en|zh
 const zhWordsMode = ref(false) // 语文词语挑战：听中文音选图（池与英语分类同源）
+const poemMode = ref(false) // 古诗填字：/?poem=<stage> 听句选字（池来自 data/poems.json）
 const pool = ref([])
 const rounds = ref([])
 const roundIdx = ref(0)
@@ -95,6 +97,27 @@ const audioTotal = ref(0)
 const audioLoading = ref(false)
 
 const audioPercent = computed(() => (audioTotal.value ? Math.round((audioDone.value / audioTotal.value) * 100) : 0))
+
+/** 古诗填字池：阶段内每首诗每行的每个汉字（id 含行/列位置，保证全局唯一） */
+function poemFillPool(stage) {
+  const items = []
+  for (const poem of poemsData.poems) {
+    if (poem.stage !== stage) continue
+    poem.lines.forEach((line, li) => {
+      ;[...line].forEach((ch, ci) => {
+        if (!/[\u4e00-\u9fff]/.test(ch)) return
+        items.push({
+          id: `${poem.id}-${li}-${ci}`,
+          char: ch,
+          lineText: line,
+          lineAudio: assetUrl('/static/audio-poem/' + poem.id + '-l' + li + '.mp3'),
+          poemTitle: poem.title,
+        })
+      })
+    })
+  }
+  return items
+}
 
 function startAudioPreload(srcs) {
   const list = [...new Set(srcs.filter(Boolean))]
@@ -127,6 +150,7 @@ const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.valu
 const starsNote = computed(() => `共 ${rounds.value.length} 题 · 首次选对得星`)
 const pageTitle = computed(() => {
   if (reviewMode.value) return '错题重练'
+  if (poemMode.value) return '古诗填字'
   if (subject.value === 'zh') return zhWordsMode.value ? '词语挑战' : '汉字挑战'
   return '听音选图'
 })
@@ -135,11 +159,13 @@ const roundKind = computed(() => rounds.value[roundIdx.value]?.kind || 'listen-p
 const stemText = computed(() => {
   const r = rounds.value[roundIdx.value]
   if (!r || r.kind === 'listen-pick') return ''
+  if (r.kind === 'poem-fill') return r.prompt
   return r.kind === 'pinyin-to-char' ? r.answer.pinyin : r.answer.char
 })
-const showSpeaker = computed(() => roundKind.value === 'listen-pick')
-const isCharOption = computed(() => roundKind.value === 'listen-pick' || roundKind.value === 'pinyin-to-char')
+const showSpeaker = computed(() => roundKind.value === 'listen-pick' || roundKind.value === 'poem-fill')
+const isCharOption = computed(() => ['listen-pick', 'pinyin-to-char', 'poem-fill'].includes(roundKind.value))
 const promptHint = computed(() => {
+  if (poemMode.value) return '听一听，选出句中缺的字'
   if (zhWordsMode.value) return '听一听，选出对应的图片'
   if (subject.value === 'en') return '听一听，选出对应的图片'
   switch (roundKind.value) {
@@ -173,6 +199,11 @@ onLoad((query) => {
       const lv = l && l.ref?.kind === 'en-level' ? l.ref.id : Number(query.level) || 1
       p = resolveEnLevel(lv)
     }
+  } else if (query.poem) {
+    // 古诗填字：池来自该阶段古诗（听整句选缺字），课时记在古诗学一学课上
+    poemMode.value = true
+    subject.value = 'zh'
+    p = poemFillPool(String(query.poem))
   } else if (query.cat) {
     // 语文词语挑战：与英语分类同池，主音频换中文读音
     zhWordsMode.value = true
@@ -184,8 +215,8 @@ onLoad((query) => {
     const level = resolveZhLevel(lv)
     p = level.chars.map(mapZhOption)
   }
-  // 预加载走统一出口：重练/英语/词语/识字都覆盖，英语在此处按口音解析
-  startAudioPreload(p.map((x) => (subject.value === 'en' ? accentEnSrc(x.audio) : x.audio)))
+  // 预加载走统一出口：重练/英语/词语/识字/古诗都覆盖，英语在此处按口音解析
+  startAudioPreload(poemMode.value ? p.map((x) => x.lineAudio) : p.map((x) => (subject.value === 'en' ? accentEnSrc(x.audio) : x.audio)))
   pool.value = p
   if (!p.length) {
     // 深链参数无效（分类/级别不存在）：提示后回课程页，而不是卡在空页面
@@ -233,8 +264,9 @@ function start() {
   // 出轮统一走 domain/rounds.js：与单测同一份实现，避免页面内重复实现将来漂移
   // 语文汉字课（含纯汉字错题重练）走多题型；词语课/英语/混池错题走听音选图
   const allChars = pool.value.length > 0 && pool.value.every((x) => typeof x.char === 'string' && typeof x.pinyin === 'string')
-  rounds.value =
-    subject.value === 'zh' && !zhWordsMode.value && allChars
+  rounds.value = poemMode.value
+    ? buildPoemFillRounds(pool.value, { count: ROUNDS })
+    : subject.value === 'zh' && !zhWordsMode.value && allChars
       ? buildZhCharRounds(pool.value, { count: ROUNDS })
       : buildListenPickRounds(pool.value, { count: ROUNDS })
   roundIdx.value = 0
@@ -255,11 +287,12 @@ function loadRound() {
 
 function speakQuestion() {
   if (finished.value) return
-  // 文本题干（看字选拼音等）不播音频：读了题干等于报答案
+  // 文本题干（看字选拼音等）不播音频：读了题干等于报答案；古诗填字例外——播整句朗读不报哪一字
   if (!showSpeaker.value) return
-  // 英语按所选口音发音；语文听音选字不动
-  if (subject.value === 'en') playEn(rounds.value[roundIdx.value].answer.audio)
-  else play(rounds.value[roundIdx.value].answer.audio)
+  const r = rounds.value[roundIdx.value]
+  // 英语按所选口音发音；语文听音选字不动；古诗填字播整句
+  if (subject.value === 'en') playEn(r.answer.audio)
+  else play(r.audio || r.answer.audio)
 }
 
 function pick(opt) {
@@ -276,11 +309,14 @@ function pick(opt) {
     firstPickMap.set(roundIdx.value, true)
   }
   // 错题本：答错进本（当天可重练），已在本的答对晋级；复习/课时/旧入口三种模式都生效
-  review.recordResult(itemId, correct, {
-    subject: subject.value,
-    text: round.answer.char || round.answer.zh || round.answer.en,
-    lessonId: lesson.value ? lesson.value.id : null,
-  })
+  // 古诗填字不进错题本：条目是「字在句中位置」而非知识点，重练解析器无法还原句卡
+  if (round.kind !== 'poem-fill') {
+    review.recordResult(itemId, correct, {
+      subject: subject.value,
+      text: round.answer.char || round.answer.zh || round.answer.en,
+      lessonId: lesson.value ? lesson.value.id : null,
+    })
+  }
   flashId.value = opt.id
   isRight.value = correct
   if (correct) {
@@ -422,6 +458,11 @@ function goBack() {
 .stem-pinyin {
   font-size: 76rpx;
   color: #ff8c42;
+}
+/* 古诗填字题干：整句挖空展示，比单字小一号 */
+.stem-line {
+  font-size: 56rpx;
+  letter-spacing: 4rpx;
 }
 .round-info {
   margin-top: 22rpx;

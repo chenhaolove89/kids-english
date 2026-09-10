@@ -15,6 +15,7 @@
  *   node tools/gen-zh-azure.mjs --chars        # 只重生成字音+例词(audio/zh-*.mp3)
  *   node tools/gen-zh-azure.mjs --words        # 只重生成词语课(audio-zh/*.mp3,与现存文件取交集)
  *   node tools/gen-zh-azure.mjs --only zh-897fs   # 只重生成指定条目(改单条例句/字音时用,避免整批重写产生无关 diff)
+ *   node tools/gen-zh-azure.mjs --poems        # 古诗音频(整首+逐句,src/data/poems.json,落到 static/audio-poem/)
  *   node tools/gen-zh-azure.mjs --all          # 全部(默认)
  *
  * 凭据:AZURE_SPEECH_KEY / AZURE_SPEECH_REGION,取自环境变量或项目根 .env.local(git 已忽略)。
@@ -39,6 +40,7 @@ const DRY_RUN = argv.has('--dry-run')
 const TEST_MODE = argv.has('--test')
 const CHARS_ONLY = argv.has('--chars')
 const WORDS_ONLY = argv.has('--words')
+const POEMS_MODE = argv.has('--poems')
 // --only zh-897fs,zh-4e00w：精确重生成指定条目（改单条内容时用，避免整批重写）
 const ONLY = (() => {
   const i = process.argv.indexOf('--only')
@@ -135,7 +137,79 @@ async function pool(label, jobs, worker) {
   return failures
 }
 
+// ---- 古诗音频（--poems）：整首 + 逐句两套轨，phoneme 槽位来自 poems.json ttsPinyin ----
+const POEMS_OUT_DIR = path.join(ROOT, 'src', 'static', 'audio-poem')
+
+function pinyinSlots(line, marks) {
+  if (!marks) return null
+  const slots = [...line].map((ch) => (marks[ch] ? marks[ch] : null))
+  return slots.some((s) => s) ? slots : null
+}
+
+function poemJobs() {
+  const { poems } = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'poems.json'), 'utf8'))
+  fs.mkdirSync(POEMS_OUT_DIR, { recursive: true })
+  const jobs = []
+  for (const p of poems) {
+    const slots = p.lines.map((line) => pinyinSlots(line, (p.ttsPinyin || {})[line]))
+    const fullText = p.lines.join('')
+    // 整首槽位必须逐字符展开拼接（null 行按句长占位），否则长度校验不过会整首退化成默认读音
+    const fullSlots = []
+    p.lines.forEach((line, i) => {
+      const marks = (p.ttsPinyin || {})[line]
+      for (const ch of [...line]) fullSlots.push(marks && marks[ch] ? marks[ch] : null)
+    })
+    jobs.push({
+      id: `poem-${p.id}-full`,
+      text: fullText,
+      pinyin: fullSlots.some(Boolean) ? fullSlots : null,
+      out: path.join(POEMS_OUT_DIR, `${p.id}-full.mp3`),
+    })
+    p.lines.forEach((line, i) => {
+      jobs.push({ id: `poem-${p.id}-l${i}`, text: line, pinyin: slots[i], out: path.join(POEMS_OUT_DIR, `${p.id}-l${i}.mp3`) })
+    })
+  }
+  return jobs
+}
+
+async function runPoems() {
+  const jobs = poemJobs()
+  console.log(`== 古诗音频生成: ${jobs.length} 条（整首 + 逐句）==`)
+  if (DRY_RUN) {
+    for (const j of jobs.slice(0, 4)) console.log(`[${j.id}] ${buildSsml(j.text, j.pinyin).slice(0, 220)}`)
+    return
+  }
+  const creds = loadCreds()
+  if (!creds.key || !creds.region) {
+    console.error('缺少 AZURE_SPEECH_KEY / AZURE_SPEECH_REGION(环境变量或 .env.local)')
+    process.exit(1)
+  }
+  const worker = async (job) => {
+    let buf
+    try {
+      buf = await synth(buildSsml(job.text, job.pinyin), creds)
+    } catch (e) {
+      if (!job.pinyin) throw e
+      buf = await synth(buildSsml(job.text, null), creds)
+      console.warn(`  ↻ ${job.id} phoneme 被拒,已退回默认读音: ${e.message}`)
+    }
+    fs.writeFileSync(job.out, buf)
+  }
+  let failures = await pool('POEM', jobs, worker)
+  if (failures.length) {
+    console.log(`-- 串行重试 ${failures.length} 条 --`)
+    const retryIds = new Set(failures.map((f) => f.id))
+    failures = await pool('POEM-RETRY', jobs.filter((j) => retryIds.has(j.id)), worker)
+  }
+  console.log(`\n== 完成 == 成功 ${jobs.length - failures.length} / ${jobs.length} 条`)
+  if (failures.length) {
+    for (const f of failures) console.log(`  ✗ ${f.id}: ${f.error}`)
+    process.exitCode = 1
+  }
+}
+
 async function main() {
+  if (POEMS_MODE) return runPoems()
   const { items } = JSON.parse(fs.readFileSync(PINYIN_FILE, 'utf8'))
   const charIds = Object.keys(items).filter((id) => /^zh-[0-9a-f]{4}[ws]?$/.test(id))
   const existingWords = new Set(

@@ -118,3 +118,25 @@ test('语文词语音频：覆盖分类每词 zhAudio 存在且非空（TTS 失�
     assert.ok(fs.statSync(abs).size >= 900, `词 ${w.id} 中文配音过小（疑似 TTS 失败）: ${w.zhAudio}`)
   }
 })
+
+test('古诗课：poems.json 与目录课卡一致，句音/整首音齐全且非空', () => {
+  const poems = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'poems.json'), 'utf8')).poems
+  const byStage = new Map()
+  for (const p of poems) {
+    if (!byStage.has(p.stage)) byStage.set(p.stage, [])
+    byStage.get(p.stage).push(p)
+  }
+  const poemLessons = catalog.lessons.filter((l) => l.ref?.kind === 'zh-poem')
+  assert.equal(poemLessons.length, byStage.size, '古诗课卡数与有诗阶段数一致')
+  for (const p of poems) {
+    const abs = (rel) => path.join(ROOT, 'src', rel.replace(/^\//, ''))
+    const full = abs(`/static/audio-poem/${p.id}-full.mp3`)
+    assert.ok(fs.existsSync(full), `古诗 ${p.title} 整首音缺失`)
+    assert.ok(fs.statSync(full).size >= 5000, `古诗 ${p.title} 整首音过小（疑似 TTS 失败）`)
+    p.lines.forEach((line, i) => {
+      const f = abs(`/static/audio-poem/${p.id}-l${i}.mp3`)
+      assert.ok(fs.existsSync(f), `古诗 ${p.title} 第 ${i + 1} 句音缺失`)
+      assert.ok(fs.statSync(f).size >= 2500, `古诗 ${p.title} 第 ${i + 1} 句音过小（疑似 TTS 失败）: ${line}`)
+    })
+  }
+})

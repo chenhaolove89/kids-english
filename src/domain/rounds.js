@@ -21,7 +21,6 @@ export function buildListenPickRounds(pool, { count = 10, optionsPerRound = 4, r
 
 /** 语文汉字题型，与 quiz.vue 的渲染分支一一对应 */
 export const ZH_CHAR_KINDS = ['listen-pick', 'char-to-pinyin', 'pinyin-to-char', 'char-to-word']
-
 /**
  * 语文汉字多题型出轮：listen-pick 沿用听音选字（选项为池对象引用）；
  * 其余三种为文本题、不播题干音频，选项统一为 { id, label }：
@@ -68,6 +67,37 @@ export function buildZhCharRounds(pool, { count = 10, optionsPerRound = 4, rng =
         answer: w,
         prompt: kind === 'pinyin-to-char' ? w.pinyin : w.char,
         options: shuffle([w, ...distractors], rng).map((x) => ({ id: x.id, label: labelOf(x), color: x.color })),
+      }
+    })
+}
+
+/**
+ * 古诗填字出轮：听整句朗读，选出句中缺的字。
+ * pool 条目：{ id, char, lineText, lineAudio }（id 全局唯一，char 为目标字）。
+ * prompt 是把目标字挖成 □ 的整句；选项都是单字，干扰项按「字」去重
+ * （同一首诗里重复出现的字互相不能当干扰项，否则出现多个可判对选项）。
+ * @returns {Array<{kind:'poem-fill',answer,options,prompt,audio}>}
+ * @throws {Error} 'empty-pool' 当池为空
+ */
+export function buildPoemFillRounds(pool, { count = 10, optionsPerRound = 4, rng = Math.random } = {}) {
+  if (!Array.isArray(pool) || pool.length === 0) throw new Error('empty-pool')
+  const n = Math.max(2, Math.min(optionsPerRound, pool.length))
+  const chars = new Set(pool.map((x) => x.char))
+  if (chars.size < n) throw new Error('degenerate-pool') // 不同字太少，选项凑不齐且无判别力
+  return shuffle(pool, rng)
+    .slice(0, Math.min(count, pool.length))
+    .map((w) => {
+      const promptChars = [...w.lineText]
+      const idx = promptChars.indexOf(w.char)
+      const prompt = idx >= 0 ? promptChars.map((c, i) => (i === idx ? '□' : c)).join('') : w.lineText
+      const distractorChars = shuffle([...chars].filter((c) => c !== w.char), rng).slice(0, n - 1)
+      // 答案选项沿用池条目 id（判题统一按 answer.id 比对）；干扰项以字为 id（同轮内字互异，必唯一）
+      return {
+        kind: 'poem-fill',
+        answer: w,
+        prompt,
+        audio: w.lineAudio,
+        options: shuffle([{ id: w.id, label: w.char }, ...distractorChars.map((c) => ({ id: 'poem-char-' + c, label: c }))], rng),
       }
     })
 }

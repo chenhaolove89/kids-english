@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-09T08:35:30.468Z",
-  "contentVersion": "14623a090e",
+  "contentVersion": "b92d6f4017",
   "stages": [
     {
       "id": "qimeng",
@@ -416,6 +416,26 @@
       },
       "skillIds": [
         "zh-word-toys"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-poem-qimeng",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "必背古诗 · 点读",
+      "subtitle": "6 首",
+      "icon": "/static/img/hz-8bd7.png",
+      "color": "#B4532A",
+      "bg": "#F9EDE4",
+      "sort": "zz-poem",
+      "ref": {
+        "kind": "zh-poem",
+        "id": "qimeng"
+      },
+      "skillIds": [
+        "zh-poem-qimeng"
       ]
     },
     {
@@ -1076,6 +1096,26 @@
       },
       "skillIds": [
         "zh-word-vegetables"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-poem-g12",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "必背古诗 · 点读",
+      "subtitle": "6 首",
+      "icon": "/static/img/hz-8bd7.png",
+      "color": "#B4532A",
+      "bg": "#F9EDE4",
+      "sort": "zz-poem",
+      "ref": {
+        "kind": "zh-poem",
+        "id": "g12"
+      },
+      "skillIds": [
+        "zh-poem-g12"
       ]
     },
     {

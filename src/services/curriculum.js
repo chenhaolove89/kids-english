@@ -54,6 +54,8 @@ export function lessonUrl(lesson) {
   if (r.kind === 'en-level') return `/pages/quiz/quiz?subject=en&level=${r.id}&lessonId=${lid}`
   // 小短句：同一 learn 页面切到纯句子卡模式（不混排字词）
   if (r.kind === 'zh-sentences') return `/pages/learn/learn?subject=zh&sentences=1&level=${r.id}&lessonId=${lid}`
+  // 古诗点读：独立书单+点读页；填字挑战从页内进入，课时记在本课
+  if (r.kind === 'zh-poem') return `/pages/poem/poem?stage=${encodeURIComponent(r.id)}&lessonId=${lid}`
   if (r.kind === 'zh-level' && lesson.kind === 'learn')
     return `/pages/learn/learn?subject=zh&level=${r.id}&lessonId=${lid}`
   if (r.kind === 'zh-level') return `/pages/quiz/quiz?subject=zh&level=${r.id}&lessonId=${lid}`

@@ -39,6 +39,10 @@
     {
       "path": "pages/write/write",
       "style": { "navigationStyle": "custom", "disableScroll": true }
+    },
+    {
+      "path": "pages/poem/poem",
+      "style": { "navigationStyle": "custom", "disableScroll": true }
     }
   ],
   "tabBar": {

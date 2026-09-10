@@ -195,6 +195,67 @@ for (const lv of hanzi.levels) {
   })
 }
 
+// 古诗点读：诗目在 src/data/poems.json 手工维护（data 目录里唯一的非生成文件，
+// 无生成器会覆盖它；改诗必须重走文本审计门禁）。
+// 每个有诗的阶段一张「学一学」课卡；句音/整首音按命名约定落到 static/audio-poem/，
+// 这里逐条校验存在性。文本经两轮独立审计（2026-09-10），改诗必须重走审计门禁。
+const POEMS_FILE = path.join(ROOT, 'src', 'data', 'poems.json')
+const poemStageIds = new Set()
+if (fs.existsSync(POEMS_FILE)) {
+  const poemsSource = readJson(POEMS_FILE).poems || []
+  const seenPoems = new Set()
+  const byStage = new Map()
+  const LINE_OK = /^[\u4e00-\u9fff][\u4e00-\u9fff，。！？、]*[\u4e00-\u9fff，。！？]$/
+  for (const p of poemsSource) {
+    if (!p.id || !/^[a-z0-9-]+$/.test(p.id)) { fail(`古诗 id 非法: ${p.id}`); continue }
+    if (seenPoems.has(p.id)) { fail(`古诗 id 重复: ${p.id}`); continue }
+    seenPoems.add(p.id)
+    if (!p.title || !String(p.title).trim()) fail(`古诗 ${p.id} 缺标题`)
+    if (!!p.author !== !!p.dynasty) fail(`古诗 ${p.id} author/dynasty 必须同时有或同时无（教材不署名的整组留空）`)
+    if (!stageIds.has(p.stage)) { fail(`古诗 ${p.id} stage 非法: ${p.stage}`); continue }
+    if (!Array.isArray(p.lines) || p.lines.length < 2 || p.lines.length > 8) { fail(`古诗 ${p.id} 行数异常: ${p.lines?.length}`); continue }
+    p.lines.forEach((line, i) => {
+      if (typeof line !== 'string' || !LINE_OK.test(line)) fail(`古诗 ${p.id} 第 ${i + 1} 句含非法字符或格式异常: ${line}`)
+    })
+    // 音轨命名约定：{id}-full.mp3 + {id}-l{行号}.mp3（gen-zh-azure --poems 生成）
+    const audioPaths = [`/static/audio-poem/${p.id}-full.mp3`, ...p.lines.map((_, i) => `/static/audio-poem/${p.id}-l${i}.mp3`)]
+    for (const ap of audioPaths) {
+      const abs = path.join(ROOT, 'src', ap.replace(/^\//, ''))
+      if (!fs.existsSync(abs)) { fail(`古诗 ${p.title} 音轨不存在: ${ap}（先跑 node tools/gen-zh-azure.mjs --poems）`); continue }
+      const real = fs.readdirSync(path.dirname(abs)).find((f) => f === path.basename(abs))
+      if (real === undefined) fail(`古诗 ${p.title} 音轨大小写不匹配: ${ap}`)
+    }
+    // phoneme 标注：key 必须与某行全文一致，标注字必须在行内，拼音只允许字母+声调符号
+    for (const [lineText, marks] of Object.entries(p.ttsPinyin || {})) {
+      if (!p.lines.includes(lineText)) { fail(`古诗 ${p.id} ttsPinyin key 与任何一句都不匹配: ${lineText}`); continue }
+      for (const [ch, py] of Object.entries(marks)) {
+        if (!lineText.includes(ch)) fail(`古诗 ${p.id} ttsPinyin 标注字不在句中: ${ch}`)
+        if (!/^[a-zǎáàāěéèēǐíìīǒóòōǔúùūǘǚǜü]+$/i.test(py)) fail(`古诗 ${p.id} ttsPinyin 拼音格式异常: ${ch}=${py}`)
+      }
+    }
+    if (!byStage.has(p.stage)) byStage.set(p.stage, [])
+    byStage.get(p.stage).push(p)
+  }
+  for (const [stage, list] of byStage) {
+    poemStageIds.add(stage)
+    pushLesson({
+      id: `zh-poem-${stage}`,
+      subject: 'zh',
+      stage,
+      kind: 'learn',
+      title: '必背古诗 · 点读',
+      subtitle: `${list.length} 首`,
+      icon: '/static/img/hz-8bd7.png',
+      color: '#B4532A',
+      bg: '#F9EDE4',
+      // 排序落在识字/词语/小短句之后：字 → 词 → 句 → 篇
+      sort: 'zz-poem',
+      ref: { kind: 'zh-poem', id: stage },
+      skillIds: [`zh-poem-${stage}`],
+    })
+  }
+}
+
 // 语文词语课：复用英语分类的图片与中文释义做「看图识词」。
 // 英语教学构词类（字母/Sight words/词族/拼读/介词/会话）不进中文课，取舍配置在 curriculum.zhWords
 const zhSkip = new Set(source.zhWords?.skipCategories || [])
@@ -276,6 +337,7 @@ for (const l of lessons) {
   if (r.kind === 'en-level' && !enLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的英语级别 ${r.id}`)
   if (r.kind === 'zh-level' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-sentences' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
+  if (r.kind === 'zh-poem' && !poemStageIds.has(r.id)) fail(`课程 ${l.id} 引用不存在的古诗阶段 ${r.id}`)
   if (r.kind === 'math-level' && ![1, 2, 3, 4, 5, 6].includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
 }
 
