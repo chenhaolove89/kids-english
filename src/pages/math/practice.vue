@@ -12,8 +12,8 @@
       <view class="round-info">第 {{ qIdx + 1 }} / {{ questions.length }} 题（点题目可以再听一遍）</view>
 
       <view class="stage" @tap="respeak">
-        <!-- 点数题：喜欢的物品 + 彩色卡片拼贴 -->
-        <view v-if="q.kind === 'count'" class="tiles">
+        <!-- 点数题：喜欢的物品 + 彩色卡片拼贴（超过 6 个自动缩卡，防溢出） -->
+        <view v-if="q.kind === 'count'" class="tiles" :class="{ 'tiles-many': q.emojiList.length > 6 }">
           <view v-for="(e, i) in q.emojiList" :key="i" class="tile" :class="'tilt' + i % 4">
             <text class="tile-emoji">{{ e }}</text>
           </view>
@@ -21,7 +21,7 @@
 
         <!-- 看图加法：两组圆点 -->
         <view v-else-if="q.kind === 'add'" class="groups">
-          <view class="group">
+          <view class="group" :class="{ 'tiles-many': q.leftEmojis.length > 6 }">
             <view v-for="(e, i) in q.leftEmojis" :key="'l' + i" class="tile sm" :class="'tilt' + i % 4">
               <text class="tile-emoji">{{ e }}</text>
             </view>
@@ -36,7 +36,7 @@
 
         <!-- 看图减法：划掉一部分 -->
         <view v-else-if="q.kind === 'sub'" class="groups">
-          <view class="group">
+          <view class="group" :class="{ 'tiles-many': q.leftEmojis.length > 6 }">
             <view
               v-for="(e, i) in q.leftEmojis"
               :key="'s' + i"
@@ -47,7 +47,7 @@
             </view>
           </view>
           <text class="op-symbol" :style="{ color: level.color }">−</text>
-          <view class="group">
+          <view class="group" :class="{ 'tiles-many': q.rightEmojis.length > 6 }">
             <view v-for="(e, i) in q.rightEmojis" :key="'t' + i" class="tile sm" :class="'tilt' + (i + 1) % 4">
               <text class="tile-emoji">{{ e }}</text>
             </view>
@@ -78,7 +78,7 @@
         <!-- 数字算式 / 数列 / 听音 -->
         <view v-else class="equation-wrap">
           <text v-if="q.kind === 'listen'" class="listen-icon">🔊</text>
-          <text v-else class="equation" :class="{ 'equation-seq': q.kind === 'sequence' }">{{ q.display }}</text>
+          <text v-else class="equation" :class="{ 'equation-seq': q.kind === 'sequence' }" :style="{ fontSize: equationSize }">{{ q.display }}</text>
         </view>
       </view>
 
@@ -136,6 +136,15 @@ const finished = ref(false)
 const flash = ref('')
 const isRight = ref(false)
 const q = computed(() => questions.value[qIdx.value] || {})
+
+/** 算式按长度缩字：万以内/四则混合的长算式（831 + ? = 1415）96rpx 定字会顶破卡片 */
+const equationSize = computed(() => {
+  const len = (q.value?.display || '').length
+  if (len <= 8) return '96rpx'
+  if (len <= 12) return '72rpx'
+  if (len <= 16) return '56rpx'
+  return '44rpx'
+})
 
 const svc = getSessionService()
 const review = getReviewService()
@@ -406,6 +415,15 @@ function goBack() {
 }
 .tile.faded {
   opacity: 0.25;
+}
+/* 图案超过 6 个自动缩卡：一行能排 4-5 个，避免挤出卡片 */
+.tiles-many .tile {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+}
+.tiles-many .tile-emoji {
+  font-size: 50rpx;
 }
 .tilt0 { background: #ffe8cc; transform: rotate(-4deg); }
 .tilt1 { background: #ddebff; transform: rotate(3deg); }
