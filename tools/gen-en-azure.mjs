@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * 英文单词 Azure TTS 生成器（第三口音「课堂」）：用 en-US-JennyNeural（放慢 10%）
+ * 英文单词 Azure TTS 生成器（第三口音「课堂」）：用 en-GB-SoniaNeural（英音底，放慢 10%）
  * 生成 audio-azure/ 镜像，与 audio-gb（英式）同命名、同改写白名单。
  * 与 Edge 管线（audio/audio-gb）的区别：语速更慢、发音更接近课堂教学的清晰拼读。
+ * 语区取 en-GB 而非 en-US：用户课堂教材配套音频为英音，慢下来的美音仍对不上。
  *
  * 输入:src/data/words.json（词文本 w.en → 音频名取 w.audio 的 basename，与美式 1:1）
  *      另加反馈音 great_job。
@@ -21,7 +22,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const OUT_DIR = path.join(ROOT, 'src', 'static', 'audio-azure')
 const WORDS_FILE = path.join(ROOT, 'src', 'data', 'words.json')
 
-const VOICE = 'en-US-JennyNeural'
+const VOICE = 'en-GB-SoniaNeural'
+const LANG = 'en-GB' // 与 VOICE 语区一致；换成 Maisie 等其它英音也要同步改这里
 const RATE = '-10%' // 稍慢:课堂跟读节奏,比默认播报更清晰
 const OUTPUT_FORMAT = 'audio-24khz-48kbitrate-mono-mp3'
 const CONCURRENCY = 4
@@ -54,7 +56,7 @@ function loadCreds() {
 
 function buildSsml(text) {
   const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US"><voice name="${VOICE}"><prosody rate="${RATE}">${esc}</prosody></voice></speak>`
+  return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="${LANG}"><voice name="${VOICE}"><prosody rate="${RATE}">${esc}</prosody></voice></speak>`
 }
 
 async function synth(ssml, creds, attempt = 1) {

@@ -17,7 +17,7 @@ export function assetUrl(p) {
 
 /**
  * 英语发音口音重写：/static/audio/x.mp3 → 对应口音镜像目录。
- * us=原样；gb=audio-gb（Edge 英式）；az=audio-azure（Azure Jenny 课堂音，更慢更清晰）。
+ * us=原样；gb=audio-gb（Edge 英式）；az=audio-azure（英音底 Azure 课堂音，语速更慢）。
  * 只放行英文词/反馈音（字母开头、非 zh- 前缀、非 n数字、非四位码点）——语文与数学
  * 音频一律原样返回，即使调用方误传也不会读错科目。
  * 首字母必须兼容大写：Monday / China / CD 这类专有名词文件就是大写命名，
