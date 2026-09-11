@@ -49,7 +49,9 @@ const NOTO_FLAG_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.04
 const EN_VOICES = ['en-US-AnaNeural', 'en-US-JennyNeural']
 // 英式对应童声 Maisie（≈Ana 的 en-GB 版），不可用时降级成年女声 Sonia
 const EN_GB_VOICES = ['en-GB-MaisieNeural', 'en-GB-SoniaNeural']
-const ZH_VOICES = ['zh-CN-XiaoxiaoNeural', 'zh-CN-XiaoyiNeural']
+// 中文统一 Xiaoyi（与 gen-zh-azure 正典管线同音色）：Xiaoxiao 会把部分词末字一声
+// 读成降调（青蛙/春天/八），Edge 这条兜底管线也必须跟正典一致，否则重跑会带回来。
+const ZH_VOICES = ['zh-CN-XiaoyiNeural']
 
 // 汉字字音注音表（tools/zh_pron_overrides.py 生成）：多音字裸读会错的字，
 // 用「同音同调且使用实证无歧义」的替身字喂 TTS——音频里只有声音没有文字。

@@ -2,7 +2,7 @@
  * Azure Speech TTS 生成器(方案B):用 SSML <phoneme> 强制读音,全量重生成中文音频。
  *
  * 与 Edge 免费端点的区别:Azure 官方支持 phoneme 标签(文档化能力,非碰运气);
- * 音色同为 zh-CN-XiaoxiaoNeural,输出同为 24kHz/48kbps 单声道 MP3,与现有音频无缝混用。
+ * 音色 zh-CN-XiaoyiNeural,输出 24kHz/48kbps 单声道 MP3,与现有音频无缝混用。
  * 英文音频不在此重生成(无多音字问题,继续用 Edge 管线)。
  *
  * 输入:tools/zh-pron-pinyin.json(tools/zh_pinyin_annotate.py 生成)
@@ -32,7 +32,10 @@ const AUDIO_ZH_DIR = path.join(ROOT, 'src/static/audio-zh')
 const PINYIN_FILE = path.join(ROOT, 'tools/zh-pron-pinyin.json')
 const TEST_DIR = path.join(ROOT, '.tmp-azure-test')
 
-const VOICE = 'zh-CN-XiaoxiaoNeural'
+// 音色选 Xiaoyi 而非 Xiaoxiao：实测 Xiaoxiao 对「末字为一声」的部分词会强烈降调
+// （青蛙 收/峰 0.64、春天 0.62、八 0.43），一声被读成下坠的四声听感；Xiaoyi 同批
+// 词 0.79~0.99，且抽 20 条原本正常的词无一条变差。详见 tools/../tmp 试听对照。
+const VOICE = 'zh-CN-XiaoyiNeural'
 const OUTPUT_FORMAT = 'audio-24khz-48kbitrate-mono-mp3'
 const CONCURRENCY = 4 // F0 免费层限流较严,本地代理也扛不住高并发,宁慢勿败
 
