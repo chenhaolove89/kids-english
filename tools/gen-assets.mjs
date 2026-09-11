@@ -621,14 +621,8 @@ async function main() {
     if (FORCE || !fs.existsSync(charOut)) zhJobs.push({ id: `zh-${h.id}`, text: zhCharText(h), out: charOut })
     if (FORCE || !fs.existsSync(wordOut)) zhJobs.push({ id: `zh-${h.id}w`, text: h.word, out: wordOut })
   }
-  for (let n = 0; n <= 100; n++) {
-    const out = path.join(AUDIO_DIR, `n${n}.mp3`)
-    if (FORCE || !fs.existsSync(out)) zhJobs.push({ id: `n${n}`, text: String(n), out })
-  }
-  for (const m of ZH_MISC) {
-    const out = path.join(AUDIO_DIR, `${m.id}.mp3`)
-    if (FORCE || !fs.existsSync(out)) zhJobs.push({ id: m.id, text: m.text, out })
-  }
+  // 数字 n0-n100 与 ZH_MISC 短语已移交正典管线（tools/gen-zh-azure.mjs --misc）：
+  // 走 Azure 同一音色，避免 Edge 这边 --force 重跑时把旧音色带回来。
   console.log(`待生成：英文音频 ${enJobs.length}，中文音频 ${zhJobs.length}\n`)
 
   if (enJobs.length) {

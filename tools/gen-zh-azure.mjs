@@ -46,6 +46,7 @@ const CHARS_ONLY = argv.has('--chars')
 const WORDS_ONLY = argv.has('--words')
 const POEMS_MODE = argv.has('--poems')
 const LABELS_MODE = argv.has('--labels')
+const MISC_MODE = argv.has('--misc')
 // --only zh-897fs,zh-4e00w：精确重生成指定条目（改单条内容时用，避免整批重写）
 const ONLY = (() => {
   const i = process.argv.indexOf('--only')
@@ -256,8 +257,70 @@ async function runLabels() {
   }
 }
 
+// ---- 数字 0-100 与数学/反馈短语（--misc）----
+// 这批过去由 Edge 管线（gen-assets 的 zhJobs）生成，语音换代后会与正典管线的新音色
+// 新旧混用（实测 121 条停留在旧音色），故收到这里统一走 Azure。
+// 不加 phoneme：数字含「一」的变调（一百 = yì bǎi），逐字强制一声会读错，走默认读音。
+const ZH_MISC = [
+  ['zh-great', '答对啦，真棒！'],
+  ['zh-try', '再想一想！'],
+  ['zh-awesome', '太厉害了！'],
+  ['zh-ok', '没关系，再试一次。'],
+  ['zh-plus', '加'],
+  ['zh-minus', '减'],
+  ['zh-times', '乘'],
+  ['zh-divided', '除以'],
+  ['zh-howmany', '等于几？'],
+  ['zh-equals', '等于'],
+  ['zh-ji', '几'],
+  ['zh-total', '一共有几个？'],
+  ['zh-more', '哪边的更多？'],
+  ['zh-less', '哪边的更少？'],
+  ['zh-bigger', '哪个数更大？'],
+  ['zh-smaller', '哪个数更小？'],
+  ['zh-missing', '缺少的数字是几？'],
+  ['zh-listen', '请听一听'],
+  ['zh-countit', '数一数'],
+  ['zh-choose', '请选一选'],
+]
+
+function miscJobs() {
+  const jobs = []
+  for (let n = 0; n <= 100; n++) jobs.push({ id: `n${n}`, text: String(n), pinyin: null, out: path.join(AUDIO_DIR, `n${n}.mp3`) })
+  for (const [id, text] of ZH_MISC) jobs.push({ id, text, pinyin: null, out: path.join(AUDIO_DIR, `${id}.mp3`) })
+  return jobs
+}
+
+async function runMisc() {
+  const jobs = miscJobs()
+  console.log(`== 数字与数学/反馈短语: ${jobs.length} 条 ==`)
+  if (DRY_RUN) {
+    for (const j of jobs.slice(0, 6)) console.log(`[${j.id}] ${j.text}`)
+    console.log(`共 ${jobs.length} 条`)
+    return
+  }
+  const creds = loadCreds()
+  if (!creds.key || !creds.region) {
+    console.error('缺少 AZURE_SPEECH_KEY / AZURE_SPEECH_REGION(环境变量或 .env.local)')
+    process.exit(1)
+  }
+  const worker = async (job) => fs.writeFileSync(job.out, await synth(buildSsml(job.text, job.pinyin), creds))
+  let failures = await pool('MISC', jobs, worker)
+  if (failures.length) {
+    console.log(`-- 串行重试 ${failures.length} 条 --`)
+    const retryIds = new Set(failures.map((f) => f.id))
+    failures = await pool('MISC-RETRY', jobs.filter((j) => retryIds.has(j.id)), worker)
+  }
+  console.log(`\n== 完成 == 成功 ${jobs.length - failures.length} / ${jobs.length} 条`)
+  if (failures.length) {
+    for (const f of failures.slice(0, 20)) console.log(`  ✗ ${f.id}: ${f.error}`)
+    process.exitCode = 1
+  }
+}
+
 async function main() {
   if (LABELS_MODE) return runLabels()
+  if (MISC_MODE) return runMisc()
   if (POEMS_MODE) return runPoems()
   const { items } = JSON.parse(fs.readFileSync(PINYIN_FILE, 'utf8'))
   const charIds = Object.keys(items).filter((id) => /^zh-[0-9a-f]{4}[ws]?$/.test(id))
