@@ -12,6 +12,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="apple-touch-icon" href="/static/icons/icon.png" />
+    <!-- 标签页图标：少了这一行浏览器会去探 /favicon.ico（站点根没有该文件）→ 控制台一条 404、
+         标签页也没有图标。用已有的 icon.png，发布脚本会把 /static/ 改写成 ./static/。 -->
+    <link rel="icon" type="image/png" href="/static/icons/icon.png" />
     <link rel="manifest" href="/static/manifest.webmanifest" />
     <!--preload-links-->
     <!--app-context-->

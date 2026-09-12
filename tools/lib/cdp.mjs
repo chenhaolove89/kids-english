@@ -84,6 +84,9 @@ export class Cdp {
     this.pageSideErrors = []
     this.requests = []
     this.fileChoosers = []
+    // 运行时 HTTP 状态：静态审计看不到"运行时拼出来的 URL"，只有真跑才知道 404
+    // （例如 mathgen 按 `${a}.mp3` 拼数字音轨，文件名拼错时两条审计都发现不了）
+    this.responses = new Map()
     this.lastRoute = '(init)'
     ws.addEventListener('message', (ev) => {
       const msg = JSON.parse(ev.data)
@@ -101,6 +104,10 @@ export class Cdp {
         this.pageErrors.push(`[${this.lastRoute}] ` + (msg.params.exceptionDetails?.exception?.description || 'unknown exception'))
       }
       if (msg.method === 'Network.requestWillBeSent') this.requests.push(msg.params.request.url)
+      if (msg.method === 'Network.responseReceived') {
+        const r = msg.params.response
+        if (r && r.url) this.responses.set(r.url.split('?')[0].split('#')[0], r.status)
+      }
       if (msg.method === 'Page.fileChooserOpened') this.fileChoosers.push(msg.params)
     })
   }

@@ -212,7 +212,163 @@ async function main() {
       `${probeName}: status=${notCached.status} bytes=${notCached.bytes} 被缓存=${partialCached}`,
     )
 
+    // ---------- 3c. PWA manifest 完整性 ----------
+    // manifest 里的 URL 是**相对 manifest 自身**解析的，而它位于 /static/ 下：
+    //  - start_url / scope 必须落在应用根，否则装到桌面后打开的是 /static/ 目录（或导航跑出作用域）；
+    //  - 图标路径若写成绝对 /static/...，发布脚本的相对化会把它改成 ./static/... →
+    //    从 /static/ 出发变成 /static/static/... → 404，图标丢失。
+    // 所以这里在"发布产物"上按 URI 规则实际解析一遍。
+    {
+      const mPath = path.join(PUBLISH_DIR, 'static', 'manifest.webmanifest')
+      let mani = null
+      try {
+        mani = JSON.parse(fs.readFileSync(mPath, 'utf8'))
+      } catch (e) {
+        /* 下面断言会报 */
+      }
+      const origin = new URL(BASE).href
+      const manifestUrl = new URL('static/manifest.webmanifest', origin)
+      const appRoot = new URL('./', origin)
+      const startUrl = mani ? new URL(mani.start_url, manifestUrl) : null
+      const scope = mani && mani.scope ? new URL(mani.scope, manifestUrl) : manifestUrl ? new URL('./', manifestUrl) : null
+      check(
+        'PWA manifest 可解析且声明了名字',
+        !!mani && typeof mani.name === 'string' && mani.name.length > 0,
+        mani ? `${mani.name} / ${mani.short_name}` : '解析失败',
+      )
+      check(
+        'manifest 的 start_url 落在应用根（不是 /static/）',
+        !!startUrl && startUrl.href === appRoot.href,
+        startUrl ? `${mani.start_url} → ${startUrl.pathname}（应为 ${appRoot.pathname}）` : '',
+      )
+      check(
+        'manifest 的 scope 覆盖整个应用',
+        !!scope && scope.href === appRoot.href,
+        scope ? `${mani.scope || '(默认)'} → ${scope.pathname}（应为 ${appRoot.pathname}）` : '',
+      )
+      const icons = (mani && mani.icons) || []
+      const missingIcons = icons.filter((ic) => {
+        const rel = new URL(ic.src, manifestUrl).pathname.replace(new URL(BASE).pathname, '')
+        return !fs.existsSync(path.join(PUBLISH_DIR, rel))
+      })
+      check(
+        'manifest 声明的图标在产物里都存在且路径可达',
+        icons.length > 0 && missingIcons.length === 0,
+        icons.length ? `${icons.length} 个：${icons.map((i) => i.src).join(', ')}${missingIcons.length ? ' 缺失 ' + missingIcons.map((i) => i.src).join(',') : ''}` : '没有声明任何图标',
+      )
+      const linkOk = /rel="icon"/.test(fs.readFileSync(path.join(PUBLISH_DIR, 'index.html'), 'utf8'))
+      check('index.html 声明了标签页图标（否则浏览器会去探 /favicon.ico 404）', linkOk)
+    }
+
+    // ---------- 3d. 发布产物运行期零 404（路径相对化改写的正确性） ----------
+    // 发布脚本把产物里的 `/static/...` 逐处改写成 `./static/...`，改漏一处就只在
+    // **线上** 404（构建目录照样正常，smoke 跑的是构建目录，永远看不到）。
+    // 所以这里在发布产物上真跑一遍主要页面，并主动取几个运行时拼出来的资源。
+    const imgName = fs
+      .readdirSync(path.join(PUBLISH_DIR, 'static', 'img'))
+      .filter((f) => f.endsWith('.png'))
+      .sort()[0]
+    cdp.responses.clear()
+    const probeRoutes = [
+      'pages/map/map',
+      'pages/learn/learn?subject=en&cat=animals&lessonId=en-learn-animals',
+      'pages/quiz/quiz?subject=en&level=1&lessonId=en-quiz-l1',
+      'pages/learn/learn?subject=zh&level=1&lessonId=zh-learn-l1',
+      'pages/math/practice?level=2',
+      'pages/poem/poem?stage=qimeng&lessonId=zh-poem-qimeng',
+      'pages/write/write?char=%E4%B8%80&cp=4e00&pinyin=y%C4%AB',
+      'pages/collection/collection',
+      'pages/parent/parent',
+    ]
+    for (const route of probeRoutes) {
+      await cdp.navigate(`${BASE}/#/${route}`)
+      await sleep(1400)
+    }
+    // 运行时拼出来的路径最容易漏改写：音频/图片/笔顺数据/manifest/图标各取一个
+    const fetched = await cdp.eval(`
+      const urls = ['./static/audio/dog.mp3', './static/img/${imgName}', './static/icons/icon.png', './static/manifest.webmanifest', './static/hanzi-data/4e00.json']
+      const out = []
+      for (const u of urls) {
+        try {
+          const r = await fetch(u)
+          out.push(u.replace('./static/', '') + ':' + r.status)
+        } catch (e) {
+          out.push(u.replace('./static/', '') + ':ERR')
+        }
+      }
+      return out
+    `)
+    const publishedBad = [...cdp.responses.entries()]
+      .filter(([u]) => u.startsWith(BASE))
+      .filter(([, s]) => s >= 400)
+    check(
+      '发布产物运行期零 404（相对化改写无遗漏）',
+      publishedBad.length === 0 && cdp.responses.size > 30,
+      publishedBad.length
+        ? `${publishedBad.length} 条：${publishedBad.slice(0, 5).map(([u, s]) => `${s} ${u.replace(BASE, '')}`).join(' | ')}`
+        : `检查 ${cdp.responses.size} 个响应；主动取值 ${fetched.join(' ')}`,
+    )
+
+    // ---------- 3e. 绝对路径改写自检（静态，比运行时 404 更早暴露问题） ----------
+    // 发布脚本按三种引号形态改写 `/static/` → `./static/`。漏掉的形态（例如写成
+    // `"/static"` 不带尾斜杠、或用变量拼）不会报错，只在线上 404。
+    // 规则：**引号/括号紧跟 /static/** 才算"代码里的字面量"；
+    //       注释里提到的（前面是空格或 *）与 sw.js 的运行时判定（includes('/static/')）不算。
+    // 自证：同一条规则跑在**构建产物**上必然大量命中（那里绝对路径是预期的），
+    //       跑在发布产物上必须为 0 —— 两边一起看，这条断言才不可能"永远为绿"。
+    {
+      const TEXT_EXT = ['.js', '.css', '.html', '.json', '.webmanifest']
+      const RUNTIME_TEST = /(?:includes|startsWith|endsWith|indexOf)\('[^']*\/static\/[^']*'\)/
+      function scanAbsoluteStatic(dir) {
+        const files = []
+        ;(function walkText(d) {
+          for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+            const p = path.join(d, e.name)
+            if (e.isDirectory()) walkText(p)
+            else if (TEXT_EXT.includes(path.extname(e.name).toLowerCase())) files.push(p)
+          }
+        })(dir)
+        const hits = []
+        for (const f of files) {
+          const text = fs.readFileSync(f, 'utf8')
+          const re = /["'`(]\s*\/static\//g
+          let m
+          while ((m = re.exec(text))) {
+            const around = text.slice(Math.max(0, m.index - 60), m.index + 60)
+            if (RUNTIME_TEST.test(around)) continue
+            hits.push(`${path.relative(dir, f)} → …${around.replace(/\s+/g, ' ')}…`)
+          }
+        }
+        return { files, hits }
+      }
+
+      const pub = scanAbsoluteStatic(PUBLISH_DIR)
+      check(
+        '发布产物里没有残留的绝对 /static 字面量（改写完整性静态自检）',
+        // 必须同时要求"确实扫到了文件"：files 为空时 hits 也是 0 → 恒真假绿灯
+        pub.files.length > 0 && pub.hits.length === 0,
+        pub.hits.length ? `${pub.hits.length} 处：${pub.hits.slice(0, 3).join(' | ')}` : `扫了 ${pub.files.length} 个文本文件`,
+      )
+      // 阴性对照（阳性对照更准确）：构建产物里绝对路径本就存在，规则必须能大量命中，
+      // 否则说明规则写坏了（例如正则不再匹配）——那样上面那条 0 就是假绿灯。
+      const BUILD_DIR = path.join(ROOT, 'dist', 'build', 'h5')
+      if (fs.existsSync(BUILD_DIR)) {
+        const build = scanAbsoluteStatic(BUILD_DIR)
+        check(
+          '同一条规则在构建产物上大量命中（证明改写自检有判别力）',
+          build.hits.length > 100,
+          `构建产物命中 ${build.hits.length} 处 / 发布产物 ${pub.hits.length} 处`,
+        )
+      } else {
+        check('同一条规则在构建产物上大量命中（证明改写自检有判别力）', false, `找不到 ${BUILD_DIR}，无法做对照`)
+      }
+    }
+
     // ---------- 4. 断网刷新仍能打开（核心） ----------
+    // 上面为查 404 连着跑了 9 个页面，最后停在家长页；这里先回到课程主页，
+    // 下面的断网刷新断言依赖"当前是首页"（阶段胶囊 ×4）。
+    await cdp.navigate(`${BASE}/#/pages/map/map`)
+    await sleep(1500)
     await cdp.send('Network.emulateNetworkConditions', {
       offline: true,
       latency: 0,

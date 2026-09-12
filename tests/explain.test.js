@@ -20,7 +20,19 @@ test('算式题把 ? 填成答案（讲解的核心：让孩子看到完整算�
   assert.equal(mathExplain({ kind: 'div', display: '42 ÷ 6 = ?', answer: '7' }), '算式是 42 ÷ 6 = 7')
   assert.equal(mathExplain({ kind: 'addDec', display: '1.3 + 0.4 = ?', answer: '1.7' }), '小数点对齐： 1.3 + 0.4 = 1.7')
   assert.equal(mathExplain({ kind: 'addFrac', display: '1/4 + 2/4 = ?', answer: '3/4' }), '分母不变、分子相加： 1/4 + 2/4 = 3/4')
-  assert.equal(mathExplain({ kind: 'mixed2', display: '(3 + 4) × 5 = ?', answer: '35' }), '先乘除、后加减（有括号先算括号）： (3 + 4) × 5 = 35')
+  // 四则混合：按形式给**对应**的规则（写全两条会超长，也会分散注意）
+  assert.equal(
+    mathExplain({ kind: 'mixed2', display: '(3 + 4) × 5 = ?', answer: '35', sig: 'mixed2:paren:(3 + 4) × 5 = ?' }),
+    '有括号先算括号： (3 + 4) × 5 = 35',
+  )
+  assert.equal(
+    mathExplain({ kind: 'mixed2', display: '6 × 7 + 20 = ?', answer: '62', sig: 'mixed2:mulAdd:6 × 7 + 20 = ?' }),
+    '先算乘法再加： 6 × 7 + 20 = 62',
+  )
+  assert.equal(
+    mathExplain({ kind: 'mixed2', display: '40 − 6 × 3 = ?', answer: '22', sig: 'mixed2:subMul:40 − 6 × 3 = ?' }),
+    '先算乘法再减： 40 − 6 × 3 = 22',
+  )
 })
 
 test('缺数题给出"补上缺的数"而不是干巴巴的答案', () => {

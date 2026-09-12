@@ -21,10 +21,24 @@ alwaysApply: true
    - `npm run test`（纯函数/服务/存储/契约）、`npm run validate:content`、`npm run check:layering` 全绿
    - `npm run audit:assets`（引用断链、空文件、**截断**、音轨缺口）+ `npm run audit:audio`（解码全部 mp3：静音/过短/削波）
    - `npm run build:h5` 退出码 0
-   - **浏览器实测**：`node tools/serve.mjs 4173` + `npm run smoke:h5`（真实 Chrome、60 项断言：页面渲染、答错揭晓、会话快照/暂停/恢复、错题重练、口音切换与缺文件回退、返回键兜底、连点节流、路由守卫、低龄模式内容安全、零 console 报错）。触发过 bug 的场景必须强刷缓存再走一遍（`tab.reload()`）。
+   - **浏览器实测**：`node tools/serve.mjs 4173` + `npm run smoke:h5`（真实 Chrome、**153 项断言**：12 个页面渲染与交互、答错讲解、会话快照/暂停/恢复/重练、口音切换与缺文件回退、返回键兜底、连点节流、路由守卫、低龄模式内容安全（含阴性对照）、描红按单字点亮、古诗点读记账、数学 9 关全题型、**运行期零 404**、零 console 报错）。触发过 bug 的场景必须强刷缓存再走一遍（`tab.reload()`）。若忘了起预览服务器，冒烟会 fail-fast 提示（不会白等十几分钟）。
    - **视觉回归**：改了页面结构/样式时用 `node tools/shots.mjs capture 基线` → 改 → `capture 对照` → `compare`；纯逻辑重构优先做新旧实现输入输出等价比对（像素只作辅助，工具有已文档化的绘制噪声）。
-   - **发布前（改了构建 / service worker / 资源路径时必跑）**：`npm run build:h5` → `node tools/publish-github-pages.mjs` → `npm run verify:offline`（对发布产物验证：SW 接管、外壳预缓存、**断网刷新仍能打开**、离线可听音、换代清旧缓存）。注意 service worker **只存在于发布产物**，`smoke:h5` 跑的是构建目录，测不到离线。
+   - **发布前（改了构建 / service worker / 资源路径时必跑）**：`npm run build:h5` → `node tools/publish-github-pages.mjs` → `npm run verify:offline`。它跑的是**发布产物**（22 项）：SW 接管与外壳预缓存、**断网刷新仍能打开**、离线可听音（媒体元素真播放）、换代清旧缓存、**PWA manifest 完整性**（名字/`start_url`/`scope` 落在应用根、声明的图标在产物里存在、`index.html` 声明了标签页图标）、**发布产物运行期零 404**（跑 9 个页面 + 主动取运行时拼出来的音频/图片/笔顺数据）、以及**绝对路径改写完整性静态自检**（扫全部文本产物确认没有残留 `/static/` 字面量，并附带阳性对照：同一条规则在构建产物上必须命中 >100 处，否则说明规则本身失效）。
+     为什么必须单独跑：service worker 与 `/static/` → `./static/` 的相对化**只存在于发布产物**；`smoke:h5` 跑的是构建目录，这两类问题它一个都测不到。
    - 本环境没有浏览器/设备时，明确写"未实测"并说明原因，不得用"应该没问题"代替。
+
+## 新增内容时的清单（按内容类型查对应门禁）
+
+| 新增了什么 | 必跑 | 要看到的证据 |
+|---|---|---|
+| 词/字/句（改 `tools/*.csv`） | `merge-words` → `gen:assets` → `build:content` → `validate:content` → `audit:assets` → `smoke:h5` | 目录课数与源一致（contentVersion 变化）、池大小 ≥10、图音字配对齐全 |
+| 音频（TTS / 新口音） | `gen-audio-volumes`（**改音频后必须重跑**，否则响度表陈旧 → 播放响度偏差可达 8dB；2026-09 实测重跑后 3026 条里有 715 条增益变化）→ `audit:audio` → `smoke:h5` | 静音 / 疑似截断(<0.35s) / 削波 全 0；`audio-gb` 镜像齐全；口音切换真的取到 gb 音轨 |
+| 图片 | `audit:assets` → `shots capture/compare` | 无孤儿、无空文件、无截断；页面截图无回归 |
+| 新题型（`src/domain/*`） | `npm test`（题型集合自洽契约）→ `smoke:h5`（该关全部题型抽样作答） | 每题型「要么 4 选项、要么 2 张比大小卡」、题干非空、作答有反馈、无白屏 |
+| 新学段 / 新课程 | `build:content` → `validate:content` → `smoke:h5` → `shots` 重建基线 | 阶段卡与入口可点、池非空（填空池要求每阶段不同字 ≥ 选项数）、内容不被低龄模式误伤 |
+| 任何"只在发布产物才有"的东西（SW/相对化/manifest） | `publish-github-pages.mjs` → `verify:offline` | 22 项全绿（含断网可开、零 404、改写自检与阳性对照） |
+
+> 写新断言时先问一句：**"这条断言会不会永远为真？"** 零长度负面断言（`x.length === 0`）、空数组 `.every()`、空来源的 `.filter()` 都会恒真。做法是同时断言"确实观察到了东西"（如 `seen.size >= 20`），或加一条阳性/阴性对照。
 
 ## 每科审计清单（累积自实战）
 

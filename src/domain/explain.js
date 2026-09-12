@@ -26,7 +26,6 @@ const EQUATION_LEAD = {
   addFrac: '分母不变、分子相加：',
   sequence: '找规律：',
   pattern: '找规律：',
-  mixed2: '先乘除、后加减（有括号先算括号）：',
 }
 
 /** 从应用题句子里拎出参与运算的数（"小明有 45 颗糖，爸爸又买来 23 颗糖" → [45,23]） */
@@ -46,6 +45,12 @@ export function mathExplain(q) {
   // 1) 带算式的题型：把 ? 填上（sequence/pattern 的 display 也是"…  ?"）
   if (ans && typeof q.display === 'string' && q.display.includes('?')) {
     const filled = q.display.replace('?', ans)
+    // 四则混合按题型给**对应**的那条规则（写全两条会超长换行，也会分散注意）
+    if (kind === 'mixed2') {
+      const form = String(q.sig || '').split(':')[1] || ''
+      const rule = form === 'paren' ? '有括号先算括号：' : form === 'subMul' ? '先算乘法再减：' : '先算乘法再加：'
+      return `${rule} ${filled}`
+    }
     return `${EQUATION_LEAD[kind] || '算式是'} ${filled}`
   }
 

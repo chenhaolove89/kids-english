@@ -15,6 +15,10 @@
 >   带 `Range` 的请求（媒体元素取音频就是这么发的）会从缓存的完整响应里切出 206；
 >   反向也守住：在线拿到的 206 半截内容**不会**被当成完整文件写进缓存。
 >   这条路径用 `npm run verify:offline` 验证（含"断网时媒体元素真能播放"）。
+> - 另有两类**只在线上才会出问题**的防线，同样由 `npm run verify:offline` 覆盖：
+>   `/static/…` → `./static/…` 的**相对化改写完整性**（静态扫全部文本产物 + 真跑 9 个页面确认零 404；
+>   构建目录里看不出问题），以及 **PWA manifest** 的 `start_url`/`scope`/图标必须解析到应用根
+>   （manifest 位于 `/static/` 下、其内 URL 按 manifest 自身解析，写绝对路径会被改写坏）。
 > - uni统计已关闭（`src/manifest.json` 的 `uniStatistics.enable = false`，构建产物里不再有 tongji 上报代码）。
 >   uni-h5 运行时里仍带有 DCloud 广告模块的代码（`hac1/has1.dcloud.net.cn`），
 >   本项目从不配置 adpid，因此不会发起请求；如需彻底剔除需改动 node_modules，不做。
@@ -62,7 +66,9 @@ tools/audit-assets.mjs    资源审计：引用断链/空文件/截断/音轨缺
 tools/measure-audio.mjs   音频体检：解码全部 mp3 找静音/过轻/削波（npm run audit:audio）
 tools/smoke-h5.mjs        真实 Chrome + CDP 冒烟测试（零依赖）：100 项断言，页面渲染/交互/作答/会话恢复/存储/零报错（npm run smoke:h5）
 tools/shots.mjs           截图回归：12 页 × 2 视口，capture / compare（含噪声底线说明与容差开关；npm run shots）
-tools/verify-offline.mjs  离线可用性验证（**跑发布产物**）：SW 接管 / 外壳预缓存 / 断网刷新可开 / 离线可听音 / 换代清旧缓存（npm run verify:offline）
+tools/verify-offline.mjs  发布产物验证（21 项）：SW 接管 / 外壳预缓存 / 断网刷新可开 / 离线可听音 / 换代清旧缓存 /
+                          PWA manifest 完整性（名字·start_url·scope·图标·页签图标）/ 发布产物运行期零 404 /
+                          绝对路径改写完整性静态自检（npm run verify:offline）
 tools/lib/cdp.mjs         冒烟与截图共用的 CDP 客户端（同一份实现，避免"修一处另一处没修"）
 tools/lib/                校验与写入的共用小模块（资源可用性判定 / 原子写文件）
 tools/check-layering.mjs  分层门禁：domain 纯净、无反向依赖、存储收口（npm run check:layering）
@@ -156,11 +162,23 @@ node tools/publish-github-pages.mjs   # 发布产物（子路径相对化 + sw.j
 
 ## 路线图
 
-- ✅ Phase 0/1：架构分层 + 课程目录（**171 课**）+ 课时会话与事件流 + 首答星级 + 继续学习 + 本机学习摘要
+- ✅ Phase 0/1：架构分层 + 课程目录（**173 课**）+ 课时会话与事件流 + 首答星级 + 继续学习 + 本机学习摘要
 - ✅ Phase 2（部分）：错题本与 Leitner 复习（含毕业出本）、家长周报、收集图鉴、古诗点读、笔顺描红
-- ⬜ Phase 2 未完：**答错后的讲解环（当前只揭晓正确答案，没有解析）**、五六年级阅读/写作内容、数学高年级关卡
+- ✅ **答错后的讲解环**（2026-09）：揭晓不再只说"答案是哪个"，而是按题型讲一句为什么
+  （算式把 `?` 填成答案、应用题把数拎出来给算式、比大小说清两边各几个与问的是多/少、
+  听音选图说出听到的词与中文释义、古诗填字把整句说出来）。实现见 `src/domain/explain.js`
+  （纯函数 + `tests/explain.test.js`），拿不准时返回空串并退回原来的兜底文案——宁可不讲，不讲错。
+- ⬜ Phase 2 未完：五六年级阅读/写作内容、数学高年级关卡
 - ⬜ Phase 3：微信小程序验证（资源 CDN 化是前置条件：静态资源 **87.5MB** 远超小程序主包 2MB 限制；音频 Howler 需条件编译换 uni.createInnerAudioContext）
 - ⬜ Phase 4：多孩子档案（当前 6 个扁平存储键无 profileId）+ 云同步（上传作答事件流重放聚合）+ App 云打包
+
+### 学习记录口径（2026-09 起）
+
+- `learn`（学一学）/ `challenge`（挑战）**计入课时完成**；挑战另按首答正确率给星。
+- `practice`（**笔顺描红、古诗点读**）会进作答流、家长页「最近记录／周报／练习时长」，但**不计课时完成、不给星**——
+  写完一个字或读完一首诗不等于学完一门课（识字课一堂 48 字、古诗课一个阶段 6 首）。
+- 描红**按单字点亮**图鉴「认识」（`recordCharPracticed`），不写整课、不进掌握；点读只留痕不点亮图鉴。
+
 
 ## 许可协议
 

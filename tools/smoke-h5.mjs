@@ -90,6 +90,27 @@ async function checkEmptyPoolFlash(cdp, url, label) {
 }
 
 /**
+ * 点击选择器命中的第 index 个元素（先等它出现）。
+ * 不要写裸的 `querySelectorAll(sel)[i].click()`：页面没渲染完时它会抛
+ * "Cannot read properties of undefined (reading 'click')"，异常冒出 main() 会让
+ * 整个冒烟中断（报告里像几十项集体失败）。等不到就返回 false，交给断言报。
+ */
+async function tap(cdp, selector, index = 0, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs
+  for (;;) {
+    const ok = await cdp.eval(`
+      const el = document.querySelectorAll(${JSON.stringify(selector)})[${index}]
+      if (!el) return false
+      el.click()
+      return true
+    `)
+    if (ok) return true
+    if (Date.now() > deadline) return false
+    await sleep(250)
+  }
+}
+
+/**
  * 抓一条"答错揭晓"文案：逐题点选项（先点第一个，多半会错），
  * 直到 `.reveal-text` 出现内容。揭晓期间页面会屏蔽点击（REVEAL_MS≈3s），
  * 所以每轮都要轮询"出现揭晓 / 题号变化"再继续，不能固定等待。
@@ -108,14 +129,22 @@ async function captureRevealOnce(cdp, route, maxRounds) {
   await cdp.freshNavigate(`${route}`)
   await sleep(2400)
   for (let round = 0; round < maxRounds; round++) {
-    const st = await cdp.eval(`
-      return {
-        round: (document.querySelector('.round-info')||{}).innerText || '',
-        n: Math.max(document.querySelectorAll('.option, .opt').length, document.querySelectorAll('.compare-card').length),
-        done: !!document.querySelector('.result'),
-      }
-    `)
-    if (st.done || !st.n) return ''
+    // 先等页面真的出题：紧跟上一个大场景时，2.4s 可能还不够渲染，
+    // 早先这里用 `if (!st.n) return ''` 直接放弃 → 整段抓不到（假失败）。
+    let st = null
+    for (let wait = 0; wait < 20; wait++) {
+      st = await cdp.eval(`
+        return {
+          round: (document.querySelector('.round-info')||{}).innerText || '',
+          n: Math.max(document.querySelectorAll('.option, .opt').length, document.querySelectorAll('.compare-card').length),
+          done: !!document.querySelector('.result'),
+        }
+      `)
+      if (st.done || st.n) break
+      await sleep(300)
+    }
+    if (st.done) return ''
+    if (!st.n) return ''
     for (let k = 0; k < st.n; k++) {
       await cdp.eval(`
         const els = document.querySelectorAll('.compare-card').length ? document.querySelectorAll('.compare-card') : document.querySelectorAll('.option, .opt')
@@ -222,6 +251,20 @@ async function answerOneRound(cdp, timeoutMs = 7000) {
 
 /* ---------------- 主流程 ---------------- */
 async function main() {
+  // 先确认预览服务器在跑：否则 freshNavigate 会停在 about:blank，
+  // 报出来的是一句莫名其妙的 SecurityError: Failed to read the 'localStorage'（在这一轮踩过，
+  // 白等了十几分钟）。这里提前用一句人话退出。
+  try {
+    const res = await fetch(`${BASE}/index.html`, { method: 'GET' })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  } catch (e) {
+    console.error(
+      `\n✖ 连不上预览服务器 ${BASE}（${e && e.message}）\n` +
+        `  请先在另一个终端运行：node tools/serve.mjs 4173\n` +
+        `  （构建产物目录是 dist/build/h5，需先 npm run build:h5）\n`,
+    )
+    process.exit(2)
+  }
   // CDP 客户端与 Chrome 启动都在 tools/lib/cdp.mjs（与 tools/shots.mjs 共用一份实现）：
   // 之前这里复制了一整份 class，导致"修一处、另一处没修"（例如 eval 包 async IIFE）。
   const cdp = await launchChrome({ port: CDP_PORT })
@@ -297,7 +340,7 @@ async function main() {
       if (!before.count) break
       // 依次点每个选项，直到某次点错触发揭晓
       for (let i = 0; i < before.count; i++) {
-        await cdp.eval(`document.querySelectorAll('.option')[${i}].click(); return 1`)
+        await tap(cdp, '.option', i)
         await sleep(300)
         const r = await cdp.eval(`
           const bar = document.querySelector('.reveal-bar')
@@ -450,7 +493,7 @@ async function main() {
     `)
     check('有错题时首页出现「错题重练」入口', reviewEntry.cards > 0 && reviewEntry.dueKeys > 0, reviewEntry.text || `错题本条目 ${reviewEntry.dueKeys}`)
     if (reviewEntry.cards > 0) {
-      await cdp.eval(`document.querySelector('.review-card').click(); return 1`)
+      await tap(cdp, '.review-card')
       await sleep(1500)
       const reviewPage = await cdp.eval(`
         return { url: location.hash, opts: document.querySelectorAll('.option').length, title: (document.body.innerText||'').slice(0,60) }
@@ -540,7 +583,7 @@ async function main() {
     check('描红页三个动作按钮齐备', writeUi.actions === 3, `${writeUi.actions} 个`)
     check('笔顺数据加载正常（无失败提示）', !writeUi.hint.includes('没加载出来'), writeUi.hint)
     // 「看笔顺」演示不应抛错
-    await cdp.eval(`document.querySelectorAll('.action')[1].click(); return 1`)
+    await tap(cdp, '.action', 1)
     await sleep(1200)
 
     // ---------- 10b. 笔顺数据 404 的失败路径（真实 404，不是打桩） ----------
@@ -608,7 +651,7 @@ async function main() {
     check('写对后按钮变为「再写一次」并给出鼓励语', traced.lastBtn.includes('再写一次') && traced.hint.includes('太棒了'), `${traced.lastBtn.replace(/\n/g, ' ')}`)
 
     // 写错两笔应给出鼓励性提示（验证 onMistake 计数与 showHintAfterMisses 的接线）
-    await cdp.eval(`document.querySelectorAll('.action')[2].click(); return 1`)
+    await tap(cdp, '.action', 2)
     await sleep(800)
     const svgBox = await cdp.eval(`
       const r = document.querySelector('#hanzi-target svg').getBoundingClientRect()
@@ -632,7 +675,7 @@ async function main() {
     const SHI = '%E5%8D%81'
     await cdp.freshNavigate(`${BASE}/#/pages/write/write?char=${SHI}&cp=5341&pinyin=sh%C3%AD`)
     await sleep(2500)
-    await cdp.eval(`document.querySelectorAll('.action')[2].click(); return 1`)
+    await tap(cdp, '.action', 2)
     await sleep(800)
     const hStroke = await cdp.eval(strokePointsScript('5341', 0))
     const vStroke = await cdp.eval(strokePointsScript('5341', 1))
@@ -649,7 +692,7 @@ async function main() {
     // 逆序：重开一局，先竖后横 —— 不应判对
     await cdp.freshNavigate(`${BASE}/#/pages/write/write?char=${SHI}&cp=5341&pinyin=sh%C3%AD`)
     await sleep(2500)
-    await cdp.eval(`document.querySelectorAll('.action')[2].click(); return 1`)
+    await tap(cdp, '.action', 2)
     await sleep(800)
     const v2 = await cdp.eval(strokePointsScript('5341', 1))
     const h2 = await cdp.eval(strokePointsScript('5341', 0))
@@ -692,7 +735,7 @@ async function main() {
       `按钮 ${wpEntry.count} 个，URL=${wpUrl.slice(0, 90)}`,
     )
     const wpCp = wpCpMatch ? wpCpMatch[1].toLowerCase() : '4e00'
-    await cdp.eval(`document.querySelectorAll('.action')[2].click(); return 1`)
+    await tap(cdp, '.action', 2)
     await sleep(900)
     const wpStrokes = await cdp.eval(`
       const d = await (await fetch('/static/hanzi-data/${wpCp}.json')).json()
@@ -748,7 +791,7 @@ async function main() {
     `)
     await cdp.freshNavigate(`${BASE}/#/pages/write/write?char=%E4%BA%8C&cp=4e8c&pinyin=%C3%A8r`)
     await sleep(2400)
-    await cdp.eval(`document.querySelectorAll('.action')[2].click(); return 1`)
+    await tap(cdp, '.action', 2)
     await sleep(900)
     for (let i = 0; i < 2; i++) {
       const pts = await cdp.eval(strokePointsScript('4e8c', i))
@@ -780,7 +823,7 @@ async function main() {
       }
     `)
     check('古诗书单渲染 6 首且不横向溢出', poemList.cards === 6 && poemList.overflow <= 2, `${poemList.cards} 首，首篇《${poemList.firstTitle}》`)
-    await cdp.eval(`document.querySelectorAll('.poem-card')[0].click(); return 1`)
+    await tap(cdp, '.poem-card', 0)
     await sleep(1000)
     const poemReader = await cdp.eval(`
       const lines = [...document.querySelectorAll('.line')]
@@ -791,7 +834,7 @@ async function main() {
       }
     `)
     check('点开一首诗进入逐行点读（咏鹅 4 行 + 2 个动作）', poemReader.lines === 4 && poemReader.actions === 2, `${poemReader.lines} 行：${poemReader.line0}`)
-    await cdp.eval(`document.querySelectorAll('.line')[0].click(); return 1`)
+    await tap(cdp, '.line', 0)
     await sleep(900)
     const poemPlaying = await cdp.eval(`
       const active = document.querySelector('.line.active')
@@ -800,7 +843,7 @@ async function main() {
       return { active: active ? active.innerText.trim() : null, loadedPoem: loaded.filter(s => s.includes('audio-poem')).length }
     `)
     check('点一行会进入播放态且该诗音轨已就绪', !!poemPlaying.active && poemPlaying.loadedPoem >= 5, `active="${poemPlaying.active}" 就绪音轨 ${poemPlaying.loadedPoem} 条`)
-    await cdp.eval(`document.querySelectorAll('.action')[1].click(); return 1`)
+    await tap(cdp, '.action', 1)
     await sleep(1800)
     const poemQuiz = await cdp.eval(`
       return {
@@ -880,6 +923,69 @@ async function main() {
       '读完一首不会把整门古诗课算成"完成课程"（一课有 6 首）',
       poemParent.completed === 0,
       `完成课程=${poemParent.completed}`,
+    )
+
+    // ---------- 11c. 古诗二期新学段（三四/五六年级）端到端 ----------
+    // 2026-09 新增 12 首（每学段 6 首）+ 古诗卡；这条内容路径此前没被浏览器验证过。
+    // 顺带覆盖"小阶段字太少导致填字池退化（degenerate-pool）"的风险。
+    await cdp.setViewport(390, 844)
+    await cdp.freshNavigate(`${BASE}/#/pages/map/map`)
+    await sleep(700)
+    await cdp.eval(`localStorage.clear(); return 1`)
+    await cdp.freshNavigate(`${BASE}/#/pages/map/map`)
+    await sleep(1400)
+    const stage34 = await cdp.eval(`
+      const chips = [...document.querySelectorAll('.stage-chip')]
+      const c = chips[2] // 顺序：启蒙 / 一二 / 三四 / 五六
+      if (!c) return { ok: false, n: chips.length }
+      const label = c.innerText.trim()
+      c.click()
+      return { ok: true, label }
+    `)
+    await sleep(1500)
+    const poemCard34 = await cdp.eval(`
+      const cards = [...document.querySelectorAll('.unit-card, .cat-card')]
+      const c = cards.find((x) => (x.innerText || '').includes('古诗'))
+      if (!c) return { ok: false, texts: cards.map((x) => x.innerText.split('\\n')[0]).slice(0, 8) }
+      const title = c.innerText.replace(/\\n/g, ' ').slice(0, 30)
+      c.click()
+      return { ok: true, title }
+    `)
+    await sleep(2400)
+    const poem34 = await cdp.eval(`
+      return {
+        hash: location.hash,
+        cards: document.querySelectorAll('.poem-card').length,
+        titles: [...document.querySelectorAll('.poem-card')].map((c) => c.innerText.split('\\n')[0]).slice(0, 3),
+      }
+    `)
+    check(
+      '三四年级阶段有古诗卡，点进去渲染 6 首新诗',
+      stage34.ok && poemCard34.ok && poem34.cards === 6 && poem34.hash.includes('stage=g34'),
+      `学段「${stage34.label || ''}」卡片「${poemCard34.title || safeJson(poemCard34.texts)}」→ ${poem34.cards} 首 ${safeJson(poem34.titles)}`,
+    )
+    await tap(cdp, '.poem-card', 0)
+    await sleep(1000)
+    await cdp.eval(`
+      const btns = [...document.querySelectorAll('.action')]
+      const b = btns.find((x) => x.innerText.includes('填字'))
+      if (b) b.click()
+      return !!b
+    `)
+    await sleep(2600)
+    const fill34 = await cdp.eval(`
+      return {
+        title: (document.querySelector('.title')||{}).innerText || '',
+        round: (document.querySelector('.round-info')||{}).innerText || '',
+        stem: (document.querySelector('.stem')||{}).innerText || '',
+        opts: document.querySelectorAll('.option').length,
+        home: document.querySelectorAll('.stage-chip').length === 4,
+      }
+    `)
+    check(
+      '新学段的填字挑战能出题（题干含 □、4 个选项，没有退化成空池）',
+      fill34.title.includes('古诗填字') && fill34.opts === 4 && fill34.stem.includes('□') && !fill34.home,
+      `${fill34.round}｜题干「${fill34.stem}」选项 ${fill34.opts}`,
     )
 
     // ---------- 12. 收集页：图鉴三态渲染 + 庆祝条（改动过统计布局，明细页从未验证） ----------
@@ -1022,6 +1128,7 @@ async function main() {
     }
     const families = new Set()
     const mathProblems = []
+    const mathReveals = []
     await cdp.setViewport(390, 844)
     for (const level of MATH_LEVELS) {
       await cdp.freshNavigate(`${BASE}/#/pages/math/practice?level=${level}`)
@@ -1077,6 +1184,7 @@ async function main() {
             return {
               round: (document.querySelector('.round-info')||{}).innerText || '',
               reveal: !!document.querySelector('.opt-check'),
+              revealText: (document.querySelector('.reveal-text')||{}).innerText || '',
               right: !!document.querySelector('.opt.right, .compare-card.right'),
               finished: !!document.querySelector('.result'),
               blank: document.body.innerText.trim().length === 0,
@@ -1089,6 +1197,8 @@ async function main() {
         // 答对会进下一题（或先标记 right）；答错会先揭晓（对勾/right）再自动进下一题
         const advanced = after.round !== roundBefore || after.reveal || after.right || after.finished
         if (!advanced) mathProblems.push(`L${level} 第${i + 1}题作答后无反应（fam=${q.fam}）`)
+        // 顺带收集"答错讲解"（答错必有揭晓），比另起一段去碰运气点错稳得多
+        if (after.reveal && after.revealText) mathReveals.push({ level, fam: q.fam, text: after.revealText })
       }
       const unexpected = [...seenHere].filter((f) => f === 'unknown' || !EXPECTED_FAMILIES[level].includes(f))
       if (unexpected.length) mathProblems.push(`L${level} 出现该关不该有的分支：${unexpected.join(',')}`)
@@ -1162,19 +1272,27 @@ async function main() {
 
     // ---------- 12c-2. 答错讲解（路线图里"答错后的讲解环"）：揭晓要说清"为什么" ----------
     // 原来是"正确答案是绿色的这个 ✓"，孩子知道点哪个但不知道为什么。
-    // 现在按题型生成讲解（domain/explain.js），这里验证三类页面都真的显示出来。
+    // 现在按题型生成讲解（domain/explain.js）。
+    // 数学不在这里另起一段去"碰运气点错"（受负载影响不稳定），
+    // 而是复用上面 54 题循环里已经出现的揭晓文案（答错必有揭晓）。
+    const mathExplainFamily = /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是|小数点对齐|分母不变|有括号先算括号|先算乘法再[加减])/
+    const badMathReveal = mathReveals.filter((r) => !mathExplainFamily.test(r.text) || r.text.length > 40)
+    check(
+      `数学答错讲解覆盖到位（${mathReveals.length} 条揭晓文案，全部是"讲为什么"且 ≤40 字）`,
+      mathReveals.length >= 5 && badMathReveal.length === 0,
+      badMathReveal.length ? `不合格 ${badMathReveal.length} 条：${safeJson(badMathReveal.slice(0, 2))}` : `例：${safeJson(mathReveals.slice(0, 3).map((r) => r.text))}`,
+    )
     const explainCases = [
-      ['数学（算式/缺数/比大小）', `${BASE}/#/pages/math/practice?level=3`, /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是)/],
       ['语文（看字选拼音/组词/听音）', `${BASE}/#/pages/quiz/quiz?subject=zh&level=1&lessonId=zh-quiz-l1`, /(读 |是「|可以组成「|听到的是|这一句是)/],
       ['英语（听音选图）', `${BASE}/#/pages/quiz/quiz?subject=en&level=1&lessonId=en-quiz-l1`, /听到的是/],
     ]
     const explainGot = []
     for (const [label, route, family] of explainCases) {
-      const text = await captureReveal(cdp, route, 6)
+      const text = await captureReveal(cdp, route, 8)
       explainGot.push({ label, text, ok: !!text && family.test(text) })
     }
     check(
-      '答错揭晓会讲清"为什么"（数学/语文/英语都出现讲解文案）',
+      '语文/英语答错揭晓会讲清"为什么"',
       explainGot.every((x) => x.ok),
       explainGot.map((x) => `${x.label}：「${x.text}」`).join(' ｜ '),
     )
@@ -1222,7 +1340,7 @@ async function main() {
       `)
       if (r.over > 1) overflowing.push(`${label} 文档溢出 ${r.over}px ${safeJson(r.bad)}`)
     }
-    check('320px 窄屏 12 个页面均无横向溢出', overflowing.length === 0, overflowing.slice(0, 3).join(' | ') || '全部通过')
+    check('320px 窄屏 12 个页面均无横向溢出', overflowing.length === 0, overflowing.slice(0, 3).join(' | ') || `检查了 ${overflowPages.length} 个页面，全部通过`)
     await cdp.setViewport(390, 844)
 
     // ---------- 12e. 清空学习记录：破坏性操作必须"取消不删、确认全删、偏好保留" ----------
@@ -1253,7 +1371,7 @@ async function main() {
     await sleep(1200)
 
     // 1) 取消 → 一条都不少
-    await cdp.eval(`document.querySelector('.clear-btn').click(); return 1`)
+    await tap(cdp, '.clear-btn')
     await sleep(700)
     const modalShown = await cdp.eval(`
       const btns = [...document.querySelectorAll('.uni-modal__btn')].map((b) => b.innerText.trim())
@@ -1271,7 +1389,7 @@ async function main() {
     )
 
     // 2) 确认 → 全清，但偏好保留
-    await cdp.eval(`document.querySelector('.clear-btn').click(); return 1`)
+    await tap(cdp, '.clear-btn')
     await sleep(700)
     const confirmed = await cdp.eval(`
       const el = [...document.querySelectorAll('.uni-modal__btn')].find((b) => b.innerText.includes('清空'))
@@ -1426,7 +1544,9 @@ async function main() {
       .filter((id) => hiddenWordIds.has(id))
     check(
       '低龄模式下直链被隐藏分类：不显示隐藏内容',
-      leakedDeepLink.length === 0,
+      // 必须同时要求"确实看到了图"：没渲染出任何图时 leaked 也是 0，
+      // 单看 leaked===0 会在页面白屏时假通过（阴性对照见 tmp/negative-control-lowage.mjs 的思路）
+      hiddenDeepLink.imgs.length > 0 && leakedDeepLink.length === 0,
       leakedDeepLink.length ? `泄漏 ${leakedDeepLink.slice(0, 5).join(',')}` : `图片 ${hiddenDeepLink.imgs.length} 张，均不属于隐藏分类`,
     )
     check('低龄模式下直链被隐藏分类：内容与课程不一致时不记会话', !hiddenDeepLink.active, `kx:active=${hiddenDeepLink.active}`)
@@ -1466,7 +1586,10 @@ async function main() {
     const leakedQuiz = [...seenFiles].filter((id) => hiddenWordIds.has(id))
     check(
       '低龄模式下挑战题池已过滤（连打多轮不出现隐藏分类的词）',
-      leakedQuiz.length === 0,
+      // 要求"确实观察到了足够多的词"：阴性对照实测低龄关闭时会看到 36~44 个词
+      // （其中就有 characters 分类的 princess），所以 <20 说明检测没跑起来，
+      // 此时 leaked===0 是恒真的假绿灯（详见本轮报告）。
+      seenFiles.size >= 20 && leakedQuiz.length === 0,
       leakedQuiz.length ? `泄漏 ${leakedQuiz.slice(0, 6).join(',')}` : `共出现 ${seenFiles.size} 个词，均不属于隐藏分类`,
     )
     await setPrefs({ lowAge: false })
@@ -1816,13 +1939,16 @@ async function main() {
       `kind=${quizReward.kind} 题数=${quizReward.questions} 首答对=${quizReward.firstCorrect} 聚合作答=${quizReward.sessionAttempts} 推导星级=${quizReward.stars}`,
     )
     check('由 totals 推导出的星级在合法区间（1~3 星）', typeof quizReward.stars === 'number' && quizReward.stars >= 1 && quizReward.stars <= 3, `星级=${quizReward.stars}`)
+    // 注意：这轮是"每题都点第一个选项"，首答对几题是随机的（4 选 1）。
+    // 所以断言的是**蕴含关系**（首答对 >0 ⇒ 掌握 >0），而不是"一定有掌握"——
+    // 后者在 10 题全点错（约 5%）时会无故报红。
     check(
-      '首答答对的题进入图鉴「掌握」（掌握只应由挑战首答产生）',
-      quizReward.mastered > 0,
-      `掌握 ${quizReward.mastered} 个词`,
+      '首答答对的题进入图鉴「掌握」（首答对 0 题时掌握本就该是 0）',
+      quizReward.firstCorrect === 0 || quizReward.mastered > 0,
+      `首答对 ${quizReward.firstCorrect} 题 → 掌握 ${quizReward.mastered} 个词`,
     )
 
-    // 图鉴页的「英语掌握」统计应随之非 0 —— 这是家长/孩子唯一能看到掌握的入口
+    // 图鉴页的「英语掌握」必须与存储里的掌握数一致（家长/孩子唯一能看到掌握的入口）
     await cdp.freshNavigate(`${BASE}/#/pages/collection/collection`)
     await sleep(1500)
     const masteryView = await cdp.eval(`
@@ -1831,10 +1957,11 @@ async function main() {
       const i = labels.findIndex((l) => l.includes('英语掌握'))
       return { labels, nums, mastered: i >= 0 ? nums[i] : null, stars: nums[0] }
     `)
+    const shownMastered = Number(String(masteryView.mastered || '').split('/')[0])
     check(
-      '图鉴页「英语掌握」反映本次挑战的首答成绩（非 0）',
-      !!masteryView.mastered && !/^0\//.test(masteryView.mastered),
-      `英语掌握=${masteryView.mastered}，小星星=${masteryView.stars}`,
+      '图鉴页「英语掌握」与存储里的掌握数一致（不是写死的）',
+      !!masteryView.mastered && shownMastered === quizReward.mastered,
+      `页面显示 ${masteryView.mastered}，存储 ${quizReward.mastered} 个，小星星=${masteryView.stars}`,
     )
 
     // ---------- 16d. 数学错题重练：原题重放 + 不计课时 ----------
@@ -2122,6 +2249,21 @@ async function main() {
       `错题本条目 ${fill.reviewKeys} 个，汉字掌握 ${fill.zhMastered} 个`,
     )
 
+    // ---------- 16i. 大池挑战只预载本轮音频（内存尖峰的回归防线） ----------
+    // 曾经整池预载：英语 L4 是 1126 个词 → 一千多个 Howl 同时驻留（解码后是几十 MB）。
+    // 修成"只预载本轮"后实测 12 条（10 轮答案 + 2 条反馈音）。这里钉住这个量级，
+    // 避免将来有人顺手改回 prepool（本地看不出问题，只有大池机型才炸内存）。
+    cdp.requests.length = 0
+    await cdp.freshNavigate(`${BASE}/#/pages/quiz/quiz?subject=en&level=4&lessonId=en-quiz-l4`)
+    await sleep(3200)
+    await sleep(2000) // 再等一会，抓"延迟补请求"式的整池预载
+    const bigPoolAudio = [...new Set(cdp.requests.filter((u) => /\/static\/audio(-gb|-zh)?\/[^/]+\.mp3$/.test(u)))]
+    check(
+      '英语 L4 大池（1126 词）只预载本轮音频，不是整池',
+      bigPoolAudio.length > 0 && bigPoolAudio.length <= 40,
+      `请求 ${bigPoolAudio.length} 条（整池会是 1126 条）：${bigPoolAudio.slice(0, 4).map((u) => u.split('/').pop()).join(', ')}${bigPoolAudio.length > 4 ? ' …' : ''}`,
+    )
+
     // ---------- 17. 控制台零报错 ----------
     await cdp.drainPageErrors()
     const errs = [...cdp.pageSideErrors, ...cdp.consoleErrors, ...cdp.pageErrors]
@@ -2129,6 +2271,21 @@ async function main() {
       '运行期零 console error / 未捕获异常 / 未处理的 Promise 拒绝',
       errs.length === 0,
       errs.length ? `${errs.length} 条：\n      ` + errs.map((e, i) => `[${i + 1}] ${e}`).join('\n      ') : '',
+    )
+
+    // ---------- 17b. 运行期零 404：动态拼出来的资源 URL 只有真跑才能验证 ----------
+    // 静态审计只能查"代码里写死的引用"，像 mathgen 的 `n${a}.mp3`、以及按 id 拼的
+    // 图片/音轨路径，拼错了 audit:assets 与 audit:audio 都看不出来（本轮就顺着这条线查过数字音轨）。
+    // 排除掉**故意制造**的失败：笔顺数据 404 探针、以及被 CDP 拦截的 audio-gb。
+    const DELIBERATE_404 = [/hanzi-data\/ffff\.json$/, /\/static\/audio-gb\//]
+    const badResponses = [...cdp.responses.entries()]
+      .filter(([url]) => url.startsWith(BASE))
+      .filter(([, status]) => status >= 400)
+      .filter(([url]) => !DELIBERATE_404.some((re) => re.test(url)))
+    check(
+      '运行期零 404（动态拼出来的图片/音轨/数据 URL 全部命中）',
+      badResponses.length === 0,
+      badResponses.length ? `${badResponses.length} 条：${badResponses.slice(0, 6).map(([u, s]) => `${s} ${u.replace(BASE, '')}`).join(' | ')}` : `检查了 ${[...cdp.responses.keys()].filter((u) => u.startsWith(BASE)).length} 个同源响应`,
     )
 
     // ---------- 17. 英式音轨缺失时回退美音（故意制造网络失败，必须放在零报错检查之后） ----------
