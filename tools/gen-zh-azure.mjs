@@ -97,6 +97,10 @@ function buildSsml(text, pinyin) {
 }
 
 // ---- Azure REST ----
+// 单条合成的超时：正常几百毫秒到几秒，长诗整首也就几秒；60s 足够宽松，
+// 只为避免黑洞网络下 fetch 无限期挂住（脚本既不完成也不失败）。
+const TTS_TIMEOUT_MS = 60000
+
 async function synth(ssml, creds, attempt = 1) {
   const res = await fetch(`https://${creds.region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
     method: 'POST',
@@ -107,6 +111,7 @@ async function synth(ssml, creds, attempt = 1) {
       'User-Agent': 'kids-english-audio-gen',
     },
     body: ssml,
+    signal: AbortSignal.timeout(TTS_TIMEOUT_MS),
   })
   if (res.ok) return Buffer.from(await res.arrayBuffer())
   if (res.status === 429 && attempt < 5) {
@@ -165,14 +170,21 @@ function poemJobs() {
       const marks = (p.ttsPinyin || {})[line]
       for (const ch of [...line]) fullSlots.push(marks && marks[ch] ? marks[ch] : null)
     })
-    jobs.push({
-      id: `poem-${p.id}-full`,
-      text: fullText,
-      pinyin: fullSlots.some(Boolean) ? fullSlots : null,
-      out: path.join(POEMS_OUT_DIR, `${p.id}-full.mp3`),
-    })
+    // 增量：已有且非空的轨跳过（--force 全量重生成），后续批次跑批不重写历史音频
+    const fresh = (out) => argv.has('--force') || !fs.existsSync(out) || fs.statSync(out).size <= 1000
+    const fullOut = path.join(POEMS_OUT_DIR, `${p.id}-full.mp3`)
+    if (fresh(fullOut)) {
+      jobs.push({
+        id: `poem-${p.id}-full`,
+        text: fullText,
+        pinyin: fullSlots.some(Boolean) ? fullSlots : null,
+        out: fullOut,
+      })
+    }
     p.lines.forEach((line, i) => {
-      jobs.push({ id: `poem-${p.id}-l${i}`, text: line, pinyin: slots[i], out: path.join(POEMS_OUT_DIR, `${p.id}-l${i}.mp3`) })
+      const out = path.join(POEMS_OUT_DIR, `${p.id}-l${i}.mp3`)
+      if (!fresh(out)) return
+      jobs.push({ id: `poem-${p.id}-l${i}`, text: line, pinyin: slots[i], out })
     })
   }
   return jobs
@@ -216,6 +228,7 @@ async function runPoems() {
 
 // ---- 按钮指令朗读（--labels）：不识字的孩子点按钮先听到它在说什么 ----
 // 标签与页面按钮文案一一对应；改文案必须同步这里并重新生成（zh-btn-*.mp3，口音改写天然跳过 zh- 前缀）
+// 支持 --only 只生成指定条目：新增一条指令不必重写已有的 9 条（避免无谓的语音换代与审计面）。
 const BUTTON_LABELS = [
   ['btn-resume', '继续上次'],
   ['btn-next', '下一课'],
@@ -226,6 +239,12 @@ const BUTTON_LABELS = [
   ['btn-math', '学数学'],
   ['btn-again', '再玩一次'],
   ['btn-back', '返回'],
+  // 首页（课程页）第一批补漏：原来 30+ 个可点目标只有 5 个有语音，
+  // 连唯一「不识字也不会点错」的 🎲 随机来一课 都没有语音
+  ['btn-welcome', '今天想学哪一个？'],
+  ['btn-stage', '选一个想学的'],
+  ['btn-challenge', '做这一课的挑战'],
+  ['btn-random', '随机来一课'],
 ]
 
 function labelJobs() {
@@ -233,7 +252,16 @@ function labelJobs() {
 }
 
 async function runLabels() {
-  const jobs = labelJobs()
+  let jobs = labelJobs()
+  if (ONLY) {
+    const all = new Set(jobs.map((j) => j.id))
+    const missing = [...ONLY].filter((id) => !all.has(id))
+    if (missing.length) {
+      console.error(`--only 指定了不存在的按钮指令: ${missing.join(', ')}`)
+      process.exit(1)
+    }
+    jobs = jobs.filter((j) => ONLY.has(j.id))
+  }
   console.log(`== 按钮指令朗读: ${jobs.length} 条 ==`)
   if (DRY_RUN) {
     for (const j of jobs) console.log(`[${j.id}] ${j.text}`)
