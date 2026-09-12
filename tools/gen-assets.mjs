@@ -87,6 +87,7 @@ const CATEGORIES = {
   body: { zh: '身体', en: 'My Body', icon: '1f440', color: '#C77D52', bg: '#F5EBE2', level: 1 },
   alphabet: { zh: '字母', en: 'ABC', icon: '1f524', color: '#5C7CFA', bg: '#E8EDFF', level: 1 },
   animals: { zh: '动物', en: 'Animals', icon: '1f436', color: '#3BB273', bg: '#E3F6E8', level: 1 },
+  wild: { zh: '野生动物', en: 'Wild Animals', icon: '1f981', color: '#E8590C', bg: '#FFF0E2', level: 1 },
   fruits: { zh: '水果', en: 'Fruits', icon: '1f34e', color: '#FF6B6B', bg: '#FFE9E9', level: 1 },
   toys: { zh: '玩具', en: 'Toys', icon: '1f9f8', color: '#5FA8D3', bg: '#E5F2F8', level: 1 },
   // L2 日常生活
@@ -98,7 +99,7 @@ const CATEGORIES = {
   home: { zh: '家居', en: 'At Home', icon: '1f6cb_fe0f', color: '#C9A227', bg: '#F8F1DC', level: 2 },
   kitchen: { zh: '厨房', en: 'Kitchen', icon: '1f37d_fe0f', color: '#E4573D', bg: '#FBE7E3', level: 2 },
   school: { zh: '学校', en: 'School', icon: '1f4d0', color: '#8A6BD1', bg: '#EEE7FB', level: 2 },
-  family: { zh: '家人', en: 'Family', icon: '1f46a', color: '#D6336C', bg: '#FBE3EC', level: 2 },
+  family: { zh: '家人', en: 'Family', icon: '1f46a', color: '#D6336C', bg: '#FBE3EC', level: 1 },
   emotions: { zh: '表情', en: 'Feelings', icon: '1f600', color: '#FAB005', bg: '#FFF3D6', level: 2 },
   // L3 快乐探索
   vehicles: { zh: '交通工具', en: 'Vehicles', icon: '1f697', color: '#4D96FF', bg: '#E3EEFF', level: 3 },
@@ -126,8 +127,8 @@ const CATEGORIES = {
   adjectives: { zh: '形容词', en: 'Adjectives', icon: '1f3a8', color: '#F76BA8', bg: '#FDE3EE', level: 4 },
   opposites: { zh: '反义词', en: 'Opposites', icon: '2194_fe0f', color: '#7048E8', bg: '#EAE2FD', level: 4 },
   sightwords: { zh: '常用词', en: 'Sight Words', icon: '1f4ac', color: '#1C7ED6', bg: '#E7F5FF', level: 4 },
-  wordfamilies: { zh: '词族', en: 'Word Families', icon: '1f524', color: '#F59F00', bg: '#FFF3BF', level: 4 },
-  digraphs: { zh: '自然拼读', en: 'Phonics', icon: '1f517', color: '#2F9E44', bg: '#EBFBEE', level: 4 },
+  wordfamilies: { zh: '词族', en: 'Word Families', icon: '1f524', color: '#F59F00', bg: '#FFF3BF', level: 2 },
+  digraphs: { zh: '自然拼读', en: 'Phonics', icon: '1f517', color: '#2F9E44', bg: '#EBFBEE', level: 2 },
   story: { zh: '故事词', en: 'Story Words', icon: '1f4d6', color: '#A61E4D', bg: '#FDEEF4', level: 4 },
   prepositions: { zh: '介词', en: 'Prepositions', icon: '1f9ed', color: '#364FC7', bg: '#EDF2FF', level: 4 },
   ordinals: { zh: '序数词', en: 'Ordinals', icon: '1f947', color: '#E8590C', bg: '#FFE8D9', level: 4 },

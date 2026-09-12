@@ -166,6 +166,10 @@
           </view>
         </view>
       </view>
+      <view class="meta-row">
+        <text class="meta-label">自由探索（解锁全部课程）</text>
+        <switch :checked="freeUnlock" color="#FF8C42" style="transform: scale(0.85)" @change="onFreeUnlockChange" />
+      </view>
       <view v-if="lowAgeVisible" class="meta-row lowage-row">
         <text class="meta-label">低龄模式（隐藏惊悚角色类内容）</text>
         <switch :checked="lowAge" color="#3BB273" style="transform: scale(0.85)" @change="onLowAgeChange" />
@@ -189,7 +193,7 @@ import { onShow, onUnload } from '@dcloudio/uni-app'
 import { getStorage, getStorageError, clearStorageError, onStorageError, SCHEMA_VERSION } from '@/platform/storage.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
-import { getLowAgeMode, setLowAgeMode, updatePrefs, getQimengAudioOrder, setQimengAudioOrder } from '@/content/lowAge.js'
+import { getLowAgeMode, setLowAgeMode, updatePrefs, getQimengAudioOrder, setQimengAudioOrder, getFreeUnlock, setFreeUnlock } from '@/content/lowAge.js'
 import { getAccent, playEn } from '@/platform/audio.js'
 import TabBar from '@/components/tab-bar.vue'
 import { assetUrl } from '@/platform/assets.js'
@@ -214,6 +218,7 @@ const lowAge = ref(true)
 const lowAgeVisible = ref(false)
 const accent = ref('us')
 const qimengOrder = ref('zh-first')
+const freeUnlock = ref(false)
 const storageError = ref(null)
 
 /** 学习记录的键清单：导出/导入/清空都以它为准，避免漏掉某一类数据 */
@@ -254,6 +259,7 @@ function refresh() {
   lowAge.value = getLowAgeMode()
   accent.value = getAccent()
   qimengOrder.value = getQimengAudioOrder()
+  freeUnlock.value = getFreeUnlock()
   reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh') + reviewSvc.dueCount('math')
   topWrongText.value = reviewSvc
     .topWrong(3)
@@ -342,6 +348,15 @@ function setQimengOrder(o) {
   qimengOrder.value = o
   setQimengAudioOrder(o)
   uni.showToast({ title: o === 'en-first' ? '已切换：先英文后中文' : '已切换：先中文后英文', icon: 'none' })
+}
+
+/** 自由探索：放开课程路径锁（默认关——默认给「下一步学什么」一个答案） */
+function onFreeUnlockChange(e) {
+  const next = !!e.detail.value
+  if (next === getFreeUnlock()) return
+  setFreeUnlock(next)
+  freeUnlock.value = getFreeUnlock()
+  uni.showToast({ title: next ? '已放开全部课程' : '已恢复按顺序解锁', icon: 'none' })
 }
 
 function fmtTime(ts) {

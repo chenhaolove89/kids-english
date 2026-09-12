@@ -1,5 +1,5 @@
 {
-  "contentVersion": "d371c8b4dd",
+  "contentVersion": "dbd95d650c",
   "stages": [
     {
       "id": "qimeng",
@@ -84,7 +84,7 @@
       "stage": "qimeng",
       "kind": "learn",
       "title": "动物 · Animals",
-      "subtitle": "60 个单词",
+      "subtitle": "30 个单词",
       "icon": "/static/img/cat-animals.png",
       "color": "#3BB273",
       "bg": "#E3F6E8",
@@ -135,6 +135,26 @@
       },
       "skillIds": [
         "en-word-colors"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-learn-family",
+      "subject": "en",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "家人 · Family",
+      "subtitle": "18 个单词",
+      "icon": "/static/img/cat-family.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "family",
+      "ref": {
+        "kind": "en-category",
+        "id": "family"
+      },
+      "skillIds": [
+        "en-word-family"
       ]
     },
     {
@@ -215,6 +235,26 @@
       },
       "skillIds": [
         "en-word-toys"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-learn-wild",
+      "subject": "en",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "野生动物 · Wild Animals",
+      "subtitle": "30 个单词",
+      "icon": "/static/img/cat-wild.png",
+      "color": "#E8590C",
+      "bg": "#FFF0E2",
+      "sort": "wild",
+      "ref": {
+        "kind": "en-category",
+        "id": "wild"
+      },
+      "skillIds": [
+        "en-word-wild"
       ]
     },
     {
@@ -304,7 +344,7 @@
       "stage": "qimeng",
       "kind": "learn",
       "title": "词语 · 动物",
-      "subtitle": "60 个词语",
+      "subtitle": "30 个词语",
       "icon": "/static/img/cat-animals.png",
       "color": "#3BB273",
       "bg": "#E3F6E8",
@@ -355,6 +395,26 @@
       },
       "skillIds": [
         "zh-word-colors"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-family",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 家人",
+      "subtitle": "18 个词语",
+      "icon": "/static/img/cat-family.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "zw-family",
+      "ref": {
+        "kind": "en-category",
+        "id": "family"
+      },
+      "skillIds": [
+        "zh-word-family"
       ]
     },
     {
@@ -435,6 +495,26 @@
       },
       "skillIds": [
         "zh-word-toys"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-wild",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 野生动物",
+      "subtitle": "30 个词语",
+      "icon": "/static/img/cat-wild.png",
+      "color": "#E8590C",
+      "bg": "#FFF0E2",
+      "sort": "zw-wild",
+      "ref": {
+        "kind": "en-category",
+        "id": "wild"
+      },
+      "skillIds": [
+        "zh-word-wild"
       ]
     },
     {
@@ -559,6 +639,26 @@
     },
     {
       "status": "available",
+      "id": "zh-words-quiz-family",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "家人词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-family.png",
+      "color": "#D6336C",
+      "bg": "#FBE3EC",
+      "sort": "zw-family",
+      "ref": {
+        "kind": "en-category",
+        "id": "family"
+      },
+      "skillIds": [
+        "zh-word-family"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-words-quiz-fruits",
       "subject": "zh",
       "stage": "qimeng",
@@ -639,6 +739,26 @@
     },
     {
       "status": "available",
+      "id": "zh-words-quiz-wild",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "野生动物词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-wild.png",
+      "color": "#E8590C",
+      "bg": "#FFF0E2",
+      "sort": "zw-wild",
+      "ref": {
+        "kind": "en-category",
+        "id": "wild"
+      },
+      "skillIds": [
+        "zh-word-wild"
+      ]
+    },
+    {
+      "status": "available",
       "id": "en-learn-clothes",
       "subject": "en",
       "stage": "g12",
@@ -679,6 +799,26 @@
     },
     {
       "status": "available",
+      "id": "en-learn-digraphs",
+      "subject": "en",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "自然拼读 · Phonics",
+      "subtitle": "47 个单词",
+      "icon": "/static/img/cat-digraphs.png",
+      "color": "#2F9E44",
+      "bg": "#EBFBEE",
+      "sort": "digraphs",
+      "ref": {
+        "kind": "en-category",
+        "id": "digraphs"
+      },
+      "skillIds": [
+        "en-word-digraphs"
+      ]
+    },
+    {
+      "status": "available",
       "id": "en-learn-drinks",
       "subject": "en",
       "stage": "g12",
@@ -715,26 +855,6 @@
       },
       "skillIds": [
         "en-word-emotions"
-      ]
-    },
-    {
-      "status": "available",
-      "id": "en-learn-family",
-      "subject": "en",
-      "stage": "g12",
-      "kind": "learn",
-      "title": "家人 · Family",
-      "subtitle": "18 个单词",
-      "icon": "/static/img/cat-family.png",
-      "color": "#D6336C",
-      "bg": "#FBE3EC",
-      "sort": "family",
-      "ref": {
-        "kind": "en-category",
-        "id": "family"
-      },
-      "skillIds": [
-        "en-word-family"
       ]
     },
     {
@@ -835,6 +955,26 @@
       },
       "skillIds": [
         "en-word-vegetables"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-learn-wordfamilies",
+      "subject": "en",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "词族 · Word Families",
+      "subtitle": "139 个单词",
+      "icon": "/static/img/cat-wordfamilies.png",
+      "color": "#F59F00",
+      "bg": "#FFF3BF",
+      "sort": "wordfamilies",
+      "ref": {
+        "kind": "en-category",
+        "id": "wordfamilies"
+      },
+      "skillIds": [
+        "en-word-wordfamilies"
       ]
     },
     {
@@ -995,26 +1135,6 @@
       },
       "skillIds": [
         "zh-word-emotions"
-      ]
-    },
-    {
-      "status": "available",
-      "id": "zh-words-family",
-      "subject": "zh",
-      "stage": "g12",
-      "kind": "learn",
-      "title": "词语 · 家人",
-      "subtitle": "18 个词语",
-      "icon": "/static/img/cat-family.png",
-      "color": "#D6336C",
-      "bg": "#FBE3EC",
-      "sort": "zw-family",
-      "ref": {
-        "kind": "en-category",
-        "id": "family"
-      },
-      "skillIds": [
-        "zh-word-family"
       ]
     },
     {
@@ -1255,26 +1375,6 @@
       },
       "skillIds": [
         "zh-word-emotions"
-      ]
-    },
-    {
-      "status": "available",
-      "id": "zh-words-quiz-family",
-      "subject": "zh",
-      "stage": "g12",
-      "kind": "challenge",
-      "title": "家人词语挑战",
-      "subtitle": "听音识图 · 10 题",
-      "icon": "/static/img/cat-family.png",
-      "color": "#D6336C",
-      "bg": "#FBE3EC",
-      "sort": "zw-family",
-      "ref": {
-        "kind": "en-category",
-        "id": "family"
-      },
-      "skillIds": [
-        "zh-word-family"
       ]
     },
     {
@@ -2279,26 +2379,6 @@
     },
     {
       "status": "available",
-      "id": "en-learn-digraphs",
-      "subject": "en",
-      "stage": "g56",
-      "kind": "learn",
-      "title": "自然拼读 · Phonics",
-      "subtitle": "48 个单词",
-      "icon": "/static/img/cat-digraphs.png",
-      "color": "#2F9E44",
-      "bg": "#EBFBEE",
-      "sort": "digraphs",
-      "ref": {
-        "kind": "en-category",
-        "id": "digraphs"
-      },
-      "skillIds": [
-        "en-word-digraphs"
-      ]
-    },
-    {
-      "status": "available",
       "id": "en-learn-electronics",
       "subject": "en",
       "stage": "g56",
@@ -2635,26 +2715,6 @@
       },
       "skillIds": [
         "en-word-tools"
-      ]
-    },
-    {
-      "status": "available",
-      "id": "en-learn-wordfamilies",
-      "subject": "en",
-      "stage": "g56",
-      "kind": "learn",
-      "title": "词族 · Word Families",
-      "subtitle": "140 个单词",
-      "icon": "/static/img/cat-wordfamilies.png",
-      "color": "#F59F00",
-      "bg": "#FFF3BF",
-      "sort": "wordfamilies",
-      "ref": {
-        "kind": "en-category",
-        "id": "wordfamilies"
-      },
-      "skillIds": [
-        "en-word-wordfamilies"
       ]
     },
     {

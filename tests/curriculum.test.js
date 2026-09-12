@@ -34,7 +34,7 @@ const catalog = {
   normalizeStage: norm,
 }
 
-function make({ hidden = [], sessions = null, active = null } = {}) {
+function make({ hidden = [], sessions = null, active = null, progress = null, freeUnlock = null } = {}) {
   const store = createStorage({ backend: memoryBackend() })
   if (sessions) store.set('sessions', sessions)
   if (active) store.set('active', active)
@@ -42,6 +42,8 @@ function make({ hidden = [], sessions = null, active = null } = {}) {
     catalog,
     isCategoryHidden: (id) => hidden.includes(id),
     store,
+    getProgress: progress ? (id) => progress.get(id) : null,
+    isFreeUnlock: freeUnlock === null ? null : () => freeUnlock,
   })
   return { c, store }
 }
@@ -196,18 +198,29 @@ test('nextLessonAfter：按科目顺序取下一课，最后一课返回 null', 
 })
 
 test('randomLesson：抽到的课在池内、属于指定阶段/科目，且尽量避开上一把', () => {
-  const { c } = make()
+  // 全部标记完成 = 路径全开（软解锁下随机只从开放的课里抽，见 tests/path-unlock.test.js）
+  const progress = new Map(LESSONS.map((l) => [l.id, { completed: 1, bestStars: 2 }]))
+  const { c } = make({ progress })
   for (let i = 0; i < 50; i++) {
     const l = c.randomLesson('qimeng', 'en')
     assert.ok(l && l.subject === 'en' && l.stage === 'qimeng' && l.status === 'available')
   }
-  const pool = c.visibleLessons().filter((l) => l.stage === 'qimeng' && l.subject === 'en')
+  const pool = c.visibleLessons().filter((l) => l.stage === 'qimeng' && l.subject === 'en' && l.kind === 'learn')
   if (pool.length > 1) {
     const picked = pool[0]
     for (let i = 0; i < 30; i++) {
       const again = c.randomLesson('qimeng', 'en', picked.id)
       assert.notEqual(again.id, picked.id, '应当避开上一把抽中的课')
     }
+  }
+})
+
+test('randomLesson：新用户软解锁下只抽到路径开放（frontier）的课', () => {
+  const { c } = make()
+  const frontier = c.stageBlocks('qimeng').find((b) => b.subject.id === 'en').units.find((u) => u.isNext)
+  for (let i = 0; i < 10; i++) {
+    const l = c.randomLesson('qimeng', 'en')
+    assert.equal(l.id, frontier.id, '未注入进度时随机池只含开放课（frontier）')
   }
 })
 

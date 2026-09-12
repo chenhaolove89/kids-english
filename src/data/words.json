@@ -1143,36 +1143,6 @@
      "card": "emoji"
     },
     {
-     "id": "lion",
-     "en": "lion",
-     "zh": "狮子",
-     "phonetic": "/ˈlaɪən/",
-     "image": "/static/img/lion.png",
-     "audio": "/static/audio/lion.mp3",
-     "zhAudio": "/static/audio-zh/lion.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "tiger",
-     "en": "tiger",
-     "zh": "老虎",
-     "phonetic": "/ˈtaɪɡər/",
-     "image": "/static/img/tiger.png",
-     "audio": "/static/audio/tiger.mp3",
-     "zhAudio": "/static/audio-zh/tiger.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "koala",
-     "en": "koala",
-     "zh": "考拉",
-     "phonetic": "/kəʊˈɑːlə/",
-     "image": "/static/img/koala.png",
-     "audio": "/static/audio/koala.mp3",
-     "zhAudio": "/static/audio-zh/koala.mp3",
-     "card": "emoji"
-    },
-    {
      "id": "chicken",
      "en": "chicken",
      "zh": "小鸡",
@@ -1233,16 +1203,6 @@
      "card": "emoji"
     },
     {
-     "id": "elephant",
-     "en": "elephant",
-     "zh": "大象",
-     "phonetic": "/ˈelɪfənt/",
-     "image": "/static/img/elephant.png",
-     "audio": "/static/audio/elephant.mp3",
-     "zhAudio": "/static/audio-zh/elephant.mp3",
-     "card": "emoji"
-    },
-    {
      "id": "sheep",
      "en": "sheep",
      "zh": "绵羊",
@@ -1270,6 +1230,167 @@
      "image": "/static/img/hamster.png",
      "audio": "/static/audio/hamster.mp3",
      "zhAudio": "/static/audio-zh/hamster.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "deer",
+     "en": "deer",
+     "zh": "梅花鹿",
+     "phonetic": "/dɪər/",
+     "image": "/static/img/deer.png",
+     "audio": "/static/audio/deer.mp3",
+     "zhAudio": "/static/audio-zh/deer.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "turtle",
+     "en": "turtle",
+     "zh": "海龟",
+     "phonetic": "/ˈtɜːtl/",
+     "image": "/static/img/turtle.png",
+     "audio": "/static/audio/turtle.mp3",
+     "zhAudio": "/static/audio-zh/turtle.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "snail",
+     "en": "snail",
+     "zh": "蜗牛",
+     "phonetic": "/sneɪl/",
+     "image": "/static/img/snail.png",
+     "audio": "/static/audio/snail.mp3",
+     "zhAudio": "/static/audio-zh/snail.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "butterfly",
+     "en": "butterfly",
+     "zh": "蝴蝶",
+     "phonetic": "/ˈbʌtəflaɪ/",
+     "image": "/static/img/butterfly.png",
+     "audio": "/static/audio/butterfly.mp3",
+     "zhAudio": "/static/audio-zh/butterfly.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "turkey",
+     "en": "turkey",
+     "zh": "火鸡",
+     "phonetic": "/ˈtɜːki/",
+     "image": "/static/img/turkey.png",
+     "audio": "/static/audio/turkey.mp3",
+     "zhAudio": "/static/audio-zh/turkey.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "swan",
+     "en": "swan",
+     "zh": "天鹅",
+     "phonetic": "/swɒn/",
+     "image": "/static/img/swan.png",
+     "audio": "/static/audio/swan.mp3",
+     "zhAudio": "/static/audio-zh/swan.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "parrot",
+     "en": "parrot",
+     "zh": "鹦鹉",
+     "phonetic": "/ˈpærət/",
+     "image": "/static/img/parrot.png",
+     "audio": "/static/audio/parrot.mp3",
+     "zhAudio": "/static/audio-zh/parrot.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "hedgehog",
+     "en": "hedgehog",
+     "zh": "刺猬",
+     "phonetic": "/ˈhedʒhɒɡ/",
+     "image": "/static/img/hedgehog.png",
+     "audio": "/static/audio/hedgehog.mp3",
+     "zhAudio": "/static/audio-zh/hedgehog.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "squirrel",
+     "en": "squirrel",
+     "zh": "松鼠",
+     "phonetic": "/ˈskwɜːrəl/",
+     "image": "/static/img/squirrel.png",
+     "audio": "/static/audio/squirrel.mp3",
+     "zhAudio": "/static/audio-zh/squirrel.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "bat",
+     "en": "bat",
+     "zh": "蝙蝠",
+     "phonetic": "/bæt/",
+     "image": "/static/img/bat.png",
+     "audio": "/static/audio/bat.mp3",
+     "zhAudio": "/static/audio-zh/bat.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "rat",
+     "en": "rat",
+     "zh": "大老鼠",
+     "phonetic": "/ræt/",
+     "image": "/static/img/rat.png",
+     "audio": "/static/audio/rat.mp3",
+     "zhAudio": "/static/audio-zh/rat.mp3",
+     "card": "emoji"
+    }
+   ]
+  },
+  {
+   "id": "wild",
+   "zh": "野生动物",
+   "en": "Wild Animals",
+   "color": "#E8590C",
+   "bg": "#FFF0E2",
+   "level": 1,
+   "icon": "/static/img/cat-wild.png",
+   "words": [
+    {
+     "id": "lion",
+     "en": "lion",
+     "zh": "狮子",
+     "phonetic": "/ˈlaɪən/",
+     "image": "/static/img/lion.png",
+     "audio": "/static/audio/lion.mp3",
+     "zhAudio": "/static/audio-zh/lion.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "tiger",
+     "en": "tiger",
+     "zh": "老虎",
+     "phonetic": "/ˈtaɪɡər/",
+     "image": "/static/img/tiger.png",
+     "audio": "/static/audio/tiger.mp3",
+     "zhAudio": "/static/audio-zh/tiger.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "koala",
+     "en": "koala",
+     "zh": "考拉",
+     "phonetic": "/kəʊˈɑːlə/",
+     "image": "/static/img/koala.png",
+     "audio": "/static/audio/koala.mp3",
+     "zhAudio": "/static/audio-zh/koala.mp3",
+     "card": "emoji"
+    },
+    {
+     "id": "elephant",
+     "en": "elephant",
+     "zh": "大象",
+     "phonetic": "/ˈelɪfənt/",
+     "image": "/static/img/elephant.png",
+     "audio": "/static/audio/elephant.mp3",
+     "zhAudio": "/static/audio-zh/elephant.mp3",
      "card": "emoji"
     },
     {
@@ -1343,16 +1464,6 @@
      "card": "emoji"
     },
     {
-     "id": "deer",
-     "en": "deer",
-     "zh": "梅花鹿",
-     "phonetic": "/dɪər/",
-     "image": "/static/img/deer.png",
-     "audio": "/static/audio/deer.mp3",
-     "zhAudio": "/static/audio-zh/deer.mp3",
-     "card": "emoji"
-    },
-    {
      "id": "gorilla",
      "en": "gorilla",
      "zh": "大猩猩",
@@ -1380,16 +1491,6 @@
      "image": "/static/img/snake.png",
      "audio": "/static/audio/snake.mp3",
      "zhAudio": "/static/audio-zh/snake.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "turtle",
-     "en": "turtle",
-     "zh": "海龟",
-     "phonetic": "/ˈtɜːtl/",
-     "image": "/static/img/turtle.png",
-     "audio": "/static/audio/turtle.mp3",
-     "zhAudio": "/static/audio-zh/turtle.mp3",
      "card": "emoji"
     },
     {
@@ -1463,26 +1564,6 @@
      "card": "emoji"
     },
     {
-     "id": "snail",
-     "en": "snail",
-     "zh": "蜗牛",
-     "phonetic": "/sneɪl/",
-     "image": "/static/img/snail.png",
-     "audio": "/static/audio/snail.mp3",
-     "zhAudio": "/static/audio-zh/snail.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "butterfly",
-     "en": "butterfly",
-     "zh": "蝴蝶",
-     "phonetic": "/ˈbʌtəflaɪ/",
-     "image": "/static/img/butterfly.png",
-     "audio": "/static/audio/butterfly.mp3",
-     "zhAudio": "/static/audio-zh/butterfly.mp3",
-     "card": "emoji"
-    },
-    {
      "id": "flamingo",
      "en": "flamingo",
      "zh": "火烈鸟",
@@ -1490,56 +1571,6 @@
      "image": "/static/img/flamingo.png",
      "audio": "/static/audio/flamingo.mp3",
      "zhAudio": "/static/audio-zh/flamingo.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "turkey",
-     "en": "turkey",
-     "zh": "火鸡",
-     "phonetic": "/ˈtɜːki/",
-     "image": "/static/img/turkey.png",
-     "audio": "/static/audio/turkey.mp3",
-     "zhAudio": "/static/audio-zh/turkey.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "swan",
-     "en": "swan",
-     "zh": "天鹅",
-     "phonetic": "/swɒn/",
-     "image": "/static/img/swan.png",
-     "audio": "/static/audio/swan.mp3",
-     "zhAudio": "/static/audio-zh/swan.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "parrot",
-     "en": "parrot",
-     "zh": "鹦鹉",
-     "phonetic": "/ˈpærət/",
-     "image": "/static/img/parrot.png",
-     "audio": "/static/audio/parrot.mp3",
-     "zhAudio": "/static/audio-zh/parrot.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "hedgehog",
-     "en": "hedgehog",
-     "zh": "刺猬",
-     "phonetic": "/ˈhedʒhɒɡ/",
-     "image": "/static/img/hedgehog.png",
-     "audio": "/static/audio/hedgehog.mp3",
-     "zhAudio": "/static/audio-zh/hedgehog.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "squirrel",
-     "en": "squirrel",
-     "zh": "松鼠",
-     "phonetic": "/ˈskwɜːrəl/",
-     "image": "/static/img/squirrel.png",
-     "audio": "/static/audio/squirrel.mp3",
-     "zhAudio": "/static/audio-zh/squirrel.mp3",
      "card": "emoji"
     },
     {
@@ -1620,26 +1651,6 @@
      "image": "/static/img/llama.png",
      "audio": "/static/audio/llama.mp3",
      "zhAudio": "/static/audio-zh/llama.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "bat",
-     "en": "bat",
-     "zh": "蝙蝠",
-     "phonetic": "/bæt/",
-     "image": "/static/img/bat.png",
-     "audio": "/static/audio/bat.mp3",
-     "zhAudio": "/static/audio-zh/bat.mp3",
-     "card": "emoji"
-    },
-    {
-     "id": "rat",
-     "en": "rat",
-     "zh": "大老鼠",
-     "phonetic": "/ræt/",
-     "image": "/static/img/rat.png",
-     "audio": "/static/audio/rat.mp3",
-     "zhAudio": "/static/audio-zh/rat.mp3",
      "card": "emoji"
     }
    ]
@@ -4590,7 +4601,7 @@
    "en": "Family",
    "color": "#D6336C",
    "bg": "#FBE3EC",
-   "level": 2,
+   "level": 1,
    "icon": "/static/img/cat-family.png",
    "words": [
     {
@@ -15998,7 +16009,7 @@
    "en": "Word Families",
    "color": "#F59F00",
    "bg": "#FFF3BF",
-   "level": 4,
+   "level": 2,
    "icon": "/static/img/cat-wordfamilies.png",
    "words": [
     {
@@ -16206,15 +16217,6 @@
      "phonetic": "/ræm/",
      "image": "/static/img/am-ram.svg",
      "audio": "/static/audio/am-ram.mp3",
-     "card": "word"
-    },
-    {
-     "id": "am-yam",
-     "en": "yam",
-     "zh": "山药",
-     "phonetic": "/jæm/",
-     "image": "/static/img/am-yam.svg",
-     "audio": "/static/audio/am-yam.mp3",
      "card": "word"
     },
     {
@@ -17269,7 +17271,7 @@
    "en": "Phonics",
    "color": "#2F9E44",
    "bg": "#EBFBEE",
-   "level": 4,
+   "level": 2,
    "icon": "/static/img/cat-digraphs.png",
    "words": [
     {
@@ -17279,15 +17281,6 @@
      "phonetic": "/ʃɒp/",
      "image": "/static/img/dg-shop.svg",
      "audio": "/static/audio/dg-shop.mp3",
-     "card": "word"
-    },
-    {
-     "id": "dg-dish",
-     "en": "dish",
-     "zh": "盘子",
-     "phonetic": "/dɪʃ/",
-     "image": "/static/img/dg-dish.svg",
-     "audio": "/static/audio/dg-dish.mp3",
      "card": "word"
     },
     {

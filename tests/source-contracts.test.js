@@ -135,6 +135,14 @@ test('答错必须揭晓正确答案（quiz 与 math 两条链路都要有）', 
   }
 })
 
+test('答错必须进错题本：quiz 的落本按科目命名空间，古诗填字明确豁免', () => {
+  // 错题全科化（en/zh/math 共用 services/review.js）靠这条页面接线；
+  // 漏掉 subject 会让两科作答互相覆盖（见 services/review.js 头注释的实测事故）
+  const src = stripComments(read('src/pages/quiz/quiz.vue'))
+  assert.match(src, /recordResult\(itemId, correct, \{\s*subject: subject\.value/, 'quiz 落本必须带科目命名空间')
+  assert.match(src, /kind !== 'poem-fill'[\s\S]*?review\.recordResult/, '古诗填字条目无法还原，必须豁免')
+})
+
 test('页面卸载要清定时器：否则退出后定时器仍会 completeSession', () => {
   for (const p of ['src/pages/quiz/quiz.vue', 'src/pages/math/practice.vue']) {
     const src = read(p)

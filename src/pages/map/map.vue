@@ -28,6 +28,16 @@
       <text class="review-go">开始 →</text>
     </view>
 
+    <!-- 今日小任务：软推荐（无错题时给一个「把没满星的挑战打满」的默认答案，不是打卡） -->
+    <view v-if="dailyTask" class="task-card" @tap="goDailyTask">
+      <text class="review-emoji">🎯</text>
+      <view class="review-info">
+        <text class="review-title">今日小任务</text>
+        <text class="review-sub">{{ dailyTask.title }} · 拿满星 🏆</text>
+      </view>
+      <text class="review-go">开始 →</text>
+    </view>
+
     <!-- 阶段选择 -->
     <view class="stage-row">
       <view
@@ -51,11 +61,11 @@
         <view
           v-if="block.challenge && block.subject.id !== 'math'"
           class="block-quiz"
-          :class="{ 'block-quiz-icon': !showLabels }"
-          :style="{ background: block.subject.color }"
-          @tap="goChallenge(block.challenge)"
+          :class="{ 'block-quiz-icon': !showLabels, 'block-quiz-locked': block.challengeLocked, shake: shakeId === 'challenge-' + block.subject.id }"
+          :style="{ background: block.challengeLocked ? '#d8d2c6' : block.subject.color }"
+          @tap="goChallenge(block)"
         >
-          <text class="block-quiz-text">{{ showLabels ? '🏆 挑战' : '🏆' }}</text>
+          <text class="block-quiz-text">{{ showLabels ? (block.challengeLocked ? '🔒 挑战' : '🏆 挑战') : block.challengeLocked ? '🔒' : '🏆' }}</text>
         </view>
         <!-- 🎲 随机来一课：本阶段该科随机抽一课，连点不重样 -->
         <view
@@ -75,12 +85,16 @@
           v-for="u in block.units"
           :key="u.id"
           class="unit-card"
+          :class="{ locked: u.locked, next: u.isNext, shake: shakeId === u.id }"
           :style="{ background: u.bg }"
           @tap="goLesson(u)"
         >
           <image class="unit-icon" :src="u.icon" mode="aspectFit" />
           <text class="unit-title" :style="{ color: u.color }">{{ u.title }}</text>
           <text class="unit-sub">{{ u.subtitle }}</text>
+          <!-- 软解锁：路径下一课有金色描边指引；后面的课半透明 + 锁 -->
+          <text v-if="u.isNext" class="unit-next-badge">▶</text>
+          <text v-else-if="u.locked" class="unit-lock">🔒</text>
         </view>
       </view>
     </view>
@@ -111,6 +125,7 @@ import { allowNavigate } from '@/platform/nav.js'
 import { hideNativeTabBar } from '@/platform/router-ui.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
+import { pickDailyTask, todayKey } from '@/domain/daily-task.js'
 import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES } from '@/services/curriculum-app.js'
 import { getLesson } from '@/content/catalog.js'
 import TabBar from '@/components/tab-bar.vue'
@@ -123,7 +138,14 @@ const explore = [
 
 const stages = STAGES
 const stage = ref('qimeng')
-const blocks = computed(() => stageBlocks(stage.value))
+// 软解锁状态依赖学习进度，onShow 时进度可能已变：用自增 tick 让 blocks 重算
+const refreshTick = ref(0)
+const blocks = computed(() => {
+  void refreshTick.value
+  return stageBlocks(stage.value)
+})
+// 正在抖动提示「锁着」的卡片/按钮 id
+const shakeId = ref('')
 // 启蒙、一二年级的孩子还不识字，这类入口只留图标
 const PREREADER_STAGES = ['qimeng', 'g12']
 const showLabels = computed(() => !PREREADER_STAGES.includes(stage.value))
@@ -171,9 +193,57 @@ onShow(() => {
   resume.value = continueTarget()
   const reviewSvc = getReviewService()
   reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh') + reviewSvc.dueCount('math')
+  // 学完一课回来：进度变了，课程块的锁/下一课标记得跟着重算
+  refreshTick.value++
   // 只统计目录里仍存在的课：内容下线后历史数据不该继续计入首页星数
-  totalStars.value = getProgressService().summary({ isKnownLesson: (id) => !!getLesson(id) }).totalStars
+  const prog = getProgressService()
+  totalStars.value = prog.summary({ isKnownLesson: (id) => !!getLesson(id) }).totalStars
+  computeDailyTask(prog)
 })
+
+/** 今日小任务：无到期错题时，推荐当前阶段里星最少、路径开放的挑战关卡 */
+const dailyTask = ref(null)
+function computeDailyTask(prog) {
+  const progressMap = prog.lessonProgressMap()
+  const candidates = []
+  blocks.value.forEach((block) => {
+    // 数学关卡即路径：只推荐已解锁的关（锁着的关点了会被拒，不能当任务）
+    const list = block.subject.id === 'math' ? block.units.filter((u) => !u.locked) : block.challenge && !block.challengeLocked ? [block.challenge] : []
+    list.forEach((l) => {
+      const p = progressMap.get(l.id)
+      candidates.push({
+        lessonId: l.id,
+        title: l.title,
+        stars: p?.bestStars || 0,
+        order: candidates.length,
+      })
+    })
+  })
+  const hit = pickDailyTask({ dueTotal: reviewDue.value, candidates, dayKey: todayKey() })
+  dailyTask.value = hit && getLesson(hit.lessonId) ? hit : null
+}
+
+function goDailyTask() {
+  const t = dailyTask.value
+  if (!t) return
+  say('challenge')
+  const lesson = getLesson(t.lessonId)
+  const url = lesson && lessonUrl(lesson)
+  if (url && allowNavigate()) uni.navigateTo({ url })
+}
+
+/** 软解锁的点锁反馈：抖一下 + 轻声提示，不打断孩子（1s 内去重） */
+let lastShakeAt = 0
+function denyLocked(id, tip) {
+  const now = Date.now()
+  if (now - lastShakeAt < 1000) return
+  lastShakeAt = now
+  shakeId.value = id
+  setTimeout(() => {
+    if (shakeId.value === id) shakeId.value = ''
+  }, 600)
+  uni.showToast({ title: tip, icon: 'none' })
+}
 
 function blockHasLessons(block) {
   return !block.empty && block.units.length > 0
@@ -187,14 +257,23 @@ function setStage(id) {
 }
 
 function goLesson(lesson) {
+  // 软解锁：锁着的课先完成前面的再来（家长中心「自由探索」可整体放开）
+  if (lesson.locked) {
+    denyLocked(lesson.id, '先完成前面的课，再来学它 ✨')
+    return
+  }
   const url = lessonUrl(lesson)
   if (url && allowNavigate()) uni.navigateTo({ url })
 }
 
 /** 🏆 挑战圆钮：启蒙/低年级只显示图标，必须能听到它是什么 */
-function goChallenge(lesson) {
+function goChallenge(block) {
+  if (block.challengeLocked) {
+    denyLocked('challenge-' + block.subject.id, '先学一学，再来挑战 🏆')
+    return
+  }
   say('challenge')
-  goLesson(lesson)
+  goLesson(block.challenge)
 }
 
 /** 随机来一课：当前阶段该科随机抽一课，记录上把结果避免连续重样 */
@@ -382,6 +461,18 @@ function go(s) {
   flex-shrink: 0;
 }
 
+/* 今日小任务：实线卡片（虚线留给错题卡），同结构不同色区分 */
+.task-card {
+  border-radius: 44rpx;
+  padding: 26rpx 34rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 26rpx;
+  background: #fff3df;
+  box-shadow: 0 8rpx 24rpx rgba(255, 184, 77, 0.18);
+}
+
 /* 阶段选择 */
 .stage-row {
   display: flex;
@@ -563,6 +654,59 @@ function go(s) {
 .unit-grid-zh .unit-title,
 .unit-grid-math .unit-title {
   font-size: 31rpx;
+}
+
+/* 软解锁：锁着的课降低存在感但不消失（还告诉孩子「还有这些」）；
+   下一课金色描边 + ▶ 角标，是「现在学这个」的默认答案 */
+.unit-card.locked {
+  opacity: 0.45;
+  filter: saturate(0.35);
+}
+.unit-lock {
+  position: absolute;
+  top: 12rpx;
+  right: 14rpx;
+  font-size: 34rpx;
+  line-height: 1;
+}
+.unit-card.next {
+  box-shadow: 0 0 0 6rpx #ffb84d, 0 12rpx 30rpx rgba(255, 184, 77, 0.4);
+}
+.unit-next-badge {
+  position: absolute;
+  top: -14rpx;
+  right: -8rpx;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: #ffb84d;
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 14rpx rgba(255, 184, 77, 0.5);
+}
+.unit-card {
+  position: relative;
+}
+/* 挑战钮锁住态：灰底，点了给提示 */
+.block-quiz-locked {
+  box-shadow: none;
+}
+/* 点锁提示的抖动 */
+.unit-card.shake {
+  animation: shake 0.45s;
+}
+.block-quiz.shake {
+  animation: shake 0.45s;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-14rpx); }
+  50% { transform: translateX(14rpx); }
+  75% { transform: translateX(-8rpx); }
 }
 
 .section-head {

@@ -42,8 +42,10 @@
     </template>
 
     <template v-else-if="finished">
+      <!-- 过关庆祝：彩带 + 满星时奖杯弹出（review 重练完成也值得庆祝） -->
+      <Confetti :show="finished" />
       <view class="result">
-        <text class="result-emoji">🎉</text>
+        <text class="result-emoji" :class="{ 'result-emoji-perfect': perfect }">{{ perfect ? '🏆' : '🎉' }}</text>
         <text class="result-score">一次答对 {{ firstCorrect }} / {{ rounds.length }} 题</text>
         <text class="result-stars">{{ starsText }}</text>
         <text class="result-note">{{ starsNote }}</text>
@@ -76,6 +78,8 @@ import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
 import { getReviewService } from '@/services/review.js'
 import { getReviewPool } from '@/services/review-pools.js'
+import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
+import Confetti from '@/components/confetti.vue'
 import PageTopBar from '@/components/page-top-bar.vue'
 
 const ROUNDS = 10
@@ -178,6 +182,9 @@ watch([roundIdx, rounds], refreshAudioLoading)
 
 const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.value, rounds.value.length)))
 
+/** 满星（首答正确率 ≥90%）：结果页换 🏆 并弹跳 */
+const perfect = computed(() => finished.value && starsForFirstAttempt(firstCorrect.value, rounds.value.length) === 3)
+
 /**
  * 答错后的讲解（domain/explain 按题型生成）：听音题说出听到的词与中文释义、
  * 看拼音选字说出读音对应的字、组词题给出它组成的词、古诗填字把整句说出来。
@@ -220,8 +227,9 @@ onLoad((query) => {
   // 错题重练模式：/?review=en|zh——题目来自错题本到期条目，不计课时会话
   reviewMode.value = query.review === 'en' || query.review === 'zh'
   subject.value = reviewMode.value ? query.review : query.subject || 'en'
-  // 反馈语音用中文：孩子听不懂英文夸奖（口音试听仍用英文，见家长中心）
-  preload([assetUrl('/static/audio/zh-great.mp3'), assetUrl('/static/audio/zh-try.mp3')])
+  // 反馈语音用中文：孩子听不懂英文夸奖（口音试听仍用英文，见家长中心）。
+  // 表扬语整池预载（每条 ~10KB）：轮换短语答对瞬间就要响，不能等网络
+  preload([assetUrl('/static/audio/zh-try.mp3'), ...praiseSrcs().map((p) => assetUrl(p))])
   let p = []
   if (reviewMode.value) {
     p = getReviewPool(subject.value)
@@ -383,7 +391,7 @@ function pick(opt) {
     if (firstTry) firstCorrect.value++
     // 立即落快照：答对后有 1.5s 才进下一题，期间退出的话恢复不能丢这一题的进度
     if (lesson.value) svc.saveSnapshot(currentSnapshot())
-    play(assetUrl('/static/audio/zh-great.mp3'))
+    play(assetUrl(nextPraiseSrc()))
     later(nextRound, 1500)
   } else {
     // 答错：先提示，再揭晓正确答案（绿框 + 对勾 + 读一遍正确读音），停留够长后自动进下一题。
@@ -644,6 +652,20 @@ function goBack() {
 }
 .result-emoji {
   font-size: 140rpx;
+}
+/* 满星奖杯：弹出 + 轻微摇摆，庆祝感给足但不吵 */
+.result-emoji-perfect {
+  animation: trophy-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), trophy-swing 2.2s 0.7s ease-in-out infinite;
+}
+@keyframes trophy-pop {
+  0% { transform: scale(0.2) rotate(-30deg); }
+  70% { transform: scale(1.25) rotate(8deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes trophy-swing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-9deg); }
+  75% { transform: rotate(9deg); }
 }
 .result-score {
   margin-top: 30rpx;

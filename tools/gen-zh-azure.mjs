@@ -47,6 +47,10 @@ const WORDS_ONLY = argv.has('--words')
 const POEMS_MODE = argv.has('--poems')
 const LABELS_MODE = argv.has('--labels')
 const MISC_MODE = argv.has('--misc')
+const FORCE = argv.has('--force')
+// 增量跳过（P3b）：目标文件已存在且 >1KB 视为有效，跑批不重写历史音频
+// （改单条用 --only <id> 精确重生成；全量重生成用 --force）。--poems 原有同款逻辑收编到这。
+const FRESH = (out) => FORCE || !fs.existsSync(out) || fs.statSync(out).size <= 1000
 // --only zh-897fs,zh-4e00w：精确重生成指定条目（改单条内容时用，避免整批重写）
 const ONLY = (() => {
   const i = process.argv.indexOf('--only')
@@ -171,7 +175,7 @@ function poemJobs() {
       for (const ch of [...line]) fullSlots.push(marks && marks[ch] ? marks[ch] : null)
     })
     // 增量：已有且非空的轨跳过（--force 全量重生成），后续批次跑批不重写历史音频
-    const fresh = (out) => argv.has('--force') || !fs.existsSync(out) || fs.statSync(out).size <= 1000
+    const fresh = (out) => FRESH(out)
     const fullOut = path.join(POEMS_OUT_DIR, `${p.id}-full.mp3`)
     if (fresh(fullOut)) {
       jobs.push({
@@ -249,6 +253,7 @@ const BUTTON_LABELS = [
 
 function labelJobs() {
   return BUTTON_LABELS.map(([id, text]) => ({ id: `zh-${id}`, text, pinyin: null, out: path.join(AUDIO_DIR, `zh-${id}.mp3`) }))
+    .filter((j) => (ONLY ? ONLY.has(j.id) : FRESH(j.out)))
 }
 
 async function runLabels() {
@@ -290,9 +295,7 @@ async function runLabels() {
 // 新旧混用（实测 121 条停留在旧音色），故收到这里统一走 Azure。
 // 不加 phoneme：数字含「一」的变调（一百 = yì bǎi），逐字强制一声会读错，走默认读音。
 const ZH_MISC = [
-  ['zh-great', '答对啦，真棒！'],
   ['zh-try', '再想一想！'],
-  ['zh-awesome', '太厉害了！'],
   ['zh-ok', '没关系，再试一次。'],
   ['zh-plus', '加'],
   ['zh-minus', '减'],
@@ -312,11 +315,16 @@ const ZH_MISC = [
   ['zh-choose', '请选一选'],
 ]
 
+// 表扬语从单一真源引入（tools/zh-praise.mjs，gen-encourage.mjs 的 Edge 兜底也用它），
+// 两处清单漂移会让 Azure/Edge 生成的文件集对不上
+import { ZH_PRAISE } from './zh-praise.mjs'
+ZH_MISC.push(...ZH_PRAISE)
+
 function miscJobs() {
   const jobs = []
   for (let n = 0; n <= 100; n++) jobs.push({ id: `n${n}`, text: String(n), pinyin: null, out: path.join(AUDIO_DIR, `n${n}.mp3`) })
   for (const [id, text] of ZH_MISC) jobs.push({ id, text, pinyin: null, out: path.join(AUDIO_DIR, `${id}.mp3`) })
-  return jobs
+  return jobs.filter((j) => FRESH(j.out))
 }
 
 async function runMisc() {
@@ -410,13 +418,15 @@ async function main() {
     process.exit(1)
   }
 
-  const jobs = targets.map((id) => {
-    const it = items[id]
-    const out = id.startsWith('zhw-')
-      ? path.join(AUDIO_ZH_DIR, `${id.slice(4)}.mp3`)
-      : path.join(AUDIO_DIR, `${id}.mp3`)
-    return { id, text: it.text, pinyin: it.pinyin, out }
-  })
+  const jobs = targets
+    .map((id) => {
+      const it = items[id]
+      const out = id.startsWith('zhw-')
+        ? path.join(AUDIO_ZH_DIR, `${id.slice(4)}.mp3`)
+        : path.join(AUDIO_DIR, `${id}.mp3`)
+      return { id, text: it.text, pinyin: it.pinyin, out }
+    })
+    .filter((j) => (ONLY ? ONLY.has(j.id) : FRESH(j.out)))
 
   const synthWorker = async (job) => {
     let buf

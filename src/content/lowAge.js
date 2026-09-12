@@ -43,3 +43,11 @@ export function getQimengAudioOrder() {
 export function setQimengAudioOrder(order) {
   prefs().setQimengAudioOrder(order)
 }
+
+export function getFreeUnlock() {
+  return prefs().getFreeUnlock()
+}
+
+export function setFreeUnlock(on) {
+  prefs().setFreeUnlock(on)
+}

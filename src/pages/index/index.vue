@@ -14,8 +14,10 @@
           <image class="level-icon" :src="lv.icon" mode="aspectFit" />
           <text class="level-name" :style="{ color: lv.color }">{{ lv.zh }}</text>
         </view>
-        <view class="level-quiz" :style="{ background: lv.color }" @tap="goQuiz(lv.id)">
-          <text class="level-quiz-text">⚡ 挑战</text>
+        <view class="level-quiz"
+          :class="{ 'level-quiz-locked': isLocked('en-quiz-l' + lv.id) }"
+          :style="{ background: isLocked('en-quiz-l' + lv.id) ? '#d8d2c6' : lv.color }" @tap="goQuiz(lv.id)">
+          <text class="level-quiz-text">{{ isLocked('en-quiz-l' + lv.id) ? '🔒 挑战' : '⚡ 挑战' }}</text>
         </view>
       </view>
 
@@ -24,6 +26,7 @@
           v-for="cat in catsOf(lv.id)"
           :key="cat.id"
           class="cat-card"
+          :class="{ locked: isLocked('en-learn-' + cat.id), shake: shakeId === 'en-learn-' + cat.id }"
           :style="{ background: cat.bg }"
           @tap="goLearn(cat.id)"
         >
@@ -31,6 +34,7 @@
           <text class="cat-zh" :style="{ color: cat.color }">{{ cat.zh }}</text>
           <text class="cat-en">{{ cat.en }}</text>
           <text class="cat-count">{{ cat.words.length }} 词</text>
+          <text v-if="isLocked('en-learn-' + cat.id)" class="cat-lock">🔒</text>
           <!-- 平板专属：整类点读板入口（点卡片学词，点喇叭就是点读） -->
           <view v-if="isTablet" class="cat-board" @tap.stop="goBoard(cat.id)">
             <text class="cat-board-text">🔊</text>
@@ -43,10 +47,12 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import data from '@/data/words.json'
 import { isCategoryHidden } from '@/content/lowAge.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 import { goBackOrHome, isTabletDevice } from '@/platform/nav.js'
+import { lessonLocks } from '@/services/curriculum-app.js'
 
 // 点读板入口只在平板显示（触屏 + 短边 ≥560px）
 const isTablet = ref(isTabletDevice())
@@ -57,22 +63,56 @@ const totalWords = computed(() =>
   data.categories.filter((c) => !isCategoryHidden(c.id)).reduce((s, c) => s + c.words.length, 0),
 )
 
+// 路径软解锁：与课程页同一份口径（onShow 时进度可能已变，每次都取最新）
+const locks = ref(new Map())
+const shakeId = ref('')
+let lastShakeAt = 0
+refreshLocks()
+function refreshLocks() {
+  locks.value = lessonLocks()
+}
+function isLocked(lessonId) {
+  return !!locks.value.get(lessonId)?.locked
+}
+function deny(lessonId, tip) {
+  const now = Date.now()
+  if (now - lastShakeAt < 1000) return
+  lastShakeAt = now
+  shakeId.value = lessonId
+  setTimeout(() => {
+    if (shakeId.value === lessonId) shakeId.value = ''
+  }, 600)
+  uni.showToast({ title: tip, icon: 'none' })
+}
+
 function catsOf(levelId) {
   // 低龄模式：惊悚/暗黑分类不出现在自由探索页
   return data.categories.filter((c) => c.level === levelId && !isCategoryHidden(c.id))
 }
 function goLearn(id) {
+  const lid = 'en-learn-' + id
+  if (isLocked(lid)) {
+    deny(lid, '先完成前面的课，再来学它 ✨')
+    return
+  }
   uni.navigateTo({ url: `/pages/learn/learn?subject=en&cat=${id}` })
 }
 function goBoard(id) {
   uni.navigateTo({ url: `/pages/board/board?subject=en&cat=${id}` })
 }
 function goQuiz(levelId) {
+  const lid = 'en-quiz-l' + levelId
+  if (isLocked(lid)) {
+    deny(lid, '先学一学，再来挑战 🏆')
+    return
+  }
   uni.navigateTo({ url: `/pages/quiz/quiz?subject=en&level=${levelId}` })
 }
 function goBack() {
   goBackOrHome()
 }
+
+onShow(refreshLocks)
 </script>
 
 <style scoped>
@@ -139,6 +179,34 @@ function goBack() {
   font-size: 30rpx;
   font-weight: 800;
   white-space: nowrap;
+}
+/* 挑战钮锁住态（软解锁：先学一学再来挑战） */
+.level-quiz-locked {
+  box-shadow: none;
+}
+/* 分类卡锁住态：与课程页同规（半透明+🔒，点了抖一下提示） */
+.cat-card {
+  position: relative;
+}
+.cat-card.locked {
+  opacity: 0.45;
+  filter: saturate(0.35);
+}
+.cat-lock {
+  position: absolute;
+  top: 12rpx;
+  left: 14rpx;
+  font-size: 34rpx;
+  line-height: 1;
+}
+.cat-card.shake {
+  animation: cat-shake 0.45s;
+}
+@keyframes cat-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-14rpx); }
+  50% { transform: translateX(14rpx); }
+  75% { transform: translateX(-8rpx); }
 }
 .grid {
   display: flex;

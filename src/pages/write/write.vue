@@ -44,6 +44,7 @@ import { goBackOrHome } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
+import { nextPraiseSrc } from '@/services/encourage-app.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 
 const char = ref('')
@@ -258,7 +259,7 @@ function startQuiz() {
     onComplete: () => {
       done.value = true
       hintText.value = '太棒了，再写一遍巩固一下！'
-      play(assetUrl('/static/audio/zh-great.mp3'))
+      play(assetUrl(nextPraiseSrc()))
       // 一次写对（没写错过）＝ 作答记录里的首答正确；写错过也算练过（照样点亮认识）
       recordPractice(misses === 0)
     },

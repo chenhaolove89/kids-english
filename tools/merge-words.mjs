@@ -23,11 +23,12 @@ export const LEVELS = {
 }
 
 const LEVEL_OF = {
-  colors: 1, numbers: 1, shapes: 1, body: 1, alphabet: 1, animals: 1, fruits: 1, toys: 1,
-  food: 2, vegetables: 2, desserts: 2, drinks: 2, clothes: 2, home: 2, kitchen: 2, school: 2, family: 2, emotions: 2,
+  colors: 1, numbers: 1, shapes: 1, body: 1, alphabet: 1, animals: 1, wild: 1, fruits: 1, toys: 1, family: 1,
+  food: 2, vegetables: 2, desserts: 2, drinks: 2, clothes: 2, home: 2, kitchen: 2, school: 2, emotions: 2,
+  wordfamilies: 2, digraphs: 2,
   vehicles: 3, nature: 3, ocean: 3, insects: 3, birds: 3, places: 3, time: 3, countries: 3, farm: 3, forest: 3, city: 3,
   sports: 4, music: 4, jobs: 4, space: 4, characters: 4, tools: 4, electronics: 4, health: 4, festivals: 4,
-  actions: 4, adjectives: 4, opposites: 4, sightwords: 4, wordfamilies: 4, digraphs: 4,
+  actions: 4, adjectives: 4, opposites: 4, sightwords: 4,
   story: 4, prepositions: 4, ordinals: 4, subjects: 4, mathwords: 4, routine: 4, greetings: 4, conversation: 4,
 }
 
@@ -47,6 +48,15 @@ const MOVES = {
   party: 'festivals',     // toys → festivals（派对是活动场景）
   gift: 'festivals',      // toys → festivals（礼物贴节日场景）
   policeofficer: 'jobs',  // characters → jobs（警察是职业不是装扮角色）
+  // 2026-09-12 英语启蒙补课（P2c）：animals 60 词对 3-6 岁太重，拆出野生动物分类。
+  // 保留 animals=身边常见（宠物/农场/花园），wild=野生动物（狮虎象等）。
+  // 词的图片/美音/中文音都按词 id 存放，分类迁移零新增资源。
+  lion: 'wild', tiger: 'wild', koala: 'wild', elephant: 'wild', wolf: 'wild',
+  kangaroo: 'wild', camel: 'wild', giraffe: 'wild', zebra: 'wild', hippo: 'wild',
+  rhino: 'wild', gorilla: 'wild', crocodile: 'wild', snake: 'wild', leopard: 'wild',
+  otter: 'wild', skunk: 'wild', badger: 'wild', beaver: 'wild', raccoon: 'wild',
+  bison: 'wild', llama: 'wild', flamingo: 'wild', penguin: 'wild', dolphin: 'wild',
+  whale: 'wild', shark: 'wild', octopus: 'wild', crab: 'wild', seal: 'wild',
 }
 
 function slug(id) {

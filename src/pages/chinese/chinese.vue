@@ -12,6 +12,7 @@
       v-for="lv in levels"
       :key="lv.id"
       class="level-card"
+      :class="{ shake: shakeId === 'zh-learn-l' + lv.id }"
       :style="{ background: lv.bg }"
     >
       <view class="level-left">
@@ -22,11 +23,13 @@
         </view>
       </view>
       <view class="level-btns">
-        <view class="level-btn learn" :style="{ background: lv.color }" @tap="goLearn(lv)">
-          <text class="level-btn-text">学一学</text>
+        <view class="level-btn learn" :class="{ dim: isLocked('zh-learn-l' + lv.id) }" :style="{ background: lv.color }" @tap="goLearn(lv)">
+          <text class="level-btn-text">{{ isLocked('zh-learn-l' + lv.id) ? '🔒' : '学一学' }}</text>
         </view>
-        <view class="level-btn quiz" @tap="goQuiz(lv)">
-          <text class="level-btn-text quiz-text">⚡ 挑战</text>
+        <view class="level-btn quiz"
+          :class="{ 'quiz-locked': isLocked('zh-quiz-l' + lv.id) }"
+          @tap="goQuiz(lv)">
+          <text class="level-btn-text quiz-text">{{ isLocked('zh-quiz-l' + lv.id) ? '🔒 挑战' : '⚡ 挑战' }}</text>
         </view>
       </view>
     </view>
@@ -39,17 +42,51 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import data from '@/data/hanzi.json'
 import PageTopBar from '@/components/page-top-bar.vue'
 import { goBackOrHome } from '@/platform/nav.js'
+import { lessonLocks } from '@/services/curriculum-app.js'
 
 const levels = ref(data.levels)
 const total = computed(() => data.total)
 
+// 路径软解锁：与课程页同一份口径
+const locks = ref(new Map())
+const shakeId = ref('')
+let lastShakeAt = 0
+function refreshLocks() {
+  locks.value = lessonLocks()
+}
+onShow(refreshLocks)
+function isLocked(lessonId) {
+  return !!locks.value.get(lessonId)?.locked
+}
+function deny(lessonId, tip) {
+  const now = Date.now()
+  if (now - lastShakeAt < 1000) return
+  lastShakeAt = now
+  shakeId.value = lessonId
+  setTimeout(() => {
+    if (shakeId.value === lessonId) shakeId.value = ''
+  }, 600)
+  uni.showToast({ title: tip, icon: 'none' })
+}
+
 function goLearn(lv) {
+  const lid = 'zh-learn-l' + lv.id
+  if (isLocked(lid)) {
+    deny(lid, '先完成前面的课，再来学它 ✨')
+    return
+  }
   uni.navigateTo({ url: `/pages/learn/learn?subject=zh&level=${lv.id}` })
 }
 function goQuiz(lv) {
+  const lid = 'zh-quiz-l' + lv.id
+  if (isLocked(lid)) {
+    deny(lid, '先学一学，再来挑战 🏆')
+    return
+  }
   uni.navigateTo({ url: `/pages/quiz/quiz?subject=zh&level=${lv.id}` })
 }
 function goBack() {
@@ -149,6 +186,25 @@ function goBack() {
 }
 .level-btn-text.quiz-text {
   color: #4a3f35;
+}
+/* 软解锁锁住态：学一学降不透明度、挑战钮灰底 */
+.level-btn.dim {
+  opacity: 0.55;
+}
+.level-btn.quiz-locked {
+  background: #d8d2c6;
+}
+.level-btn.quiz-locked .level-btn-text.quiz-text {
+  color: #ffffff;
+}
+.level-card.shake {
+  animation: lv-shake 0.45s;
+}
+@keyframes lv-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-14rpx); }
+  50% { transform: translateX(14rpx); }
+  75% { transform: translateX(-8rpx); }
 }
 .footer {
   display: flex;

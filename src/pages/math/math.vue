@@ -12,12 +12,13 @@
       v-for="lv in levels"
       :key="lv.id"
       class="level-card"
+      :class="{ locked: isLocked(lessonIdOf(lv.id)), shake: shakeId === 'math-practice-l' + lv.id }"
       :style="{ background: lv.bg }"
       @tap="go(lv)"
     >
       <view class="level-left">
         <view class="level-num" :style="{ background: lv.color }">
-          <text class="level-num-text">{{ lv.id }}</text>
+          <text class="level-num-text">{{ isLocked(lessonIdOf(lv.id)) ? '🔒' : lv.id }}</text>
         </view>
         <view class="level-info">
           <text class="level-name" :style="{ color: lv.color }">{{ lv.name }}</text>
@@ -31,9 +32,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { MATH_LEVELS } from '@/domain/mathgen.js'
 import { lessonsOfSubject } from '@/content/catalog.js'
 import { goBackOrHome } from '@/platform/nav.js'
+import { lessonLocks } from '@/services/curriculum-app.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 
 /**
@@ -67,8 +70,34 @@ const levels = ref(
     .map((lv) => ({ ...lv, desc: LEVEL_DESC[lv.id] || '' })),
 )
 
+// 路径软解锁：与课程页同一份口径（数学关卡即路径，阶段内顺序解锁）
+const locks = ref(new Map())
+const shakeId = ref('')
+let lastShakeAt = 0
+function refreshLocks() {
+  locks.value = lessonLocks()
+}
+onShow(refreshLocks)
+function isLocked(lessonId) {
+  return lessonId && !!locks.value.get(lessonId)?.locked
+}
+function deny(lid) {
+  const now = Date.now()
+  if (now - lastShakeAt < 1000) return
+  lastShakeAt = now
+  shakeId.value = lid
+  setTimeout(() => {
+    if (shakeId.value === lid) shakeId.value = ''
+  }, 600)
+  uni.showToast({ title: '先完成前面的关卡 ✨', icon: 'none' })
+}
+
 function go(lv) {
   const lid = lessonIdOf(lv.id)
+  if (isLocked(lid)) {
+    deny('math-practice-l' + lv.id)
+    return
+  }
   uni.navigateTo({ url: `/pages/math/practice?level=${lv.id}` + (lid ? `&lessonId=${lid}` : '') })
 }
 function goBack() {
@@ -159,5 +188,19 @@ function goBack() {
   font-weight: 700;
   flex-shrink: 0;
   margin-left: 16rpx;
+}
+/* 软解锁锁住态：整卡降存在感，点了抖一下提示 */
+.level-card.locked {
+  opacity: 0.55;
+  filter: saturate(0.4);
+}
+.level-card.shake {
+  animation: math-shake 0.45s;
+}
+@keyframes math-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-14rpx); }
+  50% { transform: translateX(14rpx); }
+  75% { transform: translateX(-8rpx); }
 }
 </style>

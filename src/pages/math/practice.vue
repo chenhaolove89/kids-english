@@ -105,8 +105,10 @@
     </template>
 
     <template v-else-if="finished">
+      <!-- 过关庆祝：彩带只在正式关卡出现（错题重练用 ✅，不撒花） -->
+      <Confetti :show="finished && !reviewMode" />
       <view class="result">
-        <text class="result-emoji">{{ reviewMode ? '✅' : '🎉' }}</text>
+        <text class="result-emoji" :class="{ 'result-emoji-perfect': !reviewMode && perfect }">{{ reviewMode ? '✅' : perfect ? '🏆' : '🎉' }}</text>
         <text class="result-score">{{ resultText }}</text>
         <text v-if="!reviewMode" class="result-stars">{{ starsText }}</text>
         <text class="result-note">{{ starsNote }}</text>
@@ -136,6 +138,8 @@ import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
 import { getReviewService } from '@/services/review.js'
 import { getReviewPool } from '@/services/review-pools.js'
+import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
+import Confetti from '@/components/confetti.vue'
 import PageTopBar from '@/components/page-top-bar.vue'
 
 const level = ref(MATH_LEVELS[1])
@@ -203,6 +207,8 @@ const reviewMode = ref(false) // 错题重练：?review=1——到期错题原�
 const firstPickMap = new Map()
 
 const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.value, questions.value.length)))
+/** 满星（首答正确率 ≥90%）：结果页换 🏆 并弹跳（重练模式不参与） */
+const perfect = computed(() => finished.value && !reviewMode.value && starsForFirstAttempt(firstCorrect.value, questions.value.length) === 3)
 const titleText = computed(() => (reviewMode.value ? '错题重练' : level.value.name))
 const resultText = computed(() =>
   reviewMode.value
@@ -214,7 +220,7 @@ const starsNote = computed(() =>
 )
 
 onLoad((query) => {
-  preload([assetUrl('/static/audio/zh-great.mp3'), assetUrl('/static/audio/zh-try.mp3'), assetUrl('/static/audio/zh-awesome.mp3')])
+  preload([assetUrl('/static/audio/zh-try.mp3'), ...praiseSrcs().map((p) => assetUrl(p))])
 
   // 错题重练模式：题目来自错题本到期条目（存的是答错那道的整题快照），原题重放
   if (query.review === '1') {
@@ -332,7 +338,7 @@ function pickById(id) {
     // 推进用定时器而不是音频 end 回调：respeak/loaderror 等旁路会让 end 永不触发（卡死），
     // quiz 侧同场景全用定时器推进——两种写法统一到定时器
     later(nextQuestion, 1400)
-    playSeq([assetUrl("/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3")])
+    playSeq([assetUrl(nextPraiseSrc())])
   } else {
     // 答错：先提示，再揭晓正确答案并读一遍，停留够长后自动进入下一题。
     // 揭晓期间屏蔽点击——首答已定，不让孩子靠「被告知答案后再点」刷分或刷错题晋级。
@@ -663,6 +669,20 @@ function goBack() {
 }
 .result-emoji {
   font-size: 140rpx;
+}
+/* 满星奖杯：弹出 + 轻微摇摆（quiz 同款） */
+.result-emoji-perfect {
+  animation: trophy-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), trophy-swing 2.2s 0.7s ease-in-out infinite;
+}
+@keyframes trophy-pop {
+  0% { transform: scale(0.2) rotate(-30deg); }
+  70% { transform: scale(1.25) rotate(8deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes trophy-swing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-9deg); }
+  75% { transform: rotate(9deg); }
 }
 .result-score {
   margin-top: 30rpx;

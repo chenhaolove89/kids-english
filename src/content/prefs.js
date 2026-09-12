@@ -54,6 +54,15 @@ export function createPrefs(store) {
     updatePrefs({ qimengAudioOrder: order === 'en-first' ? 'en-first' : 'zh-first' })
   }
 
+  /** 自由探索（家长中心开关）：开启后课程路径软解锁全部放开，默认关闭 */
+  function getFreeUnlock() {
+    return readPrefs().freeUnlock === true
+  }
+
+  function setFreeUnlock(on) {
+    updatePrefs({ freeUnlock: !!on })
+  }
+
   return {
     LOW_AGE_HIDDEN_CATEGORIES,
     readPrefs,
@@ -63,5 +72,7 @@ export function createPrefs(store) {
     isCategoryHidden,
     getQimengAudioOrder,
     setQimengAudioOrder,
+    getFreeUnlock,
+    setFreeUnlock,
   }
 }

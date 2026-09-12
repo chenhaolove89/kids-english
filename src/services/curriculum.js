@@ -10,10 +10,15 @@
  * 此前它整文件零测试（架构审计点名的最后一处空白）。
  */
 import { pickOneExcept } from '../domain/shuffle.js'
+import { markPathLocks, isChallengeLocked } from '../domain/path.js'
 
-export function createCurriculum({ catalog, isCategoryHidden, store }) {
+export function createCurriculum({ catalog, isCategoryHidden, store, getProgress = null, isFreeUnlock = null }) {
   const { STAGES, SUBJECTS, LESSONS, getLesson, lessonsForStage, normalizeStage } = catalog
   const hidden = isCategoryHidden || (() => false)
+  // 路径软解锁：进度查询与家长「自由探索」开关由应用侧注入（curriculum-app.js）；
+  // 未注入时退化为「全开放」，等价于关闭解锁功能。
+  const progressOf = getProgress ? (id) => getProgress(id) : () => undefined
+  const freeUnlock = () => (isFreeUnlock ? !!isFreeUnlock() : false)
 
   /** 低龄模式可见性：惊悚/暗黑分类（characters/story）在低龄模式下整课隐藏 */
   function isVisible(lesson) {
@@ -22,13 +27,18 @@ export function createCurriculum({ catalog, isCategoryHidden, store }) {
     return true
   }
 
-  /** 首页阶段视图：每个科目一个块 { subject, challenge, units, empty } */
+  /**
+   * 首页阶段视图：每个科目一个块 { subject, challenge, units, empty, challengeLocked }。
+   * units 里的每门课带 { locked, isNext }：软解锁路径（domain/path.js）——
+   * 第一个未完成的课是「下一课」，其后的课锁定；已完成/拿过星的永远开放。
+   */
   function stageBlocks(stageId) {
     const st = normalizeStage(stageId)
     const available = lessonsForStage(st).filter(isVisible)
+    const fu = freeUnlock()
     return SUBJECTS.map((subj) => {
       const ls = available.filter((l) => l.subject === subj.id)
-      if (!ls.length) return { subject: subj, challenge: null, units: [], empty: true }
+      if (!ls.length) return { subject: subj, challenge: null, units: [], empty: true, challengeLocked: false }
       const challenges = ls.filter((l) => l.kind === 'challenge')
       let units
       if (subj.id === 'en') {
@@ -39,8 +49,37 @@ export function createCurriculum({ catalog, isCategoryHidden, store }) {
         // 数学没有独立学一学页：全部练习关卡都作为入口卡（一个阶段可能有多关）
         units = challenges
       }
-      return { subject: subj, challenge: challenges[0] || null, units, empty: false }
+      const { lockedIds, nextId } = markPathLocks(units, progressOf, { freeUnlock: fu })
+      const annotated = units.map((l) => ({ ...l, locked: lockedIds.has(l.id), isNext: l.id === nextId }))
+      // 挑战钮：该科路径上至少完成一门课才亮（数学全关卡即路径，无独立挑战钮）
+      const challengeLocked =
+        subj.id === 'math' ? false : isChallengeLocked(units, progressOf, { freeUnlock: fu })
+      return { subject: subj, challenge: challenges[0] || null, units: annotated, empty: false, challengeLocked }
     })
+  }
+
+  /**
+   * 全部可见课程的锁定状态：lessonId → { locked, isNext }。
+   * 探索页（学英语/学语文/学数学列表）与地图共用同一份口径，避免两处规则漂移。
+   */
+  function lessonLocks() {
+    const out = new Map()
+    const fu = freeUnlock()
+    for (const stage of STAGES) {
+      const available = lessonsForStage(stage.id).filter(isVisible)
+      for (const subj of SUBJECTS) {
+        const ls = available.filter((l) => l.subject === subj.id)
+        const units = subj.id === 'math' ? ls.filter((l) => l.kind === 'challenge') : ls.filter((l) => l.kind === 'learn')
+        const { lockedIds, nextId } = markPathLocks(units, progressOf, { freeUnlock: fu })
+        for (const l of units) out.set(l.id, { locked: lockedIds.has(l.id), isNext: l.id === nextId })
+        // 挑战课（en-quiz-l{n} / zh-quiz-l{n}）：路径上没有任何完成记录就锁
+        const chLocked = isChallengeLocked(units, progressOf, { freeUnlock: fu })
+        for (const l of ls) {
+          if (l.kind === 'challenge' && subj.id !== 'math') out.set(l.id, { locked: chLocked, isNext: false })
+        }
+      }
+    }
+    return out
   }
 
   /** 课程 → 页面跳转地址（旧入口页面复用，额外带 lessonId） */
@@ -77,10 +116,15 @@ export function createCurriculum({ catalog, isCategoryHidden, store }) {
   /**
    * 随机来一课：某阶段某科目可见课程里随机抽一课（学一学/挑战都在池内），
    * excludeId 传上一把抽中的课，避免连续重样。
+   * 池只含路径上开放（未锁）的课——随机不该绕过软解锁路径。
    */
   function randomLesson(stageId, subjectId, excludeId) {
-    const ls = lessonsForStage(normalizeStage(stageId), subjectId).filter(isVisible)
-    return pickOneExcept(ls, excludeId, (l) => l.id) || null
+    const st = normalizeStage(stageId)
+    const available = lessonsForStage(st, subjectId).filter(isVisible)
+    const units = subjectId === 'math' ? available.filter((l) => l.kind === 'challenge') : available.filter((l) => l.kind === 'learn')
+    const { lockedIds } = markPathLocks(units, progressOf, { freeUnlock: freeUnlock() })
+    const pool = units.filter((l) => !lockedIds.has(l.id))
+    return pickOneExcept(pool, excludeId, (l) => l.id) || null
   }
 
   /** 全部对小孩可见的课程（低龄模式过滤后），家长页统计用同一口径 */
@@ -142,6 +186,7 @@ export function createCurriculum({ catalog, isCategoryHidden, store }) {
     SUBJECTS,
     isVisible,
     stageBlocks,
+    lessonLocks,
     lessonUrl,
     randomLesson,
     visibleLessons,

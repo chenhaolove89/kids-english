@@ -934,6 +934,29 @@ async function main() {
     await cdp.eval(`localStorage.clear(); return 1`)
     await cdp.freshNavigate(`${BASE}/#/pages/map/map`)
     await sleep(1400)
+
+    // ---------- 11.5 路径软解锁：全新档案下「下一课」有指引、其余锁定；点锁不放行 ----------
+    // 深钻古诗/填字等流程改在家长「自由探索」模式下跑（开锁后与旧路径一致）
+    const unlockProbe = await cdp.eval(`
+      const blocks2 = [...document.querySelectorAll('.block')]
+      const enBlock = blocks2.find((b) => ((b.querySelector('.block-name') || {}).innerText || '').includes('学英语'))
+      if (!enBlock) return { ok: false, err: 'no en block' }
+      const units = [...enBlock.querySelectorAll('.unit-card')]
+      const nextOnes = units.filter((u) => u.classList.contains('next'))
+      const lockedOnes = units.filter((u) => u.classList.contains('locked'))
+      if (lockedOnes.length) lockedOnes[0].click()
+      return { ok: true, units: units.length, next: nextOnes.length, locked: lockedOnes.length }
+    `)
+    await sleep(700)
+    const hashAfterLockTap = await cdp.eval(`return location.hash`)
+    check(
+      '软解锁：全新档案下英语块第一课有「下一课」指引、其余锁定，点锁不放行',
+      unlockProbe.ok && unlockProbe.next === 1 && unlockProbe.locked === unlockProbe.units - 1 && hashAfterLockTap.includes('pages/map/map'),
+      `units=${unlockProbe.units} next=${unlockProbe.next} locked=${unlockProbe.locked} 点锁后 hash=${hashAfterLockTap.slice(0, 26)}`,
+    )
+    await cdp.eval(`localStorage.setItem('kx:prefs', JSON.stringify({ v: 1, d: { freeUnlock: true, stage: 'g34' } })); return 1`)
+    await cdp.freshNavigate(`${BASE}/#/pages/map/map`)
+    await sleep(1200)
     const stage34 = await cdp.eval(`
       const chips = [...document.querySelectorAll('.stage-chip')]
       const c = chips[2] // 顺序：启蒙 / 一二 / 三四 / 五六
