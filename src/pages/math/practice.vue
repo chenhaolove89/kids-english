@@ -245,7 +245,7 @@ onLoad((query) => {
 
   if (l) {
     lesson.value = l
-    const resumed = svc.resumeSessionFor(l.id)
+    const resumed = svc.resumeSessionFor(l.id, 'challenge')
     if (resumed?.snapshot?.questions?.length) {
       restoreSnapshot(resumed.snapshot)
       return
@@ -296,7 +296,9 @@ function startQuestion() {
 }
 
 function respeak() {
-  if (revealing.value) return
+  // 答对后的推进链挂在表扬音的 end 回调上（见 pickById）：此时点题目重听会顶掉
+  // 推进链（seqToken 自增 + stop() 让 end 永不触发）→ 页面卡死在已答完的题上
+  if (revealing.value || flash.value) return
   playSeq(q.value.seq)
 }
 
@@ -325,8 +327,12 @@ function pickById(id) {
   if (correct) {
     score.value++
     if (firstTry) firstCorrect.value++
-    // 字符串拼接而非反引号模板：反引号路径发布脚本改写不到 → GitHub Pages 上 404
-    playSeq([assetUrl("/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3")], nextQuestion)
+    // 立即落快照（quiz 同款口径）：表扬音播放窗口内退出，重进同题重放也不能丢首答星
+    if (lesson.value) svc.saveSnapshot(currentSnapshot())
+    // 推进用定时器而不是音频 end 回调：respeak/loaderror 等旁路会让 end 永不触发（卡死），
+    // quiz 侧同场景全用定时器推进——两种写法统一到定时器
+    later(nextQuestion, 1400)
+    playSeq([assetUrl("/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3")])
   } else {
     // 答错：先提示，再揭晓正确答案并读一遍，停留够长后自动进入下一题。
     // 揭晓期间屏蔽点击——首答已定，不让孩子靠「被告知答案后再点」刷分或刷错题晋级。

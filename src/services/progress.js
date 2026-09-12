@@ -105,7 +105,11 @@ export function createProgressService(store) {
     const allSessions = store.get('sessions', [])
     const known = (s) => !isKnownLesson || isKnownLesson(s.lessonId)
     const inWeek = allSessions.filter((s) => (s.endedAt || 0) >= weekAgo)
-    const completed = inWeek.filter((s) => s.status === 'completed' && known(s))
+    // 口径与 lessonProgressMap 同源：只认学一学/挑战。practice（描红、古诗点读）
+    // 不算「完成课」——否则孩子只点读了古诗，本卡片有数而同屏「完成课程」总数为 0，同名不同义
+    const completed = inWeek.filter(
+      (s) => s.status === 'completed' && known(s) && (s.kind === 'learn' || s.kind === 'challenge'),
+    )
 
     // 2) 本周星：按 lessonId 取本周内最好的一次挑战成绩，封顶与总星同源
     const weekBestStars = new Map()

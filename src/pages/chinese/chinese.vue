@@ -41,6 +41,7 @@
 import { ref, computed } from 'vue'
 import data from '@/data/hanzi.json'
 import PageTopBar from '@/components/page-top-bar.vue'
+import { goBackOrHome } from '@/platform/nav.js'
 
 const levels = ref(data.levels)
 const total = computed(() => data.total)
@@ -52,7 +53,7 @@ function goQuiz(lv) {
   uni.navigateTo({ url: `/pages/quiz/quiz?subject=zh&level=${lv.id}` })
 }
 function goBack() {
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 

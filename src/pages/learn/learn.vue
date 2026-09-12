@@ -283,7 +283,7 @@ function wireSession(lessonId, resolvedCatId) {
   if (!l) return
   if (l.ref?.kind === 'en-category' && resolvedCatId && l.ref.id !== resolvedCatId) return
   lesson.value = l
-  const resumed = svc.resumeSessionFor(l.id)
+  const resumed = svc.resumeSessionFor(l.id, 'learn')
   if (resumed) {
     const idx = resumed.snapshot && Number(resumed.snapshot.idx)
     if (Number.isInteger(idx)) current.value = Math.min(Math.max(0, idx), items.value.length - 1)

@@ -88,6 +88,24 @@ test('resumeSessionFor：无历史时返回 null；活跃同课会话直接续�
   assert.ok(svc.resumeSessionFor('L1'))
 })
 
+test('resumeSessionFor：expectKind 不符不复用（挑战中途退出后进学一学，不得混用会话）', () => {
+  const store = makeStore()
+  const svc = createSessionService(store)
+  // 同一课的挑战中途退出（留 paused 快照）
+  svc.startSession({ lessonId: 'L1', kind: 'challenge' })
+  svc.saveSnapshot({ rounds: [1, 2], roundIdx: 0 })
+  svc.pauseSession()
+  // 学一学页带 'learn' 期望：不得复用 challenge 会话（否则描红/学习作答污染挑战口径）
+  assert.equal(svc.resumeSessionFor('L1', 'learn'), null)
+  // 挑战页带 'challenge' 期望：正常恢复
+  const resumed = svc.resumeSessionFor('L1', 'challenge')
+  assert.ok(resumed)
+  assert.equal(resumed.session.kind, 'challenge')
+  assert.deepEqual(resumed.snapshot, { rounds: [1, 2], roundIdx: 0 })
+  // 不传期望（旧调用）：保持原行为
+  assert.ok(svc.resumeSessionFor('L1'))
+})
+
 test('startSession：残留其他课程活跃会话时先落 paused 保快照', () => {
   const store = makeStore()
   const svc = createSessionService(store)
@@ -204,6 +222,8 @@ test('weeklyReport：完成课数含学一学、周星按课取最好、时长�
   })
   // 本周完成学一学（不计星，但算「完成课程」）
   log.push({ sessionId: 's3', lessonId: 'en-learn-animals', kind: 'learn', startedAt: now - DAY, endedAt: now - DAY + 5 * 60000, status: 'completed' })
+  // 本周只点读了古诗（practice）：不算「完成课」——否则同屏「完成课程」总数为 0 而这里有数，同名不同义
+  log.push({ sessionId: 's6', lessonId: 'zh-poem-qimeng', kind: 'practice', startedAt: now - 2 * DAY, endedAt: now - 2 * DAY + 3 * 60000, status: 'completed' })
   // 挂机用：暂停会话不再计入时长（旧口径按墙钟算，会把挂机算成学习）
   log.push({ sessionId: 's4', lessonId: 'math-practice-l1', kind: 'challenge', startedAt: now - 10 * 60000, endedAt: now - 5 * 60000, status: 'paused' })
   // 8 天前：完成但不计入本周

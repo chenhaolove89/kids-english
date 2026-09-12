@@ -84,20 +84,26 @@ for (const f of ['LICENSE', 'LICENSE-CONTENT.md']) {
 const swTemplate = fs.readFileSync(path.join(ROOT, 'tools', 'sw-template.js'), 'utf8')
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'content', 'catalog.json'), 'utf8'))
 
-/** 静态资源树指纹：相对路径 + 字节数，按路径排序后取 sha1 前 8 位 */
+/** 静态资源树指纹：相对路径 + 文件内容哈希，按路径排序后取 sha1 前 8 位。
+ * 必须哈希「内容」而不是字节数——同长度的内容修改（注音/标点修正最典型）
+ * 若只比大小会漏换代，而 SW 对 /static/ 是缓存优先，用户将一直命中旧字节。 */
 function staticTreeHash(dir) {
   const items = []
   const walk = (d) => {
     for (const e of fs.readdirSync(d, { withFileTypes: true })) {
       const p = path.join(d, e.name)
       if (e.isDirectory()) walk(p)
-      else items.push([path.relative(dir, p).replace(/\\/g, '/'), fs.statSync(p).size])
+      else items.push([path.relative(dir, p).replace(/\\/g, '/'), p])
     }
   }
   walk(dir)
   items.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
   const h = crypto.createHash('sha1')
-  for (const [rel, size] of items) h.update(rel + ':' + size + '\n')
+  for (const [rel, p] of items) {
+    h.update(rel + '\n')
+    h.update(fs.readFileSync(p))
+    h.update('\n')
+  }
   return h.digest('hex').slice(0, 8)
 }
 

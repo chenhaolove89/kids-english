@@ -255,8 +255,8 @@ onLoad((query) => {
     const level = resolveZhLevel(lv)
     p = level.chars.map(mapZhOption)
   }
-  // 预加载走统一出口：重练/英语/词语/识字/古诗都覆盖，英语在此处按口音解析
-  startAudioPreload(poemMode.value ? p.map((x) => x.lineAudio) : p.map((x) => (subject.value === 'en' ? accentEnSrc(x.audio) : x.audio)))
+  // 音频预载已移到 start()/restoreSnapshot()：出轮后只预载本轮题目要播的音频，
+  // 不再整池预载（sightwords 池 308 词整池压缓存是 iPad 内存杀手）
   pool.value = p
   if (!p.length) {
     // 深链参数无效（分类/级别不存在）：提示后回课程页，而不是卡在空页面
@@ -270,7 +270,7 @@ onLoad((query) => {
   const trackable = !(l && l.ref?.kind === 'en-category' && isCategoryHidden(l.ref.id))
   if (l && trackable) {
     lesson.value = l
-    const resumed = svc.resumeSessionFor(l.id)
+    const resumed = svc.resumeSessionFor(l.id, 'challenge')
     if (resumed?.snapshot?.rounds?.length) {
       restoreSnapshot(resumed.snapshot)
     } else {
@@ -295,11 +295,25 @@ function restoreSnapshot(snap) {
   score.value = snap.score || 0
   firstCorrect.value = snap.firstCorrect || 0
   finished.value = false
+  preloadRoundAudio()
   loadRound()
 }
 
 function currentSnapshot() {
   return { rounds: rounds.value, roundIdx: roundIdx.value, score: score.value, firstCorrect: firstCorrect.value }
+}
+
+/** 只预载本轮题目实际要播的音频（每题 1 条）。
+ * 旧做法整池预载，sightwords 池 308 词会一次性压进音频缓存（MAX_CACHED=60 形同虚设），
+ * iPad Safari 内存吃紧易被系统回收。未被预到的词由 play() 按需加载兜底。 */
+function preloadRoundAudio() {
+  startAudioPreload(
+    rounds.value.map((r) => {
+      const src = r.kind === 'poem-fill' ? r.audio : r.answer?.audio
+      if (!src) return ''
+      return subject.value === 'en' ? accentEnSrc(src) : src
+    }),
+  )
 }
 
 function start() {
@@ -317,6 +331,7 @@ function start() {
   firstPickMap.clear()
   finished.value = false
   if (lesson.value) svc.saveSnapshot(currentSnapshot())
+  preloadRoundAudio()
   loadRound()
 }
 

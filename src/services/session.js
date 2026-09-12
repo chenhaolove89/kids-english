@@ -136,13 +136,19 @@ export function createSessionService(store) {
    * 1) 活跃会话就是本课 → 直接续用（含快照）；
    * 2) 有本课的暂停快照 → 复用原 sessionId 恢复；
    * 3) 否则返回 null，调用方自行 startSession 开新会话。
+   * expectKind（可选）：校验会话类型——同一课「学一学」与「挑战」是两条会话，
+   * 不校验的话做挑战中途退出后再进学一学会复用 challenge 会话，描红/学习作答
+   * 混进挑战口径（星级、完成度被污染），挑战的 rounds 快照也会被覆盖丢失。
    * 另开他课时若残留其他课程的活跃会话，会先落一条 paused 日志保快照，不丢进度。
    */
-  function resumeSessionFor(lessonId) {
+  function resumeSessionFor(lessonId, expectKind = null) {
+    const kindOk = (k) => !expectKind || k === expectKind
     const active = getActive()
-    if (active && active.session && active.session.lessonId === lessonId) return active
+    if (active && active.session && active.session.lessonId === lessonId && kindOk(active.session.kind)) return active
     const sessions = store.get('sessions', [])
-    const paused = [...sessions].reverse().find((s) => s.status === 'paused' && s.snapshot && s.lessonId === lessonId)
+    const paused = [...sessions].reverse().find(
+      (s) => s.status === 'paused' && s.snapshot && s.lessonId === lessonId && kindOk(s.kind),
+    )
     if (paused) {
       return startSession({
         lessonId,

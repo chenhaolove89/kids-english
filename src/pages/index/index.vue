@@ -42,6 +42,7 @@ import { ref, computed } from 'vue'
 import data from '@/data/words.json'
 import { isCategoryHidden } from '@/content/lowAge.js'
 import PageTopBar from '@/components/page-top-bar.vue'
+import { goBackOrHome } from '@/platform/nav.js'
 
 const levels = ref(data.levels)
 // 低龄模式隐藏的分类不计入顶部总数，与所见一致
@@ -60,7 +61,7 @@ function goQuiz(levelId) {
   uni.navigateTo({ url: `/pages/quiz/quiz?subject=en&level=${levelId}` })
 }
 function goBack() {
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 

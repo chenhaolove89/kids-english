@@ -104,7 +104,7 @@ onLoad((query) => {
   cp = query.cp || ''
   if (!char.value || !cp) {
     uni.showToast({ title: '内容准备中', icon: 'none' })
-    setTimeout(() => uni.navigateBack(), 600)
+    setTimeout(() => goBackOrHome(), 600)
     return
   }
   // 从识字卡进来时带着 lessonId：描红也算这门课的学习进度（记作答 + 按单字点亮）。
@@ -140,7 +140,8 @@ function recordPractice(firstTryClean) {
   if (!lesson) return
   const svc = getSessionService()
   const active = svc.getActive()
-  if (active && active.session && active.session.lessonId === lesson.id) {
+  // 只挂 learn 会话：kind 一并校验，进程被杀残留的活跃挑战会话不得混入描红作答
+  if (active && active.session && active.session.lessonId === lesson.id && active.session.kind === 'learn') {
     svc.recordAttempt({ activityId: 'stroke-write', order: cp, answer: cp, correct: firstTryClean, itemId: cp })
   }
   getCollectionService().recordCharPracticed(cp)

@@ -34,6 +34,12 @@ function evictIfNeeded() {
       /* 已卸载/未加载完成时 unload 可能报错，忽略 */
     }
     cache.delete(src)
+    // gb 回退别名共享同一个 howl 对象（loaderror 时 cache.set(src, us)）：
+    // 主键淘汰后别名键必须一起删，否则别名命中已 unload 的实例时
+    // Howler 只把 play() 压进队列、无人再 load() → 该词在该口音下永久无声
+    for (const [alias, ae] of cache) {
+      if (ae.howl === e.howl) cache.delete(alias)
+    }
     over--
   }
 }
@@ -76,8 +82,15 @@ if (typeof document !== 'undefined') {
 function getHowl(src) {
   const hit = cache.get(src)
   if (hit) {
-    hit.usedAt = Date.now()
-    return hit.howl
+    // 别名共享的 howl 可能被淘汰循环 unload 过（淘汰只按主键删，历史残留防御）：
+    // 命中死条目就删键走重建，Howler 对 unloaded 实例的 play() 只入队不加载
+    if (hit.howl.state() === 'unloaded') {
+      cache.delete(src)
+    } else {
+      hit.usedAt = Date.now()
+      evictIfNeeded()
+      return hit.howl
+    }
   }
   const id = src.split('/').pop().replace(/\.mp3$/, '')
   const isGb = src.includes('/audio-gb/')

@@ -178,6 +178,8 @@ export function createStorage({ prefix = 'kx', backend, schemaVersion = SCHEMA_V
   function set(key, value) {
     try {
       be.set(`${prefix}:${key}`, JSON.stringify({ v: schemaVersion, d: value }))
+      // 写回成功即清除错误态：一次瞬时配额抖动不该让家长中心的告警横幅常驻整个会话
+      if (lastWriteError) lastWriteError = null
       return true
     } catch (e) {
       reportWriteError(key, e)
