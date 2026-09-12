@@ -1,11 +1,10 @@
 {
-  "name": "快乐学单词",
-  "short_name": "学单词",
+  "name": "快乐学园",
+  "short_name": "快乐学园",
   "start_url": "../",
+  "scope": "../",
   "display": "standalone",
   "background_color": "#FFF8EC",
   "theme_color": "#FFB84D",
-  "icons": [
-    { "src": "./icons/icon.png", "sizes": "512x512", "type": "image/png" }
-  ]
+  "icons": [{ "src": "icons/icon.png", "sizes": "512x512", "type": "image/png" }]
 }
