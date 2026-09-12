@@ -43,6 +43,10 @@
     {
       "path": "pages/poem/poem",
       "style": { "navigationStyle": "custom", "disableScroll": true }
+    },
+    {
+      "path": "pages/board/board",
+      "style": { "navigationStyle": "custom" }
     }
   ],
   "tabBar": {

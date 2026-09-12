@@ -2,6 +2,10 @@
   <view class="page" :style="{ background: theme.bg }">
     <PageTopBar class="topbar-page" :title="title" back-bg="rgba(255, 255, 255, 0.85)" @back="goBack">
       <text class="progress">{{ current + 1 }}/{{ items.length }}</text>
+      <!-- 平板专属：切到整类点读板（一页全部词，点了发音） -->
+      <view v-if="isTablet && boardUrl" class="board-btn" @tap="goBoard">
+        <text class="board-btn-text">🔊</text>
+      </view>
     </PageTopBar>
 
     <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上，而不是以为没声音 -->
@@ -92,7 +96,7 @@ import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
 import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
-import { createThrottle, goBackOrHome } from '@/platform/nav.js'
+import { createThrottle, goBackOrHome, isTabletDevice } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
@@ -106,6 +110,9 @@ const title = ref('')
 const theme = ref({ bg: '#FFF8EC', color: '#FF8C42' })
 const items = ref([])
 const current = ref(0)
+// 点读板：词卡模式（en 分类 / zh 词语课）下平板可切到整类点读页
+const isTablet = ref(isTabletDevice())
+const boardUrl = ref('')
 // 语文词语模式（subject=zh 且带 cat）：复用英语分类配图，主音频中文、小喇叭切英文
 const wordsMode = ref(false)
 // 语文小短句模式（subject=zh 且带 sentences）：只念例句，不混排字词
@@ -210,6 +217,7 @@ onLoad((query) => {
     }
     resolvedCatId = c.id
     entryRef = { kind: 'en-category', id: c.id }
+    boardUrl.value = '/pages/board/board?subject=en&cat=' + c.id
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
@@ -230,6 +238,7 @@ onLoad((query) => {
     }
     resolvedCatId = c.id
     entryRef = { kind: 'en-category', id: c.id }
+    boardUrl.value = '/pages/board/board?subject=zh&cat=' + c.id
     wordsMode.value = true
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FDEBE7', color: c.color }
@@ -421,6 +430,10 @@ onUnload(() => {
 function goBack() {
   goBackOrHome()
 }
+/** 平板点读板：同分类整页平铺，点了发音 */
+function goBoard() {
+  if (boardUrl.value) uni.navigateTo({ url: boardUrl.value })
+}
 </script>
 
 <style scoped>
@@ -443,6 +456,25 @@ function goBack() {
   font-weight: 700;
   color: #4a3f35;
   flex-shrink: 0;
+}
+/* 平板点读板切换钮：与进度并排的小圆钮 */
+.board-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 10rpx rgba(120, 90, 40, 0.12);
+}
+.board-btn:active {
+  transform: scale(0.92);
+}
+.board-btn-text {
+  font-size: 32rpx;
 }
 .swiper {
   flex: 1;

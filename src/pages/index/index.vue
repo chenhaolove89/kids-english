@@ -31,6 +31,10 @@
           <text class="cat-zh" :style="{ color: cat.color }">{{ cat.zh }}</text>
           <text class="cat-en">{{ cat.en }}</text>
           <text class="cat-count">{{ cat.words.length }} 词</text>
+          <!-- 平板专属：整类点读板入口（点卡片学词，点喇叭就是点读） -->
+          <view v-if="isTablet" class="cat-board" @tap.stop="goBoard(cat.id)">
+            <text class="cat-board-text">🔊</text>
+          </view>
         </view>
       </view>
     </view>
@@ -42,7 +46,10 @@ import { ref, computed } from 'vue'
 import data from '@/data/words.json'
 import { isCategoryHidden } from '@/content/lowAge.js'
 import PageTopBar from '@/components/page-top-bar.vue'
-import { goBackOrHome } from '@/platform/nav.js'
+import { goBackOrHome, isTabletDevice } from '@/platform/nav.js'
+
+// 点读板入口只在平板显示（触屏 + 短边 ≥560px）
+const isTablet = ref(isTabletDevice())
 
 const levels = ref(data.levels)
 // 低龄模式隐藏的分类不计入顶部总数，与所见一致
@@ -56,6 +63,9 @@ function catsOf(levelId) {
 }
 function goLearn(id) {
   uni.navigateTo({ url: `/pages/learn/learn?subject=en&cat=${id}` })
+}
+function goBoard(id) {
+  uni.navigateTo({ url: `/pages/board/board?subject=en&cat=${id}` })
 }
 function goQuiz(levelId) {
   uni.navigateTo({ url: `/pages/quiz/quiz?subject=en&level=${levelId}` })
@@ -136,6 +146,7 @@ function goBack() {
   gap: 28rpx;
 }
 .cat-card {
+  position: relative;
   width: calc(25% - 21rpx);
   border-radius: 40rpx;
   padding: 30rpx 0 26rpx;
@@ -144,6 +155,26 @@ function goBack() {
   align-items: center;
   box-shadow: 0 8rpx 24rpx rgba(120, 90, 40, 0.07);
   box-sizing: border-box;
+}
+/* 平板点读入口：卡片右上角的小喇叭，@tap.stop 不与进词卡冲突 */
+.cat-board {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 10rpx rgba(120, 90, 40, 0.15);
+}
+.cat-board:active {
+  transform: scale(0.9);
+}
+.cat-board-text {
+  font-size: 26rpx;
 }
 .cat-card:active {
   transform: scale(0.96);

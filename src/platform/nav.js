@@ -28,3 +28,19 @@ export function goBackOrHome() {
   if (pages && pages.length > 1) uni.navigateBack()
   else uni.reLaunch({ url: '/pages/map/map' })
 }
+
+/**
+ * 平板判定：触屏（粗指针）+ 短边 ≥ 560px。
+ * 只用于「点读板」这类平板专属入口的显示开关，不拦截任何已有流程。
+ */
+export function isTabletDevice() {
+  try {
+    if (typeof window === 'undefined' || !window.matchMedia) return false
+    if (!window.matchMedia('(pointer: coarse)').matches) return false
+    const w = window.innerWidth || 0
+    const h = window.innerHeight || 0
+    return Math.min(w, h) >= 560
+  } catch (e) {
+    return false
+  }
+}
