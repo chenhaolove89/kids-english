@@ -1,19 +1,17 @@
 <template>
   <view class="page">
-    <view class="topbar">
-      <view class="back" @tap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="title">{{ pageTitle }}</text>
+    <PageTopBar class="topbar-page" :title="pageTitle" @back="goBack">
       <text class="score">⭐ {{ firstCorrect }}</text>
-    </view>
+    </PageTopBar>
 
     <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上 -->
     <view v-if="audioTotal > 0 && audioDone < audioTotal" class="load-bar">
       <view class="load-fill" :style="{ width: audioPercent + '%' }"></view>
     </view>
 
-    <template v-if="!finished">
+    <!-- rounds.length 兜底：池为空的早退路径（错题本空 / 深链参数无效）会先渲染再跳回主页，
+         少了这层判断那 600~700ms 会显示「第 1 / 0 题」；结果卡片同理只在真的完成时出现 -->
+    <template v-if="!finished && rounds.length">
       <view class="prompt" :class="{ 'prompt-loading': audioLoading }" @tap="speakQuestion">
         <text v-if="stemText" class="stem" :class="roundKind === 'pinyin-to-char' ? 'stem-pinyin' : roundKind === 'poem-fill' ? 'stem-line' : 'stem-char'">{{ stemText }}</text>
         <text v-if="showSpeaker" class="prompt-speaker">🔊</text>
@@ -27,17 +25,23 @@
           v-for="opt in options"
           :key="opt.id"
           class="option"
-          :class="{ right: flashId === opt.id && isRight, wrong: flashId === opt.id && !isRight, shake: flashId === opt.id && !isRight }"
+          :class="{ right: (flashId === opt.id && isRight) || revealId === opt.id, wrong: flashId === opt.id && !isRight, shake: flashId === opt.id && !isRight, reveal: revealId === opt.id }"
           @tap="pick(opt)"
         >
           <image v-if="opt.image" class="opt-img" :src="opt.image" mode="aspectFit" />
           <text v-else-if="isCharOption" class="opt-char" :style="{ color: opt.color }">{{ opt.main || opt.label }}</text>
           <text v-else class="opt-label">{{ opt.label }}</text>
+          <!-- 答错后揭晓：绿框 + 对勾（不识字也看得懂），并读出正确答案 -->
+          <text v-if="revealId === opt.id" class="opt-check">✓</text>
         </view>
+      </view>
+
+      <view v-if="revealId" class="reveal-bar">
+        <text class="reveal-text">{{ revealText }}</text>
       </view>
     </template>
 
-    <template v-else>
+    <template v-else-if="finished">
       <view class="result">
         <text class="result-emoji">🎉</text>
         <text class="result-score">一次答对 {{ firstCorrect }} / {{ rounds.length }} 题</text>
@@ -57,7 +61,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
-import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, whenAudioReady } from '@/platform/audio.js'
+import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, whenAudioReady, stopSeq } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
@@ -67,10 +71,12 @@ import { buildListenPickRounds, buildZhCharRounds, buildPoemFillRounds } from '@
 import poemsData from '@/data/poems.json'
 import { isRoundPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
+import { roundExplain } from '@/domain/explain.js'
 import { getSessionService } from '@/services/session.js'
-import { getCollectionService } from '@/services/collection.js'
+import { getCollectionService } from '@/services/collection-app.js'
 import { getReviewService } from '@/services/review.js'
 import { getReviewPool } from '@/services/review-pools.js'
+import PageTopBar from '@/components/page-top-bar.vue'
 
 const ROUNDS = 10
 
@@ -87,8 +93,31 @@ const options = ref([])
 const flashId = ref('')
 const isRight = ref(false)
 const finished = ref(false)
+// 答错后揭晓正确答案：绿框 + 对勾 + 读一遍正确读音，再自动进入下一题。
+// 原实现只播「再想一想」让红框消失，孩子只能反复猜，等于不教。
+const revealId = ref('')
+const revealing = ref(false)
 
 const svc = getSessionService()
+
+/**
+ * 定时器登记表：页面卸载时统一清掉。
+ * 否则「答对 1.5s 后进下一题」「揭晓后 3s 进下一题」的定时器会在退出后继续跑，
+ * 触发 nextRound → completeSession，把已中断的会话记成完成。
+ */
+let timers = []
+function later(fn, ms) {
+  const t = setTimeout(() => {
+    timers = timers.filter((x) => x !== t)
+    fn()
+  }, ms)
+  timers.push(t)
+  return t
+}
+function clearTimers() {
+  timers.forEach((t) => clearTimeout(t))
+  timers = []
+}
 const review = getReviewService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口只玩不记录
 const firstPickMap = new Map() // 旧入口模式的「首答」标记
@@ -148,6 +177,16 @@ function refreshAudioLoading() {
 watch([roundIdx, rounds], refreshAudioLoading)
 
 const starsText = computed(() => starsBar(starsForFirstAttempt(firstCorrect.value, rounds.value.length)))
+
+/**
+ * 答错后的讲解（domain/explain 按题型生成）：听音题说出听到的词与中文释义、
+ * 看拼音选字说出读音对应的字、组词题给出它组成的词、古诗填字把整句说出来。
+ * 拿不准时保留原来那句兜底文案——宁可不讲，也不讲错。
+ */
+const revealText = computed(() => {
+  const r = rounds.value[roundIdx.value]
+  return roundExplain(r) || '正确答案是绿色的这个 ✓'
+})
 const starsNote = computed(() => `共 ${rounds.value.length} 题 · 首次选对得星`)
 const pageTitle = computed(() => {
   if (reviewMode.value) return '错题重练'
@@ -188,7 +227,7 @@ onLoad((query) => {
     p = getReviewPool(subject.value)
     if (!p.length) {
       uni.showToast({ title: '太棒了，暂无待复习', icon: 'none' })
-      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
+      later(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
       return
     }
   } else if (subject.value === 'en') {
@@ -222,7 +261,7 @@ onLoad((query) => {
   if (!p.length) {
     // 深链参数无效（分类/级别不存在）：提示后回课程页，而不是卡在空页面
     uni.showToast({ title: '内容准备中', icon: 'none' })
-    setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+    later(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
     return
   }
 
@@ -244,6 +283,8 @@ onLoad((query) => {
 })
 
 onUnload(() => {
+  clearTimers()
+  stopSeq()
   if (lesson.value && !finished.value) svc.pauseSession()
 })
 
@@ -281,9 +322,11 @@ function start() {
 
 function loadRound() {
   flashId.value = ''
+  revealId.value = ''
+  revealing.value = false
   options.value = rounds.value[roundIdx.value].options
   if (lesson.value) svc.saveSnapshot(currentSnapshot())
-  setTimeout(speakQuestion, 450)
+  later(speakQuestion, 450)
 }
 
 function speakQuestion() {
@@ -297,7 +340,7 @@ function speakQuestion() {
 }
 
 function pick(opt) {
-  if (flashId.value) return
+  if (flashId.value || revealing.value) return
   const round = rounds.value[roundIdx.value]
   const correct = isRoundPickCorrect(round, opt.id)
   const itemId = round.answer.id
@@ -326,13 +369,30 @@ function pick(opt) {
     // 立即落快照：答对后有 1.5s 才进下一题，期间退出的话恢复不能丢这一题的进度
     if (lesson.value) svc.saveSnapshot(currentSnapshot())
     play(assetUrl('/static/audio/zh-great.mp3'))
-    setTimeout(nextRound, 1500)
+    later(nextRound, 1500)
   } else {
-    play(assetUrl('/static/audio/zh-try.mp3'))
-    setTimeout(() => {
-      flashId.value = ''
-    }, 1000)
+    // 答错：先提示，再揭晓正确答案（绿框 + 对勾 + 读一遍正确读音），停留够长后自动进下一题。
+    // 揭晓期间屏蔽点击——这一题首答已定，不让孩子靠「被告诉答案后再点一次」刷分或刷错题晋级。
+    revealId.value = round.answer.id
+    revealing.value = true
+    if (lesson.value) svc.saveSnapshot(currentSnapshot())
+    play(assetUrl('/static/audio/zh-try.mp3'), () => speakAnswer(round))
+    later(nextRound, REVEAL_MS)
   }
+}
+
+// 揭晓时长：够听完「再想一想」+ 一遍正确读音，又不至于让孩子等得不耐烦
+const REVEAL_MS = 3000
+
+/** 读出正确答案本身（英语按当前口音；语文优先该条目自己的读音，古诗回退整句） */
+function speakAnswer(round) {
+  if (finished.value) return
+  const a = round?.answer
+  if (!a) return
+  const src = a.audio || a.wordAudio || round.audio
+  if (!src) return
+  if (subject.value === 'en') playEn(src)
+  else play(src)
 }
 
 function nextRound() {
@@ -371,35 +431,10 @@ function goBack() {
   box-sizing: border-box;
   padding-bottom: env(safe-area-inset-bottom);
 }
-.topbar {
-  display: flex;
-  align-items: center;
+/* 顶栏：结构在 components/page-top-bar.vue，这里只给本页的内边距
+  （该页 .page 不带安全区，所以顶栏自带 safe-area-inset-top） */
+.topbar-page {
   padding: calc(24rpx + env(safe-area-inset-top)) 32rpx 20rpx;
-}
-.back {
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
-}
-.back-icon {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #4a3f35;
-}
-.title {
-  flex: 1;
-  text-align: center;
-  font-size: 40rpx;
-  font-weight: 800;
-  color: #4a3f35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .score {
   min-width: 84rpx;
@@ -502,6 +537,46 @@ function goBack() {
 .option.wrong {
   border-color: #ff6b6b;
   background: #fdecec;
+}
+/* 答错后揭晓的正确答案：与「答对」同款绿框，另加对勾与轻微呼吸，多一条非颜色通道 */
+.option.reveal {
+  border-color: #3bb273;
+  background: #e8f8ee;
+  animation: reveal-pop 0.5s;
+}
+.opt-check {
+  position: absolute;
+  top: 12rpx;
+  right: 20rpx;
+  font-size: 52rpx;
+  font-weight: 900;
+  color: #3bb273;
+}
+.option {
+  position: relative;
+}
+.reveal-bar {
+  margin: 0 48rpx 18rpx;
+  padding: 18rpx 24rpx;
+  border-radius: 24rpx;
+  background: #e8f8ee;
+  text-align: center;
+}
+.reveal-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2f8f5b;
+}
+@keyframes reveal-pop {
+  0% {
+    transform: scale(0.94);
+  }
+  60% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 .opt-img {
   width: 260rpx;

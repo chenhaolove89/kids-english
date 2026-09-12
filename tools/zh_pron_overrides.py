@@ -32,12 +32,14 @@ import re
 import sys
 import unicodedata
 from collections import Counter, defaultdict
+from pathlib import Path
 
 import pypinyin.phrases_dict as pd
 from pypinyin import pinyin, Style
 
-ROOT = r'E:/kids-english'
-OUT = ROOT + '/tools/zh-pron-overrides.json'
+# 相对本文件定位仓库根：写死绝对路径会让换机/换目录后静默读写另一份表
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / 'tools' / 'zh-pron-overrides.json'
 
 # 对儿童产品不合适的替身字
 BLACKLIST = set('屎尿屁痰尸孬瘟煞')
@@ -100,7 +102,7 @@ def pypinyin_readings(ch):
 
 
 def main():
-    hanzi = list(csv.DictReader(open(ROOT + '/tools/hanzi.csv', encoding='utf-8')))
+    hanzi = list(csv.DictReader(open(ROOT / 'tools' / 'hanzi.csv', encoding='utf-8')))
     cur_pinyin = {h['char']: h['pinyin'].strip() for h in hanzi}
     print(f'hanzi.csv {len(hanzi)} 字')
 

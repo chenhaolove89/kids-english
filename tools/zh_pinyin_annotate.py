@@ -25,12 +25,14 @@ import sys
 import unicodedata
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 
 import pypinyin.phrases_dict as pd
 from pypinyin import pinyin, Style
 
-ROOT = r'E:/kids-english'
-OUT = ROOT + '/tools/zh-pron-pinyin.json'
+# 相对本文件定位仓库根：写死绝对路径会让换机/换目录后静默读写另一份表
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / 'tools' / 'zh-pron-pinyin.json'
 
 TONE_MARKS = {'\u0304': '1', '\u0301': '2', '\u030c': '3', '\u0300': '4'}
 
@@ -97,10 +99,10 @@ def word_pinyin(text, att):
 
 
 def main():
-    hanzi = list(csv.DictReader(open(ROOT + '/tools/hanzi.csv', encoding='utf-8')))
-    words = list(csv.DictReader(open(ROOT + '/tools/words.csv', encoding='utf-8')))
+    hanzi = list(csv.DictReader(open(ROOT / 'tools' / 'hanzi.csv', encoding='utf-8')))
+    words = list(csv.DictReader(open(ROOT / 'tools' / 'words.csv', encoding='utf-8')))
     att = char_attested()
-    sent_lines = open(ROOT + '/tools/hanzi-sentences.csv', encoding='utf-8').read().replace('\ufeff', '').strip().split('\n')[1:]
+    sent_lines = open(ROOT / 'tools' / 'hanzi-sentences.csv', encoding='utf-8').read().replace('\ufeff', '').strip().split('\n')[1:]
     sent_map = {}
     for line in sent_lines:
         if line.strip():

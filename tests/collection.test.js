@@ -14,6 +14,7 @@ import {
   progressOf,
   isCategoryComplete,
   isMathTrophy,
+  litIds,
   celebration,
   deriveFromHistory,
 } from '../src/domain/collection.js'
@@ -111,12 +112,30 @@ test('isMathTrophy：完成且最佳 3 星才给奖杯，缺一不可', () => {
   assert.equal(isMathTrophy(false, 0), false)
 })
 
-test('celebration：只统计正增量，清空后（负数）归零', () => {
-  const prev = { enSeen: 10, enMastered: 2, zhSeen: 5, zhMastered: 1, mathDone: 1 }
-  const cur = { enSeen: 14, enMastered: 4, zhSeen: 5, zhMastered: 1, mathDone: 2 }
-  assert.deepEqual(celebration(prev, cur), { newSeen: 4, newMastered: 2, mathNew: 1, total: 7 })
-  const cleared = { enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, mathDone: 0 }
+test('celebration：按 id 去重统计"本次新点亮几张卡片"', () => {
+  // 关键差别：一个词从认识变掌握会让 seen 与 mastered 同时多一条，
+  // 按"点亮动作"算会虚报（旧实现就是这么报的），按 id 并集算才是真正的卡片数。
+  const prev = litIds({
+    en: { seen: ['cat', 'dog'], mastered: [] },
+    zh: { seen: ['4e00'], mastered: [] },
+    math: { done: ['m1'] },
+  })
+  const cur = litIds({
+    en: { seen: ['cat', 'dog', 'fox'], mastered: ['cat'] }, // cat 由认识→掌握：不该再算新增
+    zh: { seen: ['4e00', '4e8c'], mastered: [] },
+    math: { done: ['m1', 'm2'] },
+  })
+  assert.deepEqual(celebration(prev, cur), { total: 3 }) // fox + 4e8c + m2
+})
+
+test('celebration：清空数据后归零，首次（没有基线）不庆祝由调用方决定', () => {
+  const prev = litIds({ en: { seen: ['cat', 'dog'], mastered: [] } })
+  const cleared = litIds({ en: { seen: [], mastered: [] } })
   assert.equal(celebration(prev, cleared).total, 0)
+  assert.equal(celebration(prev, prev).total, 0, '没有变化就不庆祝')
+  // 形状缺失/脏数据不炸
+  assert.equal(celebration(null, null).total, 0)
+  assert.equal(celebration({ en: ['a'] }, { en: ['a', 'b'], zh: null }).total, 1)
 })
 
 test('deriveFromHistory：学一学进 seen、挑战首答进 mastered、数学进徽章、脏会话跳过', () => {

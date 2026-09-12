@@ -12,7 +12,31 @@ import volumesGb from '../data/audio-volumes-gb.json'
 import { withAccent } from './assets.js'
 import { getStorage } from './storage.js'
 
-const cache = new Map()
+// 解码后的音频常驻内存：缓存必须有上限并主动 unload。
+// 一条 24kHz 单声道 float32 ≈ 154KB/秒；本项目一个分类最多 308 个词
+// （sightwords），整类预载会让约 97MB 解码 PCM 常驻且换分类不释放——iPad Safari 会因此被杀。
+// 上限按"够当前几题 + 滑动窗口"取，超出后按最久未用淘汰。
+const MAX_CACHED = 60
+const cache = new Map() // src -> { howl, usedAt }
+
+/** 淘汰最久未用且不在播放中的实例（正在播/正在加载的一律不动） */
+function evictIfNeeded() {
+  if (cache.size <= MAX_CACHED) return
+  const candidates = [...cache.entries()]
+    .filter(([, e]) => e.howl !== lastOneShot && !e.howl.playing() && e.howl.state() === 'loaded')
+    .sort((a, b) => a[1].usedAt - b[1].usedAt)
+  let over = cache.size - MAX_CACHED
+  for (const [src, e] of candidates) {
+    if (over <= 0) break
+    try {
+      e.howl.unload()
+    } catch (err) {
+      /* 已卸载/未加载完成时 unload 可能报错，忽略 */
+    }
+    cache.delete(src)
+    over--
+  }
+}
 
 // 按 tools/gen-audio-volumes.mjs 实测生成的每词增益（安静词放大更多），
 // WebAudio GainNode 支持 >1 的音量，因子已按峰值钳制不会削波。
@@ -50,28 +74,35 @@ if (typeof document !== 'undefined') {
 }
 
 function getHowl(src) {
-  if (!cache.has(src)) {
-    const id = src.split('/').pop().replace(/\.mp3$/, '')
-    const isGb = src.includes('/audio-gb/')
-    const gain = (isGb ? volumesGb[id] : undefined) ?? volumes[id] ?? DEFAULT_VOLUME
-    const howl = new Howl({ src: [src], preload: true, volume: gain })
-    // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试。
-    // 英式缺文件（uniCloud 漏传新目录）时顺带预取美音兜底，下一次点击就能出声。
-    howl.once('loaderror', () => {
-      console.error('[player] 音频加载失败，将在下次点击时重试:', src)
-      cache.delete(src)
-      if (isGb) {
-        const usSrc = src.replace('/audio-gb/', '/audio/')
-        console.warn('[player] 英式音频缺失，回退美音:', usSrc)
-        try {
-          if (!cache.has(usSrc)) getHowl(usSrc)
-          cache.set(src, cache.get(usSrc))
-        } catch (e) { /* 下次点击再试 */ }
-      }
-    })
-    cache.set(src, howl)
+  const hit = cache.get(src)
+  if (hit) {
+    hit.usedAt = Date.now()
+    return hit.howl
   }
-  return cache.get(src)
+  const id = src.split('/').pop().replace(/\.mp3$/, '')
+  const isGb = src.includes('/audio-gb/')
+  const gain = (isGb ? volumesGb[id] : undefined) ?? volumes[id] ?? DEFAULT_VOLUME
+  const howl = new Howl({ src: [src], preload: true, volume: gain })
+  // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试。
+  // 英式缺文件（uniCloud 漏传新目录）时顺带预取美音兜底，下一次点击就能出声。
+  howl.once('loaderror', () => {
+    console.error('[player] 音频加载失败，将在下次点击时重试:', src)
+    cache.delete(src)
+    if (isGb) {
+      const usSrc = src.replace('/audio-gb/', '/audio/')
+      console.warn('[player] 英式音频缺失，回退美音:', usSrc)
+      try {
+        if (!cache.has(usSrc)) getHowl(usSrc)
+        const us = cache.get(usSrc)
+        if (us) cache.set(src, us)
+      } catch (e) {
+        /* 下次点击再试 */
+      }
+    }
+  })
+  cache.set(src, { howl, usedAt: Date.now() })
+  evictIfNeeded()
+  return howl
 }
 
 // 全局同一时刻只播一条单发音轨：换新音源前先停掉上一条。
@@ -146,9 +177,9 @@ export function preload(srcList) {
 /** 某条音频是否已下载就绪（页面显示「加载中」态用） */
 export function isAudioReady(src) {
   try {
-    const howl = cache.get(src)
-    return !!howl && howl.state() === 'loaded'
-  } catch (e) {
+    const e = cache.get(src)
+    return !!e && e.howl.state() === 'loaded'
+  } catch (err) {
     return false
   }
 }

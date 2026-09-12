@@ -5,7 +5,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { buildQuestions, makeQuestion, mathText, mathItemId, MATH_LEVELS } from '../src/domain/mathgen.js'
 import { createStorage, memoryBackend } from '../src/platform/storage.js'
-import { createReviewService } from '../src/services/review.js'
+import { createReviewService, reviewKey } from '../src/services/review.js'
 
 function makeStore() {
   return createStorage({ backend: memoryBackend() })
@@ -81,14 +81,14 @@ test('数学错题进本 → 原题重放 → 答对晋级（明天到期）→ 
   // 重练答对：晋级盒 1，明天到期 → 今天不再出现
   review.recordResult(itemId, true, { subject: 'math', payload: q })
   assert.equal(review.dueCount('math'), 0)
-  const entry = store.get('review', {})[itemId]
+  const entry = store.get('review', {})[reviewKey('math', itemId)]
   assert.equal(entry.box, 1)
   assert.equal(entry.wrongCount, 1)
 
   // 又答错：归零当天到期，wrongCount 累计
   review.recordResult(itemId, false, { subject: 'math', payload: q })
   assert.equal(review.dueCount('math'), 1)
-  const entry2 = store.get('review', {})[itemId]
+  const entry2 = store.get('review', {})[reviewKey('math', itemId)]
   assert.equal(entry2.box, 0)
   assert.equal(entry2.wrongCount, 2)
   assert.equal(entry2.subject, 'math')

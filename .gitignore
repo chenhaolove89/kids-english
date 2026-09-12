@@ -7,4 +7,12 @@ tmp/
 .env
 .env.*
 !.env.example
+# 生成物：分享包（tools/make-share.mjs）与历史版本构建产物
 快乐学单词-电脑版.zip
+快乐学园-电脑版.zip
+kids-english-h5-v*.zip
+# 工具链缓存与 AI 会话草稿（不应进版本库）
+__pycache__/
+*.pyc
+.zcode/
+.cursor/cache/

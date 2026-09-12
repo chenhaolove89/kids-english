@@ -18,6 +18,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 import { ICONS, ICON_CATEGORY } from './icons/index.mjs'
+import { isUsableAsset } from './lib/asset-check.mjs'
+import { writeFileAtomic } from './lib/fs-atomic.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const STATIC_DIR = path.join(ROOT, 'src/static')
@@ -37,6 +39,15 @@ const SHAPES_MODE = process.argv.includes('--shapes')
 const LEARN_ZH_MODE = process.argv.includes('--learn-zh')
 // --zh-char：用同音字替身重生成汉字字音（读错的字换同音同调替身喂 TTS），不跑英文/图片/数据
 const ZH_CHAR_MODE = process.argv.includes('--zh-char')
+
+/**
+ * 增量跳过判断：文件存在**且体积合理**才算可用。
+ * 只查 existsSync 会让「TTS 中断留下的半截 mp3 / 写盘失败的 0 字节 png」
+ * 永久被跳过、也永久通过审计；这里按类型设最小字节数，坏了就重新生成。
+ */
+const usable = (file) => isUsableAsset(file)
+const usableAudio = (file) => isUsableAsset(file, 'audio')
+const usableImage = (file) => isUsableAsset(file, 'image')
 
 // 中文词语课的分类取舍是内容配置，与 validate-content 共用 curriculum.json 单一来源
 const CURRICULUM = JSON.parse(fs.readFileSync(path.join(ROOT, 'content-packages/curriculum.json'), 'utf8'))
@@ -128,10 +139,10 @@ const CATEGORIES = {
 }
 
 // 英文反馈语音
-const FEEDBACK_EN = [
-  { id: 'great_job', text: 'Great job!' },
-  { id: 'try_again', text: 'Try again!' },
-]
+// 注意：这里只留家长页口音试听真正用到的 great_job。
+// try_again 曾一并生成，但产品决定「英语答错也播中文鼓励」（zh-try），该音轨从未被引用，
+// 已连同音频文件与响度表条目一起移除（资源审计的孤儿检查会一直报它）。
+const FEEDBACK_EN = [{ id: 'great_job', text: 'Great job!' }]
 // 中文反馈/指令语音（数学、语文用）
 const ZH_MISC = [
   { id: 'zh-great', text: '答对啦，真棒！' },
@@ -286,11 +297,18 @@ async function ttsPool(label, voices, jobs, concurrency = 3) {
 }
 
 // ---------- 图片 ----------
+// 网络调用一律带超时：黑洞网络下没有超时的 fetch 会无限期挂住，
+// 脚本既不出结果也不失败，只能人工 Ctrl-C（比直接失败更糟）。
+const FETCH_TIMEOUT_MS = 20000
+function fetchWithTimeout(url, ms = FETCH_TIMEOUT_MS) {
+  return fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(ms) })
+}
+
 async function fetchEmoji(code) {
   const candidates = [...new Set([code, code.replace(/_fe0f/g, '')])]
   for (const c of candidates) {
     try {
-      const res = await fetch(`${NOTO_BASE}/emoji_u${c}.png`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+      const res = await fetchWithTimeout(`${NOTO_BASE}/emoji_u${c}.png`)
       if (res.ok) {
         const buf = Buffer.from(await res.arrayBuffer())
         if (buf.length > 1000 && buf[0] === 0x89) return buf
@@ -303,7 +321,7 @@ async function fetchEmoji(code) {
   if (parts.length === 2 && parts.every(isRegional)) {
     const cc = parts.map((p) => String.fromCharCode(0x41 + parseInt(p, 16) - 0x1f1e6)).join('')
     try {
-      const res = await fetch(`${NOTO_FLAG_BASE}/${cc}.png`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+      const res = await fetchWithTimeout(`${NOTO_FLAG_BASE}/${cc}.png`)
       if (res.ok) {
         const buf = Buffer.from(await res.arrayBuffer())
         // 简单条纹国旗的 PNG 可能只有几百字节，阈值放宽到 100
@@ -530,14 +548,14 @@ async function main() {
     const jobs = []
     for (const w of covered) {
       const out = path.join(AUDIO_ZH_DIR, `${w.id}.mp3`)
-      if (!FORCE && fs.existsSync(out)) continue
+      if (!FORCE && usableAudio(out)) continue
       jobs.push({ id: `zhw-${w.id}`, text: w.zh, out })
     }
     console.log(`== 中文词语配音（zh-CN）待生成：${jobs.length} / 共 ${covered.length} 词 ==`)
     if (jobs.length) await ttsPool('ZH-LEARN', ZH_VOICES, jobs, 3)
     let miss = 0
     for (const w of covered) {
-      if (!fs.existsSync(path.join(AUDIO_ZH_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺中文配音: ${w.id}（${w.zh}）`); miss++ }
+      if (!usableAudio(path.join(AUDIO_ZH_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺中文配音: ${w.id}（${w.zh}）`); miss++ }
     }
     if (miss) {
       console.log(`中文词语配音仍缺 ${miss} 个，请重跑 npm run gen:learn-zh`)
@@ -561,7 +579,7 @@ async function main() {
     if (jobs.length) await ttsPool('ZH-CHAR', ZH_VOICES, jobs, 3)
     let miss = 0
     for (const j of jobs) {
-      if (!fs.existsSync(j.out)) { console.log(`✗ 缺字音: ${j.out}`); miss++ }
+      if (!usableAudio(j.out)) { console.log(`✗ 缺字音: ${j.out}`); miss++ }
     }
     if (miss) {
       console.log(`字音重生成仍缺 ${miss} 个，请重跑 npm run gen:zh-char`)
@@ -577,21 +595,21 @@ async function main() {
     fs.mkdirSync(AUDIO_GB_DIR, { recursive: true })
     const jobs = []
     for (const w of words) {
-      if (!FORCE && fs.existsSync(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) continue
+      if (!FORCE && usableAudio(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) continue
       jobs.push({ id: w.id, text: w.en, out: path.join(AUDIO_GB_DIR, `${w.id}.mp3`) })
     }
     for (const f of FEEDBACK_EN) {
-      if (!FORCE && fs.existsSync(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) continue
+      if (!FORCE && usableAudio(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) continue
       jobs.push({ id: f.id, text: f.text, out: path.join(AUDIO_GB_DIR, `${f.id}.mp3`) })
     }
     console.log(`== 英式发音（en-GB）待生成：${jobs.length} ==`)
     if (jobs.length) await ttsPool('EN-GB', EN_GB_VOICES, jobs, 3)
     let miss = 0
     for (const w of words) {
-      if (!fs.existsSync(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺英式音频: ${w.id}`); miss++ }
+      if (!usableAudio(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺英式音频: ${w.id}`); miss++ }
     }
     for (const f of FEEDBACK_EN) {
-      if (!fs.existsSync(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺英式反馈音频: ${f.id}`); miss++ }
+      if (!usableAudio(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺英式反馈音频: ${f.id}`); miss++ }
     }
     if (miss) {
       console.log(`英式音频缺失 ${miss} 个，请重跑 npm run gen:assets-gb 补齐`)
@@ -605,11 +623,11 @@ async function main() {
   // ---------- 任务清单 ----------
   const enJobs = []
   for (const w of words) {
-    if (!FORCE && fs.existsSync(path.join(AUDIO_DIR, `${w.id}.mp3`))) continue
+    if (!FORCE && usableAudio(path.join(AUDIO_DIR, `${w.id}.mp3`))) continue
     enJobs.push({ id: w.id, text: w.en, out: path.join(AUDIO_DIR, `${w.id}.mp3`) })
   }
   for (const f of FEEDBACK_EN) {
-    if (!FORCE && fs.existsSync(path.join(AUDIO_DIR, `${f.id}.mp3`))) continue
+    if (!FORCE && usableAudio(path.join(AUDIO_DIR, `${f.id}.mp3`))) continue
     enJobs.push({ id: f.id, text: f.text, out: path.join(AUDIO_DIR, `${f.id}.mp3`) })
   }
 
@@ -618,8 +636,8 @@ async function main() {
     const charOut = path.join(AUDIO_DIR, `zh-${h.id}.mp3`)
     const wordOut = path.join(AUDIO_DIR, `zh-${h.id}w.mp3`)
     // 字音用注音表的替身字（多音字裸读会错的字，音频即正确读音）；例词是词语上下文，保持原文
-    if (FORCE || !fs.existsSync(charOut)) zhJobs.push({ id: `zh-${h.id}`, text: zhCharText(h), out: charOut })
-    if (FORCE || !fs.existsSync(wordOut)) zhJobs.push({ id: `zh-${h.id}w`, text: h.word, out: wordOut })
+    if (FORCE || !usableAudio(charOut)) zhJobs.push({ id: `zh-${h.id}`, text: zhCharText(h), out: charOut })
+    if (FORCE || !usableAudio(wordOut)) zhJobs.push({ id: `zh-${h.id}w`, text: h.word, out: wordOut })
   }
   // 数字 n0-n100 与 ZH_MISC 短语已移交正典管线（tools/gen-zh-azure.mjs --misc）：
   // 走 Azure 同一音色，避免 Edge 这边 --force 重跑时把旧音色带回来。
@@ -771,12 +789,12 @@ async function main() {
     }
   })
 
-  fs.writeFileSync(path.join(DATA_DIR, 'words.json'), JSON.stringify({
-    generatedAt: new Date().toISOString(),
-    levels: levelList,
-    categories,
-  }, null, 1))
-
+  // 数据文件里**不写墙钟时间**：generatedAt 会让「内容没变但重跑一次生成」产出不同字节，
+  // 进而让 catalog 的 contentVersion 变化、SW 缓存代次整代失效——客户端把所有音频图片
+  // 重新下一遍（实测口径见 README 的"离线与隐私"）。产物必须可复现：同样输入 → 同样字节。
+  //
+  // 写入时机放在校验之后（见文件末尾）：原来先写数据再校验，于是"校验失败退出码 1"
+  // 却已经把数据改成指向缺失资源的新内容，留下数据与资产不一致的半成品状态。
   const hanziLevels = Object.values(LEVELS).map((lv) => ({
     id: lv.id, zh: lv.zh, color: lv.color, bg: lv.bg, icon: `/static/img/level-${lv.id}.png`,
     chars: hanzi.filter((h) => h.level === String(lv.id)).map((h) => ({
@@ -791,34 +809,34 @@ async function main() {
       emoji: hanziEmoji.has(h.char) ? `/static/img/hz-${h.id}.png` : '',
     })),
   }))
-  fs.writeFileSync(path.join(DATA_DIR, 'hanzi.json'), JSON.stringify({
-    generatedAt: new Date().toISOString(),
-    total: hanzi.length,
-    levels: hanziLevels,
-  }, null, 1))
+
+  // 两个数据负载都在各自结构建好之后再序列化：写在前面会踩 hanziLevels 的 TDZ
+  const wordsPayload = JSON.stringify({ levels: levelList, categories }, null, 1)
+  const hanziPayload = JSON.stringify({ total: hanzi.length, levels: hanziLevels }, null, 1)
 
   // ---------- 校验 ----------
+  // 一律用 usable*（存在 + 体积合理）：只查存在会让截断产物通过生成门禁
   let bad = 0
   for (const w of words) {
     const img = path.join(STATIC_DIR, 'img', `${w.id}.${w.emoji ? 'png' : 'svg'}`)
     const aud = path.join(AUDIO_DIR, `${w.id}.mp3`)
-    if (!fs.existsSync(img)) { console.log(`✗ 缺图片: ${w.id}`); bad++ }
-    if (!fs.existsSync(aud)) { console.log(`✗ 缺音频: ${w.id}`); bad++ }
+    if (!usableImage(img)) { console.log(`✗ 图片缺失或损坏: ${w.id}`); bad++ }
+    if (!usableAudio(aud)) { console.log(`✗ 音频缺失或截断: ${w.id}`); bad++ }
   }
   for (const h of hanzi) {
-    if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}.mp3`))) { console.log(`✗ 缺字音: ${h.char}`); bad++ }
-    if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}w.mp3`))) { console.log(`✗ 缺词音: ${h.word}`); bad++ }
-    if (!fs.existsSync(path.join(AUDIO_DIR, `zh-${h.id}s.mp3`))) { console.log(`✗ 缺例句音: ${h.char}(${h.sentence})`); bad++ }
-    if (h.sentenceEmoji && !fs.existsSync(path.join(IMG_DIR, `sent-${h.id}.png`))) { console.log(`✗ 缺例句配图: ${h.char}(${h.sentence})`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `zh-${h.id}.mp3`))) { console.log(`✗ 缺字音或截断: ${h.char}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `zh-${h.id}w.mp3`))) { console.log(`✗ 缺词音或截断: ${h.word}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `zh-${h.id}s.mp3`))) { console.log(`✗ 缺例句音或截断: ${h.char}(${h.sentence})`); bad++ }
+    if (h.sentenceEmoji && !usableImage(path.join(IMG_DIR, `sent-${h.id}.png`))) { console.log(`✗ 缺例句配图: ${h.char}(${h.sentence})`); bad++ }
   }
   for (let n = 0; n <= 100; n++) {
-    if (!fs.existsSync(path.join(AUDIO_DIR, `n${n}.mp3`))) { console.log(`✗ 缺数字音: n${n}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `n${n}.mp3`))) { console.log(`✗ 缺数字音或截断: n${n}`); bad++ }
   }
   for (const m of ZH_MISC) {
-    if (!fs.existsSync(path.join(AUDIO_DIR, `${m.id}.mp3`))) { console.log(`✗ 缺中文语音: ${m.id}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `${m.id}.mp3`))) { console.log(`✗ 缺中文语音或截断: ${m.id}`); bad++ }
   }
   for (const f of FEEDBACK_EN) {
-    if (!fs.existsSync(path.join(AUDIO_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺反馈音频: ${f.id}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺反馈音频或截断: ${f.id}`); bad++ }
   }
 
   console.log('\n========== 汇总 ==========')
@@ -827,12 +845,16 @@ async function main() {
     console.log(`${lv.zh}: ${categories.filter((c) => c.level === lv.id).length} 分类 / ${n} 词`)
   }
   console.log(`语文: ${hanziLevels.map((l) => l.chars.length).join(' + ')} = ${hanzi.length} 字`)
-  console.log('数据: src/data/words.json, src/data/hanzi.json')
   if (missing.length) console.log(`⚠ 图片缺失（emoji 找不到）: ${missing.join(', ')}`)
   if (bad || missing.length) {
-    console.log('存在缺失资源，请处理后再构建')
+    // 校验不过就不写数据：宁可保持上一版「数据与资产一致」的状态，
+    // 也不要写出指向缺失资源的半成品数据（原实现在校验前就落盘了）
+    console.log('存在缺失资源，不写入数据文件（保持上一版一致性），请处理后再构建')
     process.exitCode = 1
   } else {
+    writeFileAtomic(path.join(DATA_DIR, 'words.json'), wordsPayload)
+    writeFileAtomic(path.join(DATA_DIR, 'hanzi.json'), hanziPayload)
+    console.log('数据: src/data/words.json, src/data/hanzi.json（原子写入）')
     console.log('✓ 全部资源就绪')
   }
 }

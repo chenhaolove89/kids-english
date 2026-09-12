@@ -1,12 +1,8 @@
 <template>
   <view class="page">
-    <view class="topbar">
-      <view class="back" @tap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="title">学英语</text>
+    <PageTopBar class="topbar-page" title="学英语" title-size="42rpx" @back="goBack">
       <text class="total">共 {{ totalWords }} 词</text>
-    </view>
+    </PageTopBar>
 
     <view class="tip">
       <text class="tip-text">点卡片学单词，点 ⚡ 挑战听力</text>
@@ -45,6 +41,7 @@
 import { ref, computed } from 'vue'
 import data from '@/data/words.json'
 import { isCategoryHidden } from '@/content/lowAge.js'
+import PageTopBar from '@/components/page-top-bar.vue'
 
 const levels = ref(data.levels)
 // 低龄模式隐藏的分类不计入顶部总数，与所见一致
@@ -73,35 +70,9 @@ function goBack() {
   padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
-.topbar {
-  display: flex;
-  align-items: center;
+/* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
+.topbar-page {
   padding: 8rpx 4rpx 8rpx;
-}
-.back {
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
-}
-.back-icon {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #4a3f35;
-}
-.title {
-  flex: 1;
-  text-align: center;
-  font-size: 42rpx;
-  font-weight: 800;
-  color: #4a3f35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .total {
   min-width: 84rpx;

@@ -1,6 +1,6 @@
 /**
  * 合并词表：tools/words-base.csv（原始300词，只读） + tools/words-extra/*.csv（新增）
- * → 生成 tools/words.csv（gen-assets.mjs 的输入，覆盖前自动备份旧文件到 words.prev.csv）
+ * → 生成 tools/words.csv（gen-assets.mjs 的输入；内容真的有变化时才把上一版备份到 words.prev.csv）
  * 校验：7列 / id 全局唯一（新行自动 slug 化）/ 同一等级内 en 不重复 /
  *       分类合法 / emoji 或 draw 至少一项 / MOVES 分类迁移 / 全表汇总输出
  * 用法：node tools/merge-words.mjs
@@ -8,6 +8,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { writeFileAtomic } from './lib/fs-atomic.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const BASE = path.join(ROOT, 'tools/words-base.csv')
@@ -112,8 +113,24 @@ if (errors.length) {
   errors.forEach((e) => console.log('✗ ' + e))
   process.exitCode = 1
 } else {
-  fs.copyFileSync(OUT, path.join(ROOT, 'tools/words.prev.csv'))
   const out = ['id,en,zh,phonetic,category,emoji,draw', ...rows.map(({ cols }) => cols.join(','))].join('\n') + '\n'
-  fs.writeFileSync(OUT, out)
+  const prev = path.join(ROOT, 'tools/words.prev.csv')
+  const before = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : null
+  const changed = before !== out
+  // 备份语义：words.prev.csv 保存的是「上一版」。
+  // 原实现无条件把当前 words.csv 拷成 prev —— 连跑两次就把 prev 覆盖成当前版本，
+  // 等于没有备份；首次生成（还没有 words.csv）时也没有可备份的东西。
+  if (changed && before !== null) {
+    try {
+      writeFileAtomic(prev, before)
+      console.log('（内容有变化，已把上一版备份到 tools/words.prev.csv）')
+    } catch (e) {
+      console.log(`⚠ 备份 tools/words.prev.csv 失败: ${e.message}`)
+    }
+  } else if (!changed) {
+    console.log('（内容未变化，保留原有 tools/words.prev.csv 备份）')
+  }
+  // 原子落盘：中途失败不会留下半截词表
+  writeFileAtomic(OUT, out)
   console.log(`\n✓ 已写出 ${path.relative(ROOT, OUT)}（${rows.length} 行）`)
 }

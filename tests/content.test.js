@@ -142,10 +142,28 @@ test('古诗课：poems.json 与目录课卡一致，句音/整首音齐全且�
 })
 
 test('按钮指令朗读：zh-btn-*.mp3 齐全且非空（gen-zh-azure --labels 产物）', () => {
-  const ids = ['resume', 'next', 'first', 'review', 'en', 'zh', 'math', 'again', 'back']
+  // 清单必须与 tools/gen-zh-azure.mjs 的 BUTTON_LABELS 一致：
+  // 页面加了 say('xxx') 却忘了生成音频，就是不识字的孩子点按钮听不到说明
+  const ids = [
+    'resume', 'next', 'first', 'review', 'en', 'zh', 'math', 'again', 'back',
+    'welcome', 'stage', 'challenge', 'random',
+  ]
   for (const id of ids) {
     const f = path.join(ROOT, 'src', 'static', 'audio', `zh-btn-${id}.mp3`)
     assert.ok(fs.existsSync(f), `缺少 zh-btn-${id}.mp3（跑 node tools/gen-zh-azure.mjs --labels）`)
     assert.ok(fs.statSync(f).size >= 2000, `zh-btn-${id}.mp3 过小（疑似 TTS 失败）`)
+  }
+})
+
+test('页面用到的指令朗读键都有对应的音频文件', () => {
+  // 反向校验：从 map.vue 里实际调用的 say('key') 反推需要的音频，防止加了按钮漏生成音频
+  const src = fs.readFileSync(path.join(ROOT, 'src/pages/map/map.vue'), 'utf8')
+  const keys = new Set([...src.matchAll(/say\(\s*'([a-z]+)'\s*\)/g)].map((m) => m[1]))
+  // 动态键（RESUME_LABEL_KEY 的取值）与三科按钮键一并纳入
+  for (const k of ['resume', 'next', 'first']) keys.add(k)
+  assert.ok(keys.size >= 6, `从 map.vue 解析到的指令键太少（${keys.size}），正则可能失效`)
+  for (const k of keys) {
+    const f = path.join(ROOT, 'src', 'static', 'audio', `zh-btn-${k}.mp3`)
+    assert.ok(fs.existsSync(f), `map.vue 调用了 say('${k}')，但缺少 zh-btn-${k}.mp3`)
   }
 })

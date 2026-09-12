@@ -93,15 +93,36 @@ export function isMathTrophy(done, bestStars) {
 }
 
 /**
- * 庆祝判定：本次访问相对上次的新增量。
- * prev/cur 形如 { enSeen, enMastered, zhSeen, zhMastered, zhWordsSeen, zhWordsMastered, mathDone }（缺字段按 0）。
- * 返回 { newSeen, newMastered, total }；负数（清空数据后）按 0 处理。
+ * 各桶「已点亮」的 id 并集（seen ∪ mastered；数学是已完成关卡）。
+ * 庆祝条按它算"本次新点亮几张卡片"，所以必须先并集再去重。
  */
-export function celebration(prev, cur) {
-  const d = (k) => Math.max(0, (cur?.[k] || 0) - (prev?.[k] || 0))
-  const newSeen = d('enSeen') + d('zhSeen') + d('zhWordsSeen') + d('zhSentencesSeen')
-  const newMastered = d('enMastered') + d('zhMastered') + d('zhWordsMastered') + d('zhSentencesMastered')
-  return { newSeen, newMastered, mathNew: d('mathDone'), total: newSeen + newMastered + d('mathDone') }
+export function litIds(coll) {
+  const c = coll || {}
+  const union = (bucket) => [...new Set([...(c[bucket]?.seen || []), ...(c[bucket]?.mastered || [])])]
+  return {
+    en: union('en'),
+    zh: union('zh'),
+    zhWords: union('zhWords'),
+    zhSentences: union('zhSentences'),
+    math: [...new Set(c.math?.done || [])],
+  }
+}
+
+/**
+ * 庆祝判定：本次访问相对上次**新点亮了多少张卡片**。
+ *
+ * 口径修正（产品决定）：按"点亮动作"计数会虚报——一个词从认识变掌握会让
+ * seen 与 mastered 同时 +1，文案却写着"N 张卡片"。所以改成按 id 去重后计数：
+ * prev/cur 都是 litIds() 的形状（每桶 id 数组，缺字段按空）。
+ * 清空数据后 id 只会减少 → 结果为 0（不会出现负数）。
+ */
+export function celebration(prevLit, curLit) {
+  let total = 0
+  for (const bucket of ['en', 'zh', 'zhWords', 'zhSentences', 'math']) {
+    const prev = new Set(prevLit?.[bucket] || [])
+    for (const id of curLit?.[bucket] || []) if (!prev.has(id)) total++
+  }
+  return { total }
 }
 
 /**

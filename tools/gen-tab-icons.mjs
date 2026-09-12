@@ -18,7 +18,10 @@ const SIZE = 96 // uni h5 tabbar 图标约 26px CSS，96px 覆盖 3x 屏
 
 const ICONS = [
   { file: 'map', emoji: '📚', color: [0xff, 0x8c, 0x42] },
-  { file: 'collection', emoji: '⭐', color: [0xf7, 0xb5, 0x00] },
+  // glyph=true 才生成白色描形变体：目前只有「图鉴」的悬浮按钮用 collection-glyph.png。
+  // 原实现给每个图标都输出 -glyph.png，于是 map/parent 的两个白描形成了永久"未被引用文件"，
+  // 把资源审计的孤儿检查淹没在固定噪声里（真孤儿反而看不出来）。
+  { file: 'collection', emoji: '⭐', color: [0xf7, 0xb5, 0x00], glyph: true },
   // 家长：👪 一家四口缩到 96px 剪影化后糊成实心方块（2026-09 视觉验收抓到），
   // 👥 双人剪影天生就是头+肩造型，缩小后仍然成形
   { file: 'parent', emoji: '👥', color: [0x3b, 0xb2, 0x73] },
@@ -32,7 +35,16 @@ const toCode = (emoji) =>
 async function fetchEmoji(emoji, cachePath, force) {
   if (!force && fs.existsSync(cachePath)) return
   const url = `${BASE}/emoji_u${toCode(emoji)}.png`
-  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+  let res
+  try {
+    // 超时 + 捕获：原来无 try/catch，断网时是 unhandled rejection 直接崩栈，
+    // 且因为本脚本会删缓存，每次都要联网——离线跑必然失败。
+    res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(20000) })
+  } catch (e) {
+    console.error(`✗ 下载失败（网络不可用或超时）: ${url}`)
+    console.error(`  ${e && e.message ? e.message : e}`)
+    process.exit(1)
+  }
   if (!res.ok) {
     console.error(`✗ 下载失败 (${res.status}): ${url}`)
     process.exit(1)
@@ -152,13 +164,21 @@ const force = process.argv.includes('--force')
 fs.mkdirSync(OUT, { recursive: true })
 for (const ic of ICONS) {
   const raw = path.join(OUT, `${ic.file}-raw.png`)
+  // raw 只作中间产物：用完即删，所以下次跑必然重新下载。
+  // 为避免「离线时整脚本崩掉」，先把已生成的成品是否齐备作为跳过条件（-raw 不存在不代表成品不存在）。
+  const names = [`${ic.file}.png`, `${ic.file}-on.png`].concat(ic.glyph ? [`${ic.file}-glyph.png`] : [])
+  const outs = names.map((n) => path.join(OUT, n))
+  if (!force && outs.every((p) => fs.existsSync(p))) {
+    console.log(`• ${ic.file} 成品已存在，跳过（--force 可强制重画）`)
+    continue
+  }
   await fetchEmoji(ic.emoji, raw, force)
   const glyph = resize(PNG.sync.read(fs.readFileSync(raw)))
   // 未选中：暖灰剪影；选中：彩色圆底 + 白色描形（recolor 只改 RGB 不动 alpha，描形按 alpha 合成）
-  fs.writeFileSync(path.join(OUT, `${ic.file}.png`), PNG.sync.write(recolor(glyph, GRAY)))
-  fs.writeFileSync(path.join(OUT, `${ic.file}-on.png`), PNG.sync.write(selectedIcon(glyph, ic.color)))
-  fs.writeFileSync(path.join(OUT, `${ic.file}-glyph.png`), PNG.sync.write(glyphIcon(glyph)))
+  fs.writeFileSync(outs[0], PNG.sync.write(recolor(glyph, GRAY)))
+  fs.writeFileSync(outs[1], PNG.sync.write(selectedIcon(glyph, ic.color)))
+  if (ic.glyph) fs.writeFileSync(outs[2], PNG.sync.write(glyphIcon(glyph)))
   fs.rmSync(raw, { force: true })
-  console.log(`✓ ${ic.file}.png（暖灰）+ ${ic.file}-on.png（彩色圆底）+ ${ic.file}-glyph.png（白色描形）← ${ic.emoji}`)
+  console.log(`✓ ${ic.file}.png（暖灰）+ ${ic.file}-on.png（彩色圆底）${ic.glyph ? ` + ${ic.file}-glyph.png（白色描形）` : ''}← ${ic.emoji}`)
 }
 console.log('完成：src/static/tab/')

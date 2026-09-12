@@ -1,12 +1,8 @@
 <template>
   <view class="page">
-    <view class="topbar">
-      <view class="back" @tap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="title">学数学</text>
-      <text class="total">4 个关卡</text>
-    </view>
+    <PageTopBar class="topbar-page" title="学数学" title-size="42rpx" @back="goBack">
+      <text class="total">{{ levels.length }} 个关卡</text>
+    </PageTopBar>
 
     <view class="tip">
       <text class="tip-text">听题目，选答案，每关 10 道题</text>
@@ -35,21 +31,48 @@
 
 <script setup>
 import { ref } from 'vue'
+import { MATH_LEVELS } from '@/domain/mathgen.js'
+import { lessonsOfSubject } from '@/content/catalog.js'
+import { goBackOrHome } from '@/platform/nav.js'
+import PageTopBar from '@/components/page-top-bar.vue'
 
-const levels = ref([
-  { id: 1, name: '认识数字', desc: '点数、听音认数、找规律', color: '#3BB273', bg: '#E3F6E8' },
-  { id: 2, name: '十以内加减', desc: '看图数一数，算一算', color: '#4D96FF', bg: '#E3EEFF' },
-  { id: 3, name: '二十以内', desc: '进位加减、比大小、找搭档', color: '#FF8C42', bg: '#FFEDD9' },
-  { id: 4, name: '乘除进阶', desc: '乘法口诀、平均分', color: '#9B5DE5', bg: '#F0E6FB' },
-  { id: 5, name: '万以内加减', desc: '三位数加减、填空', color: '#12B886', bg: '#E2F6EF' },
-  { id: 6, name: '小数与分数', desc: '小数加减、同分母分数', color: '#D6336C', bg: '#FBE3EC' },
-])
+/**
+ * 关卡说明文案。名称/配色/关卡数的唯一真源是 domain/mathgen.js 的 MATH_LEVELS——
+ * 这里原来另存了一份硬编码副本，只列到第 6 关、标题还写死「4 个关卡」，
+ * 于是 L7 图形规律 / L8 应用题 / L9 四则混合 从这个入口根本进不去。
+ */
+const LEVEL_DESC = {
+  1: '点数、听音认数、找规律',
+  2: '看图数一数，算一算',
+  3: '进位加减、比大小、找搭档',
+  4: '乘法口诀、平均分',
+  5: '三位数加减、填空',
+  6: '小数加减、同分母分数',
+  7: '图形规律、二元周期接龙',
+  8: '读小故事，算一算',
+  9: '先乘除、括号优先',
+}
+
+// 关卡 → 课程 id：带上 lessonId 才会记会话、记星、点亮图鉴。
+// 旧入口不传 lessonId，从这里进去玩一整关等于没学（不落任何记录）。
+const MATH_LESSONS = lessonsOfSubject('math')
+function lessonIdOf(levelId) {
+  const hit = MATH_LESSONS.find((l) => l.ref?.kind === 'math-level' && Number(l.ref.id) === Number(levelId))
+  return hit ? hit.id : ''
+}
+
+const levels = ref(
+  Object.values(MATH_LEVELS)
+    .sort((a, b) => a.id - b.id)
+    .map((lv) => ({ ...lv, desc: LEVEL_DESC[lv.id] || '' })),
+)
 
 function go(lv) {
-  uni.navigateTo({ url: `/pages/math/practice?level=${lv.id}` })
+  const lid = lessonIdOf(lv.id)
+  uni.navigateTo({ url: `/pages/math/practice?level=${lv.id}` + (lid ? `&lessonId=${lid}` : '') })
 }
 function goBack() {
-  uni.navigateBack()
+  goBackOrHome()
 }
 </script>
 
@@ -59,36 +82,9 @@ function goBack() {
   padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
-.topbar {
-  display: flex;
-  align-items: center;
+/* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
+.topbar-page {
   padding: 8rpx 4rpx 8rpx;
-}
-.back {
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
-  flex-shrink: 0;
-}
-.back-icon {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #4a3f35;
-}
-.title {
-  flex: 1;
-  text-align: center;
-  font-size: 42rpx;
-  font-weight: 800;
-  color: #4a3f35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .total {
   min-width: 84rpx;

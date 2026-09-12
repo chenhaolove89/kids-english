@@ -16,6 +16,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
+import { writeFileAtomic } from './lib/fs-atomic.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = path.join(ROOT, 'content-packages', 'curriculum.json')
@@ -357,9 +358,27 @@ if (errors.length) {
 }
 
 // ---------- 打包 ----------
+/**
+ * 规范化 JSON：对象键排序后序列化。
+ * 只为了「同样内容 → 同样字符串」，这样 contentVersion 不会因为键顺序或重跑而变。
+ */
+function canonicalJson(v) {
+  if (Array.isArray(v)) return '[' + v.map(canonicalJson).join(',') + ']'
+  if (v && typeof v === 'object') {
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonicalJson(v[k])).join(',') + '}'
+  }
+  return JSON.stringify(v === undefined ? null : v)
+}
+
+/**
+ * contentVersion 必须只由**内容**决定，不能掺墙钟时间。
+ * 原实现用 `words.generatedAt`（每次 gen:assets 都写新的当前时间），于是
+ * 「什么都没改、只是重跑了一次生成」也会让版本变化 → SW 缓存代次整代失效
+ * → 客户端把全部音频图片重新下一遍（真金白银的流量，且与"增量生成"的承诺相反）。
+ */
 const contentVersion = crypto
   .createHash('sha1')
-  .update(`${words.generatedAt}|${hanzi.generatedAt}|${source.version}|${lessons.length}`)
+  .update(`${canonicalJson(words)}|${canonicalJson(hanzi)}|${source.version}|${lessons.length}`)
   .digest('hex')
   .slice(0, 10)
 
@@ -378,8 +397,8 @@ lessons.sort((a, b) =>
 for (const l of lessons) delete l.stageOrder
 
 const catalog = {
-  // 必须可复现：--check 靠全文比对判断目录是否过期，禁止写墙钟时间
-  generatedAt: words.generatedAt && words.generatedAt >= (hanzi.generatedAt || '') ? words.generatedAt : hanzi.generatedAt || '',
+  // 必须可复现：--check 靠全文比对判断目录是否过期，禁止写墙钟时间。
+  // contentVersion 同样只由内容决定（见上），所以「内容没变 → 版本不变 → 客户端不重下」。
   contentVersion,
   stages: source.stages,
   subjects: source.subjects,
@@ -400,5 +419,6 @@ if (process.argv.includes('--check')) {
 }
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true })
-fs.writeFileSync(OUT, emitted, 'utf8')
+// 原子写入：中途失败不留半截 JSON（半截目录会让运行时的课程数据整体 fallback 为空）
+writeFileAtomic(OUT, emitted)
 console.log(`✓ 内容校验通过，已生成 src/content/catalog.json：${lessons.length} 门课，contentVersion ${contentVersion}`)

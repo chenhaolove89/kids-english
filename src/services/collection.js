@@ -1,5 +1,5 @@
 /**
- * 收集图鉴服务：点亮集合的持久化与派生（Vite 运行时模块，依赖目录/数据 JSON，不进 Node 单测）。
+ * 收集图鉴服务：点亮集合的持久化与派生（**不 import 任何数据 JSON，Node 可测**）。
  *
  * 写入时机（只增不减）：
  *   - learn.vue 完成学一学 → recordLearnDone(session)：该课全部词/字进 seen（认识）
@@ -9,51 +9,59 @@
  * 首次读取且存储无该键时，从已存 sessions+attempts 一次性回填（老用户进度不丢）。
  *
  * 口径说明：错题重练无课时会话、不记 attempt，与星数口径一致——不产生点亮。
+ *
+ * 依赖注入（与 services/review.js + review-pools.js 同一模式）：
+ * 目录/数据解析器由应用侧注入，本文件因此能被 Node 单测覆盖。
+ * 「我的百宝箱」是核心留存功能，而且它是**唯一**同时读 sessions + attempts
+ * 两个事件流、再写第三个存储键的地方——静默失效（孩子学了但图鉴不亮）
+ * 之前完全测不到。
  */
-import { getStorage } from '../platform/storage.js'
-import { getLesson } from '../content/catalog.js'
-import { resolveEnCategory, resolveZhLevel } from '../content/adapters.js'
 import { normalizeColl, addIds, deriveMastersFromAttempts, deriveFromHistory } from '../domain/collection.js'
 
 const KEY = 'collection'
 
-/** 课程 → 应点亮的条目 id 列表（学一学用）；隐藏分类/无词表课程返回 null */
-function lessonItemIds(lesson) {
-  const r = lesson?.ref
-  if (!r) return null
-  if (r.kind === 'en-category') {
-    const c = resolveEnCategory(r.id)
-    return c ? c.words.map((w) => w.id) : null
+export function createCollectionService(store, resolvers) {
+  if (!resolvers || typeof resolvers.getLesson !== 'function') {
+    throw new Error('collection resolvers 未注入（应用侧请用 services/collection-app.js）')
   }
-  if (r.kind === 'zh-level') {
-    const lv = resolveZhLevel(r.id)
-    return lv ? lv.chars.map((h) => h.id) : null
+  const { getLesson, resolveEnCategory, resolveZhLevel } = resolvers
+
+  /** 课程 → 应点亮的条目 id 列表（学一学用）；隐藏分类/无词表课程返回 null */
+  function lessonItemIds(lesson) {
+    const r = lesson?.ref
+    if (!r) return null
+    if (r.kind === 'en-category') {
+      const c = resolveEnCategory(r.id)
+      return c ? c.words.map((w) => w.id) : null
+    }
+    if (r.kind === 'zh-level') {
+      const lv = resolveZhLevel(r.id)
+      return lv ? lv.chars.map((h) => h.id) : null
+    }
+    // 小短句按字码点点亮（一字节一句），与识字课分开成桶
+    if (r.kind === 'zh-sentences') {
+      const lv = resolveZhLevel(r.id)
+      return lv ? lv.chars.filter((h) => h.sentenceAudio).map((h) => h.id) : null
+    }
+    return null
   }
-  // 小短句按字码点点亮（一字节一句），与识字课分开成桶
-  if (r.kind === 'zh-sentences') {
-    const lv = resolveZhLevel(r.id)
-    return lv ? lv.chars.filter((h) => h.sentenceAudio).map((h) => h.id) : null
+
+  /** 语文的点亮桶：识字课进 zh（字码点），词语课（ref=en-category）进 zhWords（词 id），
+   *  小短句（ref=zh-sentences）进 zhSentences，三者分开统计不互混 */
+  function collectionBucket(lesson) {
+    if (lesson.subject !== 'zh') return lesson.subject
+    if (lesson.ref?.kind === 'en-category') return 'zhWords'
+    if (lesson.ref?.kind === 'zh-sentences') return 'zhSentences'
+    return 'zh'
   }
-  return null
-}
 
-/** 语文的点亮桶：识字课进 zh（字码点），词语课（ref=en-category）进 zhWords（词 id），
- *  小短句（ref=zh-sentences）进 zhSentences，三者分开统计不互混 */
-function collectionBucket(lesson) {
-  if (lesson.subject !== 'zh') return lesson.subject
-  if (lesson.ref?.kind === 'en-category') return 'zhWords'
-  if (lesson.ref?.kind === 'zh-sentences') return 'zhSentences'
-  return 'zh'
-}
+  /** 回填用课程解析器：目录 + 适配器展开（未知课程返回 null 跳过） */
+  function lessonResolver(lessonId) {
+    const lesson = getLesson(lessonId)
+    if (!lesson) return null
+    return { subject: collectionBucket(lesson), kind: lesson.kind, itemIds: lessonItemIds(lesson) }
+  }
 
-/** 回填用课程解析器：目录 + 适配器展开（未知课程返回 null 跳过） */
-function lessonResolver(lessonId) {
-  const lesson = getLesson(lessonId)
-  if (!lesson) return null
-  return { subject: collectionBucket(lesson), kind: lesson.kind, itemIds: lessonItemIds(lesson) }
-}
-
-export function createCollectionService(store) {
   let migrated = false
 
   function load() {
@@ -83,6 +91,22 @@ export function createCollectionService(store) {
     const ids = lessonItemIds(lesson)
     if (!ids) return
     save(addIds(load(), collectionBucket(lesson), 'seen', ids))
+  }
+
+  /**
+   * 描红写好一个字：**只点亮这一个字**（按单字点亮）。
+   *
+   * 为什么不能复用 recordLearnDone：它按"整课"点亮（识字课一堂 48 字），
+   * 写一个字就把整课算学会，图鉴与家长统计都会虚高。
+   * 只进 seen（认识）不进 mastered：掌握的口径是"挑战里首答认出"，描红练的是书写，
+   * 拿它当认读掌握会高估。
+   * @param {string} cp 汉字码点（与 hanzi.json 的 id 同口径，图鉴按它计数）
+   */
+  function recordCharPracticed(cp) {
+    const id = String(cp || '').trim().toLowerCase()
+    if (!/^[0-9a-f]{4,6}$/.test(id)) return false
+    save(addIds(load(), 'zh', 'seen', [id]))
+    return true
   }
 
   /** 挑战完成：英语/语文首答答对条目进 mastered；数学点亮徽章 */
@@ -117,13 +141,8 @@ export function createCollectionService(store) {
   return {
     get: load,
     recordLearnDone,
+    recordCharPracticed,
     recordChallengeDone,
     counts,
   }
-}
-
-let _svc = null
-export function getCollectionService() {
-  if (!_svc) _svc = createCollectionService(getStorage())
-  return _svc
 }

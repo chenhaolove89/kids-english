@@ -132,6 +132,33 @@ test('progressService：星级只来自 challenge 完成，learn 不计星；bes
   assert.equal(s.learnDoneCount, 1)
 })
 
+test('progressService：practice（描红/古诗点读）完成不计课时、不给星，但会话与作答都留痕', () => {
+  // 口径来自产品决定：练一练要能在家长页看到，但不能把"读一首诗/写一个字"当成学完一课。
+  const store = makeStore()
+  const svc = createSessionService(store)
+  const prog = createProgressService(store)
+
+  svc.startSession({ lessonId: 'zh-poem-qimeng', kind: 'practice' })
+  svc.recordAttempt({ activityId: 'poem-read', order: 'yong-e', answer: 'yong-e', correct: true, itemId: null })
+  svc.completeSession()
+
+  const p = prog.lessonProgressMap().get('zh-poem-qimeng')
+  assert.ok(p, 'practice 会话仍应出现在进度表里（用于 lastAt/最近记录）')
+  assert.equal(p.completed, 0, 'practice 不能计入课时完成')
+  assert.equal(p.learnDone, false, 'practice 不能标成学一学完成')
+  assert.equal(p.bestStars, 0, 'practice 不能给星')
+
+  const s = prog.summary()
+  assert.equal(s.lessonsCompleted, 0)
+  assert.equal(s.learnDoneCount, 0)
+  assert.equal(s.totalStars, 0)
+
+  // 但作答流里有它（周报/累计/练习时长靠 attempts）
+  assert.equal(store.get('attempts', []).length, 1)
+  assert.equal(store.get('sessions', []).length, 1, '会话记录本身要留着，家长页「最近记录」才看得到')
+  assert.equal(prog.recentSessions(5).length, 1)
+})
+
 test('progressService：暂停→恢复→完成，同一 sessionId 只算一次完成', () => {
   const store = makeStore()
   const svc = createSessionService(store)
@@ -152,31 +179,188 @@ test('progressService：暂停→恢复→完成，同一 sessionId 只算一次
   assert.equal(totals.firstCorrect, 2)
 })
 
-test('weeklyReport：近 7 天完成课数/星/分钟（单次封顶 30 分钟），旧会话不计', () => {
+test('weeklyReport：完成课数含学一学、周星按课取最好、时长按作答间隔累计', () => {
   const store = makeStore()
   const prog = createProgressService(store)
   const DAY = 24 * 60 * 60 * 1000
   const now = 1000 * DAY
   const log = []
-  // 本周：完成挑战 9/10 → 2 星，时长 40 分钟 → 封顶 30
+  // 同一门挑战课本周重玩两次（9/10 与 10/10 都是 3 星）：按课取最好，只算一次 3 星
   log.push({
     sessionId: 's1', lessonId: 'en-quiz-l1', kind: 'challenge', startedAt: now - 20 * 60000,
-    endedAt: now - 20 * 60000 + 40 * 60000, status: 'completed',
+    endedAt: now - 19 * 60000, status: 'completed',
     totals: { questions: 10, firstCorrect: 9, attempts: 10, correctPicks: 10 },
   })
-  // 本周：完成学一学
-  log.push({ sessionId: 's2', lessonId: 'en-learn-animals', kind: 'learn', startedAt: now - DAY, endedAt: now - DAY + 5 * 60000, status: 'completed' })
-  // 本周：暂停中（计入时长，不计完成）
-  log.push({ sessionId: 's3', lessonId: 'math-practice-l1', kind: 'challenge', startedAt: now - 10 * 60000, endedAt: now - 5 * 60000, status: 'paused' })
+  log.push({
+    sessionId: 's1b', lessonId: 'en-quiz-l1', kind: 'challenge', startedAt: now - 18 * 60000,
+    endedAt: now - 17 * 60000, status: 'completed',
+    totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 },
+  })
+  // 另一门挑战 6/10 → 2 星
+  log.push({
+    sessionId: 's2', lessonId: 'en-quiz-l2', kind: 'challenge', startedAt: now - 16 * 60000,
+    endedAt: now - 15 * 60000, status: 'completed',
+    totals: { questions: 10, firstCorrect: 6, attempts: 10, correctPicks: 10 },
+  })
+  // 本周完成学一学（不计星，但算「完成课程」）
+  log.push({ sessionId: 's3', lessonId: 'en-learn-animals', kind: 'learn', startedAt: now - DAY, endedAt: now - DAY + 5 * 60000, status: 'completed' })
+  // 挂机用：暂停会话不再计入时长（旧口径按墙钟算，会把挂机算成学习）
+  log.push({ sessionId: 's4', lessonId: 'math-practice-l1', kind: 'challenge', startedAt: now - 10 * 60000, endedAt: now - 5 * 60000, status: 'paused' })
   // 8 天前：完成但不计入本周
-  log.push({ sessionId: 's4', lessonId: 'en-quiz-l2', kind: 'challenge', startedAt: now - 8 * DAY, endedAt: now - 8 * DAY + 60000, status: 'completed', totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 } })
+  log.push({
+    sessionId: 's5', lessonId: 'en-quiz-l3', kind: 'challenge', startedAt: now - 8 * DAY,
+    endedAt: now - 8 * DAY + 60000, status: 'completed',
+    totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 },
+  })
   store.set('sessions', log)
+  // 作答流：间隔 30s（计 30s）+ 间隔 90s（超 60s 封顶计 60s）
+  const t0 = now - 30 * 60000
+  store.set('attempts', [{ ts: t0 }, { ts: t0 + 30000 }, { ts: t0 + 120000 }])
 
   const w = prog.weeklyReport(now)
-  assert.equal(w.completedLessons, 1)
-  assert.equal(w.stars, 3) // 9/10 首答 → 3 星
-  assert.equal(w.minutes, 40) // 30（封顶）+ 5（学一学）+ 5（暂停会话）
+  // 与 summary 同义：学一学 + 挑战都算，按 lessonId 去重（s1/s1b 同一课）
+  assert.equal(w.completedLessons, 3)
   assert.equal(w.learnDone, 1)
+  assert.equal(w.stars, 5) // 3（en-quiz-l1 取本周最好）+ 2（en-quiz-l2）
+  assert.equal(w.minutes, 2) // 30s + 封顶 60s = 90s
+  // 关键不变量：本周星不可能超过总星（旧实现逐会话相加会超过）
+  assert.ok(w.stars <= prog.summary().totalStars, `周星 ${w.stars} 不应超过总星 ${prog.summary().totalStars}`)
+})
+
+test('attempts 裁剪：单会话作答超过 MAX_ATTEMPTS 时仍然封顶（曾是无界增长）', () => {
+  // 直接预置超过上限的历史，避免真的循环写 3000+ 次（原来这一条要跑 6 秒）
+  const store = makeStore()
+  const svc = createSessionService(store)
+  const MAX = 3000
+  const seeded = Array.from({ length: MAX + 100 }, (_, i) => ({
+    attemptId: `a${i}`, sessionId: 'same', lessonId: 'en-quiz-l1', activityId: 'listen-pick',
+    order: i, answer: 'x', correct: true, firstTry: true, itemId: 'cat', ts: i,
+  }))
+  store.set('attempts', seeded)
+  svc.startSession({ lessonId: 'en-quiz-l1', kind: 'challenge', reuseSessionId: 'same' })
+  svc.recordAttempt({ activityId: 'listen-pick', order: 99999, answer: 'x', correct: true, itemId: 'cat' })
+
+  const kept = store.get('attempts', [])
+  assert.equal(kept.length, MAX, '单会话超限必须裁剪到上限（负 slice 会让裁剪彻底失效）')
+  assert.ok(kept.every((a) => a.sessionId === 'same'), '当前会话的作答必须全部保留')
+  assert.equal(kept[kept.length - 1].order, 99999, '最新一条必须在')
+})
+
+test('attempts 裁剪：优先保留当前会话，旧会话只让位到上限为止', () => {
+  const store = makeStore()
+  const svc = createSessionService(store)
+  const MAX = 3000
+  const others = Array.from({ length: 20 }, (_, i) => ({
+    attemptId: `o${i}`, sessionId: `old${i}`, lessonId: 'en-quiz-l1', activityId: 'listen-pick',
+    order: 0, answer: 'x', correct: true, firstTry: true, itemId: 'cat', ts: i,
+  }))
+  const mine = Array.from({ length: MAX - 5 }, (_, i) => ({
+    attemptId: `m${i}`, sessionId: 'mine', lessonId: 'en-quiz-l1', activityId: 'listen-pick',
+    order: i, answer: 'x', correct: true, firstTry: true, itemId: 'cat', ts: 100 + i,
+  }))
+  store.set('attempts', [...others, ...mine])
+  svc.startSession({ lessonId: 'en-quiz-l1', kind: 'challenge', reuseSessionId: 'mine' })
+  svc.recordAttempt({ activityId: 'listen-pick', order: 77777, answer: 'x', correct: true, itemId: 'cat' })
+
+  const kept = store.get('attempts', [])
+  assert.equal(kept.length, MAX)
+  // mine 有 MAX-4 条 → others 只能留 4 条（而不是把 20 条都留下、总量超限）
+  assert.equal(kept.filter((a) => a.sessionId === 'mine').length, MAX - 4)
+  assert.equal(kept.filter((a) => a.sessionId.startsWith('old')).length, 4)
+  assert.ok(kept.some((a) => a.order === 77777), '当前会话最新作答必须在')
+})
+
+test('目录里已不存在的课（内容下线/改名）不计入总览与周报，避免同屏自相矛盾', () => {
+  const store = makeStore()
+  const prog = createProgressService(store)
+  const DAY = 24 * 60 * 60 * 1000
+  const now = 1000 * DAY
+  store.set('sessions', [
+    {
+      sessionId: 'live', lessonId: 'en-quiz-l1', kind: 'challenge', startedAt: now - 60000,
+      endedAt: now - 30000, status: 'completed',
+      totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 },
+    },
+    {
+      sessionId: 'orphan', lessonId: 'en-quiz-removed', kind: 'challenge', startedAt: now - 60000,
+      endedAt: now - 30000, status: 'completed',
+      totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 },
+    },
+  ])
+
+  // 不过滤（旧行为）：孤儿课也算进去 → 总览数字与「各科进度 done/total」对不上
+  assert.equal(prog.summary().lessonsCompleted, 2)
+  assert.equal(prog.summary().totalStars, 6)
+
+  // 过滤后：只统计目录里仍存在的课
+  const isKnownLesson = (id) => id === 'en-quiz-l1'
+  assert.equal(prog.summary({ isKnownLesson }).lessonsCompleted, 1)
+  assert.equal(prog.summary({ isKnownLesson }).totalStars, 3)
+  assert.equal(prog.weeklyReport(now, { isKnownLesson }).completedLessons, 1)
+  assert.equal(prog.weeklyReport(now, { isKnownLesson }).stars, 3)
+})
+
+test('skillBreakdown：按知识点聚合首答正确率，最弱在前，重试不掺进来', () => {
+  const store = makeStore()
+  const prog = createProgressService(store)
+  const mk = (skillIds, correct, firstTry = true, lessonId = 'en-learn-animals') => ({
+    sessionId: 's1', lessonId, activityId: 'listen-pick', order: 0,
+    answer: 'x', correct, firstTry, itemId: 'cat', skillIds, ts: 1,
+  })
+  store.set('attempts', [
+    // 知识点 A：3 题首答对 1 题（弱）
+    mk(['skill-a'], true), mk(['skill-a'], false), mk(['skill-a'], false),
+    // 知识点 B：4 题首答对 4 题（强）
+    mk(['skill-b'], true), mk(['skill-b'], true), mk(['skill-b'], true), mk(['skill-b'], true),
+    // 重试：firstTry=false，不得计入任何知识点
+    mk(['skill-b'], false, false),
+    // 没有 skillIds 的事件不得炸
+    { sessionId: 's1', lessonId: 'en-learn-animals', activityId: 'x', order: 1, correct: true, firstTry: true, ts: 1 },
+  ])
+
+  const rows = prog.skillBreakdown()
+  assert.equal(rows.length, 2)
+  assert.equal(rows[0].skillId, 'skill-a', '最弱的排最前')
+  assert.equal(rows[0].first, 3)
+  assert.equal(rows[0].firstCorrect, 1)
+  assert.ok(Math.abs(rows[0].accuracy - 1 / 3) < 1e-9)
+  assert.equal(rows[1].skillId, 'skill-b')
+  assert.equal(rows[1].first, 4, '重试不计入首答样本')
+  assert.equal(rows[1].accuracy, 1)
+})
+
+test('skillBreakdown：少于 minAttempts 次作答的知识点不参与（1/1 的 0% 是噪声）', () => {
+  const store = makeStore()
+  const prog = createProgressService(store)
+  store.set('attempts', [
+    { sessionId: 's1', lessonId: 'a', activityId: 'k', order: 0, correct: true, firstTry: true, skillIds: ['only-once'], ts: 1 },
+    { sessionId: 's1', lessonId: 'a', activityId: 'k', order: 1, correct: false, firstTry: true, skillIds: ['enough'], ts: 2 },
+    { sessionId: 's1', lessonId: 'a', activityId: 'k', order: 2, correct: false, firstTry: true, skillIds: ['enough'], ts: 3 },
+    { sessionId: 's1', lessonId: 'a', activityId: 'k', order: 3, correct: true, firstTry: true, skillIds: ['enough'], ts: 4 },
+  ])
+  assert.deepEqual(prog.skillBreakdown().map((r) => r.skillId), ['enough'])
+  // 放宽阈值就能看到样本不足的
+  assert.deepEqual(prog.skillBreakdown({ minAttempts: 1 }).map((r) => r.skillId).sort(), ['enough', 'only-once'])
+})
+
+test('skillBreakdown：过滤目录里已不存在的课，并遵守 limit', () => {
+  const store = makeStore()
+  const prog = createProgressService(store)
+  const many = []
+  for (let i = 0; i < 12; i++) {
+    for (let k = 0; k < 3; k++) {
+      many.push({
+        sessionId: 's1', lessonId: i % 2 ? 'gone' : 'live', activityId: 'k', order: k,
+        correct: k === 0, firstTry: true, skillIds: [`skill-${i}`], ts: k,
+      })
+    }
+  }
+  store.set('attempts', many)
+  const isKnownLesson = (id) => id === 'live'
+  const rows = prog.skillBreakdown({ isKnownLesson, limit: 100 })
+  assert.ok(rows.length > 0)
+  assert.ok(rows.every((r) => Number(r.skillId.split('-')[1]) % 2 === 0), '孤儿课的 skill 必须被过滤掉')
+  assert.ok(prog.skillBreakdown({ limit: 2 }).length <= 2, 'limit 必须生效')
 })
 
 test('recordAttempt 记录 itemId 供错题本定位', () => {

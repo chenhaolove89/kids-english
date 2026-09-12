@@ -1,17 +1,18 @@
 /**
  * 音频体检：解码全部 MP3，输出 时长/峰值/RMS，
- * 找出 静音/过轻/削波 文件。用法：node tools/measure-audio.mjs [输出csv路径]
+ * 找出 静音/过轻/削波 文件。用法：node tools/measure-audio.mjs [输出csv路径]（npm run audit:audio）
+ *
+ * 与 audit-assets 的分工：那边按字节数判「截断/缺失」，这里真的解码听内容——
+ * 静音、音量过低、削波只有解码后才知道。
  */
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { MPEGDecoder } from 'mpg123-decoder'
 
-const AUDIO_DIR = path.resolve(path.dirname(fileURLToPath()), '../src/static/audio')
+// 用 node:url 的 fileURLToPath：原来手写 replace(/\//g,'\\') 只在 Windows 成立
+const AUDIO_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../src/static/audio')
 const OUT_CSV = process.argv[2] || ''
-
-function fileURLToPath() {
-  return import.meta.url.replace(/^file:\/\/\//, '').replace(/\//g, '\\')
-}
 
 async function decode(file) {
   const decoder = new MPEGDecoder()

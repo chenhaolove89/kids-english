@@ -16,6 +16,7 @@ import fs from 'fs'
 import path from 'path'
 import zlib from 'zlib'
 import crypto from 'crypto'
+import { assetState, kindOf } from './lib/asset-check.mjs'
 
 const ROOT = path.resolve(import.meta.dirname, '..')
 const STATIC = path.join(ROOT, 'src', 'static')
@@ -25,14 +26,15 @@ const ASSET_EXT = /\.(?:png|jpe?g|svg|webp|gif|mp3|ogg|m4a|wav|ico|webmanifest)$
 const norm = (p) => (p.startsWith('/') ? p : `/${p}`)
 /** 只有带资源扩展名的才算一条资源引用：/static/audio 这类目录前缀与注释里的示例路径要排除 */
 const isAssetRef = (p) => ASSET_EXT.test(p)
+/**
+ * 资源本体状态。按类型设最小字节数：只看 size>0 会让「TTS 中断留下的半截 mp3」
+ * 永久通过审计（两道门禁都报绿，孩子听到的却是断音）。
+ */
 const statOf = (ref) => {
   const abs = path.join(ROOT, 'src', norm(ref).replace(/^\//, ''))
-  try {
-    const st = fs.statSync(abs)
-    return st.size > 0 ? 'ok' : 'empty'
-  } catch (e) {
-    return 'missing'
-  }
+  const state = assetState(abs, kindOf(abs))
+  // 目录前缀（/static/audio 这类无扩展名引用）不参与体检
+  return state === 'missing' && !ASSET_EXT.test(ref) ? 'ok' : state
 }
 
 /* ---------- 1. 收集引用 ---------- */
@@ -174,11 +176,24 @@ for (const c of words.categories) {
 for (const r of [...referenced]) {
   if (EN_AUDIO.test(r)) referenced.add(r.replace('/static/audio/', '/static/audio-gb/'))
 }
+/**
+ * 已知「已生成但暂未接入」的资源：不算真孤儿，单独列出来。
+ * 存在的意义：孤儿检查是防"该接的没接上/纯死重量"的安全网，
+ * 如果固定有误报，真孤儿就会被淹没在噪声里。
+ * 目前为空——原来的 try_again 已按产品决定移除（英语答错也播中文）。
+ */
+const KNOWN_PENDING = {}
 const orphans = []
+const pending = []
 for (const dir of ['img', 'audio', 'audio-gb', 'audio-zh', 'tab', 'icons']) {
   const abs = path.join(STATIC, dir)
   if (!fs.existsSync(abs)) continue
-  for (const f of fs.readdirSync(abs)) if (!referenced.has(`/static/${dir}/${f}`)) orphans.push(`${dir}/${f}`)
+  for (const f of fs.readdirSync(abs)) {
+    if (referenced.has(`/static/${dir}/${f}`)) continue
+    const key = `${dir}/${f}`
+    if (KNOWN_PENDING[key]) pending.push(key)
+    else orphans.push(key)
+  }
 }
 
 /* ---------- 6. 图片卡 vs 纯文字卡（按阶段） ---------- */
@@ -259,8 +274,12 @@ console.log(`疑似空白图：${blankish.length}（单色国旗属正常，需�
 for (const b of blankish.slice(0, 15)) console.log(`  ${b.f} ${b.bytes}B ${b.note}`)
 const dupGroups = [...dup.values()].filter((v) => v.length > 1)
 console.log(`字节重复图片组：${dupGroups.length}`)
-console.log(`未被引用文件：${orphans.length}`)
+console.log(`未被引用文件（真孤儿）：${orphans.length}`)
 for (const o of orphans.slice(0, 25)) console.log('  ' + o)
+if (pending.length) {
+  console.log(`已知未接入（不算孤儿，${pending.length} 个）：`)
+  for (const p of pending) console.log(`  ${p} — ${KNOWN_PENDING[p]}`)
+}
 console.log('\n=== 英语卡片：图片卡 vs 纯文字卡（按阶段） ===')
 for (const [st, g] of Object.entries(byStage)) {
   const pct = Math.round((g.text / (g.pic + g.text)) * 100)

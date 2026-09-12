@@ -75,6 +75,8 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "快乐学园",
     "navigationBarBackgroundColor": "#FFF8EC",
-    "backgroundColor": "#FFF8EC"
+    "backgroundColor": "#FFF8EC",
+    "rpxCalcMaxDeviceWidth": 750,
+    "rpxCalcBaseDeviceWidth": 750
   }
 }

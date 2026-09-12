@@ -1,14 +1,15 @@
 <template>
   <view class="page">
-    <view class="topbar">
-      <view class="back" @tap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="title">{{ titleText }}</text>
+    <PageTopBar class="topbar-page" :title="titleText" @back="goBack">
       <text class="score">⭐ {{ firstCorrect }}</text>
-    </view>
+    </PageTopBar>
 
-    <template v-if="!finished">
+    <!-- q.kind 兜底：错题重练池为空时页面会先渲染再跳回主页（toast + 700ms 后 reLaunch），
+         那段时间 questions 还是空的、finished 仍是 false —— 少了这层判断就会去读
+         q.options.length 而抛 TypeError（实测：重练无到期条目时控制台报
+         "Cannot read properties of undefined (reading 'length')"），同时还会显示
+         「第 1 / 0 题」。有 q.kind 才渲染题目区。 -->
+    <template v-if="!finished && q.kind">
       <view class="round-info">第 {{ qIdx + 1 }} / {{ questions.length }} 题（点题目可以再听一遍）</view>
 
       <view class="stage" @tap="respeak">
@@ -60,13 +61,14 @@
             v-for="(g, gi) in q.groups"
             :key="gi"
             class="compare-card"
-            :class="{ right: flash === String(gi) && isRight, wrong: flash === String(gi) && !isRight, shake: flash === String(gi) && !isRight }"
+            :class="{ right: (flash === String(gi) && isRight) || revealId === String(gi), wrong: flash === String(gi) && !isRight, shake: flash === String(gi) && !isRight, reveal: revealId === String(gi) }"
             @tap.stop="pickById(String(gi))"
           >
             <template v-if="g.emojis">
               <text v-for="(e, i) in g.emojis" :key="i" class="dot-emoji">{{ e }}</text>
             </template>
             <text v-else class="compare-num">{{ g.n }}</text>
+            <text v-if="revealId === String(gi)" class="opt-check">✓</text>
           </view>
         </view>
 
@@ -83,20 +85,26 @@
       </view>
 
       <!-- 选项：比大小两种题型直接点组卡片，没有数字选项 -->
-      <view v-if="q.kind !== 'compare' && q.kind !== 'compareNum'" class="options" :class="'opts-' + q.options.length">
+      <view v-if="q.kind !== 'compare' && q.kind !== 'compareNum'" class="options" :class="'opts-' + (q.options || []).length">
         <view
           v-for="opt in q.options"
           :key="opt.id"
           class="opt"
-          :class="{ right: flash === opt.id && isRight, wrong: flash === opt.id && !isRight, shake: flash === opt.id && !isRight }"
+          :class="{ right: (flash === opt.id && isRight) || revealId === opt.id, wrong: flash === opt.id && !isRight, shake: flash === opt.id && !isRight, reveal: revealId === opt.id }"
           @tap="pickById(opt.id)"
         >
           <text class="opt-text">{{ opt.label }}</text>
+          <!-- 答错后揭晓：绿框 + 对勾 + 读一遍正确答案 -->
+          <text v-if="revealId === opt.id" class="opt-check">✓</text>
         </view>
+      </view>
+
+      <view v-if="revealId" class="reveal-bar">
+        <text class="reveal-text">{{ revealText }}</text>
       </view>
     </template>
 
-    <template v-else>
+    <template v-else-if="finished">
       <view class="result">
         <text class="result-emoji">{{ reviewMode ? '✅' : '🎉' }}</text>
         <text class="result-score">{{ resultText }}</text>
@@ -123,10 +131,12 @@ import { getLesson } from '@/content/catalog.js'
 import { buildQuestions, normalizeMathLevel, mathText, mathItemId, MATH_LEVELS } from '@/domain/mathgen.js'
 import { isPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
+import { mathExplain } from '@/domain/explain.js'
 import { getSessionService } from '@/services/session.js'
-import { getCollectionService } from '@/services/collection.js'
+import { getCollectionService } from '@/services/collection-app.js'
 import { getReviewService } from '@/services/review.js'
 import { getReviewPool } from '@/services/review-pools.js'
+import PageTopBar from '@/components/page-top-bar.vue'
 
 const level = ref(MATH_LEVELS[1])
 const questions = ref([])
@@ -136,7 +146,27 @@ const firstCorrect = ref(0)
 const finished = ref(false)
 const flash = ref('')
 const isRight = ref(false)
+// 答错后揭晓正确答案（绿框 + 对勾 + 读一遍答案），再自动进入下一题。
+// 原实现只播「再想一想」并清掉红框，孩子只能反复猜，等于不教。
+const revealId = ref('')
+const revealing = ref(false)
 const q = computed(() => questions.value[qIdx.value] || {})
+
+/** 揭晓时长：够听完「再想一想」+ 一遍正确答案读音 */
+const REVEAL_MS = 3000
+
+/**
+ * 揭晓提示文案：先讲"为什么"（domain/explain 按题型把算式补全、把两边数量说清），
+ * 拿不准时退回原来那句"正确答案是 X ✓"——宁可不讲，也不讲错。
+ */
+const revealText = computed(() => {
+  const cur = q.value
+  const why = mathExplain(cur)
+  if (why) return why
+  if (cur.kind === 'compare' || cur.kind === 'compareNum') return '正确答案是高亮的那一边 ✓'
+  const hit = (cur.options || []).find((o) => String(o.id) === String(cur.answer))
+  return hit ? `正确答案是 ${hit.label} ✓` : '正确答案是绿色的这个 ✓'
+})
 
 /** 算式按长度缩字：万以内/四则混合的长算式（831 + ? = 1415）96rpx 定字会顶破卡片 */
 const equationSize = computed(() => {
@@ -148,6 +178,25 @@ const equationSize = computed(() => {
 })
 
 const svc = getSessionService()
+
+/**
+ * 定时器登记表：页面卸载时统一清掉。
+ * 否则「答对后 1.5s 进下一题」「揭晓后 3s 进下一题」的定时器会在退出页面后继续跑，
+ * 触发 nextQuestion 去 completeSession，把已中断的会话记成完成。
+ */
+let timers = []
+function later(fn, ms) {
+  const t = setTimeout(() => {
+    timers = timers.filter((x) => x !== t)
+    fn()
+  }, ms)
+  timers.push(t)
+  return t
+}
+function clearTimers() {
+  timers.forEach((t) => clearTimeout(t))
+  timers = []
+}
 const review = getReviewService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口只玩不记录
 const reviewMode = ref(false) // 错题重练：?review=1——到期错题原题重放，不计课时会话
@@ -174,7 +223,7 @@ onLoad((query) => {
     if (!pool.length) {
       uni.showToast({ title: '太棒了，暂无待复习', icon: 'none' })
       // 直链进入无返回历史：回主页而不是 navigateBack
-      setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
+      later(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
       return
     }
     // 主题色按第一题所属关卡
@@ -207,6 +256,7 @@ onLoad((query) => {
 })
 
 onUnload(() => {
+  clearTimers()
   stopSeq()
   if (lesson.value && !finished.value) svc.pauseSession()
 })
@@ -238,17 +288,20 @@ function startFresh() {
 
 function startQuestion() {
   flash.value = ''
+  revealId.value = ''
+  revealing.value = false
   preload(q.value.seq || [])
   if (lesson.value) svc.saveSnapshot(currentSnapshot())
-  setTimeout(() => playSeq(q.value.seq), 350)
+  later(() => playSeq(q.value.seq), 350)
 }
 
 function respeak() {
+  if (revealing.value) return
   playSeq(q.value.seq)
 }
 
 function pickById(id) {
-  if (flash.value) return
+  if (flash.value || revealing.value) return
   const correct = isPickCorrect(q.value, id)
   let firstTry = true
   if (lesson.value) {
@@ -275,11 +328,27 @@ function pickById(id) {
     // 字符串拼接而非反引号模板：反引号路径发布脚本改写不到 → GitHub Pages 上 404
     playSeq([assetUrl("/static/audio/" + (Math.random() < 0.4 ? 'zh-awesome' : 'zh-great') + ".mp3")], nextQuestion)
   } else {
-    playSeq([assetUrl('/static/audio/zh-try.mp3')])
-    setTimeout(() => {
-      flash.value = ''
-    }, 900)
+    // 答错：先提示，再揭晓正确答案并读一遍，停留够长后自动进入下一题。
+    // 揭晓期间屏蔽点击——首答已定，不让孩子靠「被告知答案后再点」刷分或刷错题晋级。
+    revealId.value = String(q.value.answer)
+    revealing.value = true
+    if (lesson.value) svc.saveSnapshot(currentSnapshot())
+    playSeq([assetUrl('/static/audio/zh-try.mp3')], speakAnswer)
+    later(nextQuestion, REVEAL_MS)
   }
+}
+
+/** 揭晓时读一遍正确答案本身：数值答案有 n0..n100 音轨；比大小答的是组序号，只给「对」的提示音 */
+function speakAnswer() {
+  const cur = q.value
+  if (!cur || finished.value) return
+  if (cur.kind === 'compare' || cur.kind === 'compareNum') {
+    playSeq([assetUrl('/static/audio/zh-ok.mp3')])
+    return
+  }
+  const n = Number(cur.answer)
+  if (Number.isInteger(n) && n >= 0 && n <= 100) playSeq([assetUrl('/static/audio/n' + n + '.mp3')])
+  else playSeq([assetUrl('/static/audio/zh-ok.mp3')])
 }
 
 function nextQuestion() {
@@ -319,35 +388,9 @@ function goBack() {
   box-sizing: border-box;
   padding-bottom: env(safe-area-inset-bottom);
 }
-.topbar {
-  display: flex;
-  align-items: center;
+/* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
+.topbar-page {
   padding: calc(24rpx + env(safe-area-inset-top)) 32rpx 12rpx;
-}
-.back {
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
-}
-.back-icon {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #4a3f35;
-}
-.title {
-  flex: 1;
-  text-align: center;
-  font-size: 40rpx;
-  font-weight: 800;
-  color: #4a3f35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .score {
   min-width: 84rpx;
@@ -470,6 +513,44 @@ function goBack() {
   gap: 12rpx;
   padding: 20rpx;
   box-sizing: border-box;
+  position: relative;
+}
+/* 答错后揭晓的正确答案：绿框 + 对勾（多一条非颜色通道，不识字也看得懂） */
+.compare-card.reveal {
+  border-color: #3bb273;
+  background: #e8f8ee;
+  animation: reveal-pop 0.5s;
+}
+.opt-check {
+  position: absolute;
+  top: 6rpx;
+  right: 16rpx;
+  font-size: 52rpx;
+  font-weight: 900;
+  color: #3bb273;
+}
+.reveal-bar {
+  margin: 8rpx 48rpx 0;
+  padding: 18rpx 24rpx;
+  border-radius: 24rpx;
+  background: #e8f8ee;
+  text-align: center;
+}
+.reveal-text {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #2f8f5b;
+}
+@keyframes reveal-pop {
+  0% {
+    transform: scale(0.94);
+  }
+  60% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 .compare-card:active {
   transform: scale(0.97);
@@ -536,6 +617,12 @@ function goBack() {
   box-shadow: 0 10rpx 30rpx rgba(120, 90, 40, 0.08);
   border: 6rpx solid transparent;
   box-sizing: border-box;
+  position: relative;
+}
+.opt.reveal {
+  border-color: #3bb273;
+  background: #e8f8ee;
+  animation: reveal-pop 0.5s;
 }
 .opt:active {
   transform: scale(0.96);

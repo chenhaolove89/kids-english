@@ -10,8 +10,11 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { fileURLToPath } from 'node:url'
 
-const OUT = 'E:/kids-english/.tmp-phoneme2'
+// 相对本文件定位仓库根：写死 E:/kids-english 换机即坏
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const OUT = path.join(ROOT, '.tmp-phoneme2')
 const VOICE = 'zh-CN-XiaoxiaoNeural'
 
 const SSML = (inner, mstts = true) =>

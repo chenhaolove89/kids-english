@@ -53,7 +53,7 @@
           class="block-quiz"
           :class="{ 'block-quiz-icon': !showLabels }"
           :style="{ background: block.subject.color }"
-          @tap="goLesson(block.challenge)"
+          @tap="goChallenge(block.challenge)"
         >
           <text class="block-quiz-text">{{ showLabels ? '🏆 挑战' : '🏆' }}</text>
         </view>
@@ -108,9 +108,11 @@ import { assetUrl } from '@/platform/assets.js'
 import { play, preload } from '@/platform/audio.js'
 import { updatePrefs } from '@/content/lowAge.js'
 import { allowNavigate } from '@/platform/nav.js'
+import { hideNativeTabBar } from '@/platform/router-ui.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
-import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES } from '@/services/curriculum.js'
+import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES } from '@/services/curriculum-app.js'
+import { getLesson } from '@/content/catalog.js'
 import TabBar from '@/components/tab-bar.vue'
 
 const explore = [
@@ -132,6 +134,8 @@ const reviewDue = ref(0)
 const totalStars = ref(0)
 // 每科上一把随机抽中的课：连点骰子不重样
 const lastRandom = ref({})
+// 本次会话是否已播过进门引导（map 是常驻 tab 页，onShow 每次回来都会触发）
+let welcomed = false
 
 const resumeModeText = computed(() => {
   if (!resume.value) return ''
@@ -146,11 +150,20 @@ preload([
   assetUrl('/static/audio/zh-btn-first.mp3'), assetUrl('/static/audio/zh-btn-review.mp3'),
   assetUrl('/static/audio/zh-btn-en.mp3'), assetUrl('/static/audio/zh-btn-zh.mp3'),
   assetUrl('/static/audio/zh-btn-math.mp3'),
+  assetUrl('/static/audio/zh-btn-welcome.mp3'), assetUrl('/static/audio/zh-btn-stage.mp3'),
+  assetUrl('/static/audio/zh-btn-challenge.mp3'), assetUrl('/static/audio/zh-btn-random.mp3'),
 ])
 
 onShow(() => {
   // 自定义悬浮底栏替代原生 tabBar（uni.hideTabBar 在 H5 收起原生栏，switchTab 不受影响）
-  try { uni.hideTabBar({ animation: false }) } catch (e) { /* 已隐藏时静默 */ }
+  hideNativeTabBar()
+  // 进门第一句引导：不识字的孩子先听到「今天想学哪一个？」，否则满屏文字无处下手。
+  // 只在本次会话第一次显示时播；首次冷加载可能被 iOS 音频解锁策略静音，
+  // 但每个按钮/阶段/骰子都有自己的指令音兜底。
+  if (!welcomed) {
+    welcomed = true
+    setTimeout(() => say('welcome'), 600)
+  }
   const store = getStorage()
   const prefs = store.get('prefs', {})
   stage.value = normalizeStage(prefs?.stage || stage.value)
@@ -158,7 +171,8 @@ onShow(() => {
   resume.value = continueTarget()
   const reviewSvc = getReviewService()
   reviewDue.value = reviewSvc.dueCount('en') + reviewSvc.dueCount('zh') + reviewSvc.dueCount('math')
-  totalStars.value = getProgressService().summary().totalStars
+  // 只统计目录里仍存在的课：内容下线后历史数据不该继续计入首页星数
+  totalStars.value = getProgressService().summary({ isKnownLesson: (id) => !!getLesson(id) }).totalStars
 })
 
 function blockHasLessons(block) {
@@ -168,6 +182,8 @@ function blockHasLessons(block) {
 function setStage(id) {
   stage.value = normalizeStage(id)
   updatePrefs({ stage: stage.value })
+  // 阶段行对不识字的孩子是一排看不懂的字：点一下就念出「选一个想学的」
+  say('stage')
 }
 
 function goLesson(lesson) {
@@ -175,8 +191,15 @@ function goLesson(lesson) {
   if (url && allowNavigate()) uni.navigateTo({ url })
 }
 
+/** 🏆 挑战圆钮：启蒙/低年级只显示图标，必须能听到它是什么 */
+function goChallenge(lesson) {
+  say('challenge')
+  goLesson(lesson)
+}
+
 /** 随机来一课：当前阶段该科随机抽一课，记录上把结果避免连续重样 */
 function goRandom(subjectId) {
+  say('random')
   if (!allowNavigate()) return
   const lesson = randomLesson(stage.value, subjectId, lastRandom.value[subjectId])
   if (!lesson) return
@@ -226,19 +249,22 @@ function go(s) {
   padding: calc(44rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
-/* 星数胶囊：贴在续学卡片右侧，尽量压小以免挤占卡片宽度 */
+/* 星数胶囊：贴在续学卡片右侧；最小高度提到 88rpx，保证 ≥44px 可点 */
 .star-pill {
   flex-shrink: 0;
   background: #ffffff;
-  border-radius: 40rpx;
-  padding: 8rpx 18rpx;
+  border-radius: 44rpx;
+  padding: 8rpx 20rpx;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
   box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.12);
 }
 .star-pill:active {
   transform: scale(0.94);
 }
 .star-pill-num {
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: 800;
   color: #c99b52;
   white-space: nowrap;
@@ -388,7 +414,7 @@ function go(s) {
 }
 .stage-name {
   margin-top: 4rpx;
-  font-size: 24rpx;
+  font-size: 26rpx;
   font-weight: 800;
   color: #4a3f35;
   white-space: nowrap;
@@ -434,10 +460,11 @@ function go(s) {
   font-weight: 800;
   white-space: nowrap;
 }
-/* 纯图标态：与 🎲 同尺寸成对，孩子不用认字 */
+/* 纯图标态：与 🎲 同尺寸成对，孩子不用认字。
+   尺寸 72rpx 在 320px 窄屏只有约 31px，低于 44px 可点下限 → 提到 96rpx（≈41~50px）。 */
 .block-quiz.block-quiz-icon {
-  width: 72rpx;
-  height: 72rpx;
+  width: 96rpx;
+  height: 96rpx;
   padding: 0;
   border-radius: 50%;
   display: flex;
@@ -445,12 +472,12 @@ function go(s) {
   justify-content: center;
 }
 .block-quiz.block-quiz-icon .block-quiz-text {
-  font-size: 40rpx;
+  font-size: 44rpx;
 }
 /* 🎲 随机来一课圆钮 */
 .block-dice {
-  width: 72rpx;
-  height: 72rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -462,7 +489,7 @@ function go(s) {
   transform: scale(0.92);
 }
 .block-dice-emoji {
-  font-size: 40rpx;
+  font-size: 46rpx;
   line-height: 1;
 }
 .block-empty {

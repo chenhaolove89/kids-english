@@ -1,7 +1,10 @@
 /**
- * 打包"电脑版分享包"：dist/build/web + 零依赖 PowerShell 服务器 + 一键启动
+ * 打包"电脑版分享包"：dist/build/h5 + 零依赖 PowerShell 服务器 + 一键启动
  * 用法：npm run build:h5 之后 → node tools/make-share.mjs
  * 产物：快乐学单词-电脑版.zip（发给朋友，解压后双击"启动.bat"即可）
+ *
+ * 注意产物目录必须是 dist/build/h5：`npm run build:h5`（uni build）的产物就在这里，
+ * 与 publish-github-pages.mjs / serve.mjs 一致；曾误写 dist/build/web 导致本脚本永远失败。
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -9,13 +12,13 @@ import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const SRC = path.join(ROOT, 'dist/build/web')
+const SRC = path.join(ROOT, 'dist/build/h5')
 const TEMPLATE = path.join(ROOT, 'tools/share-templates')
 const OUT_DIR = path.join(ROOT, 'tmp/share/HappyWords-PC')
 const OUT_ZIP = path.join(ROOT, '快乐学单词-电脑版.zip')
 
 if (!fs.existsSync(path.join(SRC, 'index.html'))) {
-  console.error('未找到 dist/build/web/index.html，请先 npm run build:h5')
+  console.error('未找到 dist/build/h5/index.html，请先 npm run build:h5')
   process.exit(1)
 }
 

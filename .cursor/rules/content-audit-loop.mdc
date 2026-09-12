@@ -17,7 +17,14 @@ alwaysApply: true
 1. **并行子代理审计**（每科一个，Explore 只读）：英语 / 语文 / 数学+资产 各派一个，全量枚举。
 2. **修复**全部 P0/P1；P2 择优。
 3. **二轮复核子代理**（新开代理，不带修复者视角）：逐项验证修复真实生效 + 全新视角抓漏网。
-4. **实测门禁**：`npm run test` + `npm run validate:content` + `npm run build:h5` 全绿，且浏览器实操走一遍触发过 bug 的场景（强刷缓存！`tab.reload()`）。
+4. **实测门禁**（全部要有退出码/实测输出，不接受"我看过了"）：
+   - `npm run test`（纯函数/服务/存储/契约）、`npm run validate:content`、`npm run check:layering` 全绿
+   - `npm run audit:assets`（引用断链、空文件、**截断**、音轨缺口）+ `npm run audit:audio`（解码全部 mp3：静音/过短/削波）
+   - `npm run build:h5` 退出码 0
+   - **浏览器实测**：`node tools/serve.mjs 4173` + `npm run smoke:h5`（真实 Chrome、60 项断言：页面渲染、答错揭晓、会话快照/暂停/恢复、错题重练、口音切换与缺文件回退、返回键兜底、连点节流、路由守卫、低龄模式内容安全、零 console 报错）。触发过 bug 的场景必须强刷缓存再走一遍（`tab.reload()`）。
+   - **视觉回归**：改了页面结构/样式时用 `node tools/shots.mjs capture 基线` → 改 → `capture 对照` → `compare`；纯逻辑重构优先做新旧实现输入输出等价比对（像素只作辅助，工具有已文档化的绘制噪声）。
+   - **发布前（改了构建 / service worker / 资源路径时必跑）**：`npm run build:h5` → `node tools/publish-github-pages.mjs` → `npm run verify:offline`（对发布产物验证：SW 接管、外壳预缓存、**断网刷新仍能打开**、离线可听音、换代清旧缓存）。注意 service worker **只存在于发布产物**，`smoke:h5` 跑的是构建目录，测不到离线。
+   - 本环境没有浏览器/设备时，明确写"未实测"并说明原因，不得用"应该没问题"代替。
 
 ## 每科审计清单（累积自实战）
 
@@ -36,6 +43,8 @@ alwaysApply: true
 ## 铁律
 
 - 生成的 JSON（words/hanzi/catalog/audio-volumes）**禁止手改**——改源头 CSV 或工具后重跑管线（merge → gen:assets → gen-audio-volumes → build:content）。
-- 修图标/资产码点后必须**删除旧文件**再重跑（existsSync 增量会跳过错图）。
+- 修图标/资产码点后必须**删除旧文件**再重跑（existsSync 增量会跳过错图）。生成器只按**存在性**跳过是不够的：截断文件会被永久跳过，判定必须带体积阈值（见 `tools/lib/asset-check.mjs`）。
+- **批处理文件时先确认是不是文本**：按扩展名白名单 + UTF-8 合法性校验，绝不把 mp3/zip/png 当文本读写（曾因此损坏 2 个 mp3 与一个 30MB 压缩包）。
+- 修好一个缺陷后，尽量补一条能**复现该缺陷**的断言（单测或浏览器断言）；门禁要能自己发现问题，而不是靠人记得去点。
 - 每次审计输出必须含「已检查无问题项 + 覆盖规模」，无覆盖证明视为偷懒，退回重审。
 - 审计发现用 `[P0/P1/P2] 位置 — 问题 — 证据` 格式登记；P0=孩子会直接学错/崩页，修复前不得交付。

@@ -1,12 +1,8 @@
 <template>
   <view class="page">
-    <view class="topbar">
-      <view class="back" @tap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="title">{{ current ? current.title : '古诗 · 点读' }}</text>
+    <PageTopBar class="topbar-page" :title="current ? current.title : '古诗 · 点读'" :ellipsis="false" @back="goBack">
       <text class="count">{{ current ? authorLine(current) || '古诗' : poems.length + ' 首' }}</text>
-    </view>
+    </PageTopBar>
 
     <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上 -->
     <view v-if="audioTotal > 0 && audioDone < audioTotal" class="load-bar">
@@ -52,7 +48,10 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { play, stopSeq, preloadWithProgress } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
+import { getLesson } from '@/content/catalog.js'
+import { getSessionService } from '@/services/session.js'
 import poemsData from '@/data/poems.json'
+import PageTopBar from '@/components/page-top-bar.vue'
 
 const CARD_STYLES = [
   { bg: '#FFF3E4', border: '#ffd9b0' },
@@ -127,9 +126,29 @@ function playFull() {
   stopSeq()
   playingIdx.value = -1
   playingFull.value = true
-  play(assetUrl('/static/audio-poem/' + current.value.id + '-full.mp3'), () => {
+  const poem = current.value
+  // play 的 onEnd 只在自然播完时触发（stop 不触发），所以这就是"读完一首"的信号
+  play(assetUrl('/static/audio-poem/' + poem.id + '-full.mp3'), () => {
     playingFull.value = false
+    recordPoemRead(poem)
   })
+}
+
+/**
+ * 读完一首诗记一次练习。
+ *
+ * 用 `kind: 'practice'` 的**即开即完短会话**：它会进家长页「最近记录」、周报练习时长与
+ * 累计作答，但按 domain/progress 的规则**不计入课时完成、不给星**——读完一首 ≠ 学完整个阶段
+ * （一个阶段 6 首），否则家长页的"完成课程"会虚高。
+ * 也不写错题本：点读没有对错可言。
+ */
+function recordPoemRead(poem) {
+  const lid = lessonId.value
+  if (!poem || !lid || !getLesson(lid)) return
+  const svc = getSessionService()
+  svc.startSession({ lessonId: lid, kind: 'practice', skillIds: [] })
+  svc.recordAttempt({ activityId: 'poem-read', order: poem.id, answer: poem.id, correct: true, itemId: null })
+  svc.completeSession()
 }
 
 function goQuiz() {
@@ -162,32 +181,9 @@ function goBack() {
   display: flex;
   flex-direction: column;
 }
-.topbar {
-  display: flex;
-  align-items: center;
+/* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
+.topbar-page {
   padding: 0 8rpx 20rpx;
-}
-.back {
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
-}
-.back-icon {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #4a3f35;
-}
-.title {
-  flex: 1;
-  text-align: center;
-  font-size: 40rpx;
-  font-weight: 800;
-  color: #4a3f35;
 }
 .count {
   min-width: 84rpx;

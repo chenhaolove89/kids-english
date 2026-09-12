@@ -5,12 +5,14 @@
     "versionName" : "1.4.0",
     "versionCode" : "140",
     "vueVersion" : "3",
+    "uniStatistics" : {
+        "enable" : false
+    },
     "h5" : {
         "title" : "快乐学园",
         "router" : {
             "mode" : "hash",
             "base" : "./"
-        },
-        "rpxCalcMaxDeviceWidth" : 750
+        }
     }
 }

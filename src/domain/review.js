@@ -7,6 +7,19 @@
 export const REVIEW_BOX_DAYS = [0, 1, 3, 7]
 const DAY_MS = 24 * 60 * 60 * 1000
 
+/** 最高盒：已在最高盒再答对一次即毕业出本 */
+export const REVIEW_MAX_BOX = REVIEW_BOX_DAYS.length - 1
+
+/**
+ * 该条目是否应当从错题本「毕业」。
+ * 语义：错题本只留「还没掌握」的条目；连对晋级到最高盒（7 天）后再答对一次，
+ * 说明孩子已经掌握，应该出本。原实现没有这一步，掌握的词每 7 天永久复发，
+ * 与结果页文案「连对的错题会毕业」不符。
+ */
+export function isGraduated(entry, correct) {
+  return !!correct && !!entry && (entry.box ?? 0) >= REVIEW_MAX_BOX
+}
+
 /** 答错（或首次进本）的条目：盒 0、立即到期 */
 export function freshEntry(ts, meta = {}) {
   return { box: 0, due: ts, wrongCount: 1, updatedAt: ts, ...meta }

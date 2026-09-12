@@ -238,9 +238,10 @@ import { getStorage } from '@/platform/storage.js'
 import { playEn, play } from '@/platform/audio.js'
 import TabBar from '@/components/tab-bar.vue'
 import { assetUrl } from '@/platform/assets.js'
+import { hideNativeTabBar } from '@/platform/router-ui.js'
 import { starsText as starsBar } from '@/domain/progress.js'
-import { progressOf, isCategoryComplete, isMathTrophy, celebration } from '@/domain/collection.js'
-import { getCollectionService } from '@/services/collection.js'
+import { progressOf, isCategoryComplete, isMathTrophy, celebration, litIds } from '@/domain/collection.js'
+import { getCollectionService } from '@/services/collection-app.js'
 import { getProgressService } from '@/services/progress.js'
 
 const tabs = [
@@ -378,15 +379,19 @@ const mathAllTrophies = computed(() => mathBadges.value.length > 0 && mathBadges
 
 onShow(() => {
   // 自定义悬浮底栏替代原生 tabBar
-  try { uni.hideTabBar({ animation: false }) } catch (e) { /* 已隐藏时静默 */ }
+  hideNativeTabBar()
   const svc = getCollectionService()
   coll.value = svc.get()
   const cur = svc.counts()
-  const prev = getStorage().get('prefs', {})?.lastCollectionCounts
-  celebrate.value = prev ? celebration(prev, cur) : null
-  updatePrefs({ lastCollectionCounts: cur })
+  // 庆祝条：比较"上次访问时已点亮的 id 集合"，按去重后的卡片数报新增
+  // （旧实现存的是计数，掌握会同时让 seen/mastered +1 → 报出的张数偏大；
+  //  换键后第一次访问没有基线，与首次使用一样不庆祝）
+  const curLit = litIds(svc.get())
+  const prevLit = getStorage().get('prefs', {})?.lastCollectionLit
+  celebrate.value = prevLit ? celebration(prevLit, curLit) : null
+  updatePrefs({ lastCollectionLit: curLit })
   counts.value = cur
-  totalStars.value = getProgressService().summary().totalStars
+  totalStars.value = getProgressService().summary({ isKnownLesson: (id) => LESSONS.some((l) => l.id === id) }).totalStars
   detail.value = null
 })
 
@@ -549,32 +554,35 @@ function goLearn() {
   color: #6b4a17;
 }
 
-/* 统计行 */
+/* 统计行：6 格改 3×2。
+   原来 6 格挤一行，320px 窄屏每格约 49px，而「2000/2000」这类数字宽约 57px，
+   且标签只有 20rpx（≈8.5px，比正文还小），家长和孩子都看不清。 */
 .stats {
   display: flex;
+  flex-wrap: wrap;
   gap: 12rpx;
   margin-bottom: 30rpx;
 }
 .stat-item {
-  flex: 1;
+  flex: 0 0 calc((100% - 24rpx) / 3);
   min-width: 0;
   background: #ffffff;
   border-radius: 32rpx;
-  padding: 18rpx 4rpx;
+  padding: 18rpx 6rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: 0 8rpx 24rpx rgba(120, 90, 40, 0.07);
 }
 .stat-num {
-  font-size: 30rpx;
+  font-size: 34rpx;
   font-weight: 800;
   color: #4a3f35;
   white-space: nowrap;
 }
 .stat-label {
   margin-top: 6rpx;
-  font-size: 20rpx;
+  font-size: 26rpx;
   color: #a89d8e;
   white-space: nowrap;
 }
@@ -911,7 +919,7 @@ function goLearn() {
 }
 .tile-sub {
   margin-top: 2rpx;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: #8a8073;
   max-width: 100%;
   overflow: hidden;

@@ -85,13 +85,18 @@ export function createSessionService(store) {
       ts: Date.now(),
     }
     attempts.push(attempt)
-    // 裁剪最老记录时永远保留当前会话的作答——否则长会话恢复后首答判定会被裁没
+    // 裁剪最老记录时永远保留当前会话的作答——否则长会话恢复后首答判定会被裁没。
+    // 注意 room=0 时必须取空数组：others.slice(-0) 等于 slice(0)，会把全部旧记录留下来，
+    // 于是单会话超过 MAX_ATTEMPTS 次作答时彻底不裁剪（曾是无界增长的唯一路径）。
     let kept = attempts
     if (kept.length > MAX_ATTEMPTS) {
       const activeId = a.session.sessionId
       const mine = kept.filter((x) => x.sessionId === activeId)
-      const others = kept.filter((x) => x.sessionId !== activeId).slice(-(MAX_ATTEMPTS - mine.length))
-      kept = others.concat(mine)
+      const others = kept.filter((x) => x.sessionId !== activeId)
+      // 单会话自身就超上限时，只留它最近的 MAX_ATTEMPTS 条，总长仍然封顶
+      const mineKept = mine.length > MAX_ATTEMPTS ? mine.slice(-MAX_ATTEMPTS) : mine
+      const room = MAX_ATTEMPTS - mineKept.length
+      kept = (room > 0 ? others.slice(-room) : []).concat(mineKept)
     }
     store.set('attempts', kept)
     return attempt

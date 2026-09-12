@@ -12,6 +12,7 @@
  */
 import fs from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -77,11 +78,34 @@ for (const f of ['LICENSE', 'LICENSE-CONTENT.md']) {
 }
 
 // PWA 运行时缓存：sw.js 写在产物根（scope=站点根），index.html 注入注册。
-// 缓存代次取 contentVersion——内容批次更新后旧代整清，配合 SWR 双保险。
-// 仅注入发布产物，dev 不装 SW（避免缓存干扰开发调试）。
+// 缓存代次 = contentVersion + 静态资源树指纹。只用 contentVersion 不够：
+// 它只在 catalog.json 重新生成时才变，单独换音频/图片不会换代，
+// 而 SW 对 /static/ 现在是缓存优先 → 必须让「字节变了」一定导致换代。
 const swTemplate = fs.readFileSync(path.join(ROOT, 'tools', 'sw-template.js'), 'utf8')
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'content', 'catalog.json'), 'utf8'))
-fs.writeFileSync(path.join(OUT, 'sw.js'), swTemplate.replaceAll('__VERSION__', 'kx-' + catalog.contentVersion))
+
+/** 静态资源树指纹：相对路径 + 字节数，按路径排序后取 sha1 前 8 位 */
+function staticTreeHash(dir) {
+  const items = []
+  const walk = (d) => {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, e.name)
+      if (e.isDirectory()) walk(p)
+      else items.push([path.relative(dir, p).replace(/\\/g, '/'), fs.statSync(p).size])
+    }
+  }
+  walk(dir)
+  items.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
+  const h = crypto.createHash('sha1')
+  for (const [rel, size] of items) h.update(rel + ':' + size + '\n')
+  return h.digest('hex').slice(0, 8)
+}
+
+const staticDir = path.join(OUT, 'static')
+const treeHash = fs.existsSync(staticDir) ? staticTreeHash(staticDir) : 'nostatic'
+const cacheVersion = `kx-${catalog.contentVersion}-${treeHash}`
+fs.writeFileSync(path.join(OUT, 'sw.js'), swTemplate.replaceAll('__VERSION__', cacheVersion))
+console.log(`✓ SW 缓存代次: ${cacheVersion}（contentVersion + 静态树指纹）`)
 const indexPath = path.join(OUT, 'index.html')
 let indexHtml = fs.readFileSync(indexPath, 'utf8')
 if (!indexHtml.includes('serviceWorker')) {

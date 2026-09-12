@@ -7,6 +7,16 @@
       </view>
     </view>
 
+    <!-- 存储写不进去时的常驻告警：本地存储是唯一数据源，静默失败等于记录全丢 -->
+    <view v-if="storageError" class="storage-warn">
+      <text class="storage-warn-title">⚠️ 这台设备的存储写不进去了</text>
+      <text class="storage-warn-body">
+        可能空间已满、或浏览器禁止了本站存储（无痕模式）。最近的星星和课程记录没有保存。
+        请先导出备份，再清理设备空间后重试。
+      </text>
+      <text class="storage-warn-at">最近一次失败：{{ fmtTime(storageError.at) }}（{{ storageError.key }}）</text>
+    </view>
+
     <!-- 摘要 -->
     <view class="summary">
       <view class="summary-item">
@@ -78,6 +88,22 @@
       </view>
     </view>
 
+    <!-- 薄弱知识点：attempts 一直带 skillIds，此前没有任何消费方 -->
+    <view v-if="weakSkills.length" class="section-head"><text class="section-title">需要多练的知识点</text></view>
+    <view v-if="weakSkills.length" class="card">
+      <view v-for="s in weakSkills" :key="s.skillId" class="weak-row">
+        <view class="weak-info">
+          <text class="weak-title">{{ s.title }}</text>
+          <text class="weak-sub">首答对 {{ s.firstCorrect }}/{{ s.first }} 题</text>
+        </view>
+        <view class="weak-bar">
+          <view class="weak-fill" :style="{ width: s.percent + '%', background: s.color }" />
+        </view>
+        <text class="weak-pct">{{ s.percent }}%</text>
+      </view>
+      <text class="weak-note">按「第一次就答对」统计，只列作答 3 题以上的知识点</text>
+    </view>
+
     <!-- 最近记录 -->
     <view class="section-head"><text class="section-title">最近记录</text></view>
     <view class="card">
@@ -104,6 +130,15 @@
       <view class="meta-row">
         <text class="meta-label">累计作答</text>
         <text class="meta-value">{{ attemptCount }} 次</text>
+      </view>
+      <!-- 备份：本地存储会被系统清理（iOS 长期不访问会回收站点数据），没有导出就无法挽回 -->
+      <view class="data-actions">
+        <view class="data-btn" @tap="exportData">
+          <text class="data-btn-text">⬇️ 导出学习记录</text>
+        </view>
+        <view class="data-btn ghost" @tap="importData">
+          <text class="data-btn-text ghost">⬆️ 导入学习记录</text>
+        </view>
       </view>
         <!-- 三胶囊放不进单行（会挤压竖排标签）：标签独占一行，胶囊整行在下 -->
         <view class="meta-row stacked">
@@ -150,19 +185,20 @@
 
 <script setup>
 import { ref } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
-import { getStorage } from '@/platform/storage.js'
+import { onShow, onUnload } from '@dcloudio/uni-app'
+import { getStorage, getStorageError, clearStorageError, onStorageError, SCHEMA_VERSION } from '@/platform/storage.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
 import { getLowAgeMode, setLowAgeMode, updatePrefs, getQimengAudioOrder, setQimengAudioOrder } from '@/content/lowAge.js'
 import { getAccent, playEn } from '@/platform/audio.js'
 import TabBar from '@/components/tab-bar.vue'
 import { assetUrl } from '@/platform/assets.js'
-import { SUBJECTS, getLesson, catalog } from '@/content/catalog.js'
-import { visibleLessons } from '@/services/curriculum.js'
+import { hideNativeTabBar } from '@/platform/router-ui.js'
+import { SUBJECTS, getLesson, catalog, LESSONS } from '@/content/catalog.js'
+import { visibleLessons } from '@/services/curriculum-app.js'
 import { starsForFirstAttempt } from '@/domain/progress.js'
 
-const KIND_LABEL = { learn: '学一学', challenge: '挑战' }
+const KIND_LABEL = { learn: '学一学', challenge: '挑战', practice: '练习' }
 const STATUS_LABEL = { completed: '完成', paused: '中断' }
 
 const summary = ref({ totalStars: 0, lessonsCompleted: 0, learnDoneCount: 0 })
@@ -173,23 +209,47 @@ const catalogVersion = catalog.contentVersion
 const week = ref({ completedLessons: 0, stars: 0, minutes: 0, learnDone: 0 })
 const reviewDue = ref(0)
 const topWrongText = ref('')
+const weakSkills = ref([])
 const lowAge = ref(true)
 const lowAgeVisible = ref(false)
 const accent = ref('us')
 const qimengOrder = ref('zh-first')
+const storageError = ref(null)
 
+/** 学习记录的键清单：导出/导入/清空都以它为准，避免漏掉某一类数据 */
+const DATA_KEYS = ['attempts', 'sessions', 'active', 'review', 'collection', 'prefs']
+/** 导入时的形状校验：形状不对就让页面拿到脏数据崩掉，宁可拒绝导入 */
+const DATA_SHAPE = {
+  attempts: Array.isArray,
+  sessions: Array.isArray,
+  active: (v) => v === null || (typeof v === 'object' && !Array.isArray(v)),
+  review: (v) => !!v && typeof v === 'object' && !Array.isArray(v),
+  collection: (v) => !!v && typeof v === 'object' && !Array.isArray(v),
+  prefs: (v) => !!v && typeof v === 'object' && !Array.isArray(v),
+}
+
+// 存储写入失败要立刻反映到页面上（不能只在进页面时查一次）
+let offStorageError = null
 onShow(() => {
   // 自定义悬浮底栏替代原生 tabBar
-  try { uni.hideTabBar({ animation: false }) } catch (e) { /* 已隐藏时静默 */ }
+  hideNativeTabBar()
+  if (!offStorageError) offStorageError = onStorageError((e) => { storageError.value = e })
   refresh()
+})
+
+onUnload(() => {
+  if (offStorageError) { offStorageError(); offStorageError = null }
 })
 
 function refresh() {
   const store = getStorage()
   const prog = getProgressService()
   const reviewSvc = getReviewService()
-  summary.value = prog.summary()
-  week.value = prog.weeklyReport()
+  // 内容下线/改名后历史会话会留下目录里不存在的 lessonId；
+  // 不过滤会让「完成课程」总数含孤儿、而下面「各科进度」按目录算，同屏自相矛盾
+  const isKnownLesson = (id) => !!getLesson(id)
+  summary.value = prog.summary({ isKnownLesson })
+  week.value = prog.weeklyReport(Date.now(), { isKnownLesson })
   attemptCount.value = store.get('attempts', []).length
   lowAge.value = getLowAgeMode()
   accent.value = getAccent()
@@ -199,6 +259,28 @@ function refresh() {
     .topWrong(3)
     .map((e) => e.text || e.itemId)
     .join('、')
+
+  // 存储健康自检：写失败状态只活在当前文档的模块内存里，而家长往往是**后来**才打开这一页
+  // （那时上一次失败早随页面刷新没了，本页自己又不写任何东西）→ 告警永远不出现。
+  // 所以进页面时主动写一个探针键：写不进去就立刻把告警亮出来，写完即删不留痕。
+  // 注意：配额满时「覆盖已有键且不变大」仍会成功，所以探针必须用一个新键。
+  const probeOk = store.set('自检', Date.now())
+  if (probeOk) store.remove('自检')
+  storageError.value = getStorageError()
+
+  // 薄弱知识点：skillId 是内部标识（en-word-animals / math-l4），
+  // 用目录里含该 skill 的课程标题给家长看
+  weakSkills.value = prog
+    .skillBreakdown({ isKnownLesson, limit: 5 })
+    .map((s) => {
+      const lesson = LESSONS.find((l) => (l.skillIds || []).includes(s.skillId))
+      return {
+        ...s,
+        title: lesson ? lesson.title : s.skillId,
+        color: lesson?.color || '#FF8C42',
+        percent: Math.round(s.accuracy * 100),
+      }
+    })
 
   const progressMap = prog.lessonProgressMap()
   const lessons = visibleLessons()
@@ -218,7 +300,8 @@ function refresh() {
   recent.value = prog.recentSessions(8).map((s) => {
     const lesson = getLesson(s.lessonId)
     return {
-      title: lesson?.title || s.lessonId,
+      // 课程已下线时不要再把内部 lessonId 甩给家长看
+      title: lesson ? lesson.title : '（已下线的课程）',
       kindLabel: KIND_LABEL[s.kind] || s.kind,
       statusLabel: STATUS_LABEL[s.status] || s.status,
       startedAt: s.startedAt,
@@ -280,11 +363,143 @@ function clearRecords() {
       store.remove('attempts')
       store.remove('sessions')
       store.remove('active')
+      // 错题本也是学习记录：不清的话「清空」之后首页错题重练入口、家长页待复习数
+      // 和孩子答错过的词全都还在，清空等于没清干净
+      store.remove('review')
       // 图鉴点亮集合同属学习记录：一并清空，庆祝基线归零
       store.remove('collection')
-      updatePrefs({ lastCollectionCounts: null })
+      updatePrefs({ lastCollectionLit: null })
+      clearStorageError()
       refresh()
       uni.showToast({ title: '已清空', icon: 'success' })
+    },
+  })
+}
+
+/**
+ * 导出学习记录为 JSON 文件。
+ * 本地存储是唯一数据源，而系统会回收站点数据（iOS 长期不访问），没有导出就等于没有备份。
+ * 文件带 schemaVersion 与 contentVersion：将来数据结构变化时，导入侧能据此决定怎么迁移。
+ */
+function exportData() {
+  const store = getStorage()
+  const data = {}
+  for (const k of DATA_KEYS) data[k] = store.get(k, null)
+  const payload = {
+    app: 'kids-english',
+    schemaVersion: SCHEMA_VERSION,
+    contentVersion: catalog.contentVersion,
+    exportedAt: new Date().toISOString(),
+    data,
+  }
+  const text = JSON.stringify(payload, null, 2)
+  // #ifdef H5
+  try {
+    const blob = new Blob([text], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `快乐学园-学习记录-${fmtFileStamp(new Date())}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 2000)
+    uni.showToast({ title: '已导出备份文件', icon: 'success' })
+    return
+  } catch (e) {
+    console.error('[parent] 导出失败，回退剪贴板:', e)
+  }
+  // #endif
+  // 非 H5 或下载失败：退回复制到剪贴板，至少能把文本带走
+  try {
+    uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '已复制到剪贴板', icon: 'none' }) })
+  } catch (e) {
+    uni.showToast({ title: '导出失败', icon: 'none' })
+  }
+}
+
+function fmtFileStamp(d) {
+  const p = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`
+}
+
+/**
+ * 选择备份文件并导入（H5 用隐藏 file input；其他端提示不支持）。
+ *
+ * 用「常驻复用的 input」而不是每次新建：少一次 DOM 增删，change 监听只绑一次；
+ * 每次点击前清空 value，否则选同一个文件不会再次触发 change。
+ * （实测：原「新建 → click → 立刻 removeChild」在真实用户手势下同样能打开选择器，
+ *   所以这不是修 bug，只是更稳妥的写法；判定这一点必须用真实输入事件——
+ *   脚本 `element.click()` 没有 user activation，浏览器不会打开文件选择器，
+ *   用它会得出"导入完全没反应"的错误结论。）
+ */
+let importInput = null
+
+function onImportFilePicked() {
+  const file = importInput && importInput.files && importInput.files[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => applyImport(String(reader.result || ''))
+  reader.onerror = () => uni.showToast({ title: '读取文件失败', icon: 'none' })
+  reader.readAsText(file)
+}
+
+function importData() {
+  // #ifdef H5
+  if (!importInput) {
+    importInput = document.createElement('input')
+    importInput.type = 'file'
+    importInput.accept = 'application/json,.json'
+    importInput.style.display = 'none'
+    importInput.addEventListener('change', onImportFilePicked)
+    document.body.appendChild(importInput)
+  }
+  importInput.value = ''
+  importInput.click()
+  return
+  // #endif
+  uni.showToast({ title: '当前端暂不支持导入', icon: 'none' })
+}
+
+/** 校验并写入导入的数据（形状不对一律拒绝，避免脏数据让页面崩掉） */
+function applyImport(text) {
+  let payload
+  try {
+    payload = JSON.parse(text)
+  } catch (e) {
+    uni.showToast({ title: '文件不是有效的 JSON', icon: 'none' })
+    return
+  }
+  if (!payload || payload.app !== 'kids-english' || !payload.data || typeof payload.data !== 'object') {
+    uni.showToast({ title: '这不是本应用导出的记录', icon: 'none' })
+    return
+  }
+  const usable = DATA_KEYS.filter((k) => {
+    const v = payload.data[k]
+    if (v === null || v === undefined) return false
+    return DATA_SHAPE[k] ? DATA_SHAPE[k](v) : false
+  })
+  if (!usable.length) {
+    uni.showToast({ title: '文件里没有可恢复的记录', icon: 'none' })
+    return
+  }
+  const versionNote =
+    payload.schemaVersion === SCHEMA_VERSION
+      ? ''
+      : `（备份来自 v${payload.schemaVersion ?? '?'}，当前 v${SCHEMA_VERSION}）`
+  uni.showModal({
+    title: '导入学习记录',
+    content: `将用文件里的记录覆盖这台设备上的 ${usable.length} 类数据${versionNote}，无法撤销。确定吗？`,
+    confirmText: '导入',
+    success: (r) => {
+      if (!r.confirm) return
+      const store = getStorage()
+      let failed = 0
+      for (const k of usable) if (!store.set(k, payload.data[k])) failed++
+      clearStorageError()
+      refresh()
+      if (failed) uni.showToast({ title: `有 ${failed} 类数据写入失败`, icon: 'none' })
+      else uni.showToast({ title: '已恢复学习记录', icon: 'success' })
     },
   })
 }
@@ -566,6 +781,119 @@ function clearRecords() {
   font-size: 30rpx;
   font-weight: 800;
   color: #e4573d;
+}
+
+/* 备份动作：导出/导入，最小高度 96rpx（≥44px 可点） */
+.data-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+.data-btn {
+  flex: 1;
+  min-width: 0;
+  min-height: 96rpx;
+  border-radius: 48rpx;
+  background: #e8f8ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12rpx;
+  box-sizing: border-box;
+}
+.data-btn.ghost {
+  background: #f2ede4;
+}
+.data-btn:active {
+  transform: scale(0.98);
+}
+.data-btn-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #2f8f5b;
+}
+.data-btn-text.ghost {
+  color: #8a7c68;
+}
+
+/* 薄弱知识点 */
+.weak-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 14rpx 0;
+}
+.weak-info {
+  flex: 0 0 40%;
+  min-width: 0;
+}
+.weak-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #4a3f35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.weak-sub {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: #a89d8e;
+}
+.weak-bar {
+  flex: 1;
+  min-width: 0;
+  height: 20rpx;
+  border-radius: 10rpx;
+  background: #f2ede4;
+  overflow: hidden;
+}
+.weak-fill {
+  height: 100%;
+  border-radius: 10rpx;
+}
+.weak-pct {
+  flex: 0 0 auto;
+  min-width: 80rpx;
+  text-align: right;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #4a3f35;
+}
+.weak-note {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #a89d8e;
+}
+
+/* 存储写入失败告警：醒目但不吓人，给出可执行的下一步 */.storage-warn {
+  margin-bottom: 26rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
+  background: #fff4e0;
+  border: 4rpx solid #f0a500;
+}
+.storage-warn-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #b37400;
+}
+.storage-warn-body {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #8a6a20;
+}
+.storage-warn-at {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #a08a5c;
 }
 
 .footer {

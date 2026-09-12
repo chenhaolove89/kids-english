@@ -88,7 +88,7 @@ function go(url) {
   height: 52rpx;
 }
 .tab-label {
-  font-size: 20rpx;
+  font-size: 26rpx;
   font-weight: 700;
   color: #b4a696;
   line-height: 1.2;
@@ -125,7 +125,7 @@ function go(url) {
   top: 126rpx;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 20rpx;
+  font-size: 26rpx;
   font-weight: 700;
   color: #b4a696;
   line-height: 1.2;

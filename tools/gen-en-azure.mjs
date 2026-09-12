@@ -59,6 +59,9 @@ function buildSsml(text) {
   return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="${LANG}"><voice name="${VOICE}"><prosody rate="${RATE}">${esc}</prosody></voice></speak>`
 }
 
+// 单条合成的超时：只为避免黑洞网络下 fetch 无限期挂住（脚本既不完成也不失败）
+const TTS_TIMEOUT_MS = 60000
+
 async function synth(ssml, creds, attempt = 1) {
   const res = await fetch(`https://${creds.region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
     method: 'POST',
@@ -69,6 +72,7 @@ async function synth(ssml, creds, attempt = 1) {
       'User-Agent': 'kids-english-audio-gen',
     },
     body: ssml,
+    signal: AbortSignal.timeout(TTS_TIMEOUT_MS),
   })
   if (res.ok) return Buffer.from(await res.arrayBuffer())
   if (res.status === 429 && attempt < 5) {

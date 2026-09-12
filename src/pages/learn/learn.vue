@@ -1,12 +1,8 @@
 <template>
   <view class="page" :style="{ background: theme.bg }">
-    <view class="topbar">
-      <view class="back" @tap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="cat-title">{{ title }}</text>
+    <PageTopBar class="topbar-page" :title="title" back-bg="rgba(255, 255, 255, 0.85)" @back="goBack">
       <text class="progress">{{ current + 1 }}/{{ items.length }}</text>
-    </view>
+    </PageTopBar>
 
     <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上，而不是以为没声音 -->
     <view v-if="audioTotal > 0 && audioDone < audioTotal" class="load-bar">
@@ -100,9 +96,10 @@ import { createThrottle, goBackOrHome } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
-import { nextLessonAfter, lessonUrl } from '@/services/curriculum.js'
+import { nextLessonAfter, lessonUrl } from '@/services/curriculum-app.js'
 import { getSessionService } from '@/services/session.js'
-import { getCollectionService } from '@/services/collection.js'
+import { getCollectionService } from '@/services/collection-app.js'
+import PageTopBar from '@/components/page-top-bar.vue'
 
 const subject = ref('en')
 const title = ref('')
@@ -121,14 +118,47 @@ const audioLoading = ref(false)
 
 const audioPercent = computed(() => (audioTotal.value ? Math.round((audioDone.value / audioTotal.value) * 100) : 0))
 
-/** 统一入口：排队列数即总数，每条 load/loaderror 都推进度（失败不许卡死进度条） */
+/** 已排队的音频：翻页时只补新条目，进度条不会因为反复预载而重置 */
+const queued = new Set()
+
+/** 统一入口：新排队的条数即进度增量，每条 load/loaderror 都推进度（失败不许卡死进度条） */
 function startAudioPreload(srcs) {
-  const list = [...new Set(srcs.filter(Boolean))]
-  audioTotal.value = list.length
-  audioDone.value = 0
-  preloadWithProgress(list, (done) => {
-    audioDone.value = done
+  const fresh = [...new Set(srcs.filter(Boolean))].filter((s) => !queued.has(s))
+  if (!fresh.length) return
+  fresh.forEach((s) => queued.add(s))
+  audioTotal.value += fresh.length
+  preloadWithProgress(fresh, () => {
+    audioDone.value += 1
   })
+}
+
+function resetAudioProgress() {
+  queued.clear()
+  audioDone.value = 0
+  audioTotal.value = 0
+}
+
+/**
+ * 滑动窗口预载：只预载当前卡 ±PRELOAD_WINDOW。
+ * 原来是一次预载整个分类，最大分类 308 个词（sightwords）→ 308 个 Howl，
+ * 约 97MB 解码 PCM 常驻，而且换分类不释放，iPad Safari 会因此被杀进程。
+ */
+const PRELOAD_WINDOW = 3
+
+function preloadWindow(center) {
+  const list = items.value
+  if (!list.length) return
+  const lo = Math.max(0, center - PRELOAD_WINDOW)
+  const hi = Math.min(list.length - 1, center + PRELOAD_WINDOW)
+  const srcs = []
+  for (let i = lo; i <= hi; i++) {
+    const it = list[i]
+    if (subject.value === 'en') srcs.push(accentEnSrc(it.audio), it.zhAudio)
+    else if (wordsMode.value) srcs.push(it.audio)
+    else if (sentencesMode.value) srcs.push(it.audio)
+    else srcs.push(it.audio, it.extraAudio)
+  }
+  startAudioPreload(srcs)
 }
 
 /** 当前卡的主音频路径（=播放序列的第一条，「声音加载中」提示跟随先播的那条） */
@@ -147,7 +177,11 @@ function refreshAudioLoading() {
     if (mainAudioSrc(items.value[current.value]) === src) audioLoading.value = false
   })
 }
-watch(current, refreshAudioLoading)
+watch(current, (idx) => {
+  refreshAudioLoading()
+  // 翻页时补上新的邻近窗口（已排队的不会重复下载）
+  preloadWindow(idx)
+})
 
 const cardHint = computed(() => {
   if (audioLoading.value) return '🔊 声音加载中…'
@@ -186,7 +220,6 @@ onLoad((query) => {
       // 字符串拼接而非反引号模板：反引号路径打包后原样保留，发布脚本改写不到 → 线上 404
       zhAudio: isQimeng ? assetUrl("/static/audio-zh/" + w.id + ".mp3") : '',
     }))
-    startAudioPreload(items.value.flatMap((i) => [accentEnSrc(i.audio), i.zhAudio]))
   } else if (query.cat) {
     // 语文词语课：与 en 词卡同一批图，主音频换中文（zhAudio 由内容管线保证存在）
     const c = resolveEnCategory(query.cat) || resolveEnCategory(enData.categories[0]?.id)
@@ -205,7 +238,6 @@ onLoad((query) => {
       id: w.id, main: w.zh, phon: w.en, sub: '', image: w.image,
       audio: w.zhAudio || '', extraAudio: w.audio, enExtra: true, emoji: '',
     }))
-    startAudioPreload(items.value.map((i) => i.audio))
   } else if (query.sentences) {
     // 小短句：只念整句，不带字卡/拼音/例词/描红（那是识字课的事）
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
@@ -224,7 +256,6 @@ onLoad((query) => {
       id: h.id, main: h.sentence, phon: '', sub: '', audio: h.sentenceAudio,
       extraAudio: '', image: h.sentenceEmoji || '', emoji: h.emoji || '',
     }))
-    startAudioPreload(items.value.map((i) => i.audio))
   } else {
     const lv = zhData.levels.find((l) => String(l.id) === String(query.level)) || zhData.levels[0]
     entryRef = { kind: 'zh-level', id: String(lv.id) }
@@ -234,11 +265,13 @@ onLoad((query) => {
       id: h.id, main: h.char, phon: h.pinyin, sub: h.word, audio: h.audio, extraAudio: h.wordAudio,
       emoji: h.emoji || '',
     }))
-    startAudioPreload(items.value.flatMap((i) => [i.audio, i.extraAudio]))
   }
 
-  refreshAudioLoading()
+  // 预载放在会话恢复之后：恢复到第 N 张卡时，窗口围绕 N 而不是围绕 0
   wireSession(query.lessonId, resolvedCatId)
+  resetAudioProgress()
+  preloadWindow(current.value)
+  refreshAudioLoading()
   // 进页先播第一个（用户点卡片进来时已有点击手势，iOS 可正常发声）
   setTimeout(() => speakIdx(current.value), 400)
 })
@@ -325,8 +358,10 @@ function speakExtra(i) {
 /** 描红页：带字/码点/拼音/字音，纯练习不记会话 */
 function goWrite(it) {
   if (!it || !it.id) return
+  // 带上 lessonId：描红要按这门课记作答与图鉴点亮（否则孩子写完什么都不留）
+  const lid = lesson.value ? `&lessonId=${encodeURIComponent(lesson.value.id)}` : ''
   uni.navigateTo({
-    url: `/pages/write/write?char=${encodeURIComponent(it.main)}&cp=${it.id}&pinyin=${encodeURIComponent(it.phon || '')}&audio=${encodeURIComponent(it.audio || '')}`,
+    url: `/pages/write/write?char=${encodeURIComponent(it.main)}&cp=${it.id}&pinyin=${encodeURIComponent(it.phon || '')}&audio=${encodeURIComponent(it.audio || '')}${lid}`,
   })
 }
 function onChange(e) {
@@ -397,35 +432,9 @@ function goBack() {
   box-sizing: border-box;
   overflow: hidden;
 }
-.topbar {
-  display: flex;
-  align-items: center;
+/* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
+.topbar-page {
   padding: calc(24rpx + env(safe-area-inset-top)) 32rpx 20rpx;
-}
-.back {
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(120, 90, 40, 0.1);
-}
-.back-icon {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #4a3f35;
-}
-.cat-title {
-  flex: 1;
-  text-align: center;
-  font-size: 40rpx;
-  font-weight: 800;
-  color: #4a3f35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .progress {
   min-width: 84rpx;
@@ -598,11 +607,16 @@ function goBack() {
   margin-top: 0;
   font-size: 40rpx;
 }
-/* 识字卡：描红入口（词语卡不显示） */
+/* 识字卡：描红入口（词语卡不显示）——最小高度 88rpx，保证 ≥44px 可点 */
 .write-btn {
   margin-top: 18rpx;
-  padding: 10rpx 34rpx;
-  border-radius: 40rpx;
+  padding: 18rpx 40rpx;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 44rpx;
   background: #e3f6e8;
   border: 3rpx solid #3bb273;
 }
@@ -610,7 +624,7 @@ function goBack() {
   transform: scale(0.96);
 }
 .write-btn-text {
-  font-size: 27rpx;
+  font-size: 30rpx;
   font-weight: 800;
   color: #2d8a55;
 }
