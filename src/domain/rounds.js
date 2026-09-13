@@ -9,14 +9,24 @@ import { shuffle } from './shuffle.js'
  * @returns {Array<{answer, options}>} answer/options 是 pool 里的原对象引用
  * @throws {Error} 'empty-pool' 当池为空（调用方需兜底提示，不得静默出 0 轮）
  */
-export function buildListenPickRounds(pool, { count = 10, optionsPerRound = 4, rng = Math.random } = {}) {
+export function buildListenPickRounds(pool, { count = 10, optionsPerRound = 4, rng = Math.random, distractorPool = null } = {}) {
   if (!Array.isArray(pool) || pool.length === 0) throw new Error('empty-pool')
-  const n = Math.max(2, Math.min(optionsPerRound, pool.length))
+  // 池外的候补干扰项（错题重练池往往只有两三个词，2 选 1 近乎送分且单调）：
+  // 不足 optionsPerRound 时从 distractorPool 补足到 4，干扰项不与池内条目重 id
+  const extra = Array.isArray(distractorPool)
+    ? distractorPool.filter((x) => x && x.id && !pool.some((p) => p.id === x.id))
+    : []
+  const n = Math.max(2, Math.min(optionsPerRound, pool.length + (extra.length ? optionsPerRound : 0)))
   const answers = shuffle(pool, rng).slice(0, Math.min(count, pool.length))
-  return answers.map((w) => ({
-    answer: w,
-    options: shuffle([w, ...shuffle(pool.filter((x) => x.id !== w.id), rng).slice(0, n - 1)], rng),
-  }))
+  return answers.map((w) => {
+    const inPool = shuffle(pool.filter((x) => x.id !== w.id), rng)
+    const usedIds = new Set([w.id, ...inPool.slice(0, n - 1).map((x) => x.id)])
+    const fill = extra.filter((x) => !usedIds.has(x.id)).slice(0, Math.max(0, n - 1 - (inPool.length)))
+    return {
+      answer: w,
+      options: shuffle([w, ...inPool.slice(0, n - 1), ...fill], rng),
+    }
+  })
 }
 
 /** 语文汉字题型，与 quiz.vue 的渲染分支一一对应 */

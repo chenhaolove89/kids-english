@@ -82,3 +82,27 @@ test('isFirstAttemptFor：支持会话恢复链（多 sessionId）', () => {
   assert.equal(isFirstAttemptFor(attempts, { sessionIds: ['s-new', 's-old'], activityId: 'quiz', order: 3 }), true)
   assert.equal(isFirstAttemptFor(attempts, { sessionIds: 's-old', activityId: 'quiz', order: 2 }), false)
 })
+
+test('小池借 distractorPool 补足 4 选项：错题重练不再 2 选 1（2026-09-13 用户反馈）', async () => {
+  const { buildListenPickRounds } = await import('../src/domain/rounds.js')
+  const pool = [
+    { id: 'dog', en: 'dog', image: '/i/dog.png', audio: '/a/dog.mp3' },
+    { id: 'cat', en: 'cat', image: '/i/cat.png', audio: '/a/cat.mp3' },
+  ]
+  const extra = [
+    { id: 'sun', en: 'sun', image: '/i/sun.png', audio: '/a/sun.mp3' },
+    { id: 'bed', en: 'bed', image: '/i/bed.png', audio: '/a/bed.mp3' },
+    { id: 'fox', en: 'fox', image: '/i/fox.png', audio: '/a/fox.mp3' },
+  ]
+  const rounds = buildListenPickRounds(pool, { count: 10, distractorPool: extra })
+  assert.equal(rounds.length, 2, '轮数仍受池大小限制')
+  for (const r of rounds) {
+    assert.equal(r.options.length, 4, '选项应补足到 4')
+    const ids = r.options.map((o) => o.id)
+    assert.ok(ids.includes(r.answer.id), '答案必须在选项中')
+    assert.equal(new Set(ids).size, 4, '选项不得重复')
+  }
+  // 不传 distractorPool 保持旧行为（池小→选项小）
+  const legacy = buildListenPickRounds(pool, { count: 10 })
+  assert.equal(legacy[0].options.length, 2)
+})

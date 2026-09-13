@@ -26,6 +26,11 @@ export function resolveEnLevel(levelId) {
     .flatMap((c) => c.words)
 }
 
+/** 全部可见英语词（错题重练小池借干扰项用，低龄过滤口径与分类一致） */
+export function resolveAllEnWords() {
+  return wordsData.categories.filter((c) => !isCategoryHidden(c.id)).flatMap((c) => c.words)
+}
+
 export function resolveZhLevel(levelId) {
   const lv = Number(levelId)
   return hanziData.levels.find((l) => Number(l.id) === lv) || hanziData.levels[0] || null

@@ -28,9 +28,9 @@
           :class="{ right: (flashId === opt.id && isRight) || revealId === opt.id, wrong: flashId === opt.id && !isRight, shake: flashId === opt.id && !isRight, reveal: revealId === opt.id }"
           @tap="pick(opt)"
         >
-          <image v-if="opt.image" class="opt-img" :src="opt.image" mode="aspectFit" />
-          <text v-else-if="isCharOption" class="opt-char" :style="{ color: opt.color }">{{ opt.main || opt.label }}</text>
-          <text v-else class="opt-label">{{ opt.label }}</text>
+          <image v-if="opt.image && !imgFail[opt.id]" class="opt-img" :src="opt.image" mode="aspectFit" @error="onImgError(opt.id)" />
+          <text v-else-if="isCharOption" class="opt-char" :style="{ color: opt.color }">{{ opt.main || opt.en || opt.label }}</text>
+          <text v-else class="opt-label">{{ opt.en || opt.main || opt.label }}</text>
           <!-- 答错后揭晓：绿框 + 对勾（不识字也看得懂），并读出正确答案 -->
           <text v-if="revealId === opt.id" class="opt-check">✓</text>
         </view>
@@ -67,7 +67,7 @@ import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, 
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
-import { resolveEnCategory, resolveEnLevel, resolveZhLevel, mapZhOption } from '@/content/adapters.js'
+import { resolveEnCategory, resolveEnLevel, resolveZhLevel, resolveAllEnWords, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
 import { buildListenPickRounds, buildZhCharRounds, buildPoemFillRounds } from '@/domain/rounds.js'
 import poemsData from '@/data/poems.json'
@@ -124,6 +124,10 @@ function clearTimers() {
 }
 const review = getReviewService()
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口只玩不记录
+// 错题重练小池的候补干扰项（仅 review 模式赋值）：池只有两三个词时 2 选 1 近乎送分
+const extraPool = ref(null)
+// 选项图加载失败（线上漏传/断网）：降级成文字卡，避免「半页空白选项看起来只有 2 个」
+const imgFail = ref({})
 const firstPickMap = new Map() // 旧入口模式的「首答」标记
 // 声音预加载进度 + 当前题题干音频加载态（慢网下喇叭呼吸闪烁，防误以为没声音）
 const audioDone = ref(0)
@@ -238,6 +242,10 @@ onLoad((query) => {
       later(() => uni.reLaunch({ url: '/pages/map/map' }), 700)
       return
     }
+    // 错题重练借全库词当候补干扰项：保证每题仍有 4 选 1 的分辨度。
+    // 语文池混汉字条目时不补（汉字干扰必须同池同型），英语/词语池借图卡词补
+    if (subject.value === 'en') extraPool.value = resolveAllEnWords()
+    else if (p.every((x) => x.image)) extraPool.value = resolveAllEnWords().filter((w) => w.zhAudio)
   } else if (subject.value === 'en') {
     if (query.cat) {
       p = resolveEnCategory(query.cat)?.words ?? []
@@ -332,7 +340,7 @@ function start() {
     ? buildPoemFillRounds(pool.value, { count: ROUNDS })
     : subject.value === 'zh' && !zhWordsMode.value && allChars
       ? buildZhCharRounds(pool.value, { count: ROUNDS })
-      : buildListenPickRounds(pool.value, { count: ROUNDS })
+      : buildListenPickRounds(pool.value, { count: ROUNDS, distractorPool: extraPool.value || undefined })
   roundIdx.value = 0
   score.value = 0
   firstCorrect.value = 0
@@ -350,6 +358,11 @@ function loadRound() {
   options.value = rounds.value[roundIdx.value].options
   if (lesson.value) svc.saveSnapshot(currentSnapshot())
   later(speakQuestion, 450)
+}
+
+/** 选项图 404（线上漏传/弱网）：记住并降级文字卡，下次同样不显示破图 */
+function onImgError(id) {
+  imgFail.value = { ...imgFail.value, [id]: true }
 }
 
 function speakQuestion() {
