@@ -174,7 +174,22 @@ for (const c of words.categories) {
   for (const w of c.words) referenced.add(`/static/audio-zh/${w.id}.mp3`)
 }
 for (const r of [...referenced]) {
-  if (EN_AUDIO.test(r)) referenced.add(r.replace('/static/audio/', '/static/audio-gb/'))
+  if (EN_AUDIO.test(r)) {
+    referenced.add(r.replace('/static/audio/', '/static/audio-gb/'))
+    // 课堂口音与英式同规则镜像（assets.js withAccent：audio/ → audio-azure/，同名文件）
+    referenced.add(r.replace('/static/audio/', '/static/audio-azure/'))
+  }
+}
+// 古诗音轨按命名约定拼（validate-content/poem/quiz 页同款）：{id}-full + {id}-l<i>。
+// poems.json 不含路径字面量，不登记会把 123 轨全量误报成孤儿
+for (const p of (JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/poems.json'), 'utf8')).poems) || []) {
+  referenced.add(`/static/audio-poem/${p.id}-full.mp3`)
+  ;(p.lines || []).forEach((_, i) => referenced.add(`/static/audio-poem/${p.id}-l${i}.mp3`))
+}
+// 表扬语：data/encourage.json 只存 key，资源路径由 services/encourage-app.js 拼出
+// （/static/audio/<key>.mp3）——不登记的话每次审计都会报 6~8 条假孤儿，淹没真孤儿
+for (const k of (JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/encourage.json'), 'utf8')).praise) || []) {
+  referenced.add(`/static/audio/${k}.mp3`)
 }
 /**
  * 已知「已生成但暂未接入」的资源：不算真孤儿，单独列出来。
@@ -185,7 +200,7 @@ for (const r of [...referenced]) {
 const KNOWN_PENDING = {}
 const orphans = []
 const pending = []
-for (const dir of ['img', 'audio', 'audio-gb', 'audio-zh', 'tab', 'icons']) {
+for (const dir of ['img', 'audio', 'audio-gb', 'audio-azure', 'audio-chant', 'audio-poem', 'audio-zh', 'tab', 'icons']) {
   const abs = path.join(STATIC, dir)
   if (!fs.existsSync(abs)) continue
   for (const f of fs.readdirSync(abs)) {

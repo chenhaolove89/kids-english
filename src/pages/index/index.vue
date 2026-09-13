@@ -98,6 +98,12 @@ function goLearn(id) {
   uni.navigateTo({ url: `/pages/learn/learn?subject=en&cat=${id}` })
 }
 function goBoard(id) {
+  // 点读板与进词卡同一把锁：锁着的分类不能从喇叭绕进去
+  const lid = 'en-learn-' + id
+  if (isLocked(lid)) {
+    deny(lid, '先完成前面的课，再来学它 ✨')
+    return
+  }
   uni.navigateTo({ url: `/pages/board/board?subject=en&cat=${id}` })
 }
 function goQuiz(levelId) {

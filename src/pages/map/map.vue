@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getStorage } from '@/platform/storage.js'
 import { assetUrl } from '@/platform/assets.js'
@@ -203,6 +203,10 @@ onShow(() => {
 
 /** 今日小任务：无到期错题时，推荐当前阶段里星最少、路径开放的挑战关卡 */
 const dailyTask = ref(null)
+// 切阶段/进度变化会让 blocks 重算：任务卡跟着换到当前阶段的候选（onShow 只覆盖回来那一刻）
+watch(blocks, () => {
+  if (reviewDue.value === 0) computeDailyTask(getProgressService())
+})
 function computeDailyTask(prog) {
   const progressMap = prog.lessonProgressMap()
   const candidates = []

@@ -60,7 +60,11 @@ watch(
 <style scoped>
 .confetti-layer {
   position: fixed;
-  inset: 0;
+  /* 不用 inset 简写：老 iPad Safari（<14.5）不认，层会缩成零尺寸（全项目统一显式四边） */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
   pointer-events: none;
   z-index: 60;

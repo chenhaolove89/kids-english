@@ -44,7 +44,7 @@ import { goBackOrHome } from '@/platform/nav.js'
 import { getLesson } from '@/content/catalog.js'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
-import { nextPraiseSrc } from '@/services/encourage-app.js'
+import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 
 const char = ref('')
@@ -116,6 +116,8 @@ onLoad((query) => {
   const lid = decodeURIComponent(query.lessonId || '')
   if (lid) lesson = getLesson(lid)
   if (audioPath) preload([audioPath])
+  // 写完的表扬语整池预载：写完瞬间就要响
+  preload(praiseSrcs().map((p) => assetUrl(p)))
   // 等容器渲染完成后再建画布
   setTimeout(setupWriter, 60)
   // 旋转屏/改窗口大小要重建画布（尺寸写死在 create 时）

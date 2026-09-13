@@ -64,7 +64,7 @@ tools/gen-tab-icons.mjs   底部 Tab 图标（Noto Emoji：📚/⭐/👪，npm r
 tools/gen-audio-volumes.mjs  音频响度对齐（生成每词增益表）
 tools/audit-assets.mjs    资源审计：引用断链/空文件/截断/音轨缺口/重复图（npm run audit:assets）
 tools/measure-audio.mjs   音频体检：解码全部 mp3 找静音/过轻/削波（npm run audit:audio）
-tools/smoke-h5.mjs        真实 Chrome + CDP 冒烟测试（零依赖）：100 项断言，页面渲染/交互/作答/会话恢复/存储/零报错（npm run smoke:h5）
+tools/smoke-h5.mjs        真实 Chrome + CDP 冒烟测试（零依赖）：154 项断言，页面渲染/交互/作答/会话恢复/存储/零报错（npm run smoke:h5）
 tools/shots.mjs           截图回归：12 页 × 2 视口，capture / compare（含噪声底线说明与容差开关；npm run shots）
 tools/verify-offline.mjs  发布产物验证（21 项）：SW 接管 / 外壳预缓存 / 断网刷新可开 / 离线可听音 / 换代清旧缓存 /
                           PWA manifest 完整性（名字·start_url·scope·图标·页签图标）/ 发布产物运行期零 404 /
@@ -104,7 +104,7 @@ npm run gen:assets           # 生成音频/图片/数据（增量；--force 全
 node tools/gen-audio-volumes.mjs   # 音频变动后重算增益
 npm run build:content        # 课程源变更后：校验 + 重新生成 src/content/catalog.json
 npm run test                 # Node 测试（218 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
-npm run smoke:h5             # 真实 Chrome 冒烟测试 124 项（约 8~10 分钟；需先 build:h5 并另开终端跑 node tools/serve.mjs）
+npm run smoke:h5             # 真实 Chrome 冒烟测试 154 项（约 8~10 分钟；需先 build:h5 并另开终端跑 node tools/serve.mjs）
 npm run check:layering       # 分层门禁：domain 纯净、无反向依赖、存储已收口
 npm run validate:content     # 只校验（CI 用；目录与源不一致则失败）
 npm run audit:assets         # 资源审计：引用断链/空文件/截断/英式与中文音轨缺口/重复图/真孤儿
@@ -157,12 +157,12 @@ npm run gen:chant            # 英语分类韵律 chant 生成（Edge Ana 童声
 ## 数据规模
 
 - 英语：1998 词 / 53 分类，L1 启蒙起步（含家人、野生动物）/ L2 日常生活（含词族/拼读）/ L3 快乐探索 / L4 挑战进阶
-- 语文：297 字（L1 48 / L2 80 / L3 99 / L4 70）+ 297 句小短句 + 1420 词语卡 + 12 首古诗
+- 语文：297 字（L1 48 / L2 80 / L3 99 / L4 70）+ 297 句小短句 + 1420 词语卡 + 24 首古诗（4 学段各 6 首）
 - 数学：**9 个关卡 / 23 个题型**（分派链实现与关卡池一一对应，无死题型、无未实现题型），题目动态生成，数字 0-100 中文发音全覆盖
 - 静态资源：`src/static` 约 **87.5 MB / 11469 个文件**（音频 74.0 MB、图片 11.8 MB，其余为笔顺数据与 Tab 图标）
 
 > 内容覆盖的实话：启蒙与一二年级较实，三四年级尚可；**五六年级英语是词表（81% 为无图文字卡）而非阅读写作**，
-> 五六年级数学只有 2 关，古诗只覆盖启蒙与一二年级。`content-packages/curriculum.json` 里的 `draft` 状态目前未被使用，
+> 五六年级数学只有 2 关，古诗已覆盖全部四学段（各 6 首）。`content-packages/curriculum.json` 里的 `draft` 状态目前未被使用，
 > 所有课都是 `available`，课程页的「🚧 筹备中」分支因此不会出现。
 
 ## 路线图

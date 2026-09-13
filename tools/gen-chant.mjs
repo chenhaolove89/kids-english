@@ -3,7 +3,7 @@
  * 英语韵律 chant 生成器（Edge 免费端点，en-US-AnaNeural 儿童音色——
  * 与单词正典发音同一个音色，孩子听到的口音一致）。
  *
- * 每个英语分类生成一条 chant：取分类前 8 个词做「Word, word, word!」三连节奏
+ * 每个英语分类生成一条 chant：取分类前 6 个词做「Word, word, word!」三连节奏
  * （经典 children chant 模式），落到 src/static/audio-chant/<catId>.mp3，
  * 并把清单写入 src/data/chants.json（learn 页只给清单里有的分类显示 🎵 按钮）。
  *
@@ -36,10 +36,19 @@ const ONLY = (() => {
 
 const exists = (p) => fs.existsSync(p) && fs.statSync(p).size > 1000
 
-/** chant 文本：每个词三连（Cat, cat, cat!），词间留逗号给 TTS 换气，句尾感叹号给节奏 */
+/** chant 文本：每个词三连（Cat, cat, cat!），词间留逗号给 TTS 换气，句尾感叹号给节奏。
+ * 全大写缩写（PE/USA/TV/CD）与单字符（字母 A）三连保持原文——
+ * 小写后 TTS 会把 PE 读成音节、把单写的 a 读成冠词 /ə/ 而不是字母名 /eɪ/ */
 function chantText(words) {
   const picks = words.slice(0, WORDS_PER_CHANT).map((w) => w.en)
-  return picks.map((w) => `${w}, ${w.toLowerCase()}, ${w.toLowerCase()}!`).join(' ') + ' Hooray!'
+  // 逐词保护：单字符（字母 A）与全大写缩写（PE/USA/UK/TV）保持原样，
+  // 其余小写——「the USA」这类多词条目只降普通词，不把缩写降成会被读成音节的「usa」
+  const rep = (x) =>
+    x
+      .split(/\s+/)
+      .map((t) => (t.length === 1 || t === t.toUpperCase() ? t : t.toLowerCase()))
+      .join(' ')
+  return picks.map((w) => `${w}, ${rep(w)}, ${rep(w)}!`).join(' ') + ' Hooray!'
 }
 
 async function makeTTS() {

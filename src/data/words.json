@@ -2016,13 +2016,13 @@
      "card": "emoji"
     },
     {
-     "id": "puppet",
-     "en": "puppet",
-     "zh": "套娃",
-     "phonetic": "/ˈpʌpɪt/",
-     "image": "/static/img/puppet.png",
-     "audio": "/static/audio/puppet.mp3",
-     "zhAudio": "/static/audio-zh/puppet.mp3",
+     "id": "mahjong",
+     "en": "mahjong",
+     "zh": "麻将",
+     "phonetic": "/mɑːˈdʒɒŋ/",
+     "image": "/static/img/mahjong.png",
+     "audio": "/static/audio/mahjong.mp3",
+     "zhAudio": "/static/audio-zh/mahjong.mp3",
      "card": "emoji"
     },
     {
@@ -11369,7 +11369,7 @@
     {
      "id": "act-skip",
      "en": "skip",
-     "zh": "跳绳蹦跳",
+     "zh": "蹦蹦跳跳",
      "phonetic": "/skɪp/",
      "image": "/static/img/act-skip.svg",
      "audio": "/static/audio/act-skip.mp3",

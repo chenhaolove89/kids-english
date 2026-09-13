@@ -40,6 +40,9 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       const ls = available.filter((l) => l.subject === subj.id)
       if (!ls.length) return { subject: subj, challenge: null, units: [], empty: true, challengeLocked: false }
       const challenges = ls.filter((l) => l.kind === 'challenge')
+      // 古诗课不入锁路径：读诗只记 practice 会话（不算完成），放进路径会把 frontier 永久
+      // 卡在古诗上；它像「自由内容」一样始终开放（页内的填字挑战才记课时）
+      const inPath = (l) => l.ref?.kind !== 'zh-poem'
       let units
       if (subj.id === 'en') {
         units = ls.filter((l) => l.kind === 'learn')
@@ -49,8 +52,8 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
         // 数学没有独立学一学页：全部练习关卡都作为入口卡（一个阶段可能有多关）
         units = challenges
       }
-      const { lockedIds, nextId } = markPathLocks(units, progressOf, { freeUnlock: fu })
-      const annotated = units.map((l) => ({ ...l, locked: lockedIds.has(l.id), isNext: l.id === nextId }))
+      const { lockedIds, nextId } = markPathLocks(units.filter(inPath), progressOf, { freeUnlock: fu })
+      const annotated = units.map((l) => ({ ...l, locked: inPath(l) && lockedIds.has(l.id), isNext: inPath(l) && l.id === nextId }))
       // 挑战钮：该科路径上至少完成一门课才亮（数学全关卡即路径，无独立挑战钮）
       const challengeLocked =
         subj.id === 'math' ? false : isChallengeLocked(units, progressOf, { freeUnlock: fu })
@@ -70,8 +73,10 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       for (const subj of SUBJECTS) {
         const ls = available.filter((l) => l.subject === subj.id)
         const units = subj.id === 'math' ? ls.filter((l) => l.kind === 'challenge') : ls.filter((l) => l.kind === 'learn')
-        const { lockedIds, nextId } = markPathLocks(units, progressOf, { freeUnlock: fu })
-        for (const l of units) out.set(l.id, { locked: lockedIds.has(l.id), isNext: l.id === nextId })
+        // 与 stageBlocks 同口径：古诗课不入锁路径、始终开放
+        const inPath = (l) => l.ref?.kind !== 'zh-poem'
+        const { lockedIds, nextId } = markPathLocks(units.filter(inPath), progressOf, { freeUnlock: fu })
+        for (const l of units) out.set(l.id, { locked: inPath(l) && lockedIds.has(l.id), isNext: inPath(l) && l.id === nextId })
         // 挑战课（en-quiz-l{n} / zh-quiz-l{n}）：路径上没有任何完成记录就锁
         const chLocked = isChallengeLocked(units, progressOf, { freeUnlock: fu })
         for (const l of ls) {
@@ -114,9 +119,9 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
   }
 
   /**
-   * 随机来一课：某阶段某科目可见课程里随机抽一课（学一学/挑战都在池内），
-   * excludeId 传上一把抽中的课，避免连续重样。
-   * 池只含路径上开放（未锁）的课——随机不该绕过软解锁路径。
+   * 随机来一课：某阶段某科目随机抽一课，excludeId 传上一把抽中的课，避免连续重样。
+   * 池只含路径上开放（未锁）的学一学课（数学为关卡）——随机不该绕过软解锁路径，
+   * 挑战课也留在 🏆 钮里（v1.5 起不再入随机池）。
    */
   function randomLesson(stageId, subjectId, excludeId) {
     const st = normalizeStage(stageId)
@@ -175,7 +180,18 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
     const last = completed[completed.length - 1]
     if (last) {
       const nxt = nextLessonAfter(last.lessonId)
-      if (nxt && isVisible(nxt)) return { lesson: nxt, mode: 'next', snapshot: null, sessionId: null }
+      if (nxt && isVisible(nxt) && !lessonLocks().get(nxt.id)?.locked) {
+        return { lesson: nxt, mode: 'next', snapshot: null, sessionId: null }
+      }
+      // 下一课被软解锁锁住（老用户乱序完成时会发生）：退回同科目路径的 frontier，
+      // 保证「继续学习」卡与列表锁标永远指向同一门课
+      const cur = getLesson(last.lessonId)
+      if (cur) {
+        const units = lessonsForStage(cur.stage, cur.subject).filter(isVisible).filter((l) => l.kind === 'learn' && l.ref?.kind !== 'zh-poem')
+        const { nextId } = markPathLocks(units, progressOf, { freeUnlock: freeUnlock() })
+        const frontier = nextId && getLesson(nextId)
+        if (frontier && isVisible(frontier)) return { lesson: frontier, mode: 'next', snapshot: null, sessionId: null }
+      }
     }
     const first = firstLesson()
     return first ? { lesson: first, mode: 'start', snapshot: null, sessionId: null } : null

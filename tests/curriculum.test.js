@@ -14,6 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createCurriculum } from '../src/services/curriculum.js'
+import { createProgressService } from '../src/services/progress.js'
 import { createStorage, memoryBackend } from '../src/platform/storage.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -38,11 +39,14 @@ function make({ hidden = [], sessions = null, active = null, progress = null, fr
   const store = createStorage({ backend: memoryBackend() })
   if (sessions) store.set('sessions', sessions)
   if (active) store.set('active', active)
+  // 与 curriculum-app.js 相同的进度接线：进度默认从注入的 sessions 派生
+  // （不接线的话 continueTarget 的锁回退会按「全新用户」算，测不到真实链路）
+  const prog = createProgressService(store)
   const c = createCurriculum({
     catalog,
     isCategoryHidden: (id) => hidden.includes(id),
     store,
-    getProgress: progress ? (id) => progress.get(id) : null,
+    getProgress: progress ? (id) => progress.get(id) : (id) => prog.lessonProgressMap().get(id),
     isFreeUnlock: freeUnlock === null ? null : () => freeUnlock,
   })
   return { c, store }
@@ -254,7 +258,8 @@ test('continueTarget：② 活跃会话指向不可见课时被跳过，降到�
 test('continueTarget：③ 无活跃/暂停 → 最近完成课的下一课', () => {
   const enLessons = LESSONS.filter((l) => l.subject === 'en' && l.status === 'available')
   const { c } = make({
-    sessions: [{ sessionId: 's3', lessonId: enLessons[0].id, status: 'completed', startedAt: 1 }],
+    // kind 必须是 learn：进度聚合只认 learn/challenge（practice 不算完成），真实会话必带
+    sessions: [{ sessionId: 's3', lessonId: enLessons[0].id, kind: 'learn', status: 'completed', startedAt: 1 }],
   })
   const t = c.continueTarget()
   assert.equal(t.mode, 'next')

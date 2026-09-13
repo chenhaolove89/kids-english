@@ -58,6 +58,7 @@ let lastShakeAt = 0
 function refreshLocks() {
   locks.value = lessonLocks()
 }
+refreshLocks() // setup 先算一次：首帧不闪「全开放」
 onShow(refreshLocks)
 function isLocked(lessonId) {
   return !!locks.value.get(lessonId)?.locked

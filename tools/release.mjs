@@ -39,7 +39,6 @@ function checkVersions() {
   const lock = JSON.parse(read('package-lock.json'))
   const manifest = read('src/manifest.json')
   const version = pkg.version
-  const name = `^${version}$`
   // package-lock：packages[""].version 与根 version 都要一致
   const lockRoot = lock.version
   const lockPkg = lock.packages && lock.packages[''] && lock.packages[''].version
@@ -50,6 +49,11 @@ function checkVersions() {
   if (lockPkg !== version) errors.push(`package-lock.json packages[""].version=${lockPkg} ≠ ${version}`)
   if (!mName || mName[1] !== version) errors.push(`manifest.json versionName=${mName && mName[1]} ≠ ${version}`)
   const [maj, min, pat] = version.split('.').map(Number)
+  // versionCode 公式只在 minor/patch 为个位数时无歧义（1.5.10 会与 1.6.0 撞号）
+  if (!(maj >= 0 && maj <= 9) || !(min >= 0 && min <= 9) || !(pat >= 0 && pat <= 9)) {
+    console.error(`✗ 版本号 ${version} 超出 versionCode 公式（maj*100+min*10+pat）的无歧义范围，请改用 X.Y.Z（各位 0-9）或改公式`)
+    process.exit(1)
+  }
   const wantCode = String(maj * 100 + min * 10 + pat)
   if (!mCode || mCode[1] !== wantCode) errors.push(`manifest.json versionCode=${mCode && mCode[1]} ≠ ${wantCode}（约定 maj*100+min*10+pat）`)
   if (errors.length) {

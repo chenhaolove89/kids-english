@@ -101,14 +101,14 @@ import { ref, computed, watch } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady } from '@/platform/audio.js'
+import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady, preload } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { createThrottle, goBackOrHome, isTabletDevice } from '@/platform/nav.js'
 import { LESSONS, getLesson } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
 import { nextLessonAfter, lessonUrl } from '@/services/curriculum-app.js'
-import { nextPraiseSrc } from '@/services/encourage-app.js'
+import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
 import chantsData from '@/data/chants.json'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
@@ -219,6 +219,8 @@ function playChant() {
   if (!chantSrc.value) return
   play(assetUrl(chantSrc.value))
 }
+// 结课表扬语整池预载（8 条 × ~10KB）：学完瞬间就要响，不能等网络
+preload(praiseSrcs().map((p) => assetUrl(p)))
 let entryRef = null // 旧入口无 lessonId 时，用入口参数反查目录定位当前课
 let advancing = false // toast 600ms 窗口内防重复触发跳转
 
@@ -429,6 +431,8 @@ function findCurrentLesson() {
 /** 翻到最后再点「→」：撒一把彩带 + toast 过渡 900ms 后切下一课；科目学完回课程页。
  * 用 redirectTo 而不是 reLaunch：reLaunch 清空页面栈，下一课的返回键会失效（用户实测） */
 const celebrating = ref(false)
+/** 结课跳转定时器：onUnload 要清掉——900ms 窗口内按返回键后不该再被强行带去下一课 */
+let advanceTimer = null
 function goNextLesson() {
   if (advancing) return
   advancing = true
@@ -437,7 +441,8 @@ function goNextLesson() {
   celebrating.value = true
   play(assetUrl(nextPraiseSrc()))
   uni.showToast({ title: nxt ? '学完啦！去下一个 ✨' : '本科目全部学完啦 🏆', icon: 'none', duration: 900 })
-  setTimeout(() => {
+  advanceTimer = setTimeout(() => {
+    advanceTimer = null
     if (nxt) uni.redirectTo({ url: lessonUrl(nxt) })
     else uni.reLaunch({ url: '/pages/map/map' })
   }, 900)
@@ -445,6 +450,11 @@ function goNextLesson() {
 onUnload(() => {
   // 中文→英文之间有停顿：不作废序列，孩子退出后还会在页面外念出英文
   stopSeq()
+  // 结课跳转窗口内退出：取消定时器，别把孩子从「返回」的路上劫走去下一课
+  if (advanceTimer) {
+    clearTimeout(advanceTimer)
+    advanceTimer = null
+  }
   if (lesson.value && !completed) {
     svc.saveSnapshot({ idx: current.value })
     svc.pauseSession()

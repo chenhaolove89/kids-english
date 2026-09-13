@@ -3,9 +3,9 @@
  *
  * 规则（与 docs/learning-platform-plan.md 的产品主线一致）：
  * - 科目内按目录顺序排成一条路径；第一个没有完成记录的课是「下一课」（frontier），
- *   它和它之前的课始终开放；它之后的课锁定（弱引导：低龄孩子少做无关决策）。
+ *   它和它之前的课始终开放；它之后**未完成**的课锁定（弱引导：低龄孩子少做无关决策）。
  * - 有过任何完成记录（学一学完成 / 挑战完成 / 拿过星）的课永远开放——
- *   老用户按旧顺序学过的内容不会被锁回去。
+ *   老用户按旧顺序学过的内容不会被锁回去（v1.5 前全部开放，乱序完成是常态）。
  * - 挑战按钮在该阶段该科至少完成一门课后开放：没学过就挑战等于纯猜。
  * - 家长中心的「自由探索」开关（prefs.freeUnlock）= 全部开放。
  *
@@ -23,7 +23,7 @@ export function isLessonDone(progressEntry) {
  * @param {(id:string)=>object|undefined} getProgress lessonId → 进度条目
  * @param {{freeUnlock?:boolean}} opts
  * @returns {{lockedIds:Set<string>, nextId:string|null}}
- *   lockedIds 里不含已完成与 frontier；nextId 是推荐入口（frontier）。
+ *   lockedIds 只含 frontier 之后且未完成的课；nextId 是推荐入口（frontier）。
  */
 export function markPathLocks(ordered, getProgress, { freeUnlock = false } = {}) {
   const lockedIds = new Set()
@@ -31,17 +31,13 @@ export function markPathLocks(ordered, getProgress, { freeUnlock = false } = {})
   let nextId = null
   let passed = false
   for (const l of ordered) {
-    if (passed) {
-      lockedIds.add(l.id)
-      continue
-    }
+    // 已完成（拿到过完成/星）的课永远开放——即使它在 frontier 之后
     if (isLessonDone(getProgress(l.id))) continue
     if (nextId === null) {
       nextId = l.id
       continue
     }
     // frontier 之后的未完成课：锁
-    passed = true
     lockedIds.add(l.id)
   }
   return { lockedIds, nextId }

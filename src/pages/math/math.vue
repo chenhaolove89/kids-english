@@ -39,35 +39,21 @@ import { goBackOrHome } from '@/platform/nav.js'
 import { lessonLocks } from '@/services/curriculum-app.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 
-/**
- * 关卡说明文案。名称/配色/关卡数的唯一真源是 domain/mathgen.js 的 MATH_LEVELS——
- * 这里原来另存了一份硬编码副本，只列到第 6 关、标题还写死「4 个关卡」，
- * 于是 L7 图形规律 / L8 应用题 / L9 四则混合 从这个入口根本进不去。
- */
-const LEVEL_DESC = {
-  1: '点数、听音认数、找规律',
-  2: '看图数一数，算一算',
-  3: '进位加减、比大小、找搭档',
-  4: '乘法口诀、平均分',
-  5: '三位数加减、填空',
-  6: '小数加减、同分母分数',
-  7: '图形规律、二元周期接龙',
-  8: '读小故事，算一算',
-  9: '先乘除、括号优先',
-}
-
 // 关卡 → 课程 id：带上 lessonId 才会记会话、记星、点亮图鉴。
 // 旧入口不传 lessonId，从这里进去玩一整关等于没学（不落任何记录）。
 const MATH_LESSONS = lessonsOfSubject('math')
+function lessonOf(levelId) {
+  return MATH_LESSONS.find((l) => l.ref?.kind === 'math-level' && Number(l.ref.id) === Number(levelId)) || null
+}
 function lessonIdOf(levelId) {
-  const hit = MATH_LESSONS.find((l) => l.ref?.kind === 'math-level' && Number(l.ref.id) === Number(levelId))
-  return hit ? hit.id : ''
+  return lessonOf(levelId)?.id || ''
 }
 
 const levels = ref(
   Object.values(MATH_LEVELS)
     .sort((a, b) => a.id - b.id)
-    .map((lv) => ({ ...lv, desc: LEVEL_DESC[lv.id] || '' })),
+    // 说明文案以课程目录 subtitle 为唯一真源（曾经手抄副本与目录漂移到 L7-9 两套说法）
+    .map((lv) => ({ ...lv, desc: lessonOf(lv.id)?.subtitle || '' })),
 )
 
 // 路径软解锁：与课程页同一份口径（数学关卡即路径，阶段内顺序解锁）
@@ -77,6 +63,7 @@ let lastShakeAt = 0
 function refreshLocks() {
   locks.value = lessonLocks()
 }
+refreshLocks() // setup 先算一次：首帧不闪「全开放」
 onShow(refreshLocks)
 function isLocked(lessonId) {
   return lessonId && !!locks.value.get(lessonId)?.locked

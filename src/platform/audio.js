@@ -94,16 +94,23 @@ function getHowl(src) {
   }
   const id = src.split('/').pop().replace(/\.mp3$/, '')
   const isGb = src.includes('/audio-gb/')
-  const gain = (isGb ? volumesGb[id] : undefined) ?? volumes[id] ?? DEFAULT_VOLUME
+  const isAzure = src.includes('/audio-azure/')
+  // chant（audio-chant/）不查增益表：分类 id 会撞词 id 名（school/family/music），
+  // 误套词音增益会与其他 50 条 chant 差 ~3dB；chant 统一走默认增益保持一致
+  const isChant = src.includes('/audio-chant/')
+  const gain = isChant
+    ? DEFAULT_VOLUME
+    : (isGb ? volumesGb[id] : undefined) ?? volumes[id] ?? DEFAULT_VOLUME
   const howl = new Howl({ src: [src], preload: true, volume: gain })
   // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试。
   // 英式缺文件（uniCloud 漏传新目录）时顺带预取美音兜底，下一次点击就能出声。
   howl.once('loaderror', () => {
     console.error('[player] 音频加载失败，将在下次点击时重试:', src)
     cache.delete(src)
-    if (isGb) {
-      const usSrc = src.replace('/audio-gb/', '/audio/')
-      console.warn('[player] 英式音频缺失，回退美音:', usSrc)
+    // 英式/课堂口音缺轨（部署漏传或新词未生成课堂音）都回退美音同名文件，不让孩子听到沉默
+    if (isGb || isAzure) {
+      const usSrc = src.replace('/audio-gb/', '/audio/').replace('/audio-azure/', '/audio/')
+      console.warn('[player] 口音音轨缺失，回退美音:', usSrc)
       try {
         if (!cache.has(usSrc)) getHowl(usSrc)
         const us = cache.get(usSrc)

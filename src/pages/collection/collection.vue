@@ -246,7 +246,7 @@ import { getProgressService } from '@/services/progress.js'
 
 const tabs = [
   { id: 'en', name: '英语图鉴', emoji: '🔤' },
-  { id: 'zh', name: '汉字图鉴', emoji: '🈵' },
+  { id: 'zh', name: '汉字图鉴', emoji: '✍️' },
   { id: 'zhWords', name: '词语图鉴', emoji: '📖' },
   { id: 'zhSentences', name: '句子图鉴', emoji: '💬' },
   { id: 'math', name: '数学徽章', emoji: '🔢' },

@@ -94,6 +94,23 @@ test('学一学完成与挑战拿星都算「完成过」；纯挑战 1 星也�
   assert.equal(isChallengeLocked(ordered, () => undefined), true)
 })
 
+test('frontier 之后的已完成课保持开放（老用户乱序记录不被锁回）', () => {
+  // v1.5 前全部开放，乱序完成是常态：c 已完成但 a/b 未完成时，c 仍必须能进
+  const { curriculum } = setup([['en-learn-s1-c', 'learn']])
+  const en = curriculum.stageBlocks('s1').find((b) => b.subject.id === 'en')
+  assert.equal(en.units[0].isNext, true, 'frontier 仍是第一个未完成的 a')
+  assert.equal(en.units[2].locked, false, '已完成的 c 不锁')
+  assert.equal(en.units[1].locked, true)
+  assert.equal(en.units[3].locked, true)
+})
+
+test('continueTarget：下一课被锁时回退到同科目 frontier（两套导航口径一致）', () => {
+  const { curriculum } = setup([['en-learn-s1-c', 'learn']])
+  const t = curriculum.continueTarget()
+  assert.equal(t.mode, 'next')
+  assert.equal(t.lesson.id, 'en-learn-s1-a', 'c 的下一课 d 已锁，应退到 frontier a')
+})
+
 test('自由探索开关：全部开放、无 frontier', () => {
   const { curriculum } = setup([], { freeUnlock: true })
   const en = curriculum.stageBlocks('s1').find((b) => b.subject.id === 'en')
