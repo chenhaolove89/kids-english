@@ -126,7 +126,9 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
   function randomLesson(stageId, subjectId, excludeId) {
     const st = normalizeStage(stageId)
     const available = lessonsForStage(st, subjectId).filter(isVisible)
-    const units = subjectId === 'math' ? available.filter((l) => l.kind === 'challenge') : available.filter((l) => l.kind === 'learn')
+    // 古诗课与锁路径同口径排除：读诗只记 practice 不算完成，放进随机池会被锁态判定卡出
+    const inPath = (l) => l.ref?.kind !== 'zh-poem'
+    const units = subjectId === 'math' ? available.filter((l) => l.kind === 'challenge') : available.filter((l) => l.kind === 'learn' && inPath(l))
     const { lockedIds } = markPathLocks(units, progressOf, { freeUnlock: freeUnlock() })
     const pool = units.filter((l) => !lockedIds.has(l.id))
     return pickOneExcept(pool, excludeId, (l) => l.id) || null

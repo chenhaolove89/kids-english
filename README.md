@@ -103,7 +103,7 @@ node tools/merge-words.mjs   # 改词表后：合并校验 → tools/words.csv
 npm run gen:assets           # 生成音频/图片/数据（增量；--force 全量）
 node tools/gen-audio-volumes.mjs   # 音频变动后重算增益
 npm run build:content        # 课程源变更后：校验 + 重新生成 src/content/catalog.json
-npm run test                 # Node 测试（218 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
+npm run test                 # Node 测试（255 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
 npm run smoke:h5             # 真实 Chrome 冒烟测试 154 项（约 8~10 分钟；需先 build:h5 并另开终端跑 node tools/serve.mjs）
 npm run check:layering       # 分层门禁：domain 纯净、无反向依赖、存储已收口
 npm run validate:content     # 只校验（CI 用；目录与源不一致则失败）
@@ -159,7 +159,7 @@ npm run gen:chant            # 英语分类韵律 chant 生成（Edge Ana 童声
 - 英语：1998 词 / 53 分类，L1 启蒙起步（含家人、野生动物）/ L2 日常生活（含词族/拼读）/ L3 快乐探索 / L4 挑战进阶
 - 语文：297 字（L1 48 / L2 80 / L3 99 / L4 70）+ 297 句小短句 + 1420 词语卡 + 24 首古诗（4 学段各 6 首）
 - 数学：**9 个关卡 / 23 个题型**（分派链实现与关卡池一一对应，无死题型、无未实现题型），题目动态生成，数字 0-100 中文发音全覆盖
-- 静态资源：`src/static` 约 **87.5 MB / 11469 个文件**（音频 74.0 MB、图片 11.8 MB，其余为笔顺数据与 Tab 图标）
+- 静态资源：`src/static` 约 **94.9 MB / 11580 个文件**（音频 82.4 MB、图片 11.9 MB，其余为笔顺数据与 Tab 图标）
 
 > 内容覆盖的实话：启蒙与一二年级较实，三四年级尚可；**五六年级英语是词表（81% 为无图文字卡）而非阅读写作**，
 > 五六年级数学只有 2 关，古诗已覆盖全部四学段（各 6 首）。`content-packages/curriculum.json` 里的 `draft` 状态目前未被使用，
@@ -174,7 +174,7 @@ npm run gen:chant            # 英语分类韵律 chant 生成（Edge Ana 童声
   听音选图说出听到的词与中文释义、古诗填字把整句说出来）。实现见 `src/domain/explain.js`
   （纯函数 + `tests/explain.test.js`），拿不准时返回空串并退回原来的兜底文案——宁可不讲，不讲错。
 - ⬜ Phase 2 未完：五六年级阅读/写作内容、数学高年级关卡
-- ⬜ Phase 3：微信小程序验证（资源 CDN 化是前置条件：静态资源 **87.5MB** 远超小程序主包 2MB 限制；音频 Howler 需条件编译换 uni.createInnerAudioContext）
+- ⬜ Phase 3：微信小程序验证（资源 CDN 化是前置条件：静态资源 90+MB 远超小程序主包 2MB 限制；音频 Howler 需条件编译换 uni.createInnerAudioContext）
 - ⬜ Phase 4：多孩子档案（当前 6 个扁平存储键无 profileId）+ 云同步（上传作答事件流重放聚合）+ App 云打包
 
 ### 学习记录口径（2026-09 起）

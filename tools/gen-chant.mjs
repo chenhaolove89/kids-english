@@ -39,7 +39,7 @@ const exists = (p) => fs.existsSync(p) && fs.statSync(p).size > 1000
 /** chant 文本：每个词三连（Cat, cat, cat!），词间留逗号给 TTS 换气，句尾感叹号给节奏。
  * 全大写缩写（PE/USA/TV/CD）与单字符（字母 A）三连保持原文——
  * 小写后 TTS 会把 PE 读成音节、把单写的 a 读成冠词 /ə/ 而不是字母名 /eɪ/ */
-function chantText(words) {
+function chantText(words, catId) {
   const picks = words.slice(0, WORDS_PER_CHANT).map((w) => w.en)
   // 逐词保护：单字符（字母 A）与全大写缩写（PE/USA/UK/TV）保持原样，
   // 其余小写——「the USA」这类多词条目只降普通词，不把缩写降成会被读成音节的「usa」
@@ -48,7 +48,14 @@ function chantText(words) {
       .split(/\s+/)
       .map((t) => (t.length === 1 || t === t.toUpperCase() ? t : t.toLowerCase()))
       .join(' ')
-  return picks.map((w) => `${w}, ${rep(w)}, ${rep(w)}!`).join(' ') + ' Hooray!'
+  // 小会话类是完整句子：wh-/how/助动词开头的问句用「?」收尾（保留疑问语调），
+  // 其余仍用「!」——统一感叹号会把整条问句 chant 读成平调陈述
+  const QUESTION = /^(what|where|when|who|why|how|which|is|are|am|do|does|did|can|could|will|would)(?![a-z])/i
+  const line =
+    catId === 'conversation'
+      ? (w) => `${w}, ${rep(w)}, ${rep(w)}${QUESTION.test(w) ? '?' : '!'}`
+      : (w) => `${w}, ${rep(w)}, ${rep(w)}!`
+  return picks.map(line).join(' ') + ' Hooray!'
 }
 
 async function makeTTS() {
@@ -80,7 +87,7 @@ async function speak(tts, text, outPath) {
 
 async function main() {
   const cats = WORDS.categories.filter((c) => c.words?.length && (!ONLY || ONLY.has(c.id)))
-  const jobs = cats.map((c) => ({ id: c.id, zh: c.zh, text: chantText(c.words), out: path.join(OUT_DIR, `${c.id}.mp3`) }))
+  const jobs = cats.map((c) => ({ id: c.id, zh: c.zh, text: chantText(c.words, c.id), out: path.join(OUT_DIR, `${c.id}.mp3`) }))
   const todo = jobs.filter((j) => FORCE || !exists(j.out))
   console.log(`chant ${jobs.length} 条，待生成 ${todo.length} 条（voices=${VOICES.join('/')}）`)
   if (todo.length) {
