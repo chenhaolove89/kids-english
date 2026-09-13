@@ -93,8 +93,53 @@ async function main() {
   }
 
   if (DEPLOY) {
-    await step('部署：推送 gh-pages 预览（抢先版）', async () => {
+    await step('部署：gh-pages 抢先版（产物准备 + 真实 git 推送）', async () => {
       run('node tools/publish-github-pages.mjs')
+      // publish 脚本只准备产物目录；真正上线靠这段 git 推送（README 手工流程）。
+      // remote 若是 SSH 地址（本机无可用公钥会挂死）自动换成 HTTPS+凭据助手
+      const preview = path.join(ROOT, 'tmp', 'gh-preview')
+      const git = (args) => execSync('git ' + args, { cwd: preview, stdio: 'pipe' }).toString().trim()
+      if (!fs.existsSync(path.join(preview, '.git'))) {
+        git('init -b gh-pages')
+      }
+      const remoteUrl = (() => {
+        try {
+          return git('remote get-url origin')
+        } catch {
+          return ''
+        }
+      })()
+      if (!remoteUrl) git('remote add origin https://github.com/chenhaolove89/kids-english.git')
+      else if (remoteUrl.startsWith('git@github.com:')) git('remote set-url origin https://github.com/chenhaolove89/kids-english.git')
+      git('add -A')
+      const committed = (() => {
+        try {
+          git('commit -q -m "发布：v' + version + '（release --deploy 自动推送）"')
+          return true
+        } catch {
+          return false // 无变更时 commit 非零，属正常
+        }
+      })()
+      const before = (() => {
+        try {
+          return git('ls-remote origin refs/heads/gh-pages').split(/	/)[0]
+        } catch {
+          return ''
+        }
+      })()
+      git('push -f origin gh-pages:gh-pages')
+      const after = (() => {
+        try {
+          return git('ls-remote origin refs/heads/gh-pages').split(/	/)[0]
+        } catch {
+          return ''
+        }
+      })()
+      if (after && after === before && committed) {
+        console.error('✗ gh-pages 推送后远端无变化——推送可能未生效，请手工检查 tmp/gh-preview')
+        process.exit(1)
+      }
+      console.log('✓ gh-pages 已更新：' + (after || '(远端查询失败，请自行确认)') + (committed ? '' + '（新提交）' : '（内容无变化）'))
     })
   }
 
