@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <link rel="stylesheet" href="./assets/uni.18c32a4f.css">
+
+    <meta charset="UTF-8" />
+    <script>
+      var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
+      // 允许缩放：家长要在同一台设备上读家长页的报告，禁缩放会让小字无法放大（WCAG 1.4.4）。
+      // iOS Safari 10+ 本来就忽略「禁止缩放」的写法，去掉它主要修复 Android/桌面端的可访问性。
+      document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+    </script>
+    <title>快乐学园</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="./static/icons/icon.png" />
+    <!-- 标签页图标：少了这一行浏览器会去探 /favicon.ico（站点根没有该文件）→ 控制台一条 404、
+         标签页也没有图标。用已有的 icon.png，发布脚本会把 /static/ 改写成 ./static/。 -->
+    <link rel="icon" type="image/png" href="./static/icons/icon.png" />
+    <link rel="manifest" href="./static/manifest.webmanifest" />
+    <!--preload-links-->
+    <!--app-context-->
+    <script type="module" crossorigin src="./assets/index-_fyROZFX.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DbNkVx2Z.css">
+  </head>
+  <body>
+    <div id="app"><!--app-html--></div>
+  <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})})}</script></body>
+</html>
