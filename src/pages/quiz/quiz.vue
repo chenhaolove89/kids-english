@@ -20,7 +20,7 @@
 
       <view class="round-info">第 {{ roundIdx + 1 }} / {{ rounds.length }} 题</view>
 
-      <view class="options" :class="{ 'options-text': subject === 'zh' }">
+      <view class="options" :class="[{ 'options-text': subject === 'zh' }, 'options-' + options.length]">
         <view
           v-for="opt in options"
           :key="opt.id"
@@ -461,15 +461,34 @@ function goBack() {
 </script>
 
 <style scoped>
+/**
+ * 纵向版式：整页是一根「按视口高度分配」的弹性列，选项格吃掉剩余空间。
+ *
+ * 为什么不能靠 min-height + 滚动兜底：挑战一屏一题，孩子不该为了看选项而滑屏；
+ * 而且 1rpx 在宽屏（≥750px）按 750 基准换算 = 1px（见 App.vue），
+ * 本页设计高度约 1210rpx 在 iPad 上就是 1210px —— 竖屏 1024、横屏 744 都装不下，
+ * 旧版正是因此「只显示一半」（pages.json 里本页原标了 disableScroll，
+ * uni 给 document 挂的 touchmove+preventDefault 让真机上连滑都滑不动）。
+ *
+ * 现在：固定高度（100dvh）+ flex 分配，放不下时先压提示卡、再压选项卡，
+ * 结构上不可能溢出；万一某台设备仍装不下（老 Safari 不认 dvh 时 100vh 是"大视口"），
+ * 页面本身仍可滚动，不再是一堵墙。
+ */
 .page {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: #fff8ec;
   box-sizing: border-box;
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住贴底的那排选项卡（见 App.vue） */
   padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(env(safe-area-inset-bottom) + var(--bottom-gap));
 }
 /* 顶栏：结构在 components/page-top-bar.vue，这里只给本页的内边距
   （该页 .page 不带安全区，所以顶栏自带 safe-area-inset-top） */
 .topbar-page {
+  flex-shrink: 0;
   padding: calc(24rpx + env(safe-area-inset-top)) 32rpx 20rpx;
 }
 .score {
@@ -480,20 +499,24 @@ function goBack() {
   color: #ff8c42;
 }
 .prompt {
-  margin: 30rpx 60rpx 0;
+  /* min(设计值, 视口比例)：窄屏（1rpx≈0.5px）永远取设计值，像素不变；
+     宽屏横屏（1rpx=1px）才收，省下的高度全给选项卡 */
+  margin: min(30rpx, 3vh) 60rpx 0;
   background: #ffffff;
   border-radius: 44rpx;
-  padding: 40rpx;
+  padding: min(40rpx, 3vh);
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: 0 10rpx 30rpx rgba(120, 90, 40, 0.08);
+  box-sizing: border-box;
 }
 .prompt:active {
   transform: scale(0.98);
 }
 .prompt-speaker {
-  font-size: 90rpx;
+  font-size: min(90rpx, 7vh);
 }
 /* 题干音频还在下载：喇叭呼吸闪烁，孩子知道声音在来的路上 */
 .prompt-loading .prompt-speaker {
@@ -510,6 +533,7 @@ function goBack() {
   background: #f0e4d7;
   border-radius: 3rpx;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .load-fill {
   height: 100%;
@@ -517,8 +541,8 @@ function goBack() {
   transition: width 0.25s;
 }
 .prompt-hint {
-  margin-top: 12rpx;
-  font-size: 30rpx;
+  margin-top: min(12rpx, 1vh);
+  font-size: min(30rpx, 3vh);
   color: #a2917d;
 }
 .stem {
@@ -526,34 +550,43 @@ function goBack() {
   color: #4a3f35;
 }
 .stem-char {
-  font-size: 120rpx;
+  font-size: min(120rpx, 12vh);
   line-height: 1.15;
 }
 .stem-pinyin {
-  font-size: 76rpx;
+  font-size: min(76rpx, 8vh);
   color: #ff8c42;
 }
 /* 古诗填字题干：整句挖空展示，比单字小一号 */
 .stem-line {
-  font-size: 56rpx;
+  font-size: min(56rpx, 5vh);
   letter-spacing: 4rpx;
 }
 .round-info {
-  margin-top: 22rpx;
+  flex-shrink: 0;
+  margin-top: min(22rpx, 2.2vh);
   text-align: center;
-  font-size: 28rpx;
+  font-size: min(28rpx, 3vh);
   color: #b3a492;
   font-weight: 600;
 }
 .options {
-  margin: 26rpx 48rpx;
+  /* 吃掉剩余高度：两行卡片 = (可用高 - 间距) / 2，一行（2 选项）时用满 */
+  flex: 1;
+  min-height: 0;
+  margin: min(26rpx, 2.6vh) 48rpx;
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 30rpx;
 }
 .option {
   width: calc(50% - 15rpx);
   height: 340rpx;
+  /* 百分比只降不升：矮视口上卡片随剩余空间缩，高视口上仍是设计尺寸。
+     不用 min-height 兜底——卡片一旦被地板顶住就会溢出到揭晓条上，
+     宁可让字小一点，也不要两个元素叠在一起 */
+  max-height: calc((100% - 30rpx) / 2);
   background: #ffffff;
   border-radius: 44rpx;
   display: flex;
@@ -562,6 +595,11 @@ function goBack() {
   box-shadow: 0 10rpx 30rpx rgba(120, 90, 40, 0.08);
   border: 6rpx solid transparent;
   box-sizing: border-box;
+  position: relative;
+}
+/* 只有 2 个选项时是一行，可以占满整块可用高度 */
+.options-2 .option {
+  max-height: 100%;
 }
 .option:active {
   transform: scale(0.96);
@@ -588,18 +626,16 @@ function goBack() {
   font-weight: 900;
   color: #3bb273;
 }
-.option {
-  position: relative;
-}
 .reveal-bar {
-  margin: 0 48rpx 18rpx;
-  padding: 18rpx 24rpx;
+  flex-shrink: 0;
+  margin: 0 48rpx min(18rpx, 1.8vh);
+  padding: min(18rpx, 1.8vh) 24rpx;
   border-radius: 24rpx;
   background: #e8f8ee;
   text-align: center;
 }
 .reveal-text {
-  font-size: 32rpx;
+  font-size: min(32rpx, 3.4vh);
   font-weight: 700;
   color: #2f8f5b;
 }
@@ -614,19 +650,25 @@ function goBack() {
     transform: scale(1);
   }
 }
+/* 图片卡：拿满设计尺寸，但绝不超出卡片（矮视口上卡片只有一半高） */
 .opt-img {
   width: 260rpx;
   height: 260rpx;
+  max-width: 100%;
+  max-height: 100%;
 }
+/* 文字选项（语文）：比图片卡矮一档 */
 .options-text .option {
   height: 260rpx;
 }
 .opt-char {
-  font-size: 170rpx;
+  /* 汉字卡的字号必须跟着卡片高走：字形的行盒约 1.32×字号，
+     148rpx 的字放不进 118px 的卡（iPad 横屏实测溢出 20px），所以按 13vh 封顶 */
+  font-size: min(170rpx, 13vh);
   font-weight: 800;
 }
 .opt-label {
-  font-size: 52rpx;
+  font-size: min(52rpx, 6vh);
   font-weight: 800;
   color: #4a3f35;
   padding: 0 16rpx;
@@ -635,7 +677,7 @@ function goBack() {
 .shake {
   animation: shake 0.45s;
 }
-/* 矮屏（iPhone SE 568px 等）压缩纵向空间，避免答题区被顶出首屏 */
+/* 矮屏（iPhone SE 568px、横屏手机、iPad 分屏）再压一档纵向空间 */
 @media (max-height: 620px) {
   .option {
     height: 300rpx;
@@ -658,13 +700,23 @@ function goBack() {
   75% { transform: translateX(-10rpx); }
 }
 .result {
+  flex: 1;
+  min-height: 0;
+  /* 结果页也可能比一屏高（iPad 横屏 744）：允许它自己滚，别把「返回」裁掉 */
+  overflow-y: auto;
   padding-top: 22vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+/* 宽而矮（横屏 iPad）：22vh 的顶部留白太贵，结果页会多出一段滚动才够到「返回」 */
+@media (min-width: 750px) and (max-height: 860px) {
+  .result {
+    padding-top: 12vh;
+  }
+}
 .result-emoji {
-  font-size: 140rpx;
+  font-size: min(140rpx, 12vh);
 }
 /* 满星奖杯：弹出 + 轻微摇摆，庆祝感给足但不吵 */
 .result-emoji-perfect {
@@ -681,25 +733,27 @@ function goBack() {
   75% { transform: rotate(9deg); }
 }
 .result-score {
-  margin-top: 30rpx;
-  font-size: 48rpx;
+  margin-top: min(30rpx, 2.4vh);
+  font-size: min(48rpx, 5vh);
   font-weight: 800;
   color: #4a3f35;
+  text-align: center;
 }
 .result-stars {
-  margin-top: 20rpx;
-  font-size: 52rpx;
+  margin-top: min(20rpx, 1.6vh);
+  font-size: min(52rpx, 5.4vh);
   letter-spacing: 8rpx;
 }
 .result-note {
-  margin-top: 14rpx;
-  font-size: 27rpx;
+  margin-top: min(14rpx, 1.2vh);
+  font-size: min(27rpx, 2.8vh);
   color: #b3a492;
 }
 .result-btn {
-  margin-top: 56rpx;
+  flex-shrink: 0;
+  margin-top: min(56rpx, 4.6vh);
   width: 420rpx;
-  height: 110rpx;
+  height: min(110rpx, 9vh);
   border-radius: 55rpx;
   background: linear-gradient(135deg, #ffb84d, #ff8c42);
   display: flex;
@@ -712,11 +766,11 @@ function goBack() {
 }
 .result-btn-text {
   color: #ffffff;
-  font-size: 38rpx;
+  font-size: min(38rpx, 4vh);
   font-weight: 800;
 }
 .result-btn.ghost {
-  margin-top: 28rpx;
+  margin-top: min(28rpx, 2.4vh);
   background: #ffffff;
   box-shadow: 0 8rpx 20rpx rgba(120, 90, 40, 0.1);
 }

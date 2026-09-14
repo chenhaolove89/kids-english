@@ -96,6 +96,8 @@ function goBack() {
   background: #fff8ec;
   box-sizing: border-box;
   padding: calc(24rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住最后一行卡片（见 App.vue） */
+  padding: calc(24rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
 }
 .topbar-page {
   padding: 0 8rpx 20rpx;

@@ -492,6 +492,8 @@ function goLearn() {
   min-height: 100vh;
   min-height: 100svh;
   padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住最后一排图鉴（见 App.vue） */
+  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -838,7 +840,9 @@ function goLearn() {
   border-radius: 56rpx 56rpx 0 0;
   display: flex;
   flex-direction: column;
+  /* 底部再叠 --bottom-gap：详情弹层同样贴底，微信里的底部工具条会盖住「写一写」等按钮（见 App.vue） */
   padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(env(safe-area-inset-bottom) + var(--bottom-gap));
 }
 .sheet-head {
   display: flex;

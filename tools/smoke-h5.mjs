@@ -326,6 +326,75 @@ async function main() {
     )
     check('iPad 宽屏：阶段胶囊高度达到设计尺寸（≥44px 可点下限）', ipad.stageChipH >= 44, `${Math.round(ipad.stageChipH)}px`)
 
+    // ---------- 2b. iPad 宽而矮（横屏 744）：内容页必须一屏放得下 ----------
+    // 1rpx 在宽屏（≥750px）按 750 基准换算 = 1px（见 App.vue），挑战页设计高度约 1210rpx
+    // 在 iPad 上就是 1210px，横屏 744 / 竖屏 1024 都装不下。历史反馈是「只显示一半，
+    // 而且滑不动」：pages.json 当时给这些页标了 disableScroll，uni 给 document 挂的
+    // touchmove + preventDefault 把「装不下就滑一滑」这条退路也堵死了。
+    // 现在要求：横向卡片全部落在视口内，且触摸事件不再被拦（留一条可滚的退路）。
+    for (const vp of [
+      { w: 1133, h: 744 },
+      { w: 1024, h: 768 },
+    ]) {
+      await cdp.setViewport(vp.w, vp.h)
+      for (const [label, route, sel] of [
+        ['挑战·英语听音选图', 'pages/quiz/quiz?subject=en&level=3&lessonId=en-quiz-l3', '.option'],
+        ['挑战·语文汉字', 'pages/quiz/quiz?subject=zh&level=1&lessonId=zh-quiz-l1', '.option'],
+        ['挑战·古诗填字', 'pages/quiz/quiz?poem=qimeng&subject=zh&lessonId=zh-poem-qimeng', '.option'],
+        ['数学练习', 'pages/math/practice?level=2&lessonId=math-practice-l2', '.opt, .compare-card'],
+      ]) {
+        await cdp.freshNavigate(`${BASE}/#/${route}`)
+        await sleep(1500)
+        const fit = await cdp.eval(`
+          const de = document.documentElement
+          const els = [...document.querySelectorAll(${JSON.stringify(sel)})].filter((e) => e.getBoundingClientRect().width > 0)
+          const bottom = els.length ? Math.max(...els.map((e) => e.getBoundingClientRect().bottom)) : -1
+          const ev = new TouchEvent('touchmove', { bubbles: true, cancelable: true })
+          document.dispatchEvent(ev)
+          return { over: de.scrollHeight - window.innerHeight, bottom, inner: window.innerHeight, els: els.length, blocked: ev.defaultPrevented }
+        `)
+        check(
+          `${vp.w}x${vp.h} ${label}：答题区一屏放得下`,
+          fit.els > 0 && fit.over <= 2 && fit.bottom <= fit.inner + 2,
+          `${fit.els} 张卡，最后一张底边 ${Math.round(fit.bottom)} / 视口 ${fit.inner}，文档溢出 ${fit.over}px`,
+        )
+        check(`${vp.w}x${vp.h} ${label}：触摸滚动没被拦死（装不下时还能滑）`, fit.blocked === false, `touchmove defaultPrevented=${fit.blocked}`)
+      }
+    }
+
+    // ---------- 2c. 底部留白：微信内置浏览器的底部工具条会盖住贴底的控件 ----------
+    // 内容页现在正好占满一屏（100dvh + flex），底部控件贴死下沿；微信（安卓尤其）会在
+    // WebView 之上压一条工具条，env(safe-area-inset-bottom) 算不到它 → 各页在安全区之上
+    // 再叠 --bottom-gap（App.vue 定义：普通 20px、微信 56px）。这里验证变量真的进了 CSS
+    // 且真的加到了页面 padding 上（只写在注释里不算）。
+    await cdp.setViewport(390, 844)
+    await cdp.freshNavigate(`${BASE}/#/pages/quiz/quiz?subject=en&level=1&lessonId=en-quiz-l1`)
+    await sleep(1400)
+    const gap = await cdp.eval(`
+      const read = () => {
+        const page = document.querySelector('.page')
+        return {
+          v: getComputedStyle(document.documentElement).getPropertyValue('--bottom-gap').trim(),
+          pad: parseFloat(getComputedStyle(page).paddingBottom) || 0,
+        }
+      }
+      const normal = read()
+      document.documentElement.classList.add('in-wechat')
+      const wechat = read()
+      document.documentElement.classList.remove('in-wechat')
+      return { normal, wechat }
+    `)
+    check(
+      '底部留白：普通浏览器给足 20px',
+      gap.normal.pad >= 20,
+      `padding-bottom=${gap.normal.pad}px（--bottom-gap=${gap.normal.v || '未定义'}）`,
+    )
+    check(
+      '底部留白：微信内置浏览器抬到 56px（躲开底部工具条）',
+      gap.wechat.pad >= 56,
+      `padding-bottom=${gap.wechat.pad}px（--bottom-gap=${gap.wechat.v || '未定义'}）`,
+    )
+
     // ---------- 3. 挑战页：答错揭晓 + 自动进下一题 ----------
     await cdp.setViewport(390, 844)
     const lessonId = 'en-quiz-l1'

@@ -125,6 +125,8 @@ onShow(refreshLocks)
 .page {
   min-height: 100vh;
   padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住最后一行关卡卡（见 App.vue） */
+  padding: calc(30rpx + env(safe-area-inset-top)) 40rpx calc(50rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
   box-sizing: border-box;
 }
 /* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */

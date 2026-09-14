@@ -393,15 +393,32 @@ function goBack() {
 </script>
 
 <style scoped>
+/**
+ * 纵向版式：整页按视口高度分配（同 quiz.vue）。
+ *
+ * 1rpx 在宽屏（≥750px）按 750 基准换算 = 1px（见 App.vue），本页设计高度约 1230rpx
+ * 在 iPad 上就是 1230px —— 竖屏 1024、横屏 744 都装不下；题目区还会随题型变高
+ * （点数题 10 张卡、应用题长句），旧版只写了 min-height，于是 iPad 上「只显示一半」，
+ * 而且原标了 disableScroll（真机 touchmove 被 preventDefault）连滑都滑不动。
+ *
+ * 现在：固定高度 + flex 分配；题目区只缩不长（窄屏版式不变），
+ * 选项/题面尺寸按 min(设计值, 视口比例) 收；仍装不下的极端题面靠页面滚动兜底
+ * （pages.json 已去掉本页的 disableScroll）。
+ */
 .page {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: #fff8ec;
   box-sizing: border-box;
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住贴底的选项卡（见 App.vue） */
   padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(env(safe-area-inset-bottom) + var(--bottom-gap));
 }
 /* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
 .topbar-page {
+  flex-shrink: 0;
   padding: calc(24rpx + env(safe-area-inset-top)) 32rpx 12rpx;
 }
 .score {
@@ -412,18 +429,22 @@ function goBack() {
   color: #ff8c42;
 }
 .round-info {
+  flex-shrink: 0;
   text-align: center;
-  font-size: 27rpx;
+  font-size: min(27rpx, 2.8vh);
   color: #b3a492;
   font-weight: 600;
-  margin-top: 8rpx;
+  margin-top: min(8rpx, 0.8vh);
 }
 .stage {
-  min-height: 380rpx;
-  margin: 26rpx 44rpx 0;
+  /* 只缩不长：窄屏上仍旧按 min-height 380rpx 撑开（版式不变），
+     矮视口上缩到视口比例，把高度让给选项卡 */
+  flex: 0 1 auto;
+  min-height: min(380rpx, 30vh);
+  margin: min(26rpx, 2.6vh) 44rpx 0;
   background: #ffffff;
   border-radius: 44rpx;
-  padding: 34rpx;
+  padding: min(34rpx, 3.4vh);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -437,7 +458,7 @@ function goBack() {
   gap: 18rpx;
 }
 .dot-emoji {
-  font-size: 64rpx;
+  font-size: min(64rpx, 7vh);
   line-height: 1.15;
 }
 /* 物品卡片拼贴：马卡龙底色 + 轻微错落旋转，比一排相同 emoji 更抓眼 */
@@ -445,12 +466,12 @@ function goBack() {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 18rpx;
+  gap: min(18rpx, 1.8vh);
   max-width: 460rpx;
 }
 .tile {
-  width: 120rpx;
-  height: 120rpx;
+  width: min(120rpx, 13vh);
+  height: min(120rpx, 13vh);
   border-radius: 32rpx;
   display: flex;
   align-items: center;
@@ -458,28 +479,28 @@ function goBack() {
   box-shadow: 0 6rpx 14rpx rgba(120, 90, 40, 0.1);
 }
 .tile.sm {
-  width: 92rpx;
-  height: 92rpx;
+  width: min(92rpx, 10vh);
+  height: min(92rpx, 10vh);
   border-radius: 26rpx;
 }
 .tile-emoji {
-  font-size: 72rpx;
+  font-size: min(72rpx, 7.8vh);
   line-height: 1;
 }
 .tile.sm .tile-emoji {
-  font-size: 54rpx;
+  font-size: min(54rpx, 5.8vh);
 }
 .tile.faded {
   opacity: 0.25;
 }
 /* 图案超过 6 个自动缩卡：一行能排 4-5 个，避免挤出卡片 */
 .tiles-many .tile {
-  width: 88rpx;
-  height: 88rpx;
+  width: min(88rpx, 9.6vh);
+  height: min(88rpx, 9.6vh);
   border-radius: 24rpx;
 }
 .tiles-many .tile-emoji {
-  font-size: 50rpx;
+  font-size: min(50rpx, 5.4vh);
 }
 .tilt0 { background: #ffe8cc; transform: rotate(-4deg); }
 .tilt1 { background: #ddebff; transform: rotate(3deg); }
@@ -513,7 +534,7 @@ function goBack() {
 .compare-card {
   flex: 1;
   min-width: 0;
-  min-height: 240rpx;
+  min-height: min(240rpx, 22vh);
   border-radius: 36rpx;
   background: #fff8ec;
   border: 6rpx solid transparent;
@@ -537,19 +558,20 @@ function goBack() {
   position: absolute;
   top: 6rpx;
   right: 16rpx;
-  font-size: 52rpx;
+  font-size: min(52rpx, 5.6vh);
   font-weight: 900;
   color: #3bb273;
 }
 .reveal-bar {
+  flex-shrink: 0;
   margin: 8rpx 48rpx 0;
-  padding: 18rpx 24rpx;
+  padding: min(18rpx, 1.8vh) 24rpx;
   border-radius: 24rpx;
   background: #e8f8ee;
   text-align: center;
 }
 .reveal-text {
-  font-size: 34rpx;
+  font-size: min(34rpx, 3.6vh);
   font-weight: 700;
   color: #2f8f5b;
 }
@@ -572,7 +594,7 @@ function goBack() {
   background: #e8f8ee;
 }
 .compare-num {
-  font-size: 110rpx;
+  font-size: min(110rpx, 11vh);
   font-weight: 800;
   color: #4a3f35;
 }
@@ -585,6 +607,7 @@ function goBack() {
   align-items: center;
   justify-content: center;
 }
+/* 算式字号由 :style 的 equationSize 按长度决定（见 script），这里只留基础值 */
 .equation {
   font-size: 96rpx;
   font-weight: 800;
@@ -594,7 +617,7 @@ function goBack() {
 }
 /* 应用题题干：一句小故事，小字号可换行 */
 .word-problem {
-  font-size: 44rpx;
+  font-size: min(44rpx, 4.6vh);
   font-weight: 700;
   color: #4a3f35;
   line-height: 1.7;
@@ -607,20 +630,21 @@ function goBack() {
   letter-spacing: 0;
 }
 .listen-icon {
-  font-size: 130rpx;
+  font-size: min(130rpx, 13vh);
 }
 .options {
-  margin: 34rpx 60rpx;
+  flex-shrink: 0;
+  margin: min(34rpx, 3.4vh) 60rpx;
   display: flex;
   flex-wrap: wrap;
-  gap: 26rpx;
+  gap: min(26rpx, 2.6vh);
 }
 .options.opts-3 .opt,
 .options.opts-4 .opt {
   width: calc(50% - 13rpx);
 }
 .opt {
-  height: 150rpx;
+  height: min(150rpx, 12vh);
   background: #ffffff;
   border-radius: 36rpx;
   display: flex;
@@ -648,7 +672,7 @@ function goBack() {
   background: #fdecec;
 }
 .opt-text {
-  font-size: 64rpx;
+  font-size: min(64rpx, 6.6vh);
   font-weight: 800;
   color: #4a3f35;
 }
@@ -662,13 +686,23 @@ function goBack() {
   75% { transform: translateX(-10rpx); }
 }
 .result {
+  flex: 1;
+  min-height: 0;
+  /* 结果页也可能比一屏高（iPad 横屏 744）：允许它自己滚，别把「返回」裁掉 */
+  overflow-y: auto;
   padding-top: 22vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+/* 宽而矮（横屏 iPad）：22vh 的顶部留白太贵，结果页会多出一段滚动才够到「返回」 */
+@media (min-width: 750px) and (max-height: 860px) {
+  .result {
+    padding-top: 12vh;
+  }
+}
 .result-emoji {
-  font-size: 140rpx;
+  font-size: min(140rpx, 12vh);
 }
 /* 满星奖杯：弹出 + 轻微摇摆（quiz 同款） */
 .result-emoji-perfect {
@@ -685,25 +719,28 @@ function goBack() {
   75% { transform: rotate(9deg); }
 }
 .result-score {
-  margin-top: 30rpx;
-  font-size: 48rpx;
+  margin-top: min(30rpx, 2.4vh);
+  font-size: min(48rpx, 5vh);
   font-weight: 800;
   color: #4a3f35;
+  text-align: center;
 }
 .result-stars {
-  margin-top: 20rpx;
-  font-size: 52rpx;
+  margin-top: min(20rpx, 1.6vh);
+  font-size: min(52rpx, 5.4vh);
   letter-spacing: 8rpx;
 }
 .result-note {
-  margin-top: 14rpx;
-  font-size: 27rpx;
+  margin-top: min(14rpx, 1.2vh);
+  font-size: min(27rpx, 2.8vh);
   color: #b3a492;
+  text-align: center;
 }
 .result-btn {
-  margin-top: 56rpx;
+  flex-shrink: 0;
+  margin-top: min(56rpx, 4.6vh);
   width: 420rpx;
-  height: 110rpx;
+  height: min(110rpx, 9vh);
   border-radius: 55rpx;
   background: linear-gradient(135deg, #ffb84d, #ff8c42);
   display: flex;
@@ -716,11 +753,11 @@ function goBack() {
 }
 .result-btn-text {
   color: #ffffff;
-  font-size: 38rpx;
+  font-size: min(38rpx, 4vh);
   font-weight: 800;
 }
 .result-btn.ghost {
-  margin-top: 28rpx;
+  margin-top: min(28rpx, 2.4vh);
   background: #ffffff;
   box-shadow: 0 8rpx 20rpx rgba(120, 90, 40, 0.1);
 }

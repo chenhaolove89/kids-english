@@ -282,17 +282,31 @@ onUnload(() => {
 </script>
 
 <style scoped>
+/**
+ * 纵向版式：一屏 = 顶栏 + 田字格 + 提示 + 三个按钮，田字格吃掉剩余高度。
+ *
+ * 旧版把田字格写死 640rpx：窄屏 1rpx≈0.5px 刚好一屏，但宽屏（≥750px，见 App.vue）
+ * 1rpx = 1px → 田字格 652px 见方，加顶栏/提示/按钮共 1090px，iPad 横屏 744 装不下，
+ * 竖屏 1024 也溢出（实测横屏溢出 349px）；而本页原标了 disableScroll，
+ * 真机上 touchmove 被 preventDefault，「听发音/看笔顺/我来写」三个按钮直接够不着。
+ *
+ * 现在：田字格边长 = 可用高度（封顶设计尺寸 640rpx，见 boardSize() 读取 clientWidth），
+ * 正方形交给 aspect-ratio，画布在 resize 时重建（HanziWriter 尺寸在 create 时算死）。
+ */
 .page {
-  min-height: 100vh;
-  min-height: 100svh;
+  height: 100vh;
+  height: 100dvh;
   background: #fff8ec;
   box-sizing: border-box;
   padding: calc(24rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住「听发音/看笔顺/我来写」（见 App.vue） */
+  padding: calc(24rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
   display: flex;
   flex-direction: column;
 }
 /* 顶栏：结构与样式在 components/page-top-bar.vue，这里只保留本页内边距 */
 .topbar-page {
+  flex-shrink: 0;
   padding: 0 8rpx 20rpx;
 }
 .pinyin {
@@ -306,10 +320,13 @@ onUnload(() => {
   position: relative;
   display: flex;
   justify-content: center;
-  padding: 20rpx 0;
+  padding: min(20rpx, 2vh) 0;
+  box-sizing: border-box;
 }
 .board {
   position: relative;
+  /* 兜底（老 Safari <15 不认 aspect-ratio）：仍旧是 640rpx 见方，
+     装不下时页面能滚（pages.json 已去掉本页 disableScroll），不会再把按钮锁在屏幕外 */
   width: 640rpx;
   height: 640rpx;
   background: #ffffff;
@@ -320,6 +337,29 @@ onUnload(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* 描红是拖动手势：不让浏览器把这一笔判成滚屏（HanziWriter 的 preventDefault 只覆盖测验态） */
+  touch-action: none;
+}
+/* 矮视口增强：边长 = 可用高度（封顶设计尺寸 640rpx），正方形交给 aspect-ratio。
+   单独包在 @supports 里是因为「高度百分比 + aspect-ratio 反推宽度」是老 Safari 做不到的，
+   做不到时宽度会退化成 0（画布全靠 clientWidth，会变成 0 宽 + 无限重试）。 */
+@supports (aspect-ratio: 1 / 1) {
+  .board-wrap {
+    flex: 1;
+    min-height: 0;
+    align-items: center;
+  }
+  .board {
+    /* 100% 是 .board-wrap 的内容高：边框那 12rpx 由 wrap 自己的上下 padding 吸收。
+       不写成 min(calc(100% - 12rpx), ...)：老 Safari（<15.4）不支持 min() 里嵌 calc()，
+       整条声明会被丢掉，田字格直接塌成 0 宽。 */
+    height: min(100%, 640rpx);
+    /* 再矮也不能缩成一条：低于这个值就让页面滚 */
+    min-height: 240rpx;
+    width: auto;
+    aspect-ratio: 1;
+    max-width: 100%;
+  }
 }
 /* 田字格：虚线中线 */
 .grid-line {
@@ -361,23 +401,26 @@ onUnload(() => {
   box-shadow: 0 10rpx 24rpx rgba(200, 140, 40, 0.25);
 }
 .hint {
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
-  padding: 8rpx 0 26rpx;
+  padding: min(8rpx, 0.8vh) 0 min(26rpx, 2.6vh);
 }
 .hint-text {
-  font-size: 27rpx;
+  font-size: min(27rpx, 2.8vh);
   color: #a2917d;
+  text-align: center;
 }
 .btn-row {
+  flex-shrink: 0;
   display: flex;
-  gap: 24rpx;
+  gap: min(24rpx, 2.4vh);
   padding: 0 10rpx;
 }
 .action {
   flex: 1;
   border-radius: 36rpx;
-  padding: 26rpx 0;
+  padding: min(26rpx, 2.6vh) 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -391,19 +434,16 @@ onUnload(() => {
   border: 4rpx solid #3bb273;
 }
 .action-emoji {
-  font-size: 52rpx;
+  font-size: min(52rpx, 5.2vh);
   line-height: 1.1;
 }
 .action-label {
-  font-size: 27rpx;
+  font-size: min(27rpx, 2.8vh);
   font-weight: 800;
   color: #4a3f35;
 }
+/* 矮屏（横屏手机、iPad 分屏）：田字格已经由 flex 自适应，这里只把按钮再压紧一点 */
 @media (max-height: 620px) {
-  .board {
-    width: 520rpx;
-    height: 520rpx;
-  }
   .btn-row {
     padding: 0 40rpx;
   }

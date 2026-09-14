@@ -734,6 +734,8 @@ function goBoard() {
   align-items: center;
   justify-content: space-between;
   padding: 20rpx 44rpx calc(34rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住翻页的 ← / →（见 App.vue） */
+  padding: 20rpx 44rpx calc(34rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
 }
 .nav-btn {
   width: 110rpx;

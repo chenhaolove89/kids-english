@@ -172,12 +172,26 @@ function goBack() {
 </script>
 
 <style scoped>
+/**
+ * 纵向版式：书单页是「会长的一列卡片」，点读页是「一屏之内读完的整首诗」。
+ *
+ * 1rpx 在宽屏（≥750px）按 750 基准换算 = 1px（见 App.vue），本页设计高度约 1310rpx
+ * 在 iPad 上就是 1310px —— 竖屏 1024、横屏 744 都装不下。旧版靠 min-height 让它自然变高，
+ * 但 pages.json 里标了 disableScroll（真机 touchmove 被 preventDefault），
+ * 于是 iPad 上书单后半截和点读页的两排按钮都滑不到（实测横屏溢出 548px）。
+ *
+ * 现在：本页允许滚动（pages.json 已去掉 disableScroll）——书单本来就是可滚列表，
+ * 长诗（《长歌行》10 句）本来就一屏放不下；同时把点读区与按钮按 min(设计值, 视口比例)
+ * 收一遍，短诗（4 句）在横屏 iPad 上也能一屏读完，不用滑。
+ */
 .page {
   min-height: 100vh;
   min-height: 100svh;
   background: #fff8ec;
   box-sizing: border-box;
   padding: calc(24rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住「读整首/填字挑战」（见 App.vue） */
+  padding: calc(24rpx + env(safe-area-inset-top)) 40rpx calc(40rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
   display: flex;
   flex-direction: column;
 }
@@ -244,25 +258,25 @@ function goBack() {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 18rpx;
+  gap: min(18rpx, 1.8vh);
   background: #ffffff;
   border-radius: 40rpx;
   border: 6rpx solid #f0e4d7;
   box-shadow: 0 14rpx 40rpx rgba(120, 90, 40, 0.12);
-  padding: 46rpx 30rpx;
+  padding: min(46rpx, 4.6vh) min(30rpx, 3vh);
   margin-top: 10rpx;
 }
 .line {
   display: flex;
   justify-content: center;
-  padding: 14rpx 20rpx;
+  padding: min(14rpx, 1.4vh) 20rpx;
   border-radius: 22rpx;
 }
 .line.active {
   background: #fff3e4;
 }
 .line-text {
-  font-size: 54rpx;
+  font-size: min(54rpx, 5vh);
   font-weight: 700;
   color: #4a3f35;
   letter-spacing: 6rpx;
@@ -272,14 +286,15 @@ function goBack() {
 }
 /* 底部大按钮：与写一写页同一套 */
 .btn-row {
+  flex-shrink: 0;
   display: flex;
   gap: 24rpx;
-  padding: 30rpx 0 6rpx;
+  padding: min(30rpx, 3vh) 0 min(6rpx, 0.6vh);
 }
 .action {
   flex: 1;
   border-radius: 30rpx;
-  padding: 26rpx 0;
+  padding: min(26rpx, 2.6vh) 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -287,10 +302,10 @@ function goBack() {
   box-shadow: 0 8rpx 20rpx rgba(120, 90, 40, 0.1);
 }
 .action-emoji {
-  font-size: 40rpx;
+  font-size: min(40rpx, 4vh);
 }
 .action-label {
-  font-size: 32rpx;
+  font-size: min(32rpx, 3.2vh);
   font-weight: 800;
   color: #4a3f35;
 }

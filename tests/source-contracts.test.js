@@ -305,3 +305,91 @@ test('数学关卡真源唯一：旧入口从 MATH_LEVELS 派生，且带 lesson
   // 不带 lessonId 的旧入口玩一整关不留任何记录
   assert.ok(src.includes('lessonId='), '旧入口必须带 lessonId，否则不记会话/不记星/不点亮图鉴')
 })
+
+/**
+ * 取某条 CSS 规则的内容（从 `选择器 {` 到第一个 `}`）。
+ * 只看 scoped `<style>` 里的真实声明，注释由调用方 stripComments 先去掉。
+ */
+function cssRule(src, selector) {
+  const i = src.indexOf(selector + ' {')
+  if (i < 0) return ''
+  const j = src.indexOf('}', i)
+  return j < 0 ? src.slice(i) : src.slice(i, j)
+}
+
+test('内容页必须按视口高度自适应：iPad 宽屏 1rpx=1px，靠 min-height 会被裁掉一半', () => {
+  // 事故背景（用户反馈）：iPad 上「挑战只显示一半，而且滑不动」。
+  // 根因两层：
+  //   1) 1rpx 在宽屏（≥750px）按 750 基准换算 = 1px（见 App.vue 的 rpxCalcBaseDeviceWidth），
+  //      挑战页设计高度约 1210rpx 在 iPad 上就是 1210px —— 横屏 744、竖屏 1024 都装不下；
+  //   2) pages.json 给这些页标了 disableScroll，uni-h5 会给 document 挂 touchmove +
+  //      preventDefault（见 node_modules/@dcloudio/uni-h5 .../uni-h5.es.js:1213），
+  //      真机上连「装不下就滑一滑」这条退路都没有。
+  // 所以约定：这几页的 .page 必须固定视口高度（100dvh/100svh），尺寸必须带视口比例封顶，
+  // 并且不再标 disableScroll（只留 learn 的 swiper 需要它）。
+  const PAGES = ['pages/quiz/quiz', 'pages/math/practice', 'pages/write/write', 'pages/poem/poem']
+  for (const p of PAGES) {
+    const src = read(`src/${p}.vue`)
+    const body = stripComments(src)
+    const page = cssRule(body, '.page')
+    assert.ok(page, `${p}.vue 找不到 .page 规则`)
+    assert.match(page, /100(d|s)vh/, `${p}.vue 的 .page 必须固定成视口高度（100dvh/100svh），只有 min-height 时内容会被裁在屏幕外`)
+    assert.match(body, /min\([^)]*vh\)/, `${p}.vue 没有任何「按视口比例封顶」的尺寸（min(设计值, Nvh)），iPad 横屏放不下时会溢出`)
+  }
+
+  // 挑战页的选项卡必须吃掉剩余高度：矮视口上随剩余空间缩，高视口上仍是设计尺寸
+  const quiz = stripComments(read('src/pages/quiz/quiz.vue'))
+  const options = cssRule(quiz, '.options')
+  assert.match(options, /flex:\s*1/, 'quiz 的 .options 必须 flex:1（按剩余高度分配），否则矮视口上选项卡会被顶出屏幕')
+  assert.match(cssRule(quiz, '.option'), /max-height:\s*calc\(/, 'quiz 的 .option 必须用 max-height:calc(百分比) 跟着容器缩')
+
+  // disableScroll 是「滑不动」的开关：只有 learn（swiper 横滑）可以留
+  const disabled = JSON.parse(read('src/pages.json')).pages
+    .filter((x) => x.style && x.style.disableScroll)
+    .map((x) => x.path)
+  assert.deepEqual(
+    disabled,
+    ['pages/learn/learn'],
+    `标了 disableScroll 的页面=${JSON.stringify(disabled)}：内容页标它会在「内容比视口高」时变成一堵滑不动的墙`,
+  )
+})
+
+test('页面底部必须留出 --bottom-gap：微信内置浏览器的工具条会盖住贴底控件', () => {
+  // 用户反馈：微信里打开时底下被 banner 遮住。微信（安卓尤其）在 WebView 之上压一条工具条，
+  // env(safe-area-inset-bottom) 只覆盖 iOS 的 home indicator，算不到浏览器自己的工具条；
+  // 而内容页现在正好占满一屏，底部控件（选项卡/返回/我来写）就贴死下沿。
+  // 约定：App.vue 定义 --bottom-gap（普通 20px、html.in-wechat 56px，单位只用 px ——
+  // 这些值会被 var() 嵌进 calc()，老 Safari 不支持 calc() 里再套 min()/max()），
+  // 每个页面的底部内边距在 env(safe-area-inset-bottom) 之上叠加它。
+  const app = stripComments(read('src/App.vue'))
+  assert.match(app, /--bottom-gap:\s*20px/, 'App.vue 未定义普通浏览器的 --bottom-gap（20px）')
+  assert.match(app, /\.in-wechat\s*\{[^}]*--bottom-gap:\s*56px/, 'App.vue 未定义微信下的 --bottom-gap（56px）')
+  assert.match(app, /micromessenger/i, 'App.vue 未在启动时识别微信内置浏览器（in-wechat 标记就没人加）')
+
+  const BOTTOM_PAGES = [
+    'src/pages/quiz/quiz.vue',
+    'src/pages/math/practice.vue',
+    'src/pages/write/write.vue',
+    'src/pages/poem/poem.vue',
+    'src/pages/learn/learn.vue',
+    'src/pages/board/board.vue',
+    'src/pages/map/map.vue',
+    'src/pages/collection/collection.vue',
+    'src/pages/parent/parent.vue',
+    'src/pages/index/index.vue',
+    'src/pages/chinese/chinese.vue',
+    'src/pages/math/math.vue',
+  ]
+  for (const p of BOTTOM_PAGES) {
+    const body = stripComments(read(p))
+    assert.match(
+      body,
+      /env\(safe-area-inset-bottom\)[^;]*var\(--bottom-gap\)/,
+      `${p} 的底部内边距没有叠加 --bottom-gap，微信里底部控件会被工具条盖住`,
+    )
+    // 叠加版必须写在只含 safe-area 的兜底版之后：某些环境下 var() 解析失败时还能退回安全区
+    const m = body.match(/env\(safe-area-inset-bottom\)[^;]*var\(--bottom-gap\)/)
+    const first = body.indexOf('env(safe-area-inset-bottom)')
+    assert.ok(first > -1 && first < body.indexOf(m[0]), `${p} 的 --bottom-gap 叠加版应写在只含 env(safe-area-inset-bottom) 的兜底声明之后`)
+  }
+})

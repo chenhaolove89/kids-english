@@ -330,6 +330,8 @@ function go(s) {
   min-height: 100vh;
   min-height: 100svh;
   padding: calc(44rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom));
+  /* 底部再叠 --bottom-gap：微信内置浏览器的底部工具条会盖住最下面那张课程卡（见 App.vue） */
+  padding: calc(44rpx + env(safe-area-inset-top)) 40rpx calc(200rpx + env(safe-area-inset-bottom) + var(--bottom-gap));
   box-sizing: border-box;
 }
 /* 星数胶囊：贴在续学卡片右侧；最小高度提到 88rpx，保证 ≥44px 可点 */
