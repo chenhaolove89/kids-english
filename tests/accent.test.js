@@ -13,11 +13,11 @@ test('英式口音：英文词/反馈音重写到 audio-gb 目录', () => {
   assert.equal(withAccent('/static/audio/great_job.mp3', 'gb'), '/static/audio-gb/great_job.mp3')
 })
 
-test('课堂口音（az）：英文词/反馈音重写到 audio-azure 目录', () => {
-  assert.equal(withAccent('/static/audio/red.mp3', 'az'), '/static/audio-azure/red.mp3')
-  assert.equal(withAccent('/static/audio/watermelon.mp3', 'az'), '/static/audio-azure/watermelon.mp3')
-  assert.equal(withAccent('/static/audio/great_job.mp3', 'az'), '/static/audio-azure/great_job.mp3')
-  assert.equal(withAccent('./static/audio/red.mp3', 'az'), './static/audio-azure/red.mp3')
+test('旧课堂偏好 az：兼容到新的英式目录', () => {
+  assert.equal(withAccent('/static/audio/red.mp3', 'az'), '/static/audio-gb/red.mp3')
+  assert.equal(withAccent('/static/audio/watermelon.mp3', 'az'), '/static/audio-gb/watermelon.mp3')
+  assert.equal(withAccent('/static/audio/great_job.mp3', 'az'), '/static/audio-gb/great_job.mp3')
+  assert.equal(withAccent('./static/audio/red.mp3', 'az'), './static/audio-gb/red.mp3')
   // 非法口音值与语文/数学音频一律原样
   assert.equal(withAccent('/static/audio/red.mp3', 'xx'), '/static/audio/red.mp3')
   assert.equal(withAccent('/static/audio/zh-great.mp3', 'az'), '/static/audio/zh-great.mp3')
@@ -102,23 +102,22 @@ test('防回归：页面运行时路径必须走 assetUrl（小程序 CDN 化的
   assert.deepEqual(offenders, [], `以下行存在未走 assetUrl 的 /static/ 引用:\n${offenders.join('\n')}`)
 })
 
-test('全量：每条英文音频都取得到真实存在的英式/课堂音轨', () => {
+test('全量：美式和英式单词、反馈与韵律音轨均存在', () => {
   const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
-  // 课堂音轨补轨只能在有 AZURE_SPEECH_KEY 的机器做（node tools/gen-en-azure.mjs），
-  // 新词在本机生成后这里允许「已知待补」白名单——运行时 audio.js 会回退美音，不静音。
-  const AZURE_PENDING = new Set(['mahjong']) // 2026-09-13 puppet→mahjong 替换，待 gen:en-azure --only mahjong.mp3
+  const chants = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/chants.json'), 'utf8')).chants
+  const sources = [...words.categories.flatMap(c => c.words.map(w => w.audio)), '/static/audio/great_job.mp3', ...Object.values(chants)]
+  assert.ok(sources.length > 1900)
   const gaps = []
-  for (const c of words.categories) {
-    for (const w of c.words) {
-      for (const [label, dir] of [['英式', 'audio-gb'], ['课堂', 'audio-azure']]) {
-        const mirrored = withAccent(w.audio, label === '英式' ? 'gb' : 'az')
-        if (mirrored === w.audio) gaps.push(`${c.id}/${w.id} 未被改写（${label}）：${w.audio}`)
-        else if (!fs.existsSync(path.join(ROOT, 'src', mirrored.slice(1)))) {
-          if (label === '课堂' && AZURE_PENDING.has(w.id)) continue
-          gaps.push(`${c.id}/${w.id} ${label}文件缺失：${mirrored}`)
-        }
-      }
-    }
+  for (const src of sources) for (const accent of ['us', 'gb']) {
+    const actual = withAccent(src, accent)
+    if (accent === 'gb') assert.notEqual(actual, src)
+    if (!fs.existsSync(path.join(ROOT, 'src', actual.slice(1)))) gaps.push(actual)
   }
   assert.deepEqual(gaps, [])
+})
+
+test('韵律也跟随英式或旧课堂偏好，兼容子路径部署', () => {
+  assert.equal(withAccent('/static/audio-chant/conversation.mp3', 'gb'), '/static/audio-chant-gb/conversation.mp3')
+  assert.equal(withAccent('./static/audio-chant/conversation.mp3', 'az'), './static/audio-chant-gb/conversation.mp3')
+  assert.equal(withAccent('/static/audio-chant/conversation.mp3', 'us'), '/static/audio-chant/conversation.mp3')
 })

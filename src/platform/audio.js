@@ -49,11 +49,11 @@ function evictIfNeeded() {
 // 英式与美音分开实测，同名文件响度不同，各查各的表。
 const DEFAULT_VOLUME = 1.2
 
-/** 当前英语口音：prefs.accent，'us'（默认）| 'gb'（英式）| 'az'（英音底课堂音，语速更慢）。家长中心切换，播放时即时生效 */
+/** 当前英语口音：us（默认）或 gb；旧课堂 az 设置兼容为 gb。 */
 export function getAccent() {
   try {
     const a = getStorage().get('prefs', {})?.accent
-    return a === 'gb' || a === 'az' ? a : 'us'
+    return a === 'gb' || a === 'az' ? 'gb' : 'us'
   } catch (e) {
     return 'us'
   }
@@ -93,23 +93,20 @@ function getHowl(src) {
     }
   }
   const id = src.split('/').pop().replace(/\.mp3$/, '')
-  const isGb = src.includes('/audio-gb/')
-  const isAzure = src.includes('/audio-azure/')
-  // chant（audio-chant/）不查增益表：分类 id 会撞词 id 名（school/family/music），
-  // 误套词音增益会与其他 50 条 chant 差 ~3dB；chant 统一走默认增益保持一致
-  const isChant = src.includes('/audio-chant/')
-  const gain = isChant
-    ? DEFAULT_VOLUME
-    : (isGb ? volumesGb[id] : undefined) ?? volumes[id] ?? DEFAULT_VOLUME
+  const isGb = src.includes('/audio-gb/') || src.includes('/audio-chant-gb/')
+  // 韵律和单词同名时分开计量，避免分类 school 等误套单词的增益。
+  const isChant = /\/audio-chant(?:-gb)?\//.test(src)
+  const volumeId = isChant ? 'chant:' + id : id
+  const gain = (isGb ? volumesGb[volumeId] : volumes[volumeId]) ?? DEFAULT_VOLUME
   const howl = new Howl({ src: [src], preload: true, volume: gain })
   // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试。
   // 英式缺文件（uniCloud 漏传新目录）时顺带预取美音兜底，下一次点击就能出声。
   howl.once('loaderror', () => {
     console.error('[player] 音频加载失败，将在下次点击时重试:', src)
     cache.delete(src)
-    // 英式/课堂口音缺轨（部署漏传或新词未生成课堂音）都回退美音同名文件，不让孩子听到沉默
-    if (isGb || isAzure) {
-      const usSrc = src.replace('/audio-gb/', '/audio/').replace('/audio-azure/', '/audio/')
+    // 英式缺轨时回退美音同名文件。
+    if (isGb) {
+      const usSrc = src.replace('/audio-gb/', '/audio/').replace('/audio-chant-gb/', '/audio-chant/')
       console.warn('[player] 口音音轨缺失，回退美音:', usSrc)
       try {
         if (!cache.has(usSrc)) getHowl(usSrc)

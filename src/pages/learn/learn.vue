@@ -217,7 +217,7 @@ const chantSrc = ref('')
 /** 🎵 播放本分类 chant（再点一次从头播，孩子跟唱） */
 function playChant() {
   if (!chantSrc.value) return
-  play(assetUrl(chantSrc.value))
+  playEn(assetUrl(chantSrc.value))
 }
 // 结课表扬语整池预载（8 条 × ~10KB）：学完瞬间就要响，不能等网络
 preload(praiseSrcs().map((p) => assetUrl(p)))

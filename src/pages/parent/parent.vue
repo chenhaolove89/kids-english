@@ -140,7 +140,7 @@
           <text class="data-btn-text ghost">⬆️ 导入学习记录</text>
         </view>
       </view>
-        <!-- 三胶囊放不进单行（会挤压竖排标签）：标签独占一行，胶囊整行在下 -->
+        <!-- 标签与两种口音分行，窄屏也便于点选 -->
         <view class="meta-row stacked">
           <text class="meta-label">英语发音</text>
           <view class="accent-pills">
@@ -149,9 +149,6 @@
             </view>
             <view class="accent-pill" :class="{ on: accent === 'gb' }" @tap="setAccent('gb')">
               <text class="accent-pill-text">🇬🇧 英式</text>
-            </view>
-            <view class="accent-pill" :class="{ on: accent === 'az' }" @tap="setAccent('az')">
-              <text class="accent-pill-text">🏫 课堂</text>
             </view>
           </view>
         </view>

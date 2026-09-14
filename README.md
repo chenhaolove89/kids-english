@@ -23,7 +23,7 @@
 >   uni-h5 运行时里仍带有 DCloud 广告模块的代码（`hac1/has1.dcloud.net.cn`），
 >   本项目从不配置 adpid，因此不会发起请求；如需彻底剔除需改动 node_modules，不做。
 
-**技术栈**：uni-app (Vue3 + Vite) / Howler.js（WebAudio 播放，规避 iPad 静音开关） / Azure + 微软 Edge TTS 预生成音频（英文儿声 + 中文晓晓/晓伊，24kHz 48kbps 单声道 mp3） / Noto Emoji 配图（Apache-2.0 可商用）。
+**技术栈**：uni-app (Vue3 + Vite) / Howler.js（WebAudio 播放，规避 iPad 静音开关） / 有道英语 TTS（美式有雅婷 / 英式有小英）+ Azure / 微软 Edge 中文 TTS，预生成 MP3 / Noto Emoji 配图（Apache-2.0 可商用）。
 
 ## 架构分层（2026-09 起）
 
@@ -59,7 +59,7 @@ tools/hanzi.csv           ★ 语文识字表（char,pinyin,word,level）
 tools/hanzi-sentences.csv ★ 每字一句小短句
 tools/gen-assets.mjs      资源生成：中英 TTS + emoji 图 + 自绘词卡 + 数据 JSON
 tools/gen-zh-azure.mjs    中文音轨（Azure；--labels 生成按钮指令朗读，--poems 古诗，--only 单条重生成）
-tools/gen-en-azure.mjs    第三口音「课堂」英音音轨（Azure）
+tools/gen-en-youdao.mjs   英语两口音（有道：美式有雅婷 / 英式有小英；缓存、断点续跑、全批校验后替换）
 tools/gen-tab-icons.mjs   底部 Tab 图标（Noto Emoji：📚/⭐/👪，npm run gen:tab-icons）
 tools/gen-audio-volumes.mjs  音频响度对齐（生成每词增益表）
 tools/audit-assets.mjs    资源审计：引用断链/空文件/截断/音轨缺口/重复图（npm run audit:assets）
@@ -100,7 +100,8 @@ src/data/audio-volumes.json  每词播放增益表（勿手工改）
 ```bash
 npm install                  # 首次
 node tools/merge-words.mjs   # 改词表后：合并校验 → tools/words.csv
-npm run gen:assets           # 生成音频/图片/数据（增量；--force 全量）
+npm run gen:assets           # 生成音频/图片/数据（英语走有道缓存，--force 仅图片/中文）
+npm run gen:en-youdao        # 增量生成并替换两套英语音频，自动更新音量表
 node tools/gen-audio-volumes.mjs   # 音频变动后重算增益
 npm run build:content        # 课程源变更后：校验 + 重新生成 src/content/catalog.json
 npm run test                 # Node 测试（255 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
@@ -118,7 +119,7 @@ node tools/serve.mjs         # 预览生产构建 → http://127.0.0.1:4173
 node tools/publish-github-pages.mjs   # 发布产物（子路径相对化 + sw.js）；离线验证的前置
 npm run release              # 一键发版编排：版本号三处校验 + 内容校验 + 测试 + 资产审计 + 构建 + 分享包（--deploy 加推预览）
 npm run gen:encourage        # 表扬语音频生成（Edge Xiaoyi 兜底；有 Azure key 用 gen:zh-azure -- --misc --force 覆盖回正典）
-npm run gen:chant            # 英语分类韵律 chant 生成（Edge Ana 童声，learn 页 🎵 按钮）
+npm run gen:chant            # 用有道更新已启用的韵律，两种口音均生成（learn 页 🎵 按钮）
 ```
 
 > `npm run build:h5` 的产物**不能双击 index.html 打开**（file:// 禁止加载 ES module，会白屏），本地预览请走本地服务或"本地预览.bat"。
@@ -159,7 +160,7 @@ npm run gen:chant            # 英语分类韵律 chant 生成（Edge Ana 童声
 - 英语：1998 词 / 53 分类，L1 启蒙起步（含家人、野生动物）/ L2 日常生活（含词族/拼读）/ L3 快乐探索 / L4 挑战进阶
 - 语文：297 字（L1 48 / L2 80 / L3 99 / L4 70）+ 297 句小短句 + 1420 词语卡 + 24 首古诗（4 学段各 6 首）
 - 数学：**9 个关卡 / 23 个题型**（分派链实现与关卡池一一对应，无死题型、无未实现题型），题目动态生成，数字 0-100 中文发音全覆盖
-- 静态资源：`src/static` 约 **94.9 MB / 11580 个文件**（音频 82.4 MB、图片 11.9 MB，其余为笔顺数据与 Tab 图标）
+- 静态资源：`src/static` 约 **102.0 MB / 9531 个文件**（音频 89.5 MB、图片 11.9 MB，其余为笔顺数据与 Tab 图标）
 
 > 内容覆盖的实话：启蒙与一二年级较实，三四年级尚可；**五六年级英语是词表（81% 为无图文字卡）而非阅读写作**，
 > 五六年级数学只有 2 关，古诗已覆盖全部四学段（各 6 首）。`content-packages/curriculum.json` 里的 `draft` 状态目前未被使用，
@@ -198,3 +199,20 @@ npm run gen:chant            # 英语分类韵律 chant 生成（Edge Ana 童声
 
 商业授权与合作咨询：**452218405@qq.com**
 
+
+## 英语语音生成
+
+家长中心仅保留 **美式 / 英式**。美式 `youyating`（有雅婷），英式 `youxiaoying`（有小英）；旧 `az` 课堂偏好兼容为英式。单词、英文反馈和已启用的韵律均随口音切换。中文和数学音频保持各自管线。
+
+将 `.env.example` 的 `YOUDAO_APP_KEY`（应用 ID）与 `YOUDAO_APP_SECRET`（应用密钥）填入本地 `.env.local`，无需额外的 KEY；凭据只供 Node 生成工具读取，不会进入网页。
+
+```bash
+node tools/gen-en-youdao.mjs --dry-run        # 只查看范围，不调用接口
+npm run gen:en-youdao                         # 两套全量增量生成、校验、替换、更新音量
+npm run gen:en-youdao -- --only ear           # 单词补轨，同样会自动更新音量表
+node tools/audit-youdao.mjs                  # 全量核对文本、音色、文件哈希、解码和增益
+```
+
+生成结果保存在 `tmp/youdao-en/`，成功结果按文本、音色及请求参数去重，限速低于每小时 3,000 次。中断、欠费或接口错误后重新执行原命令即可续跑；不支持 `--force`，避免误触发重复付费。整批完成并通过 MP3 解码校验后才替换 `src/static/audio/` 与 `audio-gb/` 的英文文件，韵律使用 `audio-chant/` 和 `audio-chant-gb/`。
+
+`tools/youdao-audio-manifest.json` 记录每个正式文件的来源参数、哈希和测量结果；保留它与音频，即使临时缓存被清理，仍能复用正式文件。保存本地音频后，日常播放不会调用有道生成 API，也不会产生重复合成费用；更改文本或音色才需要新的合成请求。生成时使用标准语速和音量，不裁剪尾部，播放增益另行实测并限制峰值。

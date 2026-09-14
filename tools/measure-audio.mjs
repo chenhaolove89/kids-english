@@ -11,15 +11,16 @@ import { fileURLToPath } from 'node:url'
 import { MPEGDecoder } from 'mpg123-decoder'
 
 // 用 node:url 的 fileURLToPath：原来手写 replace(/\//g,'\\') 只在 Windows 成立
-const AUDIO_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../src/static/audio')
+const STATIC_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../src/static')
 const OUT_CSV = process.argv[2] || ''
 
 async function decode(file) {
   const decoder = new MPEGDecoder()
   await decoder.ready
   const data = fs.readFileSync(file)
-  const { channelData, samplesDecoded, sampleRate } = decoder.decode(data)
+  const { channelData, samplesDecoded, sampleRate, errors } = decoder.decode(data)
   decoder.free()
+  if (errors.length) throw new Error('MP3 解码报错：' + file)
   if (!samplesDecoded) return { duration: 0, peak: 0, rms: -Infinity, sampleRate }
   let peak = 0
   let sumSq = 0
@@ -41,10 +42,11 @@ async function decode(file) {
 }
 
 async function main() {
-  const files = fs.readdirSync(AUDIO_DIR).filter((f) => f.endsWith('.mp3')).sort()
+  const dirs = ['audio', 'audio-gb', 'audio-chant', 'audio-chant-gb', 'audio-zh', 'audio-poem']
+  const files = dirs.flatMap(dir => fs.existsSync(path.join(STATIC_DIR, dir)) ? fs.readdirSync(path.join(STATIC_DIR, dir)).filter(f => f.endsWith('.mp3')).sort().map(f => dir + '/' + f) : [])
   const rows = []
   for (const f of files) {
-    const m = await decode(path.join(AUDIO_DIR, f))
+    const m = await decode(path.join(STATIC_DIR, f))
     rows.push({ file: f, ...m })
   }
   const db = (v) => (v === -Infinity ? '-Inf' : v.toFixed(1))

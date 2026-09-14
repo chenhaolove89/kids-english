@@ -2,8 +2,8 @@
  * 资源生成脚本（多科目版）：
  *  输入 tools/words.csv（由 merge-words.mjs 合并） + tools/hanzi.csv
  *  输出：
- *   - static/audio/{id}.mp3        英文单词发音（Edge TTS，en-US 儿童音色）
- *   - static/audio-gb/{id}.mp3     英式发音（--gb 模式生成，en-GB 童声，文件名与美音一致）
+ *   - static/audio/{id}.mp3        英文单词发音（有道有雅婷）
+ *   - static/audio-gb/{id}.mp3     英式发音（有道有小英，文件名与美音一致）
  *   - static/audio/zh-*.mp3        中文发音：汉字/例词/数字0-100/数学用语/反馈语
  *   - static/img/{id}.png          单词配图（Noto Emoji 512px，Apache-2.0）
  *   - static/img/{id}.svg          自绘词卡（数字/字母/形状/拼读词等）
@@ -20,11 +20,12 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 import { ICONS, ICON_CATEGORY } from './icons/index.mjs'
 import { isUsableAsset } from './lib/asset-check.mjs'
 import { writeFileAtomic } from './lib/fs-atomic.mjs'
+import { main as generateYoudao } from './gen-en-youdao.mjs'
+import { execFileSync } from 'node:child_process'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const STATIC_DIR = path.join(ROOT, 'src/static')
 const AUDIO_DIR = path.join(STATIC_DIR, 'audio')
-const AUDIO_GB_DIR = path.join(STATIC_DIR, 'audio-gb')
 // 启蒙英文词的中文配音单独目录：withAccent 只改写 /static/audio/，放这里不会被口音逻辑误伤
 const AUDIO_ZH_DIR = path.join(STATIC_DIR, 'audio-zh')
 const IMG_DIR = path.join(STATIC_DIR, 'img')
@@ -57,9 +58,6 @@ const isZhWordCategory = (id) => !ZH_WORD_SKIP.has(id)
 const NOTO_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/png/512'
 // 国旗在 Noto 仓库里按 ISO 国家代码存放（CN.png），emoji 码点路径下没有
 const NOTO_FLAG_BASE = 'https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@v2.047/third_party/region-flags/png'
-const EN_VOICES = ['en-US-AnaNeural', 'en-US-JennyNeural']
-// 英式对应童声 Maisie（≈Ana 的 en-GB 版），不可用时降级成年女声 Sonia
-const EN_GB_VOICES = ['en-GB-MaisieNeural', 'en-GB-SoniaNeural']
 // 中文统一 Xiaoyi（与 gen-zh-azure 正典管线同音色）：Xiaoxiao 会把部分词末字一声
 // 读成降调（青蛙/春天/八），Edge 这条兜底管线也必须跟正典一致，否则重跑会带回来。
 const ZH_VOICES = ['zh-CN-XiaoyiNeural']
@@ -591,45 +589,11 @@ async function main() {
     return
   }
 
-  // ---------- 英式发音模式：只生成 audio-gb，不动图片与数据 ----------
+  // 兼容旧命令，英语统一走有道，禁止再次写入旧 Edge 音色。
   if (GB_MODE) {
-    fs.mkdirSync(AUDIO_GB_DIR, { recursive: true })
-    const jobs = []
-    for (const w of words) {
-      if (!FORCE && usableAudio(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) continue
-      jobs.push({ id: w.id, text: w.en, out: path.join(AUDIO_GB_DIR, `${w.id}.mp3`) })
-    }
-    for (const f of FEEDBACK_EN) {
-      if (!FORCE && usableAudio(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) continue
-      jobs.push({ id: f.id, text: f.text, out: path.join(AUDIO_GB_DIR, `${f.id}.mp3`) })
-    }
-    console.log(`== 英式发音（en-GB）待生成：${jobs.length} ==`)
-    if (jobs.length) await ttsPool('EN-GB', EN_GB_VOICES, jobs, 3)
-    let miss = 0
-    for (const w of words) {
-      if (!usableAudio(path.join(AUDIO_GB_DIR, `${w.id}.mp3`))) { console.log(`✗ 缺英式音频: ${w.id}`); miss++ }
-    }
-    for (const f of FEEDBACK_EN) {
-      if (!usableAudio(path.join(AUDIO_GB_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺英式反馈音频: ${f.id}`); miss++ }
-    }
-    if (miss) {
-      console.log(`英式音频缺失 ${miss} 个，请重跑 npm run gen:assets-gb 补齐`)
-      process.exitCode = 1
-    } else {
-      console.log(`✓ 英式音频全部就绪（${words.length + FEEDBACK_EN.length} 个）`)
-    }
+    await generateYoudao(['--accent', 'gb', '--apply'])
+    execFileSync(process.execPath, [path.join(ROOT, 'tools/gen-audio-volumes.mjs'), '--english-only'], { stdio: 'inherit' })
     return
-  }
-
-  // ---------- 任务清单 ----------
-  const enJobs = []
-  for (const w of words) {
-    if (!FORCE && usableAudio(path.join(AUDIO_DIR, `${w.id}.mp3`))) continue
-    enJobs.push({ id: w.id, text: w.en, out: path.join(AUDIO_DIR, `${w.id}.mp3`) })
-  }
-  for (const f of FEEDBACK_EN) {
-    if (!FORCE && usableAudio(path.join(AUDIO_DIR, `${f.id}.mp3`))) continue
-    enJobs.push({ id: f.id, text: f.text, out: path.join(AUDIO_DIR, `${f.id}.mp3`) })
   }
 
   const zhJobs = []
@@ -642,12 +606,8 @@ async function main() {
   }
   // 数字 n0-n100 与 ZH_MISC 短语已移交正典管线（tools/gen-zh-azure.mjs --misc）：
   // 走 Azure 同一音色，避免 Edge 这边 --force 重跑时把旧音色带回来。
-  console.log(`待生成：英文音频 ${enJobs.length}，中文音频 ${zhJobs.length}\n`)
+  console.log(`待生成：中文音频 ${zhJobs.length}；英文由有道缓存管线统一生成\n`)
 
-  if (enJobs.length) {
-    console.log('== 英文 TTS ==')
-    await ttsPool('EN', EN_VOICES, enJobs, 3)
-  }
   if (zhJobs.length) {
     console.log('== 中文 TTS ==')
     await ttsPool('ZH', ZH_VOICES, zhJobs, 3)
@@ -814,6 +774,11 @@ async function main() {
   // 两个数据负载都在各自结构建好之后再序列化：写在前面会踩 hanziLevels 的 TDZ
   const wordsPayload = JSON.stringify({ levels: levelList, categories }, null, 1)
   const hanziPayload = JSON.stringify({ total: hanzi.length, levels: hanziLevels }, null, 1)
+
+  // 传入刚构建的词表，新增词也能在写数据前完成音频校验。
+  // --force 仅控制本工具的图片/中文；有道始终复用已验证缓存，避免重复付费。
+  await generateYoudao(['--apply'], { data: { categories } })
+  execFileSync(process.execPath, [path.join(ROOT, 'tools/gen-audio-volumes.mjs')], { stdio: 'inherit' })
 
   // ---------- 校验 ----------
   // 一律用 usable*（存在 + 体积合理）：只查存在会让截断产物通过生成门禁
