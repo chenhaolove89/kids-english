@@ -30,6 +30,7 @@ export function getCurriculum() {
 }
 
 export const stageBlocks = (...args) => getCurriculum().stageBlocks(...args)
+export const isVisibleLesson = (...args) => getCurriculum().isVisible(...args)
 export const lessonLocks = (...args) => getCurriculum().lessonLocks(...args)
 export const lessonUrl = (...args) => getCurriculum().lessonUrl(...args)
 export const randomLesson = (...args) => getCurriculum().randomLesson(...args)

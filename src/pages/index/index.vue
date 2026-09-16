@@ -15,9 +15,9 @@
           <text class="level-name" :style="{ color: lv.color }">{{ lv.zh }}</text>
         </view>
         <view class="level-quiz"
-          :class="{ 'level-quiz-locked': isLocked('en-quiz-l' + lv.id) }"
-          :style="{ background: isLocked('en-quiz-l' + lv.id) ? '#d8d2c6' : lv.color }" @tap="goQuiz(lv.id)">
-          <text class="level-quiz-text">{{ isLocked('en-quiz-l' + lv.id) ? '🔒 挑战' : '⚡ 挑战' }}</text>
+          :class="{ 'level-quiz-locked': isLocked('en-quiz-l' + lv.id) || !isAvailable('en-quiz-l' + lv.id), 'level-quiz-draft': !isAvailable('en-quiz-l' + lv.id) }"
+          :style="{ background: isLocked('en-quiz-l' + lv.id) || !isAvailable('en-quiz-l' + lv.id) ? '#d8d2c6' : lv.color }" @tap="goQuiz(lv.id)">
+          <text class="level-quiz-text">{{ !isAvailable('en-quiz-l' + lv.id) ? '🚧 筹备中' : isLocked('en-quiz-l' + lv.id) ? '🔒 挑战' : '⚡ 挑战' }}</text>
         </view>
       </view>
 
@@ -52,7 +52,8 @@ import data from '@/data/words.json'
 import { isCategoryHidden } from '@/content/lowAge.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 import { goBackOrHome, isTabletDevice } from '@/platform/nav.js'
-import { lessonLocks } from '@/services/curriculum-app.js'
+import { lessonLocks, lessonUrl, isVisibleLesson } from '@/services/curriculum-app.js'
+import { getLesson } from '@/content/catalog.js'
 
 // 点读板入口只在平板显示（触屏 + 短边 ≥560px）
 const isTablet = ref(isTabletDevice())
@@ -74,6 +75,9 @@ function refreshLocks() {
 function isLocked(lessonId) {
   return !!locks.value.get(lessonId)?.locked
 }
+function isAvailable(lessonId) {
+  return isVisibleLesson(getLesson(lessonId))
+}
 function deny(lessonId, tip) {
   const now = Date.now()
   if (now - lastShakeAt < 1000) return
@@ -87,19 +91,28 @@ function deny(lessonId, tip) {
 
 function catsOf(levelId) {
   // 低龄模式：惊悚/暗黑分类不出现在自由探索页
-  return data.categories.filter((c) => c.level === levelId && !isCategoryHidden(c.id))
+  return data.categories.filter((c) => c.level === levelId && !isCategoryHidden(c.id) && isAvailable('en-learn-' + c.id))
 }
 function goLearn(id) {
   const lid = 'en-learn-' + id
+  if (!isAvailable(lid)) {
+    deny(lid, '内容准备中')
+    return
+  }
   if (isLocked(lid)) {
     deny(lid, '先完成前面的课，再来学它 ✨')
     return
   }
-  uni.navigateTo({ url: `/pages/learn/learn?subject=en&cat=${id}` })
+  const url = lessonUrl(getLesson(lid))
+  if (url) uni.navigateTo({ url })
 }
 function goBoard(id) {
   // 点读板与进词卡同一把锁：锁着的分类不能从喇叭绕进去
   const lid = 'en-learn-' + id
+  if (!isAvailable(lid)) {
+    deny(lid, '内容准备中')
+    return
+  }
   if (isLocked(lid)) {
     deny(lid, '先完成前面的课，再来学它 ✨')
     return
@@ -108,11 +121,16 @@ function goBoard(id) {
 }
 function goQuiz(levelId) {
   const lid = 'en-quiz-l' + levelId
+  if (!isAvailable(lid)) {
+    deny(lid, '内容准备中')
+    return
+  }
   if (isLocked(lid)) {
     deny(lid, '先学一学，再来挑战 🏆')
     return
   }
-  uni.navigateTo({ url: `/pages/quiz/quiz?subject=en&level=${levelId}` })
+  const url = lessonUrl(getLesson(lid))
+  if (url) uni.navigateTo({ url })
 }
 function goBack() {
   goBackOrHome()

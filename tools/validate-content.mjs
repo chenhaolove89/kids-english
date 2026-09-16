@@ -54,6 +54,14 @@ for (const subject of ['en', 'zh', 'math']) {
   }
 }
 
+const configuredStatuses = source.lessonStatus || {}
+if (!configuredStatuses || typeof configuredStatuses !== 'object' || Array.isArray(configuredStatuses)) {
+  fail('lessonStatus 必须是「课程 ID → available/draft」对象')
+}
+for (const [id, status] of Object.entries(configuredStatuses)) {
+  if (!['available', 'draft'].includes(status)) fail(`课程 ${id} lessonStatus 非法: ${status}`)
+}
+
 // ---------- 展开课程 ----------
 const lessons = []
 const seenIds = new Set()
@@ -63,8 +71,11 @@ const pushLesson = (l) => {
   if (!stageIds.has(l.stage)) fail(`课程 ${l.id} stage 非法: ${l.stage}`)
   if (!['learn', 'challenge'].includes(l.kind)) fail(`课程 ${l.id} kind 非法: ${l.kind}`)
   if (!l.ref?.kind) fail(`课程 ${l.id} 缺 ref`)
-  if (l.status && !['available', 'draft'].includes(l.status)) fail(`课程 ${l.id} status 非法: ${l.status}`)
-  lessons.push({ status: 'available', ...l })
+  const status = configuredStatuses[l.id] ?? l.status ?? 'available'
+  if (!['available', 'draft'].includes(status)) fail(`课程 ${l.id} status 非法: ${status}`)
+  const normalized = { status: 'available', ...l }
+  normalized.status = status
+  lessons.push(normalized)
 }
 
 const enCatById = new Map(words.categories.map((c) => [c.id, c]))
@@ -345,6 +356,10 @@ for (const l of lessons) {
   if (r.kind === 'math-level' && ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
 }
 
+for (const id of Object.keys(configuredStatuses)) {
+  if (!seenIds.has(id)) fail(`lessonStatus 引用了不存在的课程 ${id}`)
+}
+
 // 每个 stage 至少要有一科可用，否则映射一定配错了
 for (const st of source.stages) {
   const n = lessons.filter((l) => l.stage === st.id && l.status === 'available').length
@@ -378,7 +393,7 @@ function canonicalJson(v) {
  */
 const contentVersion = crypto
   .createHash('sha1')
-  .update(`${canonicalJson(words)}|${canonicalJson(hanzi)}|${source.version}|${lessons.length}`)
+  .update(`${canonicalJson(words)}|${canonicalJson(hanzi)}|${canonicalJson(source)}|${canonicalJson(lessons)}`)
   .digest('hex')
   .slice(0, 10)
 

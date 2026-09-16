@@ -6,7 +6,7 @@
  * 低龄过滤漏掉 = 惊悚/暗黑分类仍出现在首页。而这些都不会抛错，只会「点了没反应」。
  *
  * 这里用**真实目录数据**（读文件而不是 import，绕开 Node 不允许的 JSON 无属性 import），
- * 因此断言直接对着 171 门课的实际内容。
+ * 因此断言直接对着 176 门课的实际内容。
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -96,9 +96,9 @@ test('lessonUrl：非法/未知输入返回空串（调用方据此不跳转）'
   assert.equal(c.lessonUrl({ id: 'x', ref: { kind: 'unknown-kind' } }), '')
 })
 
-test('lessonUrl：目录里每一门课都能生成非空地址（不允许有跳不进去的课）', () => {
+test('lessonUrl：可用课程都能生成地址，draft 课程明确不可跳转', () => {
   const { c } = make()
-  const bad = LESSONS.filter((l) => !c.lessonUrl(l)).map((l) => `${l.id}(${l.ref && l.ref.kind})`)
+  const bad = LESSONS.filter((l) => l.status === 'available' && !c.lessonUrl(l)).map((l) => l.id + '(' + (l.ref && l.ref.kind) + ')')
   assert.deepEqual(bad, [], `这些课生不出地址：\n${bad.join('\n')}`)
 })
 
@@ -107,8 +107,9 @@ test('isVisible：draft 与缺失课程不可见，available 可见', () => {
   const { c } = make()
   assert.equal(c.isVisible({ status: 'draft', ref: { kind: 'en-level', id: 1 } }), false, 'draft 课不该被放出来')
   assert.equal(c.isVisible(null), false)
-  assert.equal(c.isVisible(LESSONS[0]), true)
-  assert.equal(LESSONS.every((l) => l.status === 'available'), true, '当前目录应当全是 available（draft 未启用）')
+  assert.equal(c.isVisible(LESSONS.find((l) => l.status === 'available')), true)
+  assert.equal(c.visibleLessons().every((l) => l.status === 'available'), true)
+  assert.equal(c.visibleLessons().length, LESSONS.filter((l) => l.status === 'available').length)
 })
 
 test('低龄过滤：被隐藏分类的课不计入可见列表与阶段视图', () => {
@@ -147,7 +148,7 @@ test('stageBlocks：非法阶段 id 回退到第一个阶段而不是空视图',
 })
 
 test('stageBlocks：某科在该阶段完全没有课时才标记 empty（页面显示「🚧 筹备中」）', () => {
-  // 用合成目录精确验证这个分支：真实目录里 4 个阶段 × 3 科都有课，触发不到它
+  // 用合成目录精确验证这个分支；真实目录的 g56/math 由 draft 课程触发同一行为。
   const miniCatalog = {
     STAGES: [{ id: 's1', name: '阶段一', order: 1 }],
     SUBJECTS: [
@@ -173,9 +174,7 @@ test('stageBlocks：某科在该阶段完全没有课时才标记 empty（页面
   assert.deepEqual(math.units, [])
 })
 
-test('真实目录下没有任何块是空的：171 课覆盖到每个阶段×科目（「筹备中」分支当前不可达）', () => {
-  // 与 README「draft 状态从未使用、所有课都是 available」的说明互为印证。
-  // 若将来把这些课标成 draft，这条会失败——那时应当同步更新文档与页面文案。
+test('真实目录：176 课中 draft 不进入阶段块，g56/math 如实显示筹备中', () => {
   const { c } = make()
   const empties = []
   for (const st of STAGES) {
@@ -183,10 +182,21 @@ test('真实目录下没有任何块是空的：171 课覆盖到每个阶段×�
       if (b.empty) empties.push(`${st.id}/${b.subject.id}`)
     }
   }
-  assert.deepEqual(empties, [], `这些阶段×科目没有任何课：${empties.join('、')}`)
+  assert.deepEqual(empties, ['g56/math'])
 })
 
 /* ---------------- nextLessonAfter / randomLesson ---------------- */
+test('真实目录：draft 课程只留下筹备中计数，不进入可用 units', () => {
+  const { c } = make()
+  const g56Math = c.stageBlocks('g56').find((b) => b.subject.id === 'math')
+  assert.equal(g56Math.empty, true)
+  assert.equal(g56Math.draftCount, 2)
+  assert.deepEqual(
+    LESSONS.filter((l) => l.status === 'draft').map((l) => l.id).sort(),
+    ['en-quiz-l4', 'math-practice-l6', 'math-practice-l9'],
+  )
+})
+
 test('nextLessonAfter：按科目顺序取下一课，最后一课返回 null', () => {
   const { c } = make()
   const enLessons = c.visibleLessons().filter((l) => l.subject === 'en')
@@ -282,4 +292,40 @@ test('continueTarget：没有 paused 快照的暂停会话不参与恢复（避�
   })
   const t = c.continueTarget()
   assert.notEqual(t.mode, 'resume-paused', '没有 snapshot 的暂停会话不能当恢复目标')
+})
+
+test('continueTarget：暂停与完成历史按事件时间取最近，不依赖数组写入顺序', () => {
+  const en = LESSONS.filter((l) => l.subject === 'en' && l.status === 'available' && l.kind === 'learn')
+  const progress = new Map(en.slice(0, 2).map((l) => [l.id, { completed: 1, bestStars: 0 }]))
+  const { c } = make({
+    progress,
+    sessions: [
+      { sessionId: 'new-paused', lessonId: en[1].id, kind: 'learn', status: 'paused', startedAt: 300, endedAt: 350, snapshot: { idx: 2 } },
+      { sessionId: 'old-paused', lessonId: en[0].id, kind: 'learn', status: 'paused', startedAt: 100, endedAt: 150, snapshot: { idx: 1 } },
+    ],
+  })
+  assert.equal(c.continueTarget().lesson.id, en[1].id)
+
+  const done = make({
+    progress,
+    sessions: [
+      { sessionId: 'new-done', lessonId: en[0].id, kind: 'learn', status: 'completed', startedAt: 300, endedAt: 350 },
+      { sessionId: 'old-done', lessonId: en[1].id, kind: 'learn', status: 'completed', startedAt: 100, endedAt: 150 },
+    ],
+  })
+  assert.equal(done.c.continueTarget().lesson.id, en[1].id)
+})
+
+test('continueTarget：已完成的恢复链不再回到旧 paused 快照', () => {
+  const en = LESSONS.filter((l) => l.subject === 'en' && l.status === 'available' && l.kind === 'learn')
+  const progress = new Map([[en[0].id, { completed: 1, bestStars: 0 }]])
+  const { c } = make({
+    progress,
+    sessions: [
+      { sessionId: 'same', lessonId: en[0].id, kind: 'learn', status: 'paused', startedAt: 100, endedAt: 150, snapshot: { idx: 4 } },
+      { sessionId: 'same', lessonId: en[0].id, kind: 'learn', status: 'completed', startedAt: 100, endedAt: 300 },
+    ],
+  })
+  assert.equal(c.continueTarget().mode, 'next')
+  assert.equal(c.continueTarget().lesson.id, en[1].id)
 })

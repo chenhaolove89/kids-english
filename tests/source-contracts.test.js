@@ -293,17 +293,29 @@ test('数学题型集合自洽：分派链实现的 kind 与关卡池一一对�
   )
 })
 
-test('数学关卡真源唯一：旧入口从 MATH_LEVELS 派生，且带 lessonId 记录进度', () => {
+test('数学关卡真源唯一：旧入口从 MATH_LEVELS 派生，且只为可用课生成入口', () => {
   // 注释里回顾「4 个关卡」这类历史问题不算违规，只看真实代码
   const src = stripComments(read('src/pages/math/math.vue'))
   assert.ok(src.includes("from '@/domain/mathgen.js'"), '旧入口应从 domain/mathgen.js 取关卡真源')
   assert.ok(src.includes('MATH_LEVELS'), '旧入口必须用 MATH_LEVELS')
   // 曾经的问题：只列 6 关（L7/L8/L9 进不去）+ 标题写死「4 个关卡」
   assert.ok(!src.includes('4 个关卡'), '不得再写死关卡数量')
-  assert.ok(src.includes('{{ levels.length }}'), '关卡数必须动态来自真源')
+  assert.ok(src.includes('{{ availableCount }}'), '顶部开放关卡数必须动态来自目录状态')
   assert.ok(!/name: '(认识数字|十以内加减|二十以内)'/.test(src), '不得再抄一份关卡名称副本')
-  // 不带 lessonId 的旧入口玩一整关不留任何记录
-  assert.ok(src.includes('lessonId='), '旧入口必须带 lessonId，否则不记会话/不记星/不点亮图鉴')
+  // 旧入口必须通过课程 URL 统一带 lessonId，否则不记会话/不记星/不点亮图鉴
+  assert.ok(src.includes('lessonUrl'), '旧入口必须复用课程 URL 生成器')
+  assert.ok(src.includes('lessonIdOf'), '旧入口必须从课程目录取得 lessonId')
+  assert.ok(src.includes("status === 'available'"), '旧入口必须按课程 status 判断关卡是否开放')
+  assert.ok(src.includes('!lv.available'), '旧入口必须阻止 draft 关卡进入练习页')
+})
+
+test('挑战旧版 level 直链也必须经过课程发布状态门禁', () => {
+  const quiz = stripComments(read('src/pages/quiz/quiz.vue'))
+  const math = stripComments(read('src/pages/math/practice.vue'))
+  assert.ok(quiz.includes('fallbackLesson'), 'quiz 旧版 level 直链应反查课程目录')
+  assert.ok(quiz.includes("l && l.status !== 'available'"), 'quiz 旧版 level 直链必须阻止 draft')
+  assert.ok(math.includes('fallbackLesson'), 'math 旧版 level 直链应反查课程目录')
+  assert.ok(math.includes("l && l.status !== 'available'"), 'math 旧版 level 直链必须阻止 draft')
 })
 
 /**

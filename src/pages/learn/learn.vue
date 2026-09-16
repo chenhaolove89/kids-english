@@ -104,7 +104,7 @@ import zhData from '@/data/hanzi.json'
 import { play, playEn, playSeq, accentEnSrc, stopSeq, preloadWithProgress, isAudioReady, whenAudioReady, preload } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { createThrottle, goBackOrHome, isTabletDevice } from '@/platform/nav.js'
-import { LESSONS, getLesson } from '@/content/catalog.js'
+import { LESSONS, getLesson, catalog } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
 import { nextLessonAfter, lessonUrl } from '@/services/curriculum-app.js'
@@ -208,7 +208,7 @@ const cardHint = computed(() => {
   return '点字卡听发音，点词语听例词'
 })
 
-const svc = getSessionService()
+const svc = getSessionService(catalog.contentVersion)
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口不记录
 let completed = false
 // 韵律 chant：英语分类课才有（清单由 tools/gen-chant.mjs 生成，缺文件的分类不显示按钮）。
@@ -226,6 +226,12 @@ let advancing = false // toast 600ms 窗口内防重复触发跳转
 
 onLoad((query) => {
   subject.value = query.subject || 'en'
+  const requestedLesson = getLesson(query.lessonId)
+  if (requestedLesson && requestedLesson.status !== 'available') {
+    uni.showToast({ title: '内容准备中', icon: 'none' })
+    setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+    return
+  }
   let resolvedCatId = null
   if (subject.value === 'en') {
     // 走适配器：低龄模式隐藏的分类深链会回退到第一个可见分类
@@ -312,6 +318,7 @@ onLoad((query) => {
 function wireSession(lessonId, resolvedCatId) {
   const l = getLesson(lessonId)
   if (!l) return
+  if (l.status !== 'available') return
   if (l.ref?.kind === 'en-category' && resolvedCatId && l.ref.id !== resolvedCatId) return
   lesson.value = l
   const resumed = svc.resumeSessionFor(l.id, 'learn')
@@ -320,7 +327,7 @@ function wireSession(lessonId, resolvedCatId) {
     if (Number.isInteger(idx)) current.value = Math.min(Math.max(0, idx), items.value.length - 1)
     if (current.value >= items.value.length - 1) completeLearn()
   } else {
-    svc.startSession({ lessonId: l.id, kind: 'learn', skillIds: l.skillIds || [] })
+    svc.startSession({ lessonId: l.id, kind: 'learn', skillIds: l.skillIds || [], contentVersion: catalog.contentVersion })
   }
   svc.saveSnapshot({ idx: current.value })
 }

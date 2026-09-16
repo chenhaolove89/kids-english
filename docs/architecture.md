@@ -1,14 +1,14 @@
 # 快乐学园 架构细化（实施层）
 
-日期：2026-09-07。
+日期：2026-09-15。
 关系：`docs/learning-platform-plan.md` 是产品与分层**总纲**（战略层），本文给出可直接开工的目录结构、内容 schema、模块接口与迁移步骤（战术层）。两文冲突时以总纲的边界判断为准，以本文的落地细节为准。
 
 ## 0. 对现状的量化摸底
 
 | 事实 | 数值 | 对架构的含义 |
 |---|---|---|
-| 静态资源 | **87.5MB（音频 74.0MB + 图 11.8MB），11469 个文件**（2026-09 复测；音频为 24kHz/48kbps **单声道** mp3） | 微信小程序主包上限 2MB、整包约 30MB，**资源不可能原样进小程序**，必须远程化或分包 |
-| words.json | 2000 词（唯一拼写 1981）全在 52 个 category 内，顶层 `levels` 数组是空的，词的级别挂在 category.level 上 | 适配器要按 category 聚合，不要依赖顶层 levels |
+| 静态资源 | **约 102.0MB（音频 89.5MB + 图 11.9MB），9531 个文件**（2026-09-15 复测；音频为 24kHz/48kbps **单声道** mp3） | 微信小程序主包上限 2MB、整包约 30MB，**资源不可能原样进小程序**，必须远程化或分包 |
+| words.json | 1998 条词卡（唯一英文拼写 1982）分布在 53 个 category，`levels` 仅保存级别展示元数据，词的实际归属挂在 category.level 上 | 适配器按 category 聚合；级别展示元数据与词条池分开使用 |
 | 页面代码 | 11 个页面（含 poem/write）共约 3500 行，判题/出题/计分逻辑已在 domain/，页面仍有约 350 行重复（topbar/结果卡/音频预载/快照恢复） | 继续抽组件与 composable，见 README 的路线图 |
 | 构建目标 | 仅 H5 | 小程序/App 是"预留结构"，不是"现状" |
 
@@ -23,7 +23,7 @@ src/
     judge.js             #   判题（各 activity 类型的对错判定）
     progress.js          #   首次正确率、星级(1-3)、会话聚合
     review.js            #   错题本 + Leitner 间隔复习调度（含「毕业」判定）
-    mathgen.js           #   数学题生成（9 关 / 26 题型）
+    mathgen.js           #   数学题生成（9 关 / 23 题型）
     rounds.js            #   出轮（听音选图 / 汉字四题型 / 古诗填字）
     collection.js        #   图鉴点亮集合的合并与派生
     shuffle.js           #   随机与去重抽样
@@ -99,6 +99,7 @@ domain 一行平台代码都没有，这是将来任何端（小程序/App/Node 
 - **活动类型枚举先只做三种**（flashcard / listen-pick / math-gen），与现有页面一一对应，零新内容成本；后续再加填空、拖拽、阅读材料。
 - **math-gen 是生成器型活动**：课程只存参数（运算、数值域、题量），运行时出题。这是覆盖到六年级的关键——数学内容是参数空间，不是题库。
 - 课程打包工具：设计稿里的 `build-curriculum.mjs` **实际实现为 `tools/validate-content.mjs`**。强校验：ID 全局唯一、引用存在（skill/word/char）、音频图片路径存在、status=available 时资源齐全、stage/难度标签合法；校验不过不许打包（`--check` 供 CI 比对目录是否过期）。
+- 当前课程源通过顶层 `lessonStatus`（课程 ID → `available` / `draft`）控制发布状态；生成器默认 `available`，但会校验状态值、课程 ID 必须真实存在，并把状态写入 `catalog.json`。运行时的 `isVisible`、课程 URL、阶段地图、旧入口和家长统计统一排除 draft 与低龄隐藏课。
 
 ## 3. 学习记录：事件流，不是覆盖式状态
 
@@ -107,7 +108,9 @@ domain 一行平台代码都没有，这是将来任何端（小程序/App/Node 
 ```
 Attempt       { attemptId, sessionId, lessonId, activityId, skillIds,
                 answer, correct, order, ts, contentVersion }
-SessionEvent  { sessionId, lessonId, event: start|pause|complete|abort, ts }
+Session       { sessionId, lessonId, kind, skillIds, contentVersion,
+                startedAt, status: completed|paused, endedAt, totals?, snapshot? }
+SessionEvent  { sessionId, lessonId, event: start|pause|complete|abort, ts }（云同步预留）
 ```
 
 - 星级 = **首次作答**正确率 → 1~3 星。只看首答，从机制上消灭"答错重试到满分"的统计模糊（Codex 总纲指出的问题，这里给出解法）。
@@ -115,11 +118,11 @@ SessionEvent  { sessionId, lessonId, event: start|pause|complete|abort, ts }
 - 中断（pause/abort）与完成分开；math-gen 恢复时保存**题目快照**，重进不是重新生成，否则记录和题目错配。
 - 将来上云：直接把事件流 push 到服务端重放聚合，天然同步协议，永不丢记录。
 
-`platform/storage.js`：单入口，键形如 `kx:profile:<profileId>:events`，文件头带 `schemaVersion`，迁移函数数组逐级升级；容错空值/损坏值/写入失败。第一阶段 `profileId="default"`，将来多孩子只加一层，不改数据形状。
+`platform/storage.js`：单入口，键形如 `kx:profile:<profileId>:events`，文件头带 `schemaVersion`，迁移函数数组逐级升级；容错空值/损坏值/写入失败。第一阶段 `profileId="default"`，将来多孩子只加一层，不改数据形状。当前 `Session` / `Attempt` 已带 `contentVersion`；旧记录缺字段时按 `null` 读取，避免升级时阻断恢复。
 
 ## 4. 多端策略（小程序/App 的真实约束）
 
-1. **资源远程化是小程序的前置条件**，不是优化项。**11469 个文件 / 87.5MB** 远超小程序能承载的本地文件规模。路线：所有页面经 `platform/assets.js` 取 URL（现已全线收口，`setAssetBase` 是切换点）→ H5 阶段照常本地 → 小程序阶段把该文件切到远程 CDN，页面零改动。音频可选方案：对象存储直存，或云端 TTS 按需合成（msedge-tts/Azure 生成链路已有，可迁到云端跑）。
+1. **资源远程化是小程序的前置条件**，不是优化项。**9531 个文件 / 约 102.0MB** 远超小程序能承载的本地文件规模。路线：所有页面经 `platform/assets.js` 取 URL（现已全线收口，`setAssetBase` 是切换点）→ H5 阶段照常本地 → 小程序阶段把该文件切到远程 CDN，页面零改动。音频可选方案：对象存储直存，或云端 TTS 按需合成（msedge-tts/Azure 生成链路已有，可迁到云端跑）。
 2. **Howler 不能进小程序**（依赖 document/AudioContext）。`platform/audio.js` 用 uni 条件编译：`#ifdef H5` 用 Howler，`#ifdef MP-WEIXIN` 用 `uni.createInnerAudioContext`。新增业务一律只 import platform/audio，旧页面逐步替换。
 3. **App 端**：uni-app 本来就是跨端框架，HBuilderX 云打包原生壳即可，不需要 React Native/Flutter 之类的新技术栈。
 4. 节奏：H5 做扎实 → 小程序技术验证（分包 + 远程音频 + 真机音频/缓存测试，见 Codex 总纲的核查清单）→ 有真实需求再 App。不承诺一键打包。

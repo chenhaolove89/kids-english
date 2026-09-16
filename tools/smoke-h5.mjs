@@ -271,7 +271,7 @@ async function main() {
   try {
     await cdp.send('Network.enable') // 资源请求记录（音轨/笔顺数据统计用）
     // 数学练习页的随机出题换成固定种子（只对该路由生效，其它页面保持真实随机）：
-    // 9 关共 23 种题型，靠随机抽样很难稳定覆盖到比大小这类低频分支，
+    // 9 个目录关卡共 23 种题型，靠随机抽样很难稳定覆盖到比大小这类低频分支，
     // 固定种子后"题型覆盖"断言才可复现。
     await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
       source: `(function () {
@@ -1201,11 +1201,11 @@ async function main() {
     `)
     check('非法级别深链不白屏且能出题（回退到默认级别）', badLevel.opts > 0 && !badLevel.blank, `${badLevel.round}，选项 ${badLevel.opts} 个`)
 
-    // ---------- 12c. 数学 9 个关卡：每个题型分支都要能渲染并作答（规则文件记录过 compareNum 崩页事故） ----------
-    // 9 关共 23 种题型；模板里只有 count/add/sub/compare/compareNum/wordX/listen/sequence
+    // ---------- 12c. 数学已开放关卡：每个题型分支都要能渲染并作答（规则文件记录过 compareNum 崩页事故） ----------
+    // 当前 L6/L9 是 draft，7 个已开放关卡共 42 题；模板里只有 count/add/sub/compare/compareNum/wordX/listen/sequence
     // 有专属分支，其余走通用算式分支。这里逐关抽样作答，逐题校验"要么 4 个选项、要么 2 张比大小卡"
     // 且题干非空、作答后不白屏——这正是"新增题型只修一处 v-if 就继续崩页"的防线。
-    const MATH_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    const MATH_LEVELS = [1, 2, 3, 4, 5, 7, 8]
     // 每关的题型池 → 期望渲染分支（与 domain/mathgen 的 KINDS_BY_LEVEL 对应）
     const EXPECTED_FAMILIES = {
       1: ['tiles', 'listen', 'equation'],
@@ -1295,10 +1295,27 @@ async function main() {
       const unexpected = [...seenHere].filter((f) => f === 'unknown' || !EXPECTED_FAMILIES[level].includes(f))
       if (unexpected.length) mathProblems.push(`L${level} 出现该关不该有的分支：${unexpected.join(',')}`)
     }
+    // 旧版 level 直链也必须经过发布状态门禁，不能因为没有 lessonId 就绕过 draft。
+    const draftMathProblems = []
+    for (const level of [6, 9]) {
+      await cdp.eval(`localStorage.removeItem('kx:active'); return 1`)
+      await cdp.freshNavigate(`${BASE}/#/pages/math/practice?level=${level}`)
+      await sleep(1800)
+      const gate = await cdp.eval(`
+        return {
+          home: document.querySelectorAll('.stage-chip').length === 4,
+          active: localStorage.getItem('kx:active') !== null,
+          question: document.querySelectorAll('.opt, .compare-card').length,
+        }
+      `)
+      if (!gate.home || gate.active || gate.question > 0) draftMathProblems.push(`L${level} 未被门禁拦截：${safeJson(gate)}`)
+    }
     check(
-      '数学 9 关 54 题：形态合法（比大小 2 卡 / 其余 3~4 选项）、有内容、作答有反馈、无白屏',
-      mathProblems.length === 0,
-      mathProblems.length ? mathProblems.slice(0, 4).join(' | ') : '全部通过',
+      '数学已开放 7 关 42 题：形态合法、有内容、作答有反馈、无白屏；L6/L9 draft 直链被拦截',
+      mathProblems.length === 0 && draftMathProblems.length === 0,
+      mathProblems.length || draftMathProblems.length
+        ? [...mathProblems, ...draftMathProblems].slice(0, 4).join(' | ')
+        : '全部通过',
     )
 
     /**
@@ -1313,12 +1330,21 @@ async function main() {
         const cur = await cdp.eval(`
           const cards = document.querySelectorAll('.compare-card').length
           return {
-            fam: cards > 0 ? (document.querySelectorAll('.dot-emoji').length > 0 ? 'compare-emoji' : 'compare-num') : '',
+            fam: cards > 0 ? (document.querySelectorAll('.dot-emoji').length > 0 ? 'compare-emoji' : 'compare-num')
+              : document.querySelectorAll('.tiles').length > 0 ? 'tiles'
+              : document.querySelectorAll('.groups').length > 0 ? 'groups'
+              : document.querySelectorAll('.word-problem').length > 0 ? 'word'
+              : document.querySelectorAll('.listen-icon').length > 0 ? 'listen'
+              : document.querySelectorAll('.equation').length > 0 ? 'equation'
+              : '',
             round: (document.querySelector('.round-info')||{}).innerText || '',
             finished: !!document.querySelector('.result'),
           }
         `)
-        if (cur.fam === family) return { ok: true, questions: i + 1 }
+        if (cur.fam === family) {
+          families.add(cur.fam)
+          return { ok: true, questions: i + 1 }
+        }
         if (cur.finished) {
           // 一轮 10 题结束，点「再来一次」继续追问
           await cdp.eval(`const b = document.querySelector('.result-btn'); if (b) b.click(); return 1`)
@@ -1344,6 +1370,8 @@ async function main() {
       }
       return { ok: false, questions: maxQ }
     }
+    const countFamily = await ensureFamily(1, 'tiles')
+    const listenFamily = await ensureFamily(1, 'listen')
     const cmpEmoji = await ensureFamily(2, 'compare-emoji')
     const cmpNum = await ensureFamily(3, 'compare-num')
     check(
@@ -1358,15 +1386,15 @@ async function main() {
     )
     check(
       '数学题型分支覆盖到位（看图 / 应用题 / 算式 / 听音 / 比大小）',
-      ['tiles', 'groups', 'word', 'equation'].every((f) => families.has(f)) && cmpEmoji.ok && cmpNum.ok,
-      `观察到：${[...families].join(', ')}`,
+      ['tiles', 'groups', 'word', 'equation', 'listen'].every((f) => families.has(f)) && countFamily.ok && listenFamily.ok && cmpEmoji.ok && cmpNum.ok,
+      `观察到：${[...families].join(', ')}；看图=${countFamily.ok} 听音=${listenFamily.ok}`,
     )
 
     // ---------- 12c-2. 答错讲解（路线图里"答错后的讲解环"）：揭晓要说清"为什么" ----------
     // 原来是"正确答案是绿色的这个 ✓"，孩子知道点哪个但不知道为什么。
     // 现在按题型生成讲解（domain/explain.js）。
     // 数学不在这里另起一段去"碰运气点错"（受负载影响不稳定），
-    // 而是复用上面 54 题循环里已经出现的揭晓文案（答错必有揭晓）。
+    // 而是复用上面 42 题循环里已经出现的揭晓文案（答错必有揭晓）。
     const mathExplainFamily = /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是|小数点对齐|分母不变|有括号先算括号|先算乘法再[加减])/
     const badMathReveal = mathReveals.filter((r) => !mathExplainFamily.test(r.text) || r.text.length > 40)
     check(
@@ -1643,46 +1671,21 @@ async function main() {
     )
     check('低龄模式下直链被隐藏分类：内容与课程不一致时不记会话', !hiddenDeepLink.active, `kx:active=${hiddenDeepLink.active}`)
 
-    // (2) 挑战题池也必须过滤：连打若干轮，收集出现的音频与选项图，断言没有隐藏分类的词
-    cdp.requests.length = 0 // 只统计本场景真正请求过的音轨，避免把整轮的请求算进来
+    // (2) draft 挑战直链也必须被拦截：L4 已发布为 draft，不能把它误当成低龄题池来测。
+    await cdp.eval(`localStorage.removeItem('kx:active'); return 1`)
     await cdp.freshNavigate(`${BASE}/#/pages/quiz/quiz?subject=en&level=4&lessonId=en-quiz-l4`)
-    await sleep(2200)
-    const seenFiles = new Set()
-    for (let i = 0; i < 10; i++) {
-      const round = await cdp.eval(`
-        const imgs = [...document.querySelectorAll('.option img, uni-image img')].map((e) => e.getAttribute('src') || '')
-        return {
-          opts: document.querySelectorAll('.option').length,
-          imgs,
-          round: (document.querySelector('.round-info') || {}).innerText || '',
-          result: !!document.querySelector('.result'),
-        }
-      `)
-      for (const s of round.imgs) seenFiles.add((s.split('/').pop() || '').replace(/\.(png|jpg|webp)$/, ''))
-      if (round.result) break
-      if (!round.opts) break
-      await cdp.eval(`const o = document.querySelectorAll('.option')[0]; if (o) o.click(); return !!o`)
-      for (let t = 0; t < 16; t++) {
-        await sleep(300)
-        const now = await cdp.eval(`
-          return { r: (document.querySelector('.round-info') || {}).innerText || '', done: !!document.querySelector('.result') }
-        `)
-        if (now.done || now.r !== round.round) break
+    await sleep(1800)
+    const draftQuiz = await cdp.eval(`
+      return {
+        home: document.querySelectorAll('.stage-chip').length === 4,
+        active: localStorage.getItem('kx:active') !== null,
+        question: document.querySelectorAll('.option').length,
       }
-    }
-    // 请求过的音轨也代表题干内容
-    for (const u of cdp.requests) {
-      const m = /\/static\/audio(?:-gb)?\/([^/]+)\.mp3$/.exec(u)
-      if (m) seenFiles.add(m[1])
-    }
-    const leakedQuiz = [...seenFiles].filter((id) => hiddenWordIds.has(id))
+    `)
     check(
-      '低龄模式下挑战题池已过滤（连打多轮不出现隐藏分类的词）',
-      // 要求"确实观察到了足够多的词"：阴性对照实测低龄关闭时会看到 36~44 个词
-      // （其中就有 characters 分类的 princess），所以 <20 说明检测没跑起来，
-      // 此时 leaked===0 是恒真的假绿灯（详见本轮报告）。
-      seenFiles.size >= 20 && leakedQuiz.length === 0,
-      leakedQuiz.length ? `泄漏 ${leakedQuiz.slice(0, 6).join(',')}` : `共出现 ${seenFiles.size} 个词，均不属于隐藏分类`,
+      '低龄模式下 draft 挑战直链被发布状态门禁拦截',
+      draftQuiz.home && !draftQuiz.active && draftQuiz.question === 0,
+      safeJson(draftQuiz),
     )
     await setPrefs({ lowAge: false })
 
@@ -2133,6 +2136,9 @@ async function main() {
       const d = (JSON.parse(localStorage.getItem('kx:sessions') || '{"d":[]}').d || [])
       return d.length
     `)
+    // 文档级深链不会触发上一个页面的 uni onUnload；清掉上一课的恢复槽，
+    // 让本断言只验证「重练不创建会话」，不把旧课的活跃会话误算成重练产物。
+    await cdp.eval(`localStorage.removeItem('kx:active'); return 1`)
     await cdp.freshNavigate(`${BASE}/#/pages/math/practice?review=1`)
     await sleep(1800)
     const replayed = await cdp.eval(MATH_SIG)
@@ -2342,18 +2348,18 @@ async function main() {
     )
 
     // ---------- 16i. 大池挑战只预载本轮音频（内存尖峰的回归防线） ----------
-    // 曾经整池预载：英语 L4 是 1126 个词 → 一千多个 Howl 同时驻留（解码后是几十 MB）。
+    // 曾经整池预载：英语 sightwords 是 308 个词 → 三百多个 Howl 同时驻留（解码后是几十 MB）。
     // 修成"只预载本轮"后实测 12 条（10 轮答案 + 2 条反馈音）。这里钉住这个量级，
     // 避免将来有人顺手改回 prepool（本地看不出问题，只有大池机型才炸内存）。
     cdp.requests.length = 0
-    await cdp.freshNavigate(`${BASE}/#/pages/quiz/quiz?subject=en&level=4&lessonId=en-quiz-l4`)
+    await cdp.freshNavigate(`${BASE}/#/pages/quiz/quiz?subject=en&cat=sightwords`)
     await sleep(3200)
     await sleep(2000) // 再等一会，抓"延迟补请求"式的整池预载
     const bigPoolAudio = [...new Set(cdp.requests.filter((u) => /\/static\/audio(-gb|-zh)?\/[^/]+\.mp3$/.test(u)))]
     check(
-      '英语 L4 大池（1126 词）只预载本轮音频，不是整池',
+      '英语 sightwords 大池（308 词）只预载本轮音频，不是整池',
       bigPoolAudio.length > 0 && bigPoolAudio.length <= 40,
-      `请求 ${bigPoolAudio.length} 条（整池会是 1126 条）：${bigPoolAudio.slice(0, 4).map((u) => u.split('/').pop()).join(', ')}${bigPoolAudio.length > 4 ? ' …' : ''}`,
+      `请求 ${bigPoolAudio.length} 条（整池会是 308 条）：${bigPoolAudio.slice(0, 4).map((u) => u.split('/').pop()).join(', ')}${bigPoolAudio.length > 4 ? ' …' : ''}`,
     )
 
     // ---------- 17. 控制台零报错 ----------

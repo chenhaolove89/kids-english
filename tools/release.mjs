@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * 一键发版编排（P3a）：把「版本号三处同步 → 内容校验 → 测试 → 资产审计 → 构建
- * → 分享包 →（可选）部署预览」收成一条命令，消灭手工发版最常漏的步骤。
+ * 一键发版编排（P3a）：把「版本号三处同步 → 内容校验 → 测试 → 分层/资源/音频审计
+ * → 构建 → 分享包 →（可选）部署预览」收成一条命令，消灭手工发版最常漏的步骤。
  *
  * 用法：
- *   npm run release                  # 校验+测试+审计+构建+分享包
+ *   npm run release                  # 校验+测试+分层/资源/音频门禁+构建+分享包
  *   npm run release -- --deploy     # 上面全部 + 推送源码仓 gh-pages 预览（抢先版）
  *   npm run release -- --skip-build  # 只做校验/测试/审计（不重新构建）
  *   npm run release -- --skip-tests  # 跳过测试（不推荐；仅排版微调时用）
@@ -68,25 +68,31 @@ function checkVersions() {
 
 async function main() {
   console.log(`发版编排开始${SKIP_BUILD ? '（跳过构建）' : ''}${SKIP_TESTS ? '（跳过测试）' : ''}${DEPLOY ? '（含部署预览）' : ''}`)
-  const version = await step('1/5 版本号三处同步', async () => checkVersions())
+  const version = await step('1/6 版本号三处同步', async () => checkVersions())
 
-  await step('2/5 内容目录校验（catalog 与源一致）', async () => {
+  await step('2/6 内容目录校验（catalog 与源一致）', async () => {
     run('npm run validate:content')
   })
 
   if (!SKIP_TESTS) {
-    await step('3/5 全量测试', async () => {
+    await step('3/6 全量测试', async () => {
       run('npm test')
     })
-    await step('4/5 资产审计', async () => {
+    await step('4/6 分层门禁', async () => {
+      run('npm run check:layering')
+    })
+    await step('5/6 资源审计（图片/音频引用）', async () => {
       run('npm run audit:assets')
     })
+    await step('6/6 音频质量审计（解码/静音/削波）', async () => {
+      run('npm run audit:audio')
+    })
   } else {
-    console.log('\n（--skip-tests：跳过测试与资产审计）')
+    console.log('\n（--skip-tests：跳过测试、分层门禁与资源/音频审计）')
   }
 
   if (!SKIP_BUILD) {
-    await step('5/5 构建 H5 + 分享包', async () => {
+    await step('构建 H5 + 分享包', async () => {
       run('npm run build:h5')
       run('node tools/make-share.mjs')
     })

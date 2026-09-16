@@ -31,6 +31,17 @@ test('课程 ID 全局唯一且字段齐全', () => {
   }
 })
 
+test('课程发布状态：源配置与生成目录一致，draft 不会被静默改成 available', () => {
+  const configured = source.lessonStatus || {}
+  const byId = new Map(catalog.lessons.map((l) => [l.id, l]))
+  for (const [id, status] of Object.entries(configured)) {
+    assert.equal(byId.get(id)?.status, status, `${id} 的发布状态没有从源配置传入目录`)
+  }
+  const actualDraftIds = catalog.lessons.filter((l) => l.status === 'draft').map((l) => l.id).sort()
+  assert.deepEqual(actualDraftIds, Object.keys(configured).sort(), '目录中的 draft 必须完全由 lessonStatus 配置解释')
+  assert.equal(catalog.lessons.filter((l) => l.status === 'available').length, 173)
+})
+
 test('课程引用可解析：ref 都能落到真实数据', () => {
   const enCats = new Set(words.categories.map((c) => c.id))
   const zhLevels = new Set(hanzi.levels.map((l) => Number(l.id)))

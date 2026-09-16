@@ -41,7 +41,7 @@ import HanziWriter from 'hanzi-writer'
 import { play, preload } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
-import { getLesson } from '@/content/catalog.js'
+import { getLesson, catalog } from '@/content/catalog.js'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
 import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
@@ -141,7 +141,7 @@ onLoad((query) => {
  */
 function recordPractice(firstTryClean) {
   if (!lesson) return
-  const svc = getSessionService()
+  const svc = getSessionService(catalog.contentVersion)
   const active = svc.getActive()
   // 只挂 learn 会话：kind 一并校验，进程被杀残留的活跃挑战会话不得混入描红作答
   if (active && active.session && active.session.lessonId === lesson.id && active.session.kind === 'learn') {

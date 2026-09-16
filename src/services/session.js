@@ -4,9 +4,9 @@
  *
  * 事件形状：
  *   Attempt  { attemptId, sessionId, lessonId, activityId, order, answer,
- *              correct, firstTry, skillIds, ts }
- *   Session  { sessionId, lessonId, kind, skillIds, startedAt, status:
- *              'completed'|'paused', endedAt, totals?, snapshot? }
+ *              correct, firstTry, skillIds, contentVersion, ts }
+ *   Session  { sessionId, lessonId, kind, skillIds, contentVersion, startedAt,
+ *              status: 'completed'|'paused', endedAt, totals?, snapshot? }
  *
  * 恢复语义：resume 复用原 sessionId（快照 + 事件流天然连续），首答判定跨暂停前后一致。
  * 无会话时（旧入口直开页面）recordAttempt 返回 null，不记录、不报错。
@@ -21,7 +21,12 @@ function newId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
 }
 
-export function createSessionService(store) {
+export function createSessionService(store, { contentVersion = null } = {}) {
+  let currentContentVersion = typeof contentVersion === 'string' && contentVersion ? contentVersion : null
+
+  function setContentVersion(version) {
+    currentContentVersion = typeof version === 'string' && version ? version : null
+  }
   function getActive() {
     return store.get('active', null)
   }
@@ -29,7 +34,14 @@ export function createSessionService(store) {
   /**
    * 开始会话；resume 时传 reuseSessionId + resumeSnapshot 保持事件流连续。
    */
-  function startSession({ lessonId, kind, skillIds = [], reuseSessionId = null, resumeSnapshot = null }) {
+  function startSession({
+    lessonId,
+    kind,
+    skillIds = [],
+    contentVersion: sessionContentVersion = currentContentVersion,
+    reuseSessionId = null,
+    resumeSnapshot = null,
+  }) {
     // 残留的活跃会话（无论同课异课）：先落一条 paused 日志保住快照与作答归属，不丢进度
     const lingering = getActive()
     if (lingering && lingering.session) {
@@ -45,6 +57,7 @@ export function createSessionService(store) {
       lessonId,
       kind,
       skillIds,
+      contentVersion: sessionContentVersion || null,
       startedAt: Date.now(),
     }
     store.set('active', { session, snapshot: resumeSnapshot })
@@ -82,6 +95,7 @@ export function createSessionService(store) {
       itemId: itemId === undefined ? null : itemId,
       firstTry,
       skillIds: a.session.skillIds || [],
+      contentVersion: a.session.contentVersion || null,
       ts: Date.now(),
     }
     attempts.push(attempt)
@@ -154,6 +168,7 @@ export function createSessionService(store) {
         lessonId,
         kind: paused.kind,
         skillIds: paused.skillIds || [],
+        contentVersion: paused.contentVersion || null,
         reuseSessionId: paused.sessionId,
         resumeSnapshot: paused.snapshot,
       })
@@ -163,6 +178,7 @@ export function createSessionService(store) {
 
   return {
     getActive,
+    setContentVersion,
     startSession,
     saveSnapshot,
     recordAttempt,
@@ -174,7 +190,8 @@ export function createSessionService(store) {
 }
 
 let _svc = null
-export function getSessionService() {
-  if (!_svc) _svc = createSessionService(getStorage())
+export function getSessionService(contentVersion = null) {
+  if (!_svc) _svc = createSessionService(getStorage(), { contentVersion })
+  else if (contentVersion) _svc.setContentVersion(contentVersion)
   return _svc
 }

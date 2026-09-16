@@ -64,9 +64,9 @@ tools/gen-tab-icons.mjs   底部 Tab 图标（Noto Emoji：📚/⭐/👪，npm r
 tools/gen-audio-volumes.mjs  音频响度对齐（生成每词增益表）
 tools/audit-assets.mjs    资源审计：引用断链/空文件/截断/音轨缺口/重复图（npm run audit:assets）
 tools/measure-audio.mjs   音频体检：解码全部 mp3 找静音/过轻/削波（npm run audit:audio）
-tools/smoke-h5.mjs        真实 Chrome + CDP 冒烟测试（零依赖）：154 项断言，页面渲染/交互/作答/会话恢复/存储/零报错（npm run smoke:h5）
+tools/smoke-h5.mjs        真实 Chrome + CDP 冒烟测试（零依赖）：172 项断言，页面渲染/交互/作答/会话恢复/存储/零报错（npm run smoke:h5）
 tools/shots.mjs           截图回归：12 页 × 2 视口，capture / compare（含噪声底线说明与容差开关；npm run shots）
-tools/verify-offline.mjs  发布产物验证（21 项）：SW 接管 / 外壳预缓存 / 断网刷新可开 / 离线可听音 / 换代清旧缓存 /
+tools/verify-offline.mjs  发布产物验证（22 项）：SW 接管 / 外壳预缓存 / 断网刷新可开 / 离线可听音 / 换代清旧缓存 /
                           PWA manifest 完整性（名字·start_url·scope·图标·页签图标）/ 发布产物运行期零 404 /
                           绝对路径改写完整性静态自检（npm run verify:offline）
 tools/lib/cdp.mjs         冒烟与截图共用的 CDP 客户端（同一份实现，避免"修一处另一处没修"）
@@ -104,8 +104,8 @@ npm run gen:assets           # 生成音频/图片/数据（英语走有道缓�
 npm run gen:en-youdao        # 增量生成并替换两套英语音频，自动更新音量表
 node tools/gen-audio-volumes.mjs   # 音频变动后重算增益
 npm run build:content        # 课程源变更后：校验 + 重新生成 src/content/catalog.json
-npm run test                 # Node 测试（255 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
-npm run smoke:h5             # 真实 Chrome 冒烟测试 154 项（约 8~10 分钟；需先 build:h5 并另开终端跑 node tools/serve.mjs）
+npm run test                 # Node 测试（276 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
+npm run smoke:h5             # 真实 Chrome 冒烟测试 172 项（约 8~10 分钟；需先 build:h5 并另开终端跑 node tools/serve.mjs）
 npm run check:layering       # 分层门禁：domain 纯净、无反向依赖、存储已收口
 npm run validate:content     # 只校验（CI 用；目录与源不一致则失败）
 npm run audit:assets         # 资源审计：引用断链/空文件/截断/英式与中文音轨缺口/重复图/真孤儿
@@ -117,7 +117,7 @@ npm run dev:h5               # 本地开发 http://localhost:5173
 npm run build:h5             # 构建 → dist/build/h5/
 node tools/serve.mjs         # 预览生产构建 → http://127.0.0.1:4173
 node tools/publish-github-pages.mjs   # 发布产物（子路径相对化 + sw.js）；离线验证的前置
-npm run release              # 一键发版编排：版本号三处校验 + 内容校验 + 测试 + 资产审计 + 构建 + 分享包（--deploy 加推预览）
+npm run release              # 一键发版编排：版本号三处校验 + 内容校验 + 测试 + 分层/资源/音频门禁 + 构建 + 分享包（--deploy 加推预览）
 npm run gen:encourage        # 表扬语音频生成（Edge Xiaoyi 兜底；有 Azure key 用 gen:zh-azure -- --misc --force 覆盖回正典）
 npm run gen:chant            # 用有道更新已启用的韵律，两种口音均生成（learn 页 🎵 按钮）
 ```
@@ -141,7 +141,7 @@ npm run gen:chant            # 用有道更新已启用的韵律，两种口音�
 
 ## 上线
 
-**一键发版**：`npm run release`（版本号三处同步校验 → validate:content → npm test → audit:assets → build:h5 → make-share），加 `-- --deploy` 再自动推送 gh-pages 抢先版。手工等价命令见下。
+**一键发版**：`npm run release`（版本号三处同步校验 → validate:content → npm test → check:layering → audit:assets → audit:audio → build:h5 → make-share），加 `-- --deploy` 再自动推送 gh-pages 抢先版。手工等价命令见下。
 
 **GitHub Pages 双轨（2026-09-08 起）**：`npm run build:h5` 后执行 `node tools/publish-github-pages.mjs`（子路径相对化 + .nojekyll + webmanifest 修正，两种产物都自动携带 LICENSE / LICENSE-CONTENT.md）。
 
@@ -163,8 +163,8 @@ npm run gen:chant            # 用有道更新已启用的韵律，两种口音�
 - 静态资源：`src/static` 约 **102.0 MB / 9531 个文件**（音频 89.5 MB、图片 11.9 MB，其余为笔顺数据与 Tab 图标）
 
 > 内容覆盖的实话：启蒙与一二年级较实，三四年级尚可；**五六年级英语是词表（81% 为无图文字卡）而非阅读写作**，
-> 五六年级数学只有 2 关，古诗已覆盖全部四学段（各 6 首）。`content-packages/curriculum.json` 里的 `draft` 状态目前未被使用，
-> 所有课都是 `available`，课程页的「🚧 筹备中」分支因此不会出现。
+> 五六年级数学当前没有已开放关卡，古诗已覆盖全部四学段（各 6 首）。176 门课程中 173 门 `available`、3 门 `draft`：
+> `en-quiz-l4`、`math-practice-l6`、`math-practice-l9`；draft 不进入课程地图、旧入口、继续学习和家长统计。
 
 ## 路线图
 
@@ -184,6 +184,7 @@ npm run gen:chant            # 用有道更新已启用的韵律，两种口音�
 - `practice`（**笔顺描红、古诗点读**）会进作答流、家长页「最近记录／周报／练习时长」，但**不计课时完成、不给星**——
   写完一个字或读完一首诗不等于学完一门课（识字课一堂 48 字、古诗课一个阶段 6 首）。
 - 描红**按单字点亮**图鉴「认识」（`recordCharPracticed`），不写整课、不进掌握；点读只留痕不点亮图鉴。
+- `Session` / `Attempt` 会记录 `contentVersion`；旧本地记录缺少该字段时按 `null` 兼容读取，不阻断恢复与统计。
 
 
 ## 许可协议

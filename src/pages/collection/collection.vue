@@ -232,7 +232,8 @@ import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { LESSONS } from '@/content/catalog.js'
+import { LESSONS, getLesson } from '@/content/catalog.js'
+import { isVisibleLesson } from '@/services/curriculum-app.js'
 import { isCategoryHidden, updatePrefs } from '@/content/lowAge.js'
 import { getStorage } from '@/platform/storage.js'
 import { playEn, play } from '@/platform/audio.js'
@@ -374,7 +375,7 @@ const mathBadges = computed(() => {
     return { lesson: l, done, stars, trophy: isMathTrophy(done, stars) }
   })
 })
-// 四关全部满星 → 数学全满贯横幅
+// 全部已开放数学关卡满星 → 数学全满贯横幅
 const mathAllTrophies = computed(() => mathBadges.value.length > 0 && mathBadges.value.every((m) => m.trophy))
 
 onShow(() => {
@@ -391,7 +392,7 @@ onShow(() => {
   celebrate.value = prevLit ? celebration(prevLit, curLit) : null
   updatePrefs({ lastCollectionLit: curLit })
   counts.value = cur
-  totalStars.value = getProgressService().summary({ isKnownLesson: (id) => LESSONS.some((l) => l.id === id) }).totalStars
+  totalStars.value = getProgressService().summary({ isKnownLesson: (id) => isVisibleLesson(getLesson(id)) }).totalStars
   detail.value = null
 })
 
@@ -806,7 +807,7 @@ function goLearn() {
   font-size: 24rpx;
   color: #c99b52;
 }
-/* 四关全满贯横幅 */
+/* 全部已开放数学关卡全满贯横幅 */
 .math-crown {
   margin-top: 26rpx;
   background: linear-gradient(90deg, #ffd76e, #ffb84d);

@@ -48,7 +48,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { play, stopSeq, preloadWithProgress } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
-import { getLesson } from '@/content/catalog.js'
+import { getLesson, catalog } from '@/content/catalog.js'
 import { getSessionService } from '@/services/session.js'
 import poemsData from '@/data/poems.json'
 import PageTopBar from '@/components/page-top-bar.vue'
@@ -144,9 +144,10 @@ function playFull() {
  */
 function recordPoemRead(poem) {
   const lid = lessonId.value
-  if (!poem || !lid || !getLesson(lid)) return
+  if (!poem || !lid || !getLesson(lid) || getLesson(lid).status !== 'available') return
   const svc = getSessionService()
-  svc.startSession({ lessonId: lid, kind: 'practice', skillIds: [] })
+  svc.setContentVersion(catalog.contentVersion)
+  svc.startSession({ lessonId: lid, kind: 'practice', skillIds: [], contentVersion: catalog.contentVersion })
   svc.recordAttempt({ activityId: 'poem-read', order: poem.id, answer: poem.id, correct: true, itemId: null })
   svc.completeSession()
 }

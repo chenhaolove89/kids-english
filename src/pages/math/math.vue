@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <PageTopBar class="topbar-page" title="学数学" title-size="42rpx" @back="goBack">
-      <text class="total">{{ levels.length }} 个关卡</text>
+      <text class="total">{{ availableCount }} 个已开放关卡</text>
     </PageTopBar>
 
     <view class="tip">
@@ -12,38 +12,37 @@
       v-for="lv in levels"
       :key="lv.id"
       class="level-card"
-      :class="{ locked: isLocked(lessonIdOf(lv.id)), shake: shakeId === 'math-practice-l' + lv.id }"
+      :class="{ locked: lv.available && isLocked(lessonIdOf(lv.id)), draft: !lv.available, shake: shakeId === 'math-practice-l' + lv.id }"
       :style="{ background: lv.bg }"
       @tap="go(lv)"
     >
       <view class="level-left">
         <view class="level-num" :style="{ background: lv.color }">
-          <text class="level-num-text">{{ isLocked(lessonIdOf(lv.id)) ? '🔒' : lv.id }}</text>
+          <text class="level-num-text">{{ !lv.available ? '🚧' : isLocked(lessonIdOf(lv.id)) ? '🔒' : lv.id }}</text>
         </view>
         <view class="level-info">
           <text class="level-name" :style="{ color: lv.color }">{{ lv.name }}</text>
           <text class="level-desc">{{ lv.desc }}</text>
         </view>
       </view>
-      <text class="go-icon">→</text>
+      <text class="go-icon">{{ lv.available ? '→' : '…' }}</text>
     </view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { MATH_LEVELS } from '@/domain/mathgen.js'
-import { lessonsOfSubject } from '@/content/catalog.js'
+import { getLesson } from '@/content/catalog.js'
 import { goBackOrHome } from '@/platform/nav.js'
-import { lessonLocks } from '@/services/curriculum-app.js'
+import { lessonLocks, lessonUrl } from '@/services/curriculum-app.js'
 import PageTopBar from '@/components/page-top-bar.vue'
 
 // 关卡 → 课程 id：带上 lessonId 才会记会话、记星、点亮图鉴。
 // 旧入口不传 lessonId，从这里进去玩一整关等于没学（不落任何记录）。
-const MATH_LESSONS = lessonsOfSubject('math')
 function lessonOf(levelId) {
-  return MATH_LESSONS.find((l) => l.ref?.kind === 'math-level' && Number(l.ref.id) === Number(levelId)) || null
+  return getLesson('math-practice-l' + levelId)
 }
 function lessonIdOf(levelId) {
   return lessonOf(levelId)?.id || ''
@@ -53,8 +52,9 @@ const levels = ref(
   Object.values(MATH_LEVELS)
     .sort((a, b) => a.id - b.id)
     // 说明文案以课程目录 subtitle 为唯一真源（曾经手抄副本与目录漂移到 L7-9 两套说法）
-    .map((lv) => ({ ...lv, desc: lessonOf(lv.id)?.subtitle || '' })),
+    .map((lv) => ({ ...lv, available: lessonOf(lv.id)?.status === 'available', desc: lessonOf(lv.id)?.subtitle || '' })),
 )
+const availableCount = computed(() => levels.value.filter((lv) => lv.available).length)
 
 // 路径软解锁：与课程页同一份口径（数学关卡即路径，阶段内顺序解锁）
 const locks = ref(new Map())
@@ -81,11 +81,17 @@ function deny(lid) {
 
 function go(lv) {
   const lid = lessonIdOf(lv.id)
+  if (!lv.available) {
+    deny('math-practice-l' + lv.id)
+    uni.showToast({ title: '内容准备中', icon: 'none' })
+    return
+  }
   if (isLocked(lid)) {
     deny('math-practice-l' + lv.id)
     return
   }
-  uni.navigateTo({ url: `/pages/math/practice?level=${lv.id}` + (lid ? `&lessonId=${lid}` : '') })
+  const url = lessonUrl(lessonOf(lv.id))
+  if (url) uni.navigateTo({ url })
 }
 function goBack() {
   goBackOrHome()
@@ -182,6 +188,10 @@ function goBack() {
 .level-card.locked {
   opacity: 0.55;
   filter: saturate(0.4);
+}
+.level-card.draft {
+  opacity: 0.62;
+  filter: saturate(0.35);
 }
 .level-card.shake {
   animation: math-shake 0.45s;

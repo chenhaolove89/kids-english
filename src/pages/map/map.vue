@@ -57,6 +57,7 @@
       <view class="block-header">
         <image class="block-icon" :src="block.subject.icon" mode="aspectFit" />
         <text class="block-name" :style="{ color: block.subject.color }">{{ block.subject.name }}</text>
+        <text v-if="block.draftCount && !block.empty" class="block-draft">部分内容筹备中</text>
         <!-- 启蒙/一二年级不识字：挑战只留 🏆 图标，与 🎲 配成一对圆钮 -->
         <view
           v-if="block.challenge && block.subject.id !== 'math'"
@@ -126,7 +127,7 @@ import { hideNativeTabBar } from '@/platform/router-ui.js'
 import { getProgressService } from '@/services/progress.js'
 import { getReviewService } from '@/services/review.js'
 import { pickDailyTask, todayKey } from '@/domain/daily-task.js'
-import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES } from '@/services/curriculum-app.js'
+import { stageBlocks, continueTarget, lessonUrl, normalizeStage, randomLesson, STAGES, isVisibleLesson } from '@/services/curriculum-app.js'
 import { getLesson } from '@/content/catalog.js'
 import TabBar from '@/components/tab-bar.vue'
 
@@ -197,7 +198,7 @@ onShow(() => {
   refreshTick.value++
   // 只统计目录里仍存在的课：内容下线后历史数据不该继续计入首页星数
   const prog = getProgressService()
-  totalStars.value = prog.summary({ isKnownLesson: (id) => !!getLesson(id) }).totalStars
+  totalStars.value = prog.summary({ isKnownLesson: (id) => isVisibleLesson(getLesson(id)) }).totalStars
   computeDailyTask(prog)
 })
 
@@ -261,6 +262,10 @@ function setStage(id) {
 }
 
 function goLesson(lesson) {
+  if (!lesson || !isVisibleLesson(lesson)) {
+    denyLocked(lesson?.id || 'unavailable', '内容准备中')
+    return
+  }
   // 软解锁：锁着的课先完成前面的再来（家长中心「自由探索」可整体放开）
   if (lesson.locked) {
     denyLocked(lesson.id, '先完成前面的课，再来学它 ✨')
@@ -541,6 +546,13 @@ function go(s) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.block-draft {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: #a2917d;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .block-quiz {
   padding: 14rpx 28rpx;

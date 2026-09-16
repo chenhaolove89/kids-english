@@ -7,6 +7,7 @@ import { getStorage } from '../platform/storage.js'
 
 const STATUS_RANK = { other: 0, paused: 1, completed: 2 }
 const rank = (s) => STATUS_RANK[s.status] ?? 0
+const eventAt = (s) => Math.max(Number(s?.endedAt) || 0, Number(s?.startedAt) || 0)
 
 export function createProgressService(store) {
   /** 按 sessionId 去重的会话视图；同 id 取状态更高/更新的那条（恢复链复用同一 id） */
@@ -14,7 +15,7 @@ export function createProgressService(store) {
     const byId = new Map()
     for (const s of store.get('sessions', [])) {
       const prev = byId.get(s.sessionId)
-      if (!prev || rank(s) >= rank(prev)) byId.set(s.sessionId, s)
+      if (!prev || rank(s) > rank(prev) || (rank(s) === rank(prev) && eventAt(s) >= eventAt(prev))) byId.set(s.sessionId, s)
     }
     return byId
   }
@@ -42,24 +43,23 @@ export function createProgressService(store) {
         const stars = starsForFirstAttempt(s.totals?.firstCorrect || 0, s.totals?.questions || 0)
         cur.bestStars = Math.max(cur.bestStars, stars)
       }
-      cur.lastAt = Math.max(cur.lastAt, s.startedAt || 0)
+      cur.lastAt = Math.max(cur.lastAt, eventAt(s))
       map.set(s.lessonId, cur)
     }
     return map
   }
 
-  /** 最近会话（新在前，按 sessionId 去重取最新一条），家长页「最近记录」用 */
-  function recentSessions(limit = 10) {
-    const latest = new Map()
-    for (const s of store.get('sessions', [])) latest.set(s.sessionId, s)
-    return [...latest.values()].slice(-limit).reverse()
+  /** 最近会话（新在前，按 sessionId 去重取状态与时间最新一条）；可过滤不可见/下线课程 */
+  function recentSessions(limit = 10, { isKnownLesson = null } = {}) {
+    const known = (s) => !isKnownLesson || isKnownLesson(s.lessonId)
+    return [...sessionIndex().values()].filter(known).sort((a, b) => eventAt(b) - eventAt(a)).slice(0, limit)
   }
 
   /**
    * 按知识点（skillId）聚合首次作答正确率，最弱的排在前面。
    *
    * 数据其实一直都在：每条 attempt 都带 skillIds（session.js 写入），
-   * 171 门课也都有 skillIds（目录生成时写入）——但此前**没有任何消费方**，
+   * 176 门课也都有 skillIds（目录生成时写入）——但此前**没有任何消费方**，
    * 所以家长看不到「哪一类词弱、哪种题型弱」。
    *
    * 口径与星级一致：只统计 firstTry 的作答（重试不掺进来），
@@ -104,7 +104,10 @@ export function createProgressService(store) {
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000
     const allSessions = store.get('sessions', [])
     const known = (s) => !isKnownLesson || isKnownLesson(s.lessonId)
-    const inWeek = allSessions.filter((s) => (s.endedAt || 0) >= weekAgo)
+    const inWeek = allSessions.filter((s) => {
+      const ts = eventAt(s)
+      return ts >= weekAgo && ts <= now
+    })
     // 口径与 lessonProgressMap 同源：只认学一学/挑战。practice（描红、古诗点读）
     // 不算「完成课」——否则孩子只点读了古诗，本卡片有数而同屏「完成课程」总数为 0，同名不同义
     const completed = inWeek.filter(
@@ -138,12 +141,13 @@ export function createProgressService(store) {
   function activeMinutes(attempts, from, to) {
     const GAP_CAP = 60 * 1000
     let ms = 0
+    const timestamps = attempts
+      .map((a) => Number(a?.ts))
+      .filter((ts) => Number.isFinite(ts) && ts >= from && ts <= to)
+      .sort((a, b) => a - b)
     let prevTs = 0
-    for (const a of attempts) {
-      const ts = a.ts || 0
-      if (ts < from || ts > to) continue
-      // attempts 按追加序即为时间序；乱序数据靠 ts 比较兜底
-      if (prevTs && ts > prevTs) ms += Math.min(ts - prevTs, GAP_CAP)
+    for (const ts of timestamps) {
+      if (prevTs) ms += Math.min(ts - prevTs, GAP_CAP)
       prevTs = ts
     }
     return Math.round(ms / 60000)

@@ -114,7 +114,7 @@
         <text class="record-dot" :class="s.status">{{ s.status === 'completed' ? '✓' : '…' }}</text>
         <view class="record-info">
           <text class="record-title">{{ s.title }}</text>
-          <text class="record-sub">{{ s.kindLabel }} · {{ s.statusLabel }} · {{ fmtTime(s.startedAt) }}</text>
+          <text class="record-sub">{{ s.kindLabel }} · {{ s.statusLabel }} · {{ fmtTime(s.at) }}</text>
         </view>
         <text v-if="s.stars" class="record-stars">⭐ {{ s.stars }}</text>
       </view>
@@ -195,8 +195,8 @@ import { getAccent, playEn } from '@/platform/audio.js'
 import TabBar from '@/components/tab-bar.vue'
 import { assetUrl } from '@/platform/assets.js'
 import { hideNativeTabBar } from '@/platform/router-ui.js'
-import { SUBJECTS, getLesson, catalog, LESSONS } from '@/content/catalog.js'
-import { visibleLessons } from '@/services/curriculum-app.js'
+import { SUBJECTS, getLesson, catalog } from '@/content/catalog.js'
+import { visibleLessons, isVisibleLesson } from '@/services/curriculum-app.js'
 import { starsForFirstAttempt } from '@/domain/progress.js'
 
 const KIND_LABEL = { learn: '学一学', challenge: '挑战', practice: '练习' }
@@ -249,7 +249,7 @@ function refresh() {
   const reviewSvc = getReviewService()
   // 内容下线/改名后历史会话会留下目录里不存在的 lessonId；
   // 不过滤会让「完成课程」总数含孤儿、而下面「各科进度」按目录算，同屏自相矛盾
-  const isKnownLesson = (id) => !!getLesson(id)
+  const isKnownLesson = (id) => isVisibleLesson(getLesson(id))
   summary.value = prog.summary({ isKnownLesson })
   week.value = prog.weeklyReport(Date.now(), { isKnownLesson })
   attemptCount.value = store.get('attempts', []).length
@@ -276,7 +276,7 @@ function refresh() {
   weakSkills.value = prog
     .skillBreakdown({ isKnownLesson, limit: 5 })
     .map((s) => {
-      const lesson = LESSONS.find((l) => (l.skillIds || []).includes(s.skillId))
+      const lesson = visibleLessons().find((l) => (l.skillIds || []).includes(s.skillId))
       return {
         ...s,
         title: lesson ? lesson.title : s.skillId,
@@ -300,14 +300,15 @@ function refresh() {
     }
   })
 
-  recent.value = prog.recentSessions(8).map((s) => {
+  recent.value = prog.recentSessions(8, { isKnownLesson }).map((s) => {
     const lesson = getLesson(s.lessonId)
     return {
       // 课程已下线时不要再把内部 lessonId 甩给家长看
       title: lesson ? lesson.title : '（已下线的课程）',
       kindLabel: KIND_LABEL[s.kind] || s.kind,
       statusLabel: STATUS_LABEL[s.status] || s.status,
-      startedAt: s.startedAt,
+      // 与 recentSessions 的排序同口径：恢复/完成后的最新事件时间优先展示。
+      at: Math.max(Number(s.endedAt) || 0, Number(s.startedAt) || 0),
       stars:
         s.status === 'completed' && s.kind === 'challenge'
           ? starsForFirstAttempt(s.totals?.firstCorrect || 0, s.totals?.questions || 0)

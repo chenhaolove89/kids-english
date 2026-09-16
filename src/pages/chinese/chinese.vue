@@ -46,7 +46,8 @@ import { onShow } from '@dcloudio/uni-app'
 import data from '@/data/hanzi.json'
 import PageTopBar from '@/components/page-top-bar.vue'
 import { goBackOrHome } from '@/platform/nav.js'
-import { lessonLocks } from '@/services/curriculum-app.js'
+import { lessonLocks, lessonUrl, isVisibleLesson } from '@/services/curriculum-app.js'
+import { getLesson } from '@/content/catalog.js'
 
 const levels = ref(data.levels)
 const total = computed(() => data.total)
@@ -63,6 +64,9 @@ onShow(refreshLocks)
 function isLocked(lessonId) {
   return !!locks.value.get(lessonId)?.locked
 }
+function isAvailable(lessonId) {
+  return isVisibleLesson(getLesson(lessonId))
+}
 function deny(lessonId, tip) {
   const now = Date.now()
   if (now - lastShakeAt < 1000) return
@@ -76,19 +80,29 @@ function deny(lessonId, tip) {
 
 function goLearn(lv) {
   const lid = 'zh-learn-l' + lv.id
+  if (!isAvailable(lid)) {
+    deny(lid, '内容准备中')
+    return
+  }
   if (isLocked(lid)) {
     deny(lid, '先完成前面的课，再来学它 ✨')
     return
   }
-  uni.navigateTo({ url: `/pages/learn/learn?subject=zh&level=${lv.id}` })
+  const url = lessonUrl(getLesson(lid))
+  if (url) uni.navigateTo({ url })
 }
 function goQuiz(lv) {
   const lid = 'zh-quiz-l' + lv.id
+  if (!isAvailable(lid)) {
+    deny(lid, '内容准备中')
+    return
+  }
   if (isLocked(lid)) {
     deny(lid, '先学一学，再来挑战 🏆')
     return
   }
-  uni.navigateTo({ url: `/pages/quiz/quiz?subject=zh&level=${lv.id}` })
+  const url = lessonUrl(getLesson(lid))
+  if (url) uni.navigateTo({ url })
 }
 function goBack() {
   goBackOrHome()

@@ -66,7 +66,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { play, playEn, preload, preloadWithProgress, accentEnSrc, isAudioReady, whenAudioReady, stopSeq } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
-import { getLesson } from '@/content/catalog.js'
+import { getLesson, catalog } from '@/content/catalog.js'
 import { resolveEnCategory, resolveEnLevel, resolveZhLevel, resolveAllEnWords, mapZhOption } from '@/content/adapters.js'
 import { isCategoryHidden } from '@/content/lowAge.js'
 import { buildListenPickRounds, buildZhCharRounds, buildPoemFillRounds } from '@/domain/rounds.js'
@@ -102,7 +102,7 @@ const finished = ref(false)
 const revealId = ref('')
 const revealing = ref(false)
 
-const svc = getSessionService()
+const svc = getSessionService(catalog.contentVersion)
 
 /**
  * 定时器登记表：页面卸载时统一清掉。
@@ -281,16 +281,26 @@ onLoad((query) => {
     return
   }
 
-  const l = getLesson(query.lessonId)
+  // 兼容旧版按 level 直链：没有 lessonId 时仍从目录反查课程，draft 不能绕过发布状态。
+  const rawLevel = Number(query.level)
+  const fallbackLesson = !query.cat && !query.poem && Number.isInteger(rawLevel) && rawLevel >= 1 && rawLevel <= 4
+    ? getLesson((subject.value === 'en' ? 'en-quiz-l' : 'zh-quiz-l') + rawLevel)
+    : null
+  const l = getLesson(query.lessonId) || fallbackLesson
+  if (l && l.status !== 'available') {
+    uni.showToast({ title: '内容准备中', icon: 'none' })
+    later(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+    return
+  }
   // 深链指向被低龄模式隐藏的分类课时，池已过滤但课程不可见，降级为不记录
-  const trackable = !(l && l.ref?.kind === 'en-category' && isCategoryHidden(l.ref.id))
+  const trackable = !!l && !(l.ref?.kind === 'en-category' && isCategoryHidden(l.ref.id))
   if (l && trackable) {
     lesson.value = l
     const resumed = svc.resumeSessionFor(l.id, 'challenge')
     if (resumed?.snapshot?.rounds?.length) {
       restoreSnapshot(resumed.snapshot)
     } else {
-      svc.startSession({ lessonId: l.id, kind: 'challenge', skillIds: l.skillIds || [] })
+      svc.startSession({ lessonId: l.id, kind: 'challenge', skillIds: l.skillIds || [], contentVersion: catalog.contentVersion })
       start()
     }
   } else {
@@ -450,7 +460,7 @@ function restart() {
   if (lesson.value) {
     // 重开必须重新建会话，否则这一局的作答会被静默丢弃
     svc.clearActive()
-    svc.startSession({ lessonId: lesson.value.id, kind: 'challenge', skillIds: lesson.value.skillIds || [] })
+    svc.startSession({ lessonId: lesson.value.id, kind: 'challenge', skillIds: lesson.value.skillIds || [], contentVersion: catalog.contentVersion })
   }
   start()
 }

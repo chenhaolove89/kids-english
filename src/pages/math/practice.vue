@@ -129,7 +129,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { playSeq, preload, stopSeq } from '@/platform/audio.js'
 import { assetUrl } from '@/platform/assets.js'
 import { goBackOrHome } from '@/platform/nav.js'
-import { getLesson } from '@/content/catalog.js'
+import { getLesson, catalog } from '@/content/catalog.js'
 import { buildQuestions, normalizeMathLevel, mathText, mathItemId, MATH_LEVELS } from '@/domain/mathgen.js'
 import { isPickCorrect } from '@/domain/judge.js'
 import { starsForFirstAttempt, starsText as starsBar } from '@/domain/progress.js'
@@ -181,7 +181,7 @@ const equationSize = computed(() => {
   return '44rpx'
 })
 
-const svc = getSessionService()
+const svc = getSessionService(catalog.contentVersion)
 
 /**
  * 定时器登记表：页面卸载时统一清掉。
@@ -245,7 +245,17 @@ onLoad((query) => {
   }
 
   // 有 lessonId 时以课程目录的关卡为准，URL 参数不可信；非法关卡安全回退第 1 关
-  const l = getLesson(query.lessonId)
+  // 兼容旧版按 level 直链：没有 lessonId 时也要从目录反查，draft 关卡不能绕过状态门禁。
+  const rawLevel = Number(query.level)
+  const fallbackLesson = Number.isInteger(rawLevel) && rawLevel >= 1 && rawLevel <= 9
+    ? getLesson('math-practice-l' + rawLevel)
+    : null
+  const l = getLesson(query.lessonId) || fallbackLesson
+  if (l && l.status !== 'available') {
+    uni.showToast({ title: '内容准备中', icon: 'none' })
+    later(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+    return
+  }
   const lvId = normalizeMathLevel(l && l.ref?.kind === 'math-level' ? l.ref.id : query.level)
   level.value = MATH_LEVELS[lvId]
 
@@ -256,7 +266,7 @@ onLoad((query) => {
       restoreSnapshot(resumed.snapshot)
       return
     }
-    svc.startSession({ lessonId: l.id, kind: 'challenge', skillIds: l.skillIds || [] })
+    svc.startSession({ lessonId: l.id, kind: 'challenge', skillIds: l.skillIds || [], contentVersion: catalog.contentVersion })
   }
   startFresh()
 })
@@ -382,7 +392,7 @@ function restart() {
   if (lesson.value) {
     // 重开必须重新建会话，否则这一局的作答会被静默丢弃
     svc.clearActive()
-    svc.startSession({ lessonId: lesson.value.id, kind: 'challenge', skillIds: lesson.value.skillIds || [] })
+    svc.startSession({ lessonId: lesson.value.id, kind: 'challenge', skillIds: lesson.value.skillIds || [], contentVersion: catalog.contentVersion })
   }
   startFresh()
 }

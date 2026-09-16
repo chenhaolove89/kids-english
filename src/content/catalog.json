@@ -1,5 +1,5 @@
 {
-  "contentVersion": "f9500c1f99",
+  "contentVersion": "114d6f522c",
   "stages": [
     {
       "id": "qimeng",
@@ -2718,7 +2718,7 @@
       ]
     },
     {
-      "status": "available",
+      "status": "draft",
       "id": "en-quiz-l4",
       "subject": "en",
       "stage": "g56",
@@ -2738,7 +2738,7 @@
       ]
     },
     {
-      "status": "available",
+      "status": "draft",
       "id": "math-practice-l6",
       "subject": "math",
       "stage": "g56",
@@ -2758,7 +2758,7 @@
       ]
     },
     {
-      "status": "available",
+      "status": "draft",
       "id": "math-practice-l9",
       "subject": "math",
       "stage": "g56",

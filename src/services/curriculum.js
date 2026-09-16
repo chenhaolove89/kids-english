@@ -12,6 +12,8 @@
 import { pickOneExcept } from '../domain/shuffle.js'
 import { markPathLocks, isChallengeLocked } from '../domain/path.js'
 
+const sessionAt = (s) => Math.max(Number(s?.endedAt) || 0, Number(s?.startedAt) || 0)
+
 export function createCurriculum({ catalog, isCategoryHidden, store, getProgress = null, isFreeUnlock = null }) {
   const { STAGES, SUBJECTS, LESSONS, getLesson, lessonsForStage, normalizeStage } = catalog
   const hidden = isCategoryHidden || (() => false)
@@ -28,17 +30,20 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
   }
 
   /**
-   * 首页阶段视图：每个科目一个块 { subject, challenge, units, empty, challengeLocked }。
+   * 首页阶段视图：每个科目一个块 { subject, challenge, units, empty, draftCount, challengeLocked }。
    * units 里的每门课带 { locked, isNext }：软解锁路径（domain/path.js）——
    * 第一个未完成的课是「下一课」，其后的课锁定；已完成/拿过星的永远开放。
    */
   function stageBlocks(stageId) {
     const st = normalizeStage(stageId)
-    const available = lessonsForStage(st).filter(isVisible)
+    const stageLessons = LESSONS.filter((l) => l.stage === st)
+    const available = stageLessons.filter(isVisible)
     const fu = freeUnlock()
     return SUBJECTS.map((subj) => {
+      const allSubjectLessons = stageLessons.filter((l) => l.subject === subj.id)
       const ls = available.filter((l) => l.subject === subj.id)
-      if (!ls.length) return { subject: subj, challenge: null, units: [], empty: true, challengeLocked: false }
+      const draftCount = allSubjectLessons.filter((l) => l.status === 'draft').length
+      if (!ls.length) return { subject: subj, challenge: null, units: [], empty: true, draftCount, challengeLocked: false }
       const challenges = ls.filter((l) => l.kind === 'challenge')
       // 古诗课不入锁路径：读诗只记 practice 会话（不算完成），放进路径会把 frontier 永久
       // 卡在古诗上；它像「自由内容」一样始终开放（页内的填字挑战才记课时）
@@ -57,7 +62,7 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       // 挑战钮：该科路径上至少完成一门课才亮（数学全关卡即路径，无独立挑战钮）
       const challengeLocked =
         subj.id === 'math' ? false : isChallengeLocked(units, progressOf, { freeUnlock: fu })
-      return { subject: subj, challenge: challenges[0] || null, units: annotated, empty: false, challengeLocked }
+      return { subject: subj, challenge: challenges[0] || null, units: annotated, empty: false, draftCount, challengeLocked }
     })
   }
 
@@ -89,7 +94,7 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
 
   /** 课程 → 页面跳转地址（旧入口页面复用，额外带 lessonId） */
   function lessonUrl(lesson) {
-    if (!lesson || !lesson.ref) return ''
+    if (!lesson || !lesson.ref || !isVisible(lesson)) return ''
     const lid = encodeURIComponent(lesson.id)
     const r = lesson.ref
     // en-category 被 en（词卡）与 zh（词语课）共用，按科目分流
@@ -169,7 +174,15 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       }
     }
     const sessions = store.get('sessions', [])
-    const paused = [...sessions].reverse().find((s) => {
+    // 恢复同一会话会留下旧 paused 日志；先按 sessionId 取事件时间最新状态，
+    // 否则「暂停→恢复→完成」后仍可能被旧快照劫回已完成的课程。
+    const latestBySession = new Map()
+    for (const s of sessions) {
+      const prev = latestBySession.get(s.sessionId)
+      if (!prev || sessionAt(s) >= sessionAt(prev)) latestBySession.set(s.sessionId, s)
+    }
+    const timeline = [...latestBySession.values()].sort((a, b) => sessionAt(b) - sessionAt(a))
+    const paused = timeline.find((s) => {
       if (s.status !== 'paused' || !s.snapshot) return false
       const lesson = getLesson(s.lessonId)
       return lesson && isVisible(lesson)
@@ -178,8 +191,8 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       const lesson = getLesson(paused.lessonId)
       if (lesson) return { lesson, mode: 'resume-paused', snapshot: paused.snapshot, sessionId: paused.sessionId }
     }
-    const completed = sessions.filter((s) => s.status === 'completed')
-    const last = completed[completed.length - 1]
+    const completed = timeline.filter((s) => s.status === 'completed')
+    const last = completed[0]
     if (last) {
       const nxt = nextLessonAfter(last.lessonId)
       if (nxt && isVisible(nxt) && !lessonLocks().get(nxt.id)?.locked) {

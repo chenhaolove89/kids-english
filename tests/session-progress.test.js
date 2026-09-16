@@ -24,6 +24,24 @@ test('首次作答 firstTry=true，重复作答 firstTry=false（重复点击不
   assert.equal(a3.firstTry, true)
 })
 
+test('contentVersion：会话与作答事件都携带内容版本，旧调用仍兼容', () => {
+  const store = makeStore()
+  const svc = createSessionService(store, { contentVersion: 'catalog-v1' })
+  const started = svc.startSession({ lessonId: 'L1', kind: 'challenge' })
+  assert.equal(started.session.contentVersion, 'catalog-v1')
+  const attempt = svc.recordAttempt({ activityId: 'quiz', order: 0, answer: 'a', correct: true })
+  assert.equal(attempt.contentVersion, 'catalog-v1')
+  const done = svc.completeSession()
+  assert.equal(done.contentVersion, 'catalog-v1')
+  assert.equal(store.get('sessions', [])[0].contentVersion, 'catalog-v1')
+
+  // 历史暂停记录没有版本字段时仍可恢复，迁移期不因缺字段崩溃。
+  store.set('sessions', [{ sessionId: 'old', lessonId: 'L2', kind: 'learn', status: 'paused', snapshot: { idx: 1 } }])
+  const resumed = svc.resumeSessionFor('L2', 'learn')
+  assert.equal(resumed.session.contentVersion, null)
+  assert.equal(svc.recordAttempt({ activityId: 'learn', order: 1, answer: 'b', correct: true }).contentVersion, null)
+})
+
 test('首次答错重试答对：完成会话的 totals 区分首答与最终', () => {
   const store = makeStore()
   const svc = createSessionService(store)
@@ -197,6 +215,19 @@ test('progressService：暂停→恢复→完成，同一 sessionId 只算一次
   assert.equal(totals.firstCorrect, 2)
 })
 
+test('recentSessions：按事件时间倒序，恢复链同 sessionId 取最新状态', () => {
+  const store = makeStore()
+  const prog = createProgressService(store)
+  store.set('sessions', [
+    { sessionId: 's1', lessonId: 'L1', status: 'completed', startedAt: 100, endedAt: 200 },
+    { sessionId: 's2', lessonId: 'L2', status: 'completed', startedAt: 300, endedAt: 350 },
+    { sessionId: 's1', lessonId: 'L1', status: 'completed', startedAt: 500, endedAt: 600 },
+  ])
+  assert.deepEqual(prog.recentSessions(2).map((s) => s.sessionId), ['s1', 's2'])
+  assert.equal(prog.recentSessions(2)[0].endedAt, 600)
+  assert.deepEqual(prog.recentSessions(2, { isKnownLesson: (id) => id === 'L1' }).map((s) => s.lessonId), ['L1'])
+})
+
 test('weeklyReport：完成课数含学一学、周星按课取最好、时长按作答间隔累计', () => {
   const store = makeStore()
   const prog = createProgressService(store)
@@ -232,6 +263,10 @@ test('weeklyReport：完成课数含学一学、周星按课取最好、时长�
     endedAt: now - 8 * DAY + 60000, status: 'completed',
     totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 },
   })
+  // 未来时间的脏数据不能被「近 7 天」误收（旧实现只判断下界）。
+  log.push({ sessionId: 'future', lessonId: 'en-quiz-l4', kind: 'challenge', startedAt: now + DAY, endedAt: now + DAY + 60000, status: 'completed',
+    totals: { questions: 10, firstCorrect: 10, attempts: 10, correctPicks: 10 },
+  })
   store.set('sessions', log)
   // 作答流：间隔 30s（计 30s）+ 间隔 90s（超 60s 封顶计 60s）
   const t0 = now - 30 * 60000
@@ -245,6 +280,19 @@ test('weeklyReport：完成课数含学一学、周星按课取最好、时长�
   assert.equal(w.minutes, 2) // 30s + 封顶 60s = 90s
   // 关键不变量：本周星不可能超过总星（旧实现逐会话相加会超过）
   assert.ok(w.stars <= prog.summary().totalStars, `周星 ${w.stars} 不应超过总星 ${prog.summary().totalStars}`)
+})
+
+test('weeklyReport：乱序 attempts 仍按时间排序累计有效时长', () => {
+  const store = makeStore()
+  const prog = createProgressService(store)
+  const now = 1000 * 24 * 60 * 60 * 1000
+  store.set('attempts', [
+    { ts: now - 100000 },
+    { ts: now - 200000 },
+    { ts: now - 150000 },
+  ])
+  // 正确排序后为 50s + 50s = 100s → 2 分钟；按写入顺序会漏掉第二段。
+  assert.equal(prog.weeklyReport(now).minutes, 2)
 })
 
 test('attempts 裁剪：单会话作答超过 MAX_ATTEMPTS 时仍然封顶（曾是无界增长）', () => {
