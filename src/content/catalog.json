@@ -1,5 +1,5 @@
 {
-  "contentVersion": "114d6f522c",
+  "contentVersion": "03afd0f441",
   "stages": [
     {
       "id": "qimeng",
@@ -524,7 +524,7 @@
       "stage": "qimeng",
       "kind": "learn",
       "title": "必背古诗 · 点读",
-      "subtitle": "6 首",
+      "subtitle": "12 首",
       "icon": "/static/img/hz-8bd7.png",
       "color": "#B4532A",
       "bg": "#F9EDE4",

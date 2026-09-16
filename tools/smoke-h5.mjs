@@ -891,7 +891,7 @@ async function main() {
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       }
     `)
-    check('古诗书单渲染 6 首且不横向溢出', poemList.cards === 6 && poemList.overflow <= 2, `${poemList.cards} 首，首篇《${poemList.firstTitle}》`)
+    check('古诗书单渲染 12 首且不横向溢出', poemList.cards === 12 && poemList.overflow <= 2, `${poemList.cards} 首，首篇《${poemList.firstTitle}》`)
     await tap(cdp, '.poem-card', 0)
     await sleep(1000)
     const poemReader = await cdp.eval(`
@@ -989,13 +989,13 @@ async function main() {
       safeJson(poemParent.rows.slice(0, 2)),
     )
     check(
-      '读完一首不会把整门古诗课算成"完成课程"（一课有 6 首）',
+      '读完一首不会把整门古诗课算成"完成课程"（启蒙一课有 12 首）',
       poemParent.completed === 0,
       `完成课程=${poemParent.completed}`,
     )
 
     // ---------- 11c. 古诗二期新学段（三四/五六年级）端到端 ----------
-    // 2026-09 新增 12 首（每学段 6 首）+ 古诗卡；这条内容路径此前没被浏览器验证过。
+    // 2026-09 新增古诗（三四/五六年级各 6 首；启蒙 2026-09-16 扩到 12 首）+ 古诗卡；
     // 顺带覆盖"小阶段字太少导致填字池退化（degenerate-pool）"的风险。
     await cdp.setViewport(390, 844)
     await cdp.freshNavigate(`${BASE}/#/pages/map/map`)
