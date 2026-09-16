@@ -101,6 +101,9 @@ async function main() {
   if (DEPLOY) {
     await step('部署：gh-pages 抢先版（产物准备 + 真实 git 推送）', async () => {
       run('node tools/publish-github-pages.mjs')
+      // SW / `/static/` 相对化改写 / PWA manifest 这三类只在发布产物里存在，
+      // 构建目录的 smoke 一个都测不到——所以在这里、推 git 之前拦一道，坏产物不推上去。
+      run('npm run verify:offline')
       // publish 脚本只准备产物目录；真正上线靠这段 git 推送（README 手工流程）。
       // remote 若是 SSH 地址（本机无可用公钥会挂死）自动换成 HTTPS+凭据助手
       const preview = path.join(ROOT, 'tmp', 'gh-preview')
