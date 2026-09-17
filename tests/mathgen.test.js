@@ -145,7 +145,9 @@ test('L5 万以内加减：三位数正整数、选项按位值取、算式格�
 })
 
 test('L6 小数与分数：小数一位、分数同分母且结果为真分数', () => {
-  for (let seed = 1; seed <= 20; seed++) {
+  // 抽样量按「能抓住稀有缺陷」定：0.09% 量级的退化题（曾被 decTenths 的越界 +1 造出
+  // 「6.1 − 6.1 = ?」）在 200 题里大概率碰不到，所以这里跑 3000 题并断言数值域。
+  for (let seed = 1; seed <= 300; seed++) {
     for (const q of buildQuestions(6, { rng: seededRng(seed * 41) })) {
       assert.ok(['addDec', 'subDec', 'addFrac'].includes(q.kind), `未知题型 ${q.kind}`)
       if (q.kind === 'addFrac') {
@@ -157,12 +159,21 @@ test('L6 小数与分数：小数一位、分数同分母且结果为真分数',
         assert.ok(n1 + n2 < d1, '结果保持真分数（不用约分）')
       } else {
         assert.match(q.answer, /^\d+\.\d$/, `一位小数: ${q.answer}`)
-        assert.ok(Number(q.answer) > 0, '结果为正')
+        assert.ok(Number(q.answer) > 0, `结果为正（0.0 说明出了两个相同操作数的退化题）: ${q.display}`)
         for (const o of q.options) assert.match(o.id, /^\d+\.\d$/, `选项应为一位小数: ${o.id}`)
         // 5.0 + 2.0 这种整数式小数题学不到小数，至少一边必须有非零十分位
         const m = q.display.match(/^(\d+\.\d) [+−] (\d+\.\d) = \?$/)
         assert.ok(m, `小数算式格式: ${q.display}`)
         assert.ok(!(m[1].endsWith('.0') && m[2].endsWith('.0')), `至少一边带非零十分位: ${q.display}`)
+        // 数值域：加法限定在 20.0 以内（关卡名义），减法必须被减数大于减数
+        const A = Number(m[1]), B = Number(m[2])
+        if (q.kind === 'addDec') {
+          assert.ok(A >= 1.1 && A <= 10.0, `被加数越界: ${q.display}`)
+          assert.ok(A + B <= 20.0001, `和超过 20.0: ${q.display}`)
+        } else {
+          assert.ok(A >= 2.0 && A <= 19.9, `被减数越界: ${q.display}`)
+          assert.ok(B >= 0.1 && B < A, `减数越界或与被减数相等: ${q.display}`)
+        }
       }
       const ids = q.options.map((o) => o.id)
       assert.ok(ids.includes(q.answer), `答案 ${q.answer} 必须在选项中`)

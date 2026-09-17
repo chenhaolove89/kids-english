@@ -82,9 +82,14 @@ function bigOptions(answer, count, rng) {
 // 小数统一用「十分位整数」运算与出选项，最后格式化——避免 0.1+0.2 这类浮点误差
 const fmtTenths = (t) => (t / 10).toFixed(1)
 // 十分位非零：否则会出 5.0 + 2.0 这种整数式小数题，孩子学不到小数
+// 末尾为 0 时的 +1 修正必须留在 [lo, hi] 内：此前不检查上界，减法题里
+// b = decTenths(rng, 1, a-1) 会在 a-1 是整十分位时被顶成 b === a
+// →「6.1 − 6.1 = ?」答案 0.0（实测 20 万题命中 183 次）
 function decTenths(rng, lo, hi) {
   const t = lo + rnd(rng, Math.max(1, hi - lo + 1))
-  return t % 10 === 0 ? t + 1 : t
+  if (t % 10 !== 0) return t
+  if (t + 1 <= hi) return t + 1
+  return t - 1 >= lo ? t - 1 : t
 }
 function decOptions(answerTenths, count, rng) {
   const set = new Set([answerTenths])
