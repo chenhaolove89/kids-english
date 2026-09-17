@@ -39,7 +39,11 @@ test('课程发布状态：源配置与生成目录一致，draft 不会被静�
   }
   const actualDraftIds = catalog.lessons.filter((l) => l.status === 'draft').map((l) => l.id).sort()
   assert.deepEqual(actualDraftIds, Object.keys(configured).sort(), '目录中的 draft 必须完全由 lessonStatus 配置解释')
-  assert.equal(catalog.lessons.filter((l) => l.status === 'available').length, 173)
+  // 2026-09-17 draft 复核后三门课（en-quiz-l4 / math-practice-l6 / math-practice-l9）转正，
+  // 所以此刻 lessonStatus 为空、176 课全部 available；这个数字随 lessonStatus 一起变。
+  const expectedAvailable = catalog.lessons.length - Object.keys(configured).length
+  assert.equal(catalog.lessons.filter((l) => l.status === 'available').length, expectedAvailable)
+  assert.equal(expectedAvailable, 176)
 })
 
 test('课程引用可解析：ref 都能落到真实数据', () => {

@@ -174,7 +174,7 @@ test('stageBlocks：某科在该阶段完全没有课时才标记 empty（页面
   assert.deepEqual(math.units, [])
 })
 
-test('真实目录：176 课中 draft 不进入阶段块，g56/math 如实显示筹备中', () => {
+test('真实目录：四个学段三科都有可用内容，不再有「筹备中」空块', () => {
   const { c } = make()
   const empties = []
   for (const st of STAGES) {
@@ -182,19 +182,23 @@ test('真实目录：176 课中 draft 不进入阶段块，g56/math 如实显示
       if (b.empty) empties.push(`${st.id}/${b.subject.id}`)
     }
   }
-  assert.deepEqual(empties, ['g56/math'])
+  assert.deepEqual(empties, [])
 })
 
 /* ---------------- nextLessonAfter / randomLesson ---------------- */
-test('真实目录：draft 课程只留下筹备中计数，不进入可用 units', () => {
+test('真实目录：三门课已从 draft 转正，不残留筹备中计数', () => {
   const { c } = make()
   const g56Math = c.stageBlocks('g56').find((b) => b.subject.id === 'math')
-  assert.equal(g56Math.empty, true)
-  assert.equal(g56Math.draftCount, 2)
+  assert.equal(g56Math.empty, false)
+  assert.equal(g56Math.draftCount, 0)
+  // 2026-09-17 draft 复核后开放：小数与分数 / 四则混合 / 进阶词汇挑战
   assert.deepEqual(
-    LESSONS.filter((l) => l.status === 'draft').map((l) => l.id).sort(),
-    ['en-quiz-l4', 'math-practice-l6', 'math-practice-l9'],
+    LESSONS.filter((l) => l.status !== 'available').map((l) => l.id).sort(),
+    [],
   )
+  for (const id of ['en-quiz-l4', 'math-practice-l6', 'math-practice-l9']) {
+    assert.equal(LESSONS.find((l) => l.id === id).status, 'available', `${id} 应已开放`)
+  }
 })
 
 test('nextLessonAfter：按科目顺序取下一课，最后一课返回 null', () => {

@@ -1202,10 +1202,11 @@ async function main() {
     check('非法级别深链不白屏且能出题（回退到默认级别）', badLevel.opts > 0 && !badLevel.blank, `${badLevel.round}，选项 ${badLevel.opts} 个`)
 
     // ---------- 12c. 数学已开放关卡：每个题型分支都要能渲染并作答（规则文件记录过 compareNum 崩页事故） ----------
-    // 当前 L6/L9 是 draft，7 个已开放关卡共 42 题；模板里只有 count/add/sub/compare/compareNum/wordX/listen/sequence
-    // 有专属分支，其余走通用算式分支。这里逐关抽样作答，逐题校验"要么 4 个选项、要么 2 张比大小卡"
+    // 2026-09-17 draft 复核后 9 关全部开放（L6 小数与分数、L9 四则混合转正）。
+    // 模板里只有 count/add/sub/compare/compareNum/wordX/listen/sequence 有专属分支，
+    // 其余走通用算式分支。这里逐关抽样作答，逐题校验"要么 4 个选项、要么 2 张比大小卡"
     // 且题干非空、作答后不白屏——这正是"新增题型只修一处 v-if 就继续崩页"的防线。
-    const MATH_LEVELS = [1, 2, 3, 4, 5, 7, 8]
+    const MATH_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     // 每关的题型池 → 期望渲染分支（与 domain/mathgen 的 KINDS_BY_LEVEL 对应）
     const EXPECTED_FAMILIES = {
       1: ['tiles', 'listen', 'equation'],
@@ -1295,27 +1296,12 @@ async function main() {
       const unexpected = [...seenHere].filter((f) => f === 'unknown' || !EXPECTED_FAMILIES[level].includes(f))
       if (unexpected.length) mathProblems.push(`L${level} 出现该关不该有的分支：${unexpected.join(',')}`)
     }
-    // 旧版 level 直链也必须经过发布状态门禁，不能因为没有 lessonId 就绕过 draft。
-    const draftMathProblems = []
-    for (const level of [6, 9]) {
-      await cdp.eval(`localStorage.removeItem('kx:active'); return 1`)
-      await cdp.freshNavigate(`${BASE}/#/pages/math/practice?level=${level}`)
-      await sleep(1800)
-      const gate = await cdp.eval(`
-        return {
-          home: document.querySelectorAll('.stage-chip').length === 4,
-          active: localStorage.getItem('kx:active') !== null,
-          question: document.querySelectorAll('.opt, .compare-card').length,
-        }
-      `)
-      if (!gate.home || gate.active || gate.question > 0) draftMathProblems.push(`L${level} 未被门禁拦截：${safeJson(gate)}`)
-    }
+    // 发布状态门禁本身（draft 课不放出、直链不绕行）由 tests/curriculum.test.js 用合成目录覆盖；
+    // 这里只验用户可见结果：9 关都能进、都能出题。
     check(
-      '数学已开放 7 关 42 题：形态合法、有内容、作答有反馈、无白屏；L6/L9 draft 直链被拦截',
-      mathProblems.length === 0 && draftMathProblems.length === 0,
-      mathProblems.length || draftMathProblems.length
-        ? [...mathProblems, ...draftMathProblems].slice(0, 4).join(' | ')
-        : '全部通过',
+      `数学 9 关全部开放：形态合法、有内容、作答有反馈、无白屏（共 ${MATH_LEVELS.length * 6} 题）`,
+      mathProblems.length === 0,
+      mathProblems.length ? mathProblems.slice(0, 4).join(' | ') : `L1~L9 各 6 题，全部通过`,
     )
 
     /**
@@ -1671,21 +1657,25 @@ async function main() {
     )
     check('低龄模式下直链被隐藏分类：内容与课程不一致时不记会话', !hiddenDeepLink.active, `kx:active=${hiddenDeepLink.active}`)
 
-    // (2) draft 挑战直链也必须被拦截：L4 已发布为 draft，不能把它误当成低龄题池来测。
+    // (2) L4 挑战 2026-09-17 已转正：低龄模式下直链应当能玩（隐藏分类被滤掉后题池不退化）。
+    // 这条防的是"低龄过滤把 g56 题池滤空 → 进去卡死/白屏"。
     await cdp.eval(`localStorage.removeItem('kx:active'); return 1`)
     await cdp.freshNavigate(`${BASE}/#/pages/quiz/quiz?subject=en&level=4&lessonId=en-quiz-l4`)
-    await sleep(1800)
-    const draftQuiz = await cdp.eval(`
+    await sleep(2000)
+    const l4Quiz = await cdp.eval(`
+      const opts = document.querySelectorAll('.option')
       return {
         home: document.querySelectorAll('.stage-chip').length === 4,
-        active: localStorage.getItem('kx:active') !== null,
-        question: document.querySelectorAll('.option').length,
+        question: opts.length,
+        round: (document.querySelector('.round-count') || {}).innerText || '',
+        body: document.body.innerText.slice(0, 80),
       }
     `)
     check(
-      '低龄模式下 draft 挑战直链被发布状态门禁拦截',
-      draftQuiz.home && !draftQuiz.active && draftQuiz.question === 0,
-      safeJson(draftQuiz),
+      '低龄模式下 L4 挑战直链可玩且题池未退化（隐藏分类已滤掉）',
+      // 严格：既要出了选项，也要真的开出一轮 10 题（池被滤空会退化/白屏）
+      l4Quiz.question >= 2 && l4Quiz.body.includes('第 1 / 10 题'),
+      safeJson(l4Quiz),
     )
     await setPrefs({ lowAge: false })
 
