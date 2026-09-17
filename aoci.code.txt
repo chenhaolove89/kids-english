@@ -14,6 +14,8 @@ README.md[SG8M]: F:项目总入口文档：产品定位与三科能力、架构�
 index.html[EU7T]: F:H5 入口页：注入 viewport、标题与 iOS 全屏 meta、图标与 PWA manifest 链接，并挂载 /src/main.js | R:code:src/static/manifest.webmanifest,code:src/static/icons/icon.png,code:tools/publish-github-pages.mjs | A:须保留 uni 的 preload-links 与 app-context 占位注释；资源写 /static/… 绝对路径，由发布脚本改写为 ./static/… | S:必须显式声明 link rel=icon，否则浏览器去探站点根 /favicon.ico，既 404 又没有标签页图标；maximum-scale 允许放大到 5 倍是家长页小字可读所需
 package-lock.json[FV5L]: F:npm 锁文件：固定 554 个包（含传递依赖）的解析版本与完整性哈希，供可复现安装 | R:code:package.json | A:lockfileVersion 3；依赖解析必须与 package.json 声明一致 | S:禁止手改，依赖变动只走 npm 安装命令
 package.json[FV8T]: F:项目清单：uni-app 与 Vue3/Vite 依赖及全部 npm 脚本（资源生成、内容校验、三门禁、冒烟、离线验证、截图、测试、发版） | R:code:package-lock.json,code:tools/release.mjs,code:tools/validate-content.mjs,code:tools/smoke-h5.mjs,code:tools/gen-assets.mjs | A:脚本名是团队与 CI 契约（gen:assets、build:content、validate:content、audit:assets、audit:audio、check:layering、smoke:h5、verify:offline、release）；type module 让 tools 与 tests 走 ESM | S:private true 防误发布；license 字段是 SEE LICENSE IN LICENSE 而非 SPDX 标识；smoke:h5 需先 build:h5 并另开终端跑 node tools/serve.mjs
+vite.config.js[FV5T]: F:构建配置：注册 uni-app 的 Vite 插件 | R:code:package.json | A:默认导出配置对象；插件取默认导出或命名导出两种形状 | S:根清单声明为 ESM，加载 CJS 插件时默认导出可能被包一层，必须兼容两种形状否则构建直接失败
+本地预览.bat[XV3T]: F:本地预览启动器：双击后起本地服务并打开浏览器 | R:code:tools/serve.mjs | A:启动服务并打开本地地址 | S:必须经 http 访问：双击产物会因浏览器禁止 file 页面加载模块脚本而白屏
 
 ===E:/kids-english/content-packages/===
 curriculum.json[FB7T]: F:人工维护的课程源：四学段与三科的元数据、难度到学段映射、课程发布状态与语文分类及句级配置 | R:code:tools/validate-content.mjs,code:src/content/catalog.json,code:LICENSE-CONTENT.md | A:schema version 2：mapping 的 levelStage 决定难度落点；lessonStatus 为空表示当前无 draft 课（draft 禁开始且不进地图、旧入口与家长统计） | S:数学的 levelStage 是 1-9 关到学段的映射（7 映射 qimeng、3 映射 g12），与英语四级不同
@@ -25,6 +27,9 @@ learning-platform-plan.md[SG8T]: F:产品与分层总纲（战略层）：产品
 
 ===E:/kids-english/src/===
 App.vue[AU8T]: F:应用根组件：H5 路由守卫（未知 hash 一律 reLaunch 回主页）、微信内置浏览器标记，以及全局样式与版心 | R:code:src/platform/routes.js,code:src/components/tab-bar.vue | A:全局 CSS 变量 --bottom-gap（普通 20px、微信 56px）供各页底部留白消费；路由只认 routes.js 白名单 | S:1rpx 换算基准须由 pages.json 的 rpxCalcMaxDeviceWidth 与 rpxCalcBaseDeviceWidth 一起定为 750，只设 max 会让超宽屏按 375 渲染（字号减半）；--bottom-gap 只用 px 且不套 min/max/calc，否则老 Safari 整条 padding 失效；禁用 overscroll 是为不丢答题进度，但内容页不能再靠 disableScroll 挡滑
+main.js[EV6T]: F:应用入口：用 createSSRApp 挂载根组件 App 并导出 createApp 供 uni-app 运行时调用 | R:code:src/App.vue | A:导出 createApp() 返回 {app}；这是 uni-app 约定的入口契约，改成默认导出应用不会启动 | S:-
+manifest.json[FV7T]: F:uni-app 应用清单：应用名与 appid、版本号、Vue3 声明、统计开关与 H5 路由配置 | R:code:package.json,code:src/pages.json | A:versionName 与 versionCode 是发版校验的三处之一；h5.router 为 hash 模式且 base 为相对当前目录 | S:uniStatistics.enable 必须保持关闭（否则会带 DCloud 上报）；改版本号必须与 package.json 同步，release 脚本会校验三处一致
+pages.json[FV8T]: F:页面与全局样式声明：12 个页面的注册、tabBar 三项与 rpx 换算基准 | R:code:src/components/tab-bar.vue,code:src/App.vue,code:src/manifest.json | A:页面路径即路由白名单；tabBar 三项必须是 map、collection、parent（switchTab 只能跳这三页） | S:globalStyle 的 rpxCalcMaxDeviceWidth 与 rpxCalcBaseDeviceWidth 必须都设为 750——只设前者会让超过 750px 的屏幕按 375 基准渲染（字号减半）；learn 页的 disableScroll 会连「装不下时滑一滑」一起挡掉
 
 ===E:/kids-english/src/components/===
 confetti.vue[AU3T]: F:过关庆祝彩带：纯 CSS 粒子（28 片，随机落点、延迟与形状），show 置真时重新撒一把，无依赖 | R:- | A:props 仅 show(Boolean)；不暴露方法或事件 | S:层用显式四边而不用 inset 简写（老 Safari 不认）；减弱动态时粒子隐藏
@@ -57,3 +62,143 @@ path.js[DW7T]: F:路径软解锁纯函数：科目内按目录顺序推出下一
 progress.js[DD8T]: F:进度统计纯函数：首答星级口径、会话聚合与首答判定 | R:code:src/services/progress.js,code:src/services/session.js | A:starsForFirstAttempt(firstCorrect,total)、starsText(stars)、isFirstAttemptFor(attempts,opts)、sessionTotals(attempts,sessionId) | S:星级只看首次作答（九成三星、六成两星、完成即一星）；答错重试最终答对只计最终完成，不计首次正确
 review.js[DW7T]: F:复习调度纯函数：简化 Leitner 盒子，答错归零、连对按 0/1/3/7 天晋级，最高盒再答对即毕业出本 | R:code:src/services/review.js,code:src/services/review-pools.js | A:导出 REVIEW_BOX_DAYS、REVIEW_MAX_BOX、isGraduated、freshEntry、nextEntry、isDue | S:无条目时答对必须返回 null（不进本）；毕业判定是「已在最高盒再答对」，缺了它掌握的词会每 7 天永久复发
 mathgen.js[KB9L]: F:数学题目生成与题干口径：九关二十三题型的动态出题、选项构造、题干文本与题目编号，全部纯函数 | R:code:src/domain/shuffle.js,code:src/pages/math/practice.vue,code:src/domain/explain.js | A:导出 MATH_LEVELS、normalizeMathLevel、makeQuestion、mathText、mathItemId、buildQuestions；rng 与 audioBase 可注入 | S:题目必须可 JSON 序列化（中断恢复靠快照，重新生成会与已选结果错配）；小数题按十分位整数运算再格式化以免浮点误差；decTenths 的 +1 修正必须留在 [lo,hi] 内，越界会出 6.1 减 6.1 等于 0.0 的退化题
+rounds.js[DB8S]: F:挑战出轮纯函数：听音选图与选字、汉字四题型、古诗填字的轮次构造（答案加不重复干扰项），池空即抛错 | R:code:src/domain/shuffle.js,code:src/pages/quiz/quiz.vue,code:src/domain/explain.js | A:导出 buildListenPickRounds、ZH_CHAR_KINDS、buildZhCharRounds、buildPoemFillRounds；池空抛 empty-pool，古诗不同字不足抛 degenerate-pool | S:干扰项必须按冲突键去重——拼音题按拼音、组词题按词、古诗填字按字，否则一轮里会出现多个可判对的选项；古诗池不同字少于选项数时必须抛错而不是凑数
+shuffle.js[CG5T]: F:随机工具：可注入 rng 的洗牌与取样（shuffle、pickOne、pickOneExcept），默认 Math.random | R:code:src/domain/mathgen.js,code:src/domain/rounds.js | A:shuffle(arr,rng)、pickOne(arr,rng)、pickOneExcept(arr,excludeKey,keyOf,rng)；都不修改入参（shuffle 先拷贝） | S:依赖随机性的 domain 函数都必须把 rng 当参数传递，测试靠它注入确定性序列
+
+===E:/kids-english/src/pages/board/===
+board.vue[AU5S]: F:点读板页面：把一个英语分类的词排成大字板，逐词点读并显示音频预载进度 | R:code:src/content/adapters.js,code:src/content/lowAge.js,code:src/platform/audio.js,code:src/pages/index/index.vue | A:onLoad 接收分类 id；点词走 playEn 与 accentEnSrc 按当前口音发音；预载进度取 preloadWithProgress 的完成比例 | S:入口与进词卡共用同一把锁，隐藏分类不得从点读板绕进去；预载必须在页面卸载后停止回调
+
+===E:/kids-english/src/pages/chinese/===
+chinese.vue[AU6T]: F:语文旧入口页：按等级列出识字课，提供学一学与挑战入口，并按路径软解锁置灰未到的课 | R:code:src/services/curriculum-app.js,code:src/data/hanzi.json,code:src/pages/learn/learn.vue,code:src/pages/quiz/quiz.vue | A:onShow 每次重取锁状态；锁定课点击走提示而非跳转 | S:锁口径与课程页同一份（services/curriculum-app 的 lessonLocks），页面不得自行判断解锁
+
+===E:/kids-english/src/pages/collection/===
+collection.vue[AU7L]: F:收集 Tab（我的百宝箱）：英语词、语文词、汉字与小短句四类图鉴加数学徽章，两级点亮与庆祝条 | R:code:src/services/collection-app.js,code:src/domain/collection.js,code:src/services/progress.js,code:src/components/tab-bar.vue | A:按分栏展示；点亮状态来自 collection 服务、星数来自 progress 服务；隐藏原生 tabBar 后用自定义 tab-bar | S:分母口径必须与课程目录和音频覆盖同一份（只算已开放课程）；小短句没有挑战，掌握恒为零，进度按认识口径显示才不误导
+
+===E:/kids-english/src/pages/index/===
+index.vue[AU6T]: F:英语旧入口页：按等级列出分类宫格，提供学词、点读板与挑战入口，平板才显示点读板 | R:code:src/content/adapters.js,code:src/pages/learn/learn.vue,code:src/pages/quiz/quiz.vue,code:src/pages/board/board.vue | A:isTabletDevice 决定点读板入口是否显示；锁定分类点击走提示而非跳转 | S:路径软解锁与课程页同一份口径，且 onShow 每次重取（进度可能已变）；点读板与进词卡共用同一把锁
+
+===E:/kids-english/src/pages/learn/===
+learn.vue[AU8L]: F:学一学页：单词翻卡、汉字翻卡、词语卡与英语句子阶梯的学习视图，带进度快照与结课表扬 | R:code:src/services/session.js,code:src/services/curriculum-app.js,code:src/content/adapters.js,code:src/components/confetti.vue,code:src/platform/audio.js | A:onLoad 接收 category、lessonId、sentences、stage 等参数；结课进下一课用 redirectTo；描红入口带 lessonId | S:英语句子分支必须先于词卡分支判断，否则英语请求会落到默认分类的词卡；进下一课用 redirectTo 而非 reLaunch——reLaunch 清空页面栈会让返回键失效；描红入口必须带 lessonId，否则孩子写完不留痕
+
+===E:/kids-english/src/pages/map/===
+map.vue[AU9L]: F:课程 Tab 首页：继续学习、错题重练、今日小任务、四阶段课程地图、随机来一课与自由探索 | R:code:src/services/curriculum-app.js,code:src/services/progress.js,code:src/services/review.js,code:src/domain/daily-task.js,code:src/components/tab-bar.vue | A:阶段选择存在偏好里；进门先朗读一句引导；隐藏原生 tabBar 后用自定义 tab-bar | S:数学关卡即路径，今日任务只推荐已解锁的关（锁着的关点了会被拒，不能当任务）；启蒙与一二年级的挑战圆钮只显示图标，但它是什么必须能听到
+
+===E:/kids-english/src/pages/math/===
+math.vue[AU6T]: F:数学关卡选择页：九个关卡按时序解锁展示，进入练习 | R:code:src/domain/mathgen.js,code:src/services/curriculum-app.js,code:src/pages/math/practice.vue | A:关卡元数据来自 MATH_LEVELS；每关的 lessonId 由目录反查，锁定关点击走提示而非跳转 | S:数学关卡即路径（阶段内顺序解锁），与其余页面共用同一份 lessonLocks 口径
+practice.vue[AU9L]: F:数学练习页：动态出题与作答、揭晓讲解、星级结算、题目快照恢复与错题回流 | R:code:src/domain/mathgen.js,code:src/domain/explain.js,code:src/services/session.js,code:src/services/review-pools.js | A:onLoad 接收 level 与 lessonId；旧直链只有 level 时从目录反查，draft 关卡不能绕过状态门禁；出题用 buildQuestions、判题用 isPickCorrect | S:答对后 1.5 秒与揭晓后 3 秒的定时器必须在退出页面时清掉，否则会继续跑；答对后立即落题目快照（表扬音窗口内退出也不能丢首答星）；重开必须重建会话，否则本局作答会被静默丢弃
+
+===E:/kids-english/src/pages/parent/===
+parent.vue[AU8L]: F:家长 Tab：本机学习摘要、分科进度、本周报告、薄弱知识点、最近记录与记录导出导入清空 | R:code:src/services/progress.js,code:src/services/review.js,code:src/platform/storage.js,code:src/content/lowAge.js,code:src/components/tab-bar.vue | A:低龄模式、读音顺序、英语口音与自由探索的开关都在这里；存储写失败时页面顶部常驻告警 | S:存储写失败必须立刻反映到页面，不能只在进页面查一次（本地存储是唯一数据源，静默失败等于记录全丢）；配额探针必须用新键，覆盖已有键不变大时仍会成功
+
+===E:/kids-english/src/pages/poem/===
+poem.vue[AU7S]: F:古诗点读页：书单、逐行点读、读整首与填字挑战入口，按学段过滤 | R:code:src/data/poems.json,code:src/services/session.js,code:src/pages/quiz/quiz.vue | A:onLoad 接收 stage 与 lessonId；点读走 play 与 stopSeq，行音按 行序号 命名 | S:点读属练习：进作答流与家长页记录，但不计课时完成、不给星（一个学段 6 到 12 首，算完成会让家长页虚高）
+
+===E:/kids-english/src/pages/quiz/===
+quiz.vue[AU9L]: F:挑战页：听音选图与选字、汉字四题型与古诗填字的作答、揭晓讲解、首答星级与错题回流 | R:code:src/domain/rounds.js,code:src/domain/judge.js,code:src/domain/explain.js,code:src/services/session.js,code:src/services/review-pools.js | A:onLoad 接收 category、level、lessonId 等参数；旧直链只有 level 时从目录反查，draft 不能绕过发布状态 | S:答对 1.5 秒与揭晓 3 秒的定时器必须在退出后清掉；答对后立即落快照；重开必须重建会话；干扰项池只借图卡词补足，汉字干扰必须同池同型；一屏一题不得靠最小高度加滚动兜底
+
+===E:/kids-english/src/pages/write/===
+write.vue[AU7S]: F:笔顺描红页：用本地笔顺数据逐字描红，按单字点亮图鉴的认识态 | R:code:src/domain/collection.js,code:src/services/session.js,code:src/pages/learn/learn.vue | A:onLoad 接收 lessonId 与字表；笔顺播放与判定全用本地数据，不联网 | S:绝不 complete 会话，否则整门识字课会被标成学一学完成；只挂 learn 会话并校验 kind，残留的活跃挑战会话不得混入描红作答
+
+===E:/kids-english/src/platform/===
+assets.js[IG7T]: F:资源地址统一出口：为所有图片与音频 URL 提供基址改写（CDN 预留），并做英语口音镜像重写 | R:code:src/platform/audio.js,code:src/data/words.json,code:tools/publish-github-pages.mjs | A:setAssetBase(b) 与 assetUrl(p)（http 与 data 与 blob 原样返回）；withAccent(src,accent) 把英语词音改写到 -gb 目录 | S:withAccent 只放行英文词音（非 zh- 前缀、非码点命名），语文与数学音频原样返回；路径前缀必须同时认相对与绝对两种写法，否则发布后口音切换会静默失效
+audio.js[IP9M]: F:音频统一入口（H5 走 Howler）：播放、顺序播报、预载与缓存上限、口音解析与英式缺轨回退 | R:code:src/platform/assets.js,code:src/data/audio-volumes.json,code:src/data/audio-volumes-gb.json,code:src/platform/storage.js | A:导出 play、playEn、playSeq、stopSeq、preload、preloadEn、preloadWithProgress、preloadEnWithProgress、isAudioReady、whenAudioReady、getAccent、accentEnSrc | S:任何音频失败都不得让作答卡死（播放失败照常触发结束回调，顺序播报的链不断）；解码缓存上限 60 且必须主动卸载，整类预载会常驻约 97MB 解码 PCM 并让 iPad Safari 杀掉进程；英式回退别名与主键共享同一个实例，淘汰主键时必须一并删别名，否则该词在该口音下永久无声；iOS 系统挂起音频上下文后 Howler 不会再自动恢复，需关闭空闲挂起并在页面重新可见时手动恢复
+nav.js[RU7T]: F:平台导航工具：点击节流、返回兜底与平板判定 | R:code:src/App.vue,code:src/components/page-top-bar.vue | A:createThrottle(ms,now)、allowNavigate()、goBackOrHome()、isTabletDevice()；页面跳转共用一个 700ms 节流实例 | S:goBackOrHome 在页面栈只剩当前页时必须降级回课程主页（直链进入或学完自动跳转时 navigateBack 无栈可回）
+routes.js[CU7T]: F:路由表与 hash 守卫校验（纯函数）：已知路由白名单、主页常量与把 hash 解析成路径与有效性 | R:code:src/App.vue,code:src/pages.json | A:KNOWN_ROUTES、HOME_ROUTE 与 resolveHashRoute(hash)；新增页面必须同步维护白名单 | S:守卫只认白名单，未知路径一律导回主页——漏登记新页面会让该页在 H5 上被守卫弹回
+storage.js[PD9M]: F:本地存储统一入口：给每个键包 schemaVersion 与迁移链，并提供读容错、写失败可见与损坏值兜底 | R:code:src/content/prefs.js,code:src/services/session.js,code:src/pages/parent/parent.vue | A:SCHEMA_VERSION、createStorage 与 getStorage、memoryBackend、getStorageError、onStorageError、clearStorageError、assertMigrationsComplete | S:所有本地持久化必须走这里，页面禁止直接调 uni.setStorageSync；迁移缺函数或抛错时必须先把原始负载备份到 键:bak 再返回兜底值，直接兜底会被下一次写入永久覆盖；写入失败除返回假还必须记录错误并通知订阅者，本地存储是唯一数据源，静默失败等于记录全丢
+router-ui.js[IU4T]: F:路由相关 UI 收口：把原生 tabBar 的隐藏封装成吞掉 Promise 拒绝的安全调用 | R:code:src/pages/map/map.vue,code:src/components/tab-bar.vue | A:hideNativeTabBar()：无论成功失败都不抛错，也不产生未处理的 Promise 拒绝 | S:uni.hideTabBar 无回调时返回 Promise，try 与 catch 拦不住拒绝，必须显式吞掉
+
+===E:/kids-english/src/services/===
+collection-app.js[AD6T]: F:图鉴服务的应用侧入口：把目录与数据解析器注入纯服务，页面从这里取实例 | R:code:src/services/collection.js,code:src/content/adapters.js | A:getCollectionService() 返回注入了目录与适配器的实例 | S:页面必须从这里取——直接 import services/collection.js 会拿到未注入解析器的版本并在调用时抛错
+collection.js[AD8S]: F:图鉴服务：点亮集合的持久化与派生（学一学记认识、挑战首答答对记掌握、数学完成记徽章）并可回填历史 | R:code:src/domain/collection.js,code:src/services/collection-app.js,code:src/services/session.js | A:createCollectionService(store,resolvers)，提供学一学完成、挑战完成与查询与回填接口；存储键为 collection | S:集合只增不减；错题重练不产生点亮（无课时会话也不记作答，与星数口径一致）；首次读取且存储无该键时要从已存会话与作答回填，否则老用户图鉴会空
+curriculum-app.js[AB7T]: F:课程查询服务的应用侧入口：注入目录、低龄过滤与存储后转发纯服务的查询方法 | R:code:src/services/curriculum.js,code:src/content/catalog.js,code:src/content/lowAge.js | A:getCurriculum() 并转发 stageBlocks、isVisibleLesson、lessonLocks、lessonUrl、randomLesson、visibleLessons、nextLessonAfter、continueTarget | S:页面必须从这里取，直接 import 纯 services/curriculum.js 会拿到未注入的工厂
+curriculum.js[AB8M]: F:课程查询服务（纯注入版）：阶段视图、课程地址、可用性过滤、继续学习目标与下一课推算 | R:code:src/services/curriculum-app.js,code:src/content/catalog.js,code:src/content/lowAge.js | A:createCurriculum({catalog,isCategoryHidden,store,getProgress,isFreeUnlock}) 返回 stageBlocks、isVisible、lessonLocks、lessonUrl、randomLesson、visibleLessons、nextLessonAfter、continueTarget | S:这是导航层：地址拼错等于点继续学习进不去、draft 课被放出来；目录数据必须注入而不是直接 import——content/catalog.js 会 import JSON，Node ESM 不允许无属性的 JSON 导入，直接引会让整模块无法进单测
+encourage-app.js[AU4T]: F:表扬语轮换的应用侧入口：把生成的表扬语清单注入纯函数，给出下一句表扬语的资源路径 | R:code:src/domain/encourage.js,code:src/data/encourage.json | A:nextPraiseSrc(rng) 与 praiseSrcs() | S:清单里缺文件或零字节的短语不进池，否则答对瞬间会静音
+progress.js[AD8S]: F:学习进度聚合服务：从事件流派生每课星级与完成状态、会话聚合、活跃会话与家长周报数据 | R:code:src/domain/progress.js,code:src/services/session.js,code:src/pages/parent/parent.vue | A:createProgressService(store) 与 getProgressService()；提供课时进度映射、会话聚合、周报与最近记录 | S:只依赖存储、不碰目录数据（课程元信息由页面与课程服务联查）；进度一律从事件流重算，不维护覆盖式状态
+review-pools.js[AD6T]: F:错题重练池构建（应用侧）：把到期错题条目按 id 还原成完整词卡对象，供页面取重练池 | R:code:src/services/review.js,code:src/content/adapters.js | A:getReviewPool(subject) 返回完整词卡数组，与 getReviewService 共用同一存储键 | S:词查找不受低龄模式影响——能进错题本的词都是孩子真实答错过的，按低龄过滤会把它们藏掉
+review.js[AD8S]: F:错题本服务（存储层）：答错进本并当天可练、答对按 1 到 3 到 7 天晋级、连对到顶再答对毕业出本 | R:code:src/domain/review.js,code:src/services/session.js,code:src/services/review-pools.js | A:reviewKey(subject,itemId)、createReviewService(store,resolvers)、getReviewService() | S:存储键必须按科目加命名空间——英语课与语文词语课共用同一批词 id（实测 1420 个重复），只用裸 id 当键会让两科作答互相覆盖
+session.js[AD9S]: F:课时会话服务：一次开始到作答到完成或中断的生命周期，把作答与题目快照写进本地事件流 | R:code:src/domain/progress.js,code:src/platform/storage.js,code:src/services/progress.js | A:createSessionService(store,{contentVersion}) 与 getSessionService()；无会话时记作答返回空值 | S:恢复必须复用原 sessionId（快照与事件流天然连续，首答判定跨暂停前后一致）；无会话时（旧入口直开页面）作答不记录也不报错；重开必须重建会话，否则本局作答会被静默丢弃
+
+===E:/kids-english/src/static/===
+manifest.webmanifest[FV7T]: F:PWA 清单：应用名与短名、起始地址与作用域、独立显示模式、主题色与图标 | R:code:index.html,code:tools/verify-offline.mjs | A:起始地址与作用域指向上一级目录；图标路径按清单自身解析 | S:起始地址与作用域必须解析到应用根——清单位于 static 目录下且其中 URL 按清单自身解析，写绝对路径会被发布脚本的相对化改写弄坏
+
+===E:/kids-english/tools/===
+audit-assets.mjs[TQ8M]: F:资源审计门禁：核对引用是否齐全、有无空文件与英式镜像缺口，并报告纯文字卡覆盖度与真孤儿 | R:code:src/data/words.json,code:src/data/hanzi.json,code:tools/lib/asset-check.mjs,code:src/static/manifest.webmanifest | A:退出码 1 只用于引用缺失、空文件与英式镜像缺口；文字卡覆盖度与孤儿只报告不失败 | S:引用来源必须含 pages.json 与 manifest.webmanifest 与 index.html（其中的 tab 与 app 图标路径没有前导斜杠）；数学语音是运行时拼出来的，要按模式补齐否则误报孤儿；英式音轨由口音改写生成，永远不会被字面量引用
+audit-textcard-whitelist.json[FQ4T]: F:文字卡白名单：列出允许没有配图（按纯文字卡渲染）的英文词，按主题分组 | R:code:tools/audit-assets.mjs,code:tools/words.csv | A:形状是主题名到词 id 数组的映射，分组含 school 与 family 与 time 与 actions | S:只有这份清单里的词才允许缺图，审计据此把「文字卡覆盖度」与「引用缺失」分开
+audit-youdao.mjs[TQ7T]: F:有道音频对账：逐条核对音频的音色、文本、缓存参数与哈希，并检查增益后峰值是否超限 | R:code:tools/gen-en-youdao.mjs,code:tools/youdao-audio-manifest.json,code:src/data/audio-volumes.json | A:任一条音色、文本、缓存参数、哈希或增益峰值不一致即报错并置退出码 1 | S:增益后峰值必须不超过 0.95，超限说明增益表与该音轨不匹配（改音频后忘了重算增益就会命中）
+check-layering.mjs[TQ8S]: F:分层门禁：把「依赖只许向下」变成退出码，检查领域层纯净、无反向依赖与存储收口 | R:code:docs/architecture.md,code:src/platform/storage.js | A:collectViolations(srcDir) 供单测复用；命令行退出码 1 表示存在违规 | S:领域层禁止 uni 与 vue 与 howler 与 DOM；下层禁止依赖页面；本地存储只许走 platform/storage.js——这是跨端与 Node 测试的前提
+check-youdao-balance.mjs[TO5T]: F:有道接口可用性探针：用唯一文本发一次真实请求，判断凭据与余额是否还能用 | R:code:tools/gen-en-youdao.mjs,code:.env.example | A:成功时打印状态码、音频字节数与音色；失败时打印错误码（401 表示欠费）并置退出码 1 | S:有道接口不返回余额或配额信息，只能靠这次真实请求的成败判断；探针本身消耗一次调用额度
+copy-hanzi-data.mjs[XV5T]: F:笔顺数据搬运：把第三方包里的字数据复制进静态目录，供离线描红使用 | R:code:package.json | A:默认按存在性跳过，加 --force 才覆盖重拷 | S:数据来自依赖包，随依赖版本变化；升级该依赖后必须用 --force 重拷，否则描红数据仍是旧版
+en-sentences.csv[FB7T]: F:英语句子阶梯的唯一数据源：id、stage、英文、中文与 emoji 码点五列共 60 句 | R:code:tools/gen-assets.mjs,code:src/data/enSentences.json,code:tools/lib/csv.mjs | A:列序为 id、stage、en、zh、emoji；stage 取 qimeng 与 g12 与 g34 与 g56 | S:英文列含逗号时必须加引号，并用支持引号的解析器读取——按逗号直接切会把长句截断，音轨与中文列同时错位
+gen-assets.mjs[XV9L]: F:资源生成主脚本：从词表与识字表生成英语与中文音频、配图与自绘卡，并写出英语与语文数据 JSON | R:code:tools/words.csv,code:tools/hanzi.csv,code:src/data/words.json,code:src/data/hanzi.json,code:tools/icons/index.mjs | A:开关 --force 重生成图片与中文、--gb 只生成英式音、--shapes 只重画形状卡、--learn-zh、--zh-char；产出路径见脚本头注释 | S:按存在性跳过是默认增量策略，改图或改字后必须 --force 或先删旧文件，否则截断与错图会被永久跳过；生成物禁止手改，要改必须回改 CSV 或工具后重跑
+gen-audio-volumes.mjs[XP7T]: F:音量增益表生成器：解码全部音频实测峰值与均方根，算出把响度对齐到目标的每文件增益并写出两张表 | R:code:src/data/audio-volumes.json,code:src/data/audio-volumes-gb.json,code:tools/measure-audio.mjs | A:--english-only 只算英语音轨；输出美式与英式两张表 | S:增益按峰值钳制（增益后峰值不超过 0.95），过响的允许衰减；改音频后必须重跑，否则响度偏差可达 8dB
+gen-en-azure.mjs[XV3T]: F:已弃用的课堂音入口墓碑：只打印提示并置退出码 1，阻止旧命令重新生成课堂语音 | R:code:tools/gen-en-youdao.mjs | A:不生成任何文件；退出码 1 | S:保留它只为拦住旧命令，删掉会让旧脚本无提示地失败或误跑其他管线
+gen-en-youdao.mjs[XV9S]: F:英语音频生成器（有道）：按词句与音色收集任务、按请求参数缓存去重、全批校验后替换正式音频并更新音量表 | R:code:src/data/words.json,code:tools/en-sentences.csv,code:.env.example,code:src/data/audio-volumes.json | A:开关 --accent us 或 gb、--only 指定 id、--dry-run、--apply；导出 collectJobs 与 main 供测试注入请求实现 | S:必须整批解码校验通过后才替换正式音频；成功结果按请求参数缓存以支持断点续跑，且不提供 --force 以免误触发重复付费；改文本或音色才需要新的合成请求
+gen-encourage.mjs[XV5T]: F:表扬语音频与清单生成器：生成鼓励语音频并按实际存在的文件重写运行时清单 | R:code:src/data/encourage.json,code:tools/gen-zh-azure.mjs | A:开关 --force 全部重生成、--manifest 不生成音频只重写清单 | S:缺文件的短语不进清单并告警；有 Azure 凭据时应改用中文音频生成器的杂项模式覆盖为正典，Edge 音色只是兜底
+gen-tab-icons.mjs[XV5S]: F:底部导航图标生成器：把三个 Tab 的 emoji 画成选中与未选中两态的图标文件 | R:code:src/pages.json,code:src/components/tab-bar.vue | A:开关 --force 强制重画；默认只在源文件缺失时下载 emoji | S:图标文件名与后缀必须与 pages.json 的 tabBar 声明一致，改名会让原生 tabBar 取不到图
+gen-zh-azure.mjs[XV9L]: F:中文音频生成器（Azure）：用带音素标注的语音合成标记强制读音，生成字音、例词、词语、释义、古诗、按钮指令与表扬语 | R:code:tools/zh-pron-pinyin.json,code:tools/hanzi.csv,code:src/data/poems.json,code:tools/zh_pron_overrides.py | A:开关 --dry-run、--test、--chars、--words、--only、--sentences、--poems、--labels、--all | S:音素标注是修多音字的关键（Azure 官方支持，不是碰运气）；改单条例句或字音必须用 --only，整批重写会产生无关差异；输出为 24kHz 单声道 mp3，与既有音频无缝混用
+hanzi.csv[FB8S]: F:语文识字表源数据：每个汉字的字、拼音、例词与等级，是识字数据与全部字音音轨的唯一来源 | R:code:tools/gen-assets.mjs,code:src/data/hanzi.json,code:tools/hanzi-sentences.csv | A:列序为 char、pinyin、word、level；共 297 字分四级 | S:例词必须含本字（字音与例词音成对生成）；字音按人工校订拼音走音素标注，改拼音即改读音
+hanzi-emoji.csv[FB5S]: F:汉字配图码点表：为每个汉字指定一个 emoji 码点，用于生成该字的图标 | R:code:tools/hanzi.csv,code:tools/gen-assets.mjs | A:列序为 char、emoji（码点，多码点用下划线连接） | S:图标必须配例词而不是字义（曾出现大象配「大家」这类错配），码点还原成 emoji 后需逐条人工过目
+hanzi-sentences.csv[FB7S]: F:汉字例句表：为每个汉字给一句含该字的小短句，用于识字卡的例句与听读 | R:code:tools/hanzi.csv,code:src/data/hanzi.json | A:列序为 char、sentence；每字一句 | S:句子必须含本字，否则字与句音轨错配；改句后要重新生成该字的例句音轨
+hanzi-sentence-emoji.csv[FB5S]: F:例句配图码点表：为每条例句指定 emoji 码点，作为该字例句卡的配图 | R:code:tools/hanzi-sentences.csv,code:tools/gen-assets.mjs | A:列序为 char、emoji（码点） | S:图必须与例句语义一致——图与句不符会让不识字的孩子按图猜错意思
+make-contact-sheet.ps1[XQ4T]: F:图片对照表生成：把词卡图片拼成大图并在每张下标注英文与 id，供全量视觉核对 | R:code:src/data/words.json | A:参数为 Root、OutDir、Cols、Rows（默认 12 列 10 行） | S:只拼位图词卡，自绘 SVG 卡不在此列（本地生成，构建后在浏览器抽查）
+make-share.mjs[XV5T]: F:电脑版分享包打包：把构建产物与零依赖启动脚本打成压缩包，解压双击即用 | R:code:tools/share-templates/server.ps1,code:package.json | A:输入必须是构建产物目录；产物压缩包落在仓库根 | S:必须用构建真实产物目录，路径写错会让脚本永远失败（曾误写成另一个目录名）
+measure-audio.mjs[XQ7T]: F:音频体检：解码全部音频输出时长、峰值与均方根，找出静音、过轻与削波 | R:code:src/data/audio-volumes.json,code:tools/audit-assets.mjs | A:可选参数为输出 csv 路径；对应 npm run audit:audio | S:与资源审计分工：那边按字节数判截断与缺失，这里真的解码听内容——静音、音量过低与削波只有解码后才知道
+merge-words.mjs[XV8S]: F:词表合并：把原始词表与各等级新增词表合并成完整词表，并校验列数、id 唯一、同级英文不重复与分类合法 | R:code:tools/words-base.csv,code:tools/words-extra/L1.csv,code:tools/words.csv | A:导出 LEVELS；只有内容真的变化时才把上一版备份为 words.prev.csv | S:新行 id 自动 slug 化但必须全局唯一；emoji 与 draw 至少要有一项；分类迁移表要同步维护，否则迁移的词会归错等级
+noto-heart.svg[FU4T]: F:黄心图形模板：带底色与阴影色占位符的 SVG 源，供生成器套色渲染收集页心形图 | R:code:tools/gen-assets.mjs | A:占位符由生成器替换为实际颜色后输出 | S:取官方心形源而不是自绘，是为了与同族图形保持一模一样的观感
+optimize-img.mjs[XP5T]: F:图片量化压缩：把超过阈值的词卡图按调色板模式重编码，肉眼不可辨差异且体积约省一半 | R:code:tools/audit-assets.mjs,code:package.json | A:只在压缩结果确实更小时才覆盖（天然幂等）；尺寸与文件名不变 | S:文件名与尺寸不变，所以内容校验的存在性检查不受影响；新增图片后要跑一次
+phoneme-probe.mjs[XZ3T]: F:方案甲验证实验：用对照注音探测免费端点是否执行语音合成标记里的音素标签 | R:code:tools/phoneme-probe2.mjs | A:判定口径：把同一个字注成完全无关的音节，音频与裸文本不同即说明注音被执行 | S:结论已定（端点忽略音素标签，中文改用 Azure）；保留它是为留下判定方法
+phoneme-probe2.mjs[XZ3T]: F:探针第二轮：在音素被拒后摸底端点的标记白名单，重点验证别名替换机制 | R:code:tools/phoneme-probe.mjs | A:对照项含别名替换、同音字别名、拼音别名与断句标记 | S:结论与上轮一致：免费端点不能用于多音字控制；本脚本是排查记录，不是现行管线
+preview-youdao.mjs[XQ4T]: F:本地试听服务：只监听本机并播放已保存的英语音频，供人工听验生成结果 | R:code:tools/gen-en-youdao.mjs,code:tools/youdao-audio-manifest.json | A:命令行参数为端口；只读本地文件，不调用生成接口 | S:只监听回环地址且不触发任何合成请求——试听不应产生费用
+publish-github-pages.mjs[XV9S]: F:发布产物生成：复制构建产物到发布目录、把根绝对路径改写成相对路径并注入 service worker | R:code:tools/verify-offline.mjs,code:tools/sw-template.js,code:LICENSE-CONTENT.md | A:默认抢先版（源码仓的 gh-pages 分支）；--target release 发正式仓；两种产物都自动携带两份许可文件 | S:子路径部署下不改写相对化会让图片与音频全 404，而构建目录里看不出问题（SW 与相对化只存在于发布产物）；正式仓只在明确要求同步时推送
+release.mjs[XV9S]: F:一键发版编排：版本号三处同步校验、内容校验、测试、分层与资源与音频门禁、构建、分享包，可选推预览 | R:code:package.json,code:tools/validate-content.mjs,code:tools/publish-github-pages.mjs,code:src/manifest.json | A:开关 --deploy 推抢先版、--skip-build、--skip-tests；版本号三处缺一即失败 | S:versionCode 约定为 major 乘 100 加 minor 乘 10 加 patch；正式发布仓不在本脚本范围，只在明确要求同步时手工执行；离线与相对化验证只对发布产物成立，所以带 --deploy 时会一并跑
+serve.mjs[XV4T]: F:本地静态服务器：把构建产物目录当静态站点服务，供部署前自测与冒烟测试使用 | R:code:tools/smoke-h5.mjs,code:package.json | A:命令行参数为端口，默认 4173 | S:服务的是构建产物目录而不是源码，发布脚本与分享包用的是同一个目录
+shots.mjs[XQ7M]: F:截图回归（真实 Chrome 与零依赖）：按固定条件逐页截图并与基线逐像素比对 | R:code:tools/lib/cdp.mjs,code:src/pages.json | A:子命令 capture 与 compare；可用环境变量限定页面；compare 有差异时退出码 1 | S:确定性四条缺一不可（注入固定种子随机、截图前关动画、逐页清存储、固定视口与缩放并滚到顶）；像素差异有已文档化的绘制噪声底线，别把噪声当回归
+smoke-h5.mjs[XQ9L]: F:H5 冒烟测试（真实 Chrome 与调试协议，零依赖）：逐页驱动交互并断言渲染、作答、会话恢复、口音切换与零报错 | R:code:tools/lib/cdp.mjs,code:tools/serve.mjs,code:src/pages.json | A:需先构建并另开静态服务器；环境变量为端口与浏览器路径；覆盖十余个页面与百余项断言 | S:跑的是构建产物目录，测不到 service worker 与发布产物的路径改写（那两类只在发布产物上成立，须用离线验证工具）；忘了起预览服务器会快速失败而不是白等
+sw-template.js[RP8S]: F:service worker 模板：注入产物根后提供外壳预缓存、静态资源缓存优先与页面导航网络优先 | R:code:tools/publish-github-pages.mjs,code:tools/verify-offline.mjs | A:版本占位符由发布脚本替换为内容版本与静态资源树指纹的组合 | S:所有缓存写入必须挂到 waitUntil，否则 worker 可能在响应结束后被回收、写入被丢弃（表现为第一次访问后断网打开拿到网络错误页）；静态资源不能改用先缓存后刷新的策略，那会无条件发请求、只省浏览器缓存而没省流量与离线
+validate-content.mjs[XQ9L]: F:课程校验与目录打包：从课程源与生成数据校验引用完整性，并展开成运行时目录 | R:code:content-packages/curriculum.json,code:src/content/catalog.json,code:src/data/words.json,code:src/data/enSentences.json | A:默认校验并重写目录；--check 只校验，目录与源不一致即退出码 1 | S:校验不过任何一条都不写文件；生成的目录要提交进仓库；英语句子阶梯的课程卡片也由这里生成，改课程一律先改课程源
+verify-offline.mjs[XQ9L]: F:离线可用性验证（对发布产物跑真实浏览器）：接管与前缀缓存与断网刷新与资源可取与换代清旧 | R:code:tools/publish-github-pages.mjs,code:tools/sw-template.js,code:README.md | A:前置为构建加发布脚本；覆盖二十余项，含断网刷新与媒体真播放 | S:service worker 只存在于发布产物，构建目录里根本没有——冒烟测试永远测不到它，这两类问题必须分开验证
+words-base.csv[FB6S]: F:英语原始词表底稿：项目最早的三百个词，作为底稿长期保留 | R:code:tools/merge-words.mjs,code:tools/words.csv | A:列序为 id、en、zh、phonetic、category、emoji、draw；emoji 与 draw 至少一项 | S:定位是只读底稿：新增词要进分级新增表，改这里会让底稿与历史词表脱钩
+words.csv[FB8L]: F:合并后的完整词表（生成物）：四个等级共 1998 个词，是资源生成与数据 JSON 的输入 | R:code:tools/merge-words.mjs,code:tools/words-base.csv,code:tools/gen-assets.mjs | A:列序为 id、en、zh、phonetic、category、emoji、draw；禁止手改 | S:禁止手改——改词必须回改分级新增表后重跑合并；id 全局唯一与同级英文不重复由合并步骤保证
+words.prev.csv[FB4T]: F:词表上一版备份：合并脚本在内容真的变化时自动留存的前一版，供差异比对与回退 | R:code:tools/merge-words.mjs,code:tools/words.csv | A:内容无变化时不更新该文件 | S:没有变化就不覆盖，所以它的时间戳不代表词表最近一次修改时间
+zh-praise.mjs[FU6T]: F:表扬语正典清单（单一真源）：给出鼓励语的 key 与中文文案，供中文音频生成器与兜底生成器共用 | R:code:tools/gen-zh-azure.mjs,code:tools/gen-encourage.mjs,code:src/data/encourage.json | A:导出 ZH_PRAISE 数组，每项为 key 与文案 | S:文案末字必须避开阴平（两个引擎都出过末字一声读成降调）；有凭据时要用正典引擎覆盖重生成，兜底只是替代
+zh-pron-overrides.json[FL7T]: F:汉字注音替身表：把读音会错的字映射到同音同调且使用实证无歧义的替身字 | R:code:tools/zh_pron_overrides.py,code:tools/zh-pron-pinyin.json | A:每项含拼音、替身字与实证频次 | S:替身只用于合成，音频里只有声音没有文字；判定必须用真实词组的实证读音，用异读表会把罕见读音当依据（曾产生坏表）
+zh-pron-pinyin.json[FL7L]: F:中文音频条目的目标拼音总表（生成物）：逐条给出拼音素标注所需的读音 | R:code:tools/zh_pinyin_annotate.py,code:tools/gen-zh-azure.mjs | A:顶层含生成时间与条目表；项值为空表示该条走默认读音而不标注 | S:留空是有意为之（一与不的变调、叠词轻声、多音字缺实证），不是缺数据——把空值填成默认读音会引入错读
+zh_pinyin_annotate.py[XL8S]: F:拼音标注器：为全部中文音频条目产出目标拼音，供中文音频生成器拼写音素标注 | R:code:tools/zh-pron-pinyin.json,code:tools/hanzi.csv,code:tools/zh-pron-overrides.json | A:口径为汉字用人工校订拼音全标、例词只在整词有逐字唯一标注时采用、数字与数学用语与反馈语不标注 | S:含一与不（变调不可靠）、叠词（第二音节轻声）、任一字多音或缺实证时一律留空走默认读音——宁可默认也不能标错
+zh_pron_overrides.py[XL8S]: F:注音替身表生成器：用同音同调且实证无歧义的替身字，为多音字产出正确读音的合成文本 | R:code:tools/zh-pron-overrides.json,code:tools/phoneme-probe.mjs,code:tools/hanzi.csv | A:输出每字的拼音与替身字与实证频次；对应 npm run gen:zh-pron | S:背景是免费端点拒绝一切注音标记，只能替换文本再合成（音频里只有声音没有文字）；判定源必须是真实词组里的实证读音，异读表会把罕见读音噪声当依据
+
+===E:/kids-english/tools/icons/===
+_shared.mjs[XU5T]: F:图标库共享助手：统一视图框与透明底，提供高光、圆头线条、圆角矩形与圆等绘制原语 | R:code:tools/icons/index.mjs | A:svg(body)、hl、limb、rrect、dot 等原语供各主题模块拼装 | S:设计语言必须与水果自绘卡一致（512 视图框、平涂色块、白色高光椭圆、圆头线条），否则图标库会与既有卡片风格分家
+index.mjs[XU6T]: F:自绘图标库总入口：汇总十二个主题模块，导出图标表与图标到分类的映射，并在 key 重复时报错 | R:code:tools/icons/_shared.mjs,code:tools/gen-assets.mjs,code:tools/words.csv | A:导出 ICONS 与 ICON_CATEGORY；key 取词表的 draw 列值，主题模块提供 category 或 categories | S:key 重复必须抛错，否则后注册的图会静默覆盖；同名分类靠 draw 值与词分类一致的判据隔离，避免误画
+birds-time.mjs[XU5S]: F:自绘图标主题模块：鸟类十二词与时间三词（早晨、下午、傍晚）的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons 与 categories，key 为词表 draw 值 | S:必须与本主题已有 emoji 鸟不撞型——全部走特征剪影（长尾喜鹊、叉尾燕子、巨喙巨嘴鸟等）；时间三张必须同构图以便类比
+body.mjs[XU4T]: F:自绘图标主题模块：十个身体部位词，用同一个小人剪影加目标部位高亮 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons 与 category（单分类 body） | S:高亮部位用暖红、其余淡蓝灰；同分类其余部位是位图 emoji，配色要保持一家人
+clothes-home.mjs[XU5S]: F:自绘图标主题模块：衣服配件四词与家居十七词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons、categories 与默认分类 home | S:这些词在字体库里没有对应 emoji，属纯自绘；词条 key 必须与词表 draw 值逐字一致，否则该词无图
+desserts-drinks.mjs[XU5S]: F:自绘图标主题模块：甜品十二词与饮品七词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons、categories 与默认分类 desserts | S:同类词靠形态与配色区分（咖啡浅棕与可可深棕配棉花糖），不允许两词共用同一张图
+family.mjs[XU4T]: F:自绘图标主题模块：家人八词的成套小人造型 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons 与 category（单分类 family） | S:成员之间必须靠发型与身形区分（父母、双胞胎、朋友击掌、挚友拥抱）
+food-veg.mjs[XU5S]: F:自绘图标主题模块：食物十六词与蔬菜四词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons、categories 与默认分类 food | S:早中晚三餐共用同一「餐盘加时间天体」模板（日出配煎蛋、正午配三明治、月亮配鸡腿），改模板要三张一起改
+health-festivals.mjs[XU5S]: F:自绘图标主题模块：健康十词与节日八词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons 与 categories，key 为词表 draw 值 | S:必须与既有 emoji 互斥：药品画糖浆瓶而非圆药片、急救画急救箱而非创可贴、春节画红包加元宝而非灯笼
+kitchen-school.mjs[XU5S]: F:自绘图标主题模块：厨房十三词与学校八词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons、categories 与默认分类 school | S:同模块两个分类时未在 categories 里单列的 key 会落到默认分类，新增厨房词必须显式登记分类否则归错类
+ocean-insects.mjs[XU5S]: F:自绘图标主题模块：海洋十词与昆虫九词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 categories 与 icons，key 为词表 draw 值 | S:与既有 emoji 必须互斥：潮汐画潮水漫上沙滩而非卷浪、虎鲸靠黑白斑、白蚁用淡奶油色区分蚂蚁的深褐、蝗虫靠颜色与翅长区分蟋蟀
+places-jobs.mjs[XU5S]: F:自绘图标主题模块：场所十词与职业十六词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 categories 与 icons，key 为词表 draw 值 | S:游乐场必须画成秋千加滑梯的组合场景（单件滑梯已被 emoji 占用）；职业统一走「正面小人加标志性道具」模板且道具互斥
+space-tools-electronics.mjs[XU5S]: F:自绘图标主题模块：太空六词、工具七词与电器七词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 categories 与 icons，key 为词表 draw 值 | S:与既有 emoji 互斥：流星画岩石加火焰尾、轨道画虚线轨道加卫星、智能手表用方屏、移动电源用竖款加电量点、钳子用交叉红柄
+toys-vehicles-music.mjs[XU5S]: F:自绘图标主题模块：玩具八词、交通工具二词与乐器二词的扁平风图形 | R:code:tools/icons/index.mjs,code:tools/icons/_shared.mjs | A:导出 icons 与 categories，key 为词表 draw 值 | S:游乐设施与工程车与小乐器在字体库里没有对应 emoji，属纯自绘；已有 emoji 的词不在此列
+
+===E:/kids-english/tools/lib/===
+asset-check.mjs[LQ8T]: F:静态资源可用性判定：按类型给最小合理字节数，把截断与空文件判为不可用，生成器与审计共用一份口径 | R:code:tools/gen-assets.mjs,code:tools/audit-assets.mjs | A:MIN_BYTES、kindOf(file)、assetState(absPath,kind)、isUsableAsset(absPath,kind) | S:只查存在性或零字节会让合成中断留下的半截音频永久通过增量跳过与门禁，孩子听到的第一个字就是断的；阈值取法是口语音频最小约 5-9KB 而留足余量取 800 字节
+csv.mjs[LG7T]: F:极简 CSV 行解析：支持双引号包裹的字段与字段内转义的双引号 | R:code:tools/en-sentences.csv,code:tools/gen-assets.mjs | A:parseCsvLine(line) 与 readCsvRows(text) | S:英语句子含逗号时必须靠引号解析——按逗号直接切会把句子截断在逗号处，音轨念半句且配图与中文列错位；不支持跨行字段，一条记录就是一行
+fs-atomic.mjs[LR7T]: F:原子写文件：先写同目录临时文件再改名覆盖目标，失败时清理临时文件 | R:code:tools/gen-assets.mjs,code:src/data/words.json | A:writeFileAtomic(file,data) | S:直接写最终路径被打断会留下半截 JSON，下游解析失败只能兜底成空值、用户侧表现为进度清零；改名在同一文件系统上是原子的
+youdao-tts.mjs[LN7T]: F:有道语音合成客户端：音色表、文本签名与请求指纹、凭据读取与响应检查 | R:code:tools/gen-en-youdao.mjs,code:.env.example | A:VOICES（美式有雅婷与英式有小英）、sha256、signatureInput、fingerprint、credentials、inspect | S:缓存与去重都依赖指纹（按文本与音色计算），改指纹算法会导致整批重新合成；凭据只从本地环境文件读取，不进任何产物
+cdp.mjs[LQ7M]: F:极简 Chrome 调试协议客户端（零依赖，用 Node 内置 WebSocket），供冒烟与截图工具共用 | R:code:tools/smoke-h5.mjs,code:tools/shots.mjs | A:CHROME_CANDIDATES、findChrome()、safeJson(v)、Cdp 类、launchChrome({port,extraArgs}) | S:两个调用方必须共用这一份实现，否则会出现「修一处另一处没修」；能力范围只含导航与求值与视口与截图与控制台异常收集
+
+===E:/kids-english/tools/share-templates/===
+server.ps1[XV4T]: F:分享包内置的零依赖静态服务器：用系统自带能力启动，供没装运行时的电脑双击即用 | R:code:tools/make-share.mjs | A:监听固定端口并打开默认浏览器 | S:只能用系统自带能力，一旦依赖外部程序分享包在别人电脑上就打不开
+
+===E:/kids-english/tools/words-extra/===
+L1.csv[FB5S]: F:一级新增词表：启蒙起步段的第一批补充词（含数字与家人等） | R:code:tools/merge-words.mjs,code:tools/words.csv | A:列序与其他词表一致，与底稿合并后进入完整词表 | S:词的等级由所在文件决定而不是表内某一列，放错文件会归错等级
+L2.csv[FB5S]: F:二级新增词表：日常生活段补充词（含词族与拼读类） | R:code:tools/merge-words.mjs,code:tools/words.csv | A:列序与其他词表一致 | S:词的等级由所在文件决定，且同一等级内英文拼写不得重复（合并步骤会校验）
+L3.csv[FB5S]: F:三级新增词表：快乐探索段补充词 | R:code:tools/merge-words.mjs,code:tools/words.csv | A:列序与其他词表一致 | S:词的等级由所在文件决定；新增分类要同时在词表分类与生成器的分类表里登记
+L4-emoji.csv[FB5S]: F:四级新增词表（配图类）：挑战进阶段中能用 emoji 配图的词 | R:code:tools/merge-words.mjs,code:tools/words.csv | A:emoji 列填码点，多码点用下划线连接 | S:四级按能否配图拆成多个文件，新增词要选对文件：有 emoji 的进这里，没有的进文字卡分片
+L4-text-a.csv[FB5S]: F:四级文字卡词表 A 片：没有对应 emoji、按纯文字卡渲染的高频词 | R:code:tools/merge-words.mjs,code:tools/audit-textcard-whitelist.json | A:emoji 列留空、draw 列填卡面文字 | S:这些词没有配图是设计取舍；缺图词必须出现在白名单里，否则资源审计会按缺图报问题
+L4-text-b.csv[FB5S]: F:四级文字卡词表 B 片：与 A 片同为无图词，按主题分片以便维护 | R:code:tools/merge-words.mjs,code:tools/words-extra/L4-text-a.csv | A:emoji 列留空、draw 列填卡面文字 | S:分片只是维护切分，合并后与 A 片同级；跨片不得重复同一英文拼写
+L4-text-c1.csv[FB5S]: F:四级文字卡词表 C1 片：无图词的最大一片，继续按主题细分 | R:code:tools/merge-words.mjs,code:tools/words-extra/L4-text-a.csv | A:emoji 列留空、draw 列填卡面文字 | S:与 C2 片配对维护；跨片不得重复同一英文拼写
+L4-text-c2.csv[FB5S]: F:四级文字卡词表 C2 片：与 C1 片配对的无图词分片 | R:code:tools/merge-words.mjs,code:tools/words-extra/L4-text-c1.csv | A:emoji 列留空、draw 列填卡面文字 | S:与 C1 片合起来才是完整的 C 组，只改一片会造成同组词数量不对
+LX-fill.csv[FB5S]: F:补漏词表：给既有分类补齐同组词（示例为颜色组补金色与银色） | R:code:tools/merge-words.mjs,code:tools/words.csv | A:列序与其他词表一致 | S:只补既有分类的缺项，不引入新分类；新增分类仍要按分类登记流程走
