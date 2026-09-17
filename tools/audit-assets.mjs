@@ -195,15 +195,10 @@ for (const k of (JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/encourage.
  * 如果固定有误报，真孤儿就会被淹没在噪声里。
  * 目前为空——原来的 try_again 已按产品决定移除（英语答错也播中文）。
  */
-for (const src of Object.values(JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/chants.json'), 'utf8')).chants)) {
-  const gb = src.replace('/audio-chant/', '/audio-chant-gb/')
-  referenced.add(gb)
-  if (statOf(gb) !== 'ok') gbMissing.push(gb)
-}
 const KNOWN_PENDING = {}
 const orphans = []
 const pending = []
-for (const dir of ['img', 'audio', 'audio-gb', 'audio-chant', 'audio-chant-gb', 'audio-poem', 'audio-zh', 'tab', 'icons']) {
+for (const dir of ['img', 'audio', 'audio-gb', 'audio-poem', 'audio-zh', 'tab', 'icons']) {
   const abs = path.join(STATIC, dir)
   if (!fs.existsSync(abs)) continue
   for (const f of fs.readdirSync(abs)) {

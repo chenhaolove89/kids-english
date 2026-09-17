@@ -61,7 +61,7 @@ async function main() {
     const todo = jobs.filter((j) => FORCE || !exists(j.out))
     console.log(`表扬语 ${jobs.length} 条，待生成 ${todo.length} 条（voice=${VOICE}）`)
     if (!todo.length) {
-      // 与 gen-chant 同款保护：无可生成条目时不建 TTS 连接
+      // 无可生成条目时不建 TTS 连接
     } else {
     const tts = await makeTTS()
     let ok = 0

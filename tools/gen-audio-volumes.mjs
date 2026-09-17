@@ -73,13 +73,6 @@ async function main() {
   for (const j of jobs) {
     const { map: measured, boosted, afterRms, count } = await measure(j.dir, englishOnly ? englishFiles : undefined)
     const map = englishOnly && fs.existsSync(j.out) ? { ...JSON.parse(fs.readFileSync(j.out, 'utf8')), ...measured } : measured
-    const chantDir = j.dir === AUDIO_DIR ? 'audio-chant' : 'audio-chant-gb'
-    const chants = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/chants.json'), 'utf8')).chants
-    for (const id of Object.keys(chants)) {
-      const { peak, rms } = await decode(path.join(ROOT, 'src/static', chantDir, id + '.mp3'))
-      if (!peak || !Number.isFinite(rms)) throw new Error(`韵律音频无效：${chantDir}/${id}`)
-      map['chant:' + id] = Math.floor(Math.min(Math.pow(10, (TARGET_RMS - rms) / 20), PEAK_LIMIT / peak, 3) * 100) / 100
-    }
     writeFileAtomic(j.out, JSON.stringify(map, null, 1))
     afterRms.sort((a, b) => a - b)
     console.log(`[${j.label}] 共 ${count} 个文件，增益 ${boosted} 个 → ${path.relative(ROOT, j.out)}`)

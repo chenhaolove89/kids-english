@@ -16,7 +16,6 @@
     "gen:zh-pinyin": "python tools/zh_pinyin_annotate.py",
     "gen:zh-azure": "node tools/gen-zh-azure.mjs --all",
     "gen:encourage": "node tools/gen-encourage.mjs",
-    "gen:chant": "node tools/gen-chant.mjs",
     "copy:hanzi-data": "node tools/copy-hanzi-data.mjs",
     "gen:tab-icons": "node tools/gen-tab-icons.mjs",
     "build:content": "node tools/validate-content.mjs",

@@ -30,7 +30,7 @@ export function withAccent(src, accent) {
   if (accent !== 'gb' && accent !== 'az') return src
   // 前缀兼容 ./：GitHub Pages 发布脚本会把 /static/ 改写成 ./static/（子路径部署），
   // 锚死 ^/static/ 会让线上口音切换静默失效回美音
-  const m = /^(\.\/|\/)static\/(audio(?:-chant)?)\//.exec(src)
+  const m = /^(\.\/|\/)static\/(audio)\//.exec(src)
   if (!m) return src
   const name = src.slice(m[0].length)
   if (!/^(?!zh-)(?!n\d)[A-Za-z][A-Za-z0-9'_-]*\.mp3$/.test(name)) return src

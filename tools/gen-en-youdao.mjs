@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
-import { VOICES, sha256, fingerprint, credentials, inspectAudio, synthesize, chantText } from './lib/youdao-tts.mjs'
+import { VOICES, sha256, fingerprint, credentials, inspectAudio, synthesize } from './lib/youdao-tts.mjs'
 import { writeFileAtomic } from './lib/fs-atomic.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -20,15 +20,9 @@ export function collectJobs(root = ROOT, data = readJson(path.join(root, 'src/da
     texts.set(dest, w.en.trim())
   }
   texts.set('audio/great_job.mp3', 'Great job!')
-  const chants = readJson(path.join(root, 'src/data/chants.json'), { chants: {} }).chants
-  for (const [id, src] of Object.entries(chants)) {
-    const cat = data.categories.find((c) => c.id === id)
-    if (!cat || src !== `/static/audio-chant/${id}.mp3` || !/^[\w-]+$/.test(id)) throw new Error(`非法韵律清单：${id}`)
-    texts.set(`audio-chant/${id}.mp3`, chantText(cat.words, id))
-  }
   return [...texts].flatMap(([dest, text]) => Object.entries(VOICES).map(([accent, voice]) => ({
     text, voice, accent, id: path.basename(dest, '.mp3'),
-    dest: 'src/static/' + (accent === 'gb' ? dest.replace(/^audio(-chant)?\//, 'audio$1-gb/') : dest),
+    dest: 'src/static/' + (accent === 'gb' ? dest.replace(/^audio\//, 'audio-gb/') : dest),
     key: fingerprint(text, voice),
   })))
 }
@@ -36,17 +30,16 @@ export function collectJobs(root = ROOT, data = readJson(path.join(root, 'src/da
 export async function main(args = process.argv.slice(2), { data, root = ROOT, fetcher = fetch } = {}) {
   const cache = path.join(root, 'tmp/youdao-en')
   const manifestFile = path.join(root, 'tools/youdao-audio-manifest.json')
-  let accent, only, dryRun = false, apply = false, chantsOnly = false
+  let accent, only, dryRun = false, apply = false
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]
     if (arg === '--accent') { accent = args[++i]; if (!VOICES[accent]) throw new Error('--accent 只能是 us 或 gb') }
     else if (arg === '--only') { const value = args[++i]; if (!value || value.startsWith('--')) throw new Error('--only 缺少词 ID'); only = new Set(value.split(',')) }
     else if (arg === '--dry-run') dryRun = true
     else if (arg === '--apply') apply = true
-    else if (arg === '--chants-only') chantsOnly = true
     else throw new Error(`不支持参数：${arg}`)
   }
-  const jobs = collectJobs(root, data).filter((j) => (!accent || j.accent === accent) && (!only || only.has(j.id)) && (!chantsOnly || j.dest.includes('audio-chant')))
+  const jobs = collectJobs(root, data).filter((j) => (!accent || j.accent === accent) && (!only || only.has(j.id)))
   if (!jobs.length) throw new Error('没有匹配的音频')
   if (only && [...only].some((id) => !jobs.some((j) => j.id === id))) throw new Error('--only 含未知 ID')
   const unique = [...new Map(jobs.map((j) => [j.key, j])).values()]

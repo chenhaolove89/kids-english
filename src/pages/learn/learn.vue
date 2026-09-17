@@ -6,10 +6,6 @@
       <view v-if="isTablet && boardUrl" class="board-btn" @tap="goBoard">
         <text class="board-btn-text">🔊</text>
       </view>
-      <!-- 韵律 chant：本分类的单词三连节奏歌（清单里有的分类才显示） -->
-      <view v-if="chantSrc" class="board-btn chant-btn" @tap="playChant">
-        <text class="board-btn-text">🎵</text>
-      </view>
     </PageTopBar>
 
     <!-- 声音预加载进度：慢网下孩子能看到声音在来的路上，而不是以为没声音 -->
@@ -109,7 +105,6 @@ import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
 import { nextLessonAfter, lessonUrl } from '@/services/curriculum-app.js'
 import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
-import chantsData from '@/data/chants.json'
 import { getSessionService } from '@/services/session.js'
 import { getCollectionService } from '@/services/collection-app.js'
 import Confetti from '@/components/confetti.vue'
@@ -211,14 +206,6 @@ const cardHint = computed(() => {
 const svc = getSessionService(catalog.contentVersion)
 const lesson = ref(null) // 有 lessonId 才记录会话；旧入口不记录
 let completed = false
-// 韵律 chant：英语分类课才有（清单由 tools/gen-chant.mjs 生成，缺文件的分类不显示按钮）。
-// 在 onLoad 里按分类直接赋值（entryRef 非响应式，不能用 computed 缓存它）
-const chantSrc = ref('')
-/** 🎵 播放本分类 chant（再点一次从头播，孩子跟唱） */
-function playChant() {
-  if (!chantSrc.value) return
-  playEn(assetUrl(chantSrc.value))
-}
 // 结课表扬语整池预载（8 条 × ~10KB）：学完瞬间就要响，不能等网络
 preload(praiseSrcs().map((p) => assetUrl(p)))
 let entryRef = null // 旧入口无 lessonId 时，用入口参数反查目录定位当前课
@@ -244,7 +231,6 @@ onLoad((query) => {
     resolvedCatId = c.id
     entryRef = { kind: 'en-category', id: c.id }
     boardUrl.value = '/pages/board/board?subject=en&cat=' + c.id
-    chantSrc.value = (chantsData && chantsData.chants && chantsData.chants[c.id]) || ''
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FFF8EC', color: c.color }
     title.value = `${c.zh} · ${c.en}`
@@ -266,7 +252,6 @@ onLoad((query) => {
     resolvedCatId = c.id
     entryRef = { kind: 'en-category', id: c.id }
     boardUrl.value = '/pages/board/board?subject=zh&cat=' + c.id
-    chantSrc.value = '' // chant 是英文韵律，只在英语课显示
     wordsMode.value = true
     const lv = enData.levels.find((l) => l.id === c.level)
     theme.value = { bg: lv ? lv.bg : '#FDEBE7', color: c.color }
@@ -512,11 +497,6 @@ function goBoard() {
 }
 .board-btn:active {
   transform: scale(0.92);
-}
-/* chant 钮：金色底，与点读板钮（白底）区分开 */
-.chant-btn {
-  background: #ffb84d;
-  box-shadow: 0 4rpx 12rpx rgba(255, 184, 77, 0.4);
 }
 .board-btn-text {
   font-size: 32rpx;

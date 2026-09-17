@@ -93,10 +93,8 @@ function getHowl(src) {
     }
   }
   const id = src.split('/').pop().replace(/\.mp3$/, '')
-  const isGb = src.includes('/audio-gb/') || src.includes('/audio-chant-gb/')
-  // 韵律和单词同名时分开计量，避免分类 school 等误套单词的增益。
-  const isChant = /\/audio-chant(?:-gb)?\//.test(src)
-  const volumeId = isChant ? 'chant:' + id : id
+  const isGb = src.includes('/audio-gb/')
+  const volumeId = id
   const gain = (isGb ? volumesGb[volumeId] : volumes[volumeId]) ?? DEFAULT_VOLUME
   const howl = new Howl({ src: [src], preload: true, volume: gain })
   // 加载失败（部署漏传文件/网络抖动）时不要永远沉默：移出缓存，下次点击重试。
@@ -106,7 +104,7 @@ function getHowl(src) {
     cache.delete(src)
     // 英式缺轨时回退美音同名文件。
     if (isGb) {
-      const usSrc = src.replace('/audio-gb/', '/audio/').replace('/audio-chant-gb/', '/audio-chant/')
+      const usSrc = src.replace('/audio-gb/', '/audio/')
       console.warn('[player] 口音音轨缺失，回退美音:', usSrc)
       try {
         if (!cache.has(usSrc)) getHowl(usSrc)

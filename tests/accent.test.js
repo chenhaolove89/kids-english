@@ -102,10 +102,9 @@ test('防回归：页面运行时路径必须走 assetUrl（小程序 CDN 化的
   assert.deepEqual(offenders, [], `以下行存在未走 assetUrl 的 /static/ 引用:\n${offenders.join('\n')}`)
 })
 
-test('全量：美式和英式单词、反馈与韵律音轨均存在', () => {
+test('全量：美式和英式单词与反馈音轨均存在', () => {
   const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
-  const chants = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/chants.json'), 'utf8')).chants
-  const sources = [...words.categories.flatMap(c => c.words.map(w => w.audio)), '/static/audio/great_job.mp3', ...Object.values(chants)]
+  const sources = [...words.categories.flatMap(c => c.words.map(w => w.audio)), '/static/audio/great_job.mp3']
   assert.ok(sources.length > 1900)
   const gaps = []
   for (const src of sources) for (const accent of ['us', 'gb']) {
@@ -114,10 +113,4 @@ test('全量：美式和英式单词、反馈与韵律音轨均存在', () => {
     if (!fs.existsSync(path.join(ROOT, 'src', actual.slice(1)))) gaps.push(actual)
   }
   assert.deepEqual(gaps, [])
-})
-
-test('韵律也跟随英式或旧课堂偏好，兼容子路径部署', () => {
-  assert.equal(withAccent('/static/audio-chant/conversation.mp3', 'gb'), '/static/audio-chant-gb/conversation.mp3')
-  assert.equal(withAccent('./static/audio-chant/conversation.mp3', 'az'), './static/audio-chant-gb/conversation.mp3')
-  assert.equal(withAccent('/static/audio-chant/conversation.mp3', 'us'), '/static/audio-chant/conversation.mp3')
 })

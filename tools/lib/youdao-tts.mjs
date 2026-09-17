@@ -61,8 +61,3 @@ export async function synthesize(text, voice, auth, fetcher = fetch) {
   return { bytes, metrics }
 }
 
-export function chantText(words, catId) {
-  const rep = (x) => x.split(/\s+/).map((t) => t.length === 1 || t === t.toUpperCase() ? t : t.toLowerCase()).join(' ')
-  const question = /^(what|where|when|who|why|how|which|is|are|am|do|does|did|can|could|will|would)(?![a-z])/i
-  return words.slice(0, 6).map(({ en: w }) => `${w}, ${rep(w)}, ${rep(w)}${catId === 'conversation' && question.test(w) ? '?' : '!'}`).join(' ') + ' Hooray!'
-}

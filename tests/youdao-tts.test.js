@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { signatureInput, synthesize, fingerprint, VOICES, chantText, inspectAudio } from '../tools/lib/youdao-tts.mjs'
+import { signatureInput, synthesize, fingerprint, VOICES, inspectAudio } from '../tools/lib/youdao-tts.mjs'
 import { collectJobs, main } from '../tools/gen-en-youdao.mjs'
 
 test('有道 v3 签名：20 字符边界、长文本与 Unicode 码点', () => {
@@ -58,13 +58,12 @@ test('缓存区分大小写、口音和文本，保护字母 A 与冠词 a', () 
   assert.equal(fingerprint('ear', VOICES.us), fingerprint('ear', VOICES.us))
 })
 
-test('全量任务包含两套词音、反馈和在用韵律，排除中文数学且输出路径唯一', () => {
+test('全量任务包含两套词音与反馈，排除中文数学且输出路径唯一', () => {
   const jobs = collectJobs()
   assert.ok(jobs.length > 3900)
   assert.equal(new Set(jobs.map(j => j.dest)).size, jobs.length)
   assert.equal(jobs.filter(j => j.accent === 'us').length, jobs.filter(j => j.accent === 'gb').length)
   assert.ok(jobs.some(j => j.text === 'Great job!' && j.accent === 'gb'))
-  assert.ok(jobs.some(j => j.dest === 'src/static/audio-chant-gb/conversation.mp3'))
   assert.ok(jobs.some(j => j.id === 'a' && j.text === 'A'))
   assert.ok(jobs.every(j => !/\/(zh-|n\d)/.test(j.dest)))
 })
@@ -74,11 +73,6 @@ test('错误选择参数应中止，不能意外扩大为全量付费生成', as
   await assert.rejects(main(['--only']), /缺少/)
   await assert.rejects(main(['--only', 'does-not-exist', '--dry-run']), /没有匹配/)
   await assert.rejects(main(['--force']), /不支持参数/)
-})
-
-test('韵律文本保留字母缩写和会话问句', () => {
-  assert.equal(chantText([{ en: 'A' }, { en: 'PE' }], 'alphabet'), 'A, A, A! PE, PE, PE! Hooray!')
-  assert.equal(chantText([{ en: 'How are you' }], 'conversation'), 'How are you, how are you, how are you? Hooray!')
 })
 
 test('生成器：失败不替换正式音频；续跑复用成功项；重复发布不再调用 API', async () => {

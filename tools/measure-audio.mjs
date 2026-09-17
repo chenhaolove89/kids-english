@@ -42,7 +42,7 @@ async function decode(file) {
 }
 
 async function main() {
-  const dirs = ['audio', 'audio-gb', 'audio-chant', 'audio-chant-gb', 'audio-zh', 'audio-poem']
+  const dirs = ['audio', 'audio-gb', 'audio-zh', 'audio-poem']
   const files = dirs.flatMap(dir => fs.existsSync(path.join(STATIC_DIR, dir)) ? fs.readdirSync(path.join(STATIC_DIR, dir)).filter(f => f.endsWith('.mp3')).sort().map(f => dir + '/' + f) : [])
   const rows = []
   for (const f of files) {

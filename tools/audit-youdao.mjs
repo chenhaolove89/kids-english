@@ -19,7 +19,7 @@ for (const j of jobs) {
     if (sha256(bytes) !== meta.sha256) throw new Error('文件与生成记录哈希不一致')
     if (!metrics.has(meta.sha256)) metrics.set(meta.sha256, await inspectAudio(bytes))
     const m = metrics.get(meta.sha256)
-    const gain = gains[j.accent][(j.dest.includes('audio-chant') ? 'chant:' : '') + j.id]
+    const gain = gains[j.accent][j.id]
     if (!Number.isFinite(gain) || gain <= 0 || m.peak * gain > 0.95001) throw new Error('缺音量表或增益后峰值超限')
     if (m.duration < 0.35) short++
     if (m.peak > 0.999) rawClipped++
