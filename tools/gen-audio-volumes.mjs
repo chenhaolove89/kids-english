@@ -67,6 +67,19 @@ async function main() {
   const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/words.json'), 'utf8'))
   const englishFiles = new Set(words.categories.flatMap(c => c.words.map(w => path.basename(w.audio))))
   englishFiles.add('great_job.mp3')
+  // 英语句子层的句音也在 audio/ 里（tools/en-sentences.csv），一并纳入增益表，
+  // 否则句子会比单词明显响或轻（表里没有的条目会退回默认音量）
+  const sentFile = path.join(ROOT, 'tools/en-sentences.csv')
+  if (fs.existsSync(sentFile)) {
+    let raw = fs.readFileSync(sentFile, 'utf8')
+    if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1)
+    const rows = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
+    if (rows[0].toLowerCase().startsWith('id,')) rows.shift()
+    for (const row of rows) {
+      const key = (row.split(',')[0] || '').trim()
+      if (key) englishFiles.add(`${key}.mp3`)
+    }
+  }
   // 美音必跑；英式目录存在（跑过 npm run gen:assets-gb）才生成英音增益表
   const jobs = [{ dir: AUDIO_DIR, out: OUT, label: '美音' }]
   if (fs.existsSync(AUDIO_GB_DIR)) jobs.push({ dir: AUDIO_GB_DIR, out: OUT_GB, label: '英音' })

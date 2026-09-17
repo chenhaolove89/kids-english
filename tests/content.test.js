@@ -40,10 +40,11 @@ test('课程发布状态：源配置与生成目录一致，draft 不会被静�
   const actualDraftIds = catalog.lessons.filter((l) => l.status === 'draft').map((l) => l.id).sort()
   assert.deepEqual(actualDraftIds, Object.keys(configured).sort(), '目录中的 draft 必须完全由 lessonStatus 配置解释')
   // 2026-09-17 draft 复核后三门课（en-quiz-l4 / math-practice-l6 / math-practice-l9）转正，
-  // 所以此刻 lessonStatus 为空、176 课全部 available；这个数字随 lessonStatus 一起变。
+  // 所以此刻 lessonStatus 为空、全部课 available。课数会随内容批次增长，所以这里断言的是
+  // 「available = 总课数 − 配置的 draft 数」这条不变式，不写死具体数字。
   const expectedAvailable = catalog.lessons.length - Object.keys(configured).length
   assert.equal(catalog.lessons.filter((l) => l.status === 'available').length, expectedAvailable)
-  assert.equal(expectedAvailable, 176)
+  assert.equal(expectedAvailable, catalog.lessons.length, '当前应无 draft 课')
 })
 
 test('课程引用可解析：ref 都能落到真实数据', () => {
@@ -180,5 +181,35 @@ test('页面用到的指令朗读键都有对应的音频文件', () => {
   for (const k of keys) {
     const f = path.join(ROOT, 'src', 'static', 'audio', `zh-btn-${k}.mp3`)
     assert.ok(fs.existsSync(f), `map.vue 调用了 say('${k}')，但缺少 zh-btn-${k}.mp3`)
+  }
+})
+
+/* ---------------- 英语句子层（tools/en-sentences.csv → src/data/enSentences.json） --------------- */
+test('英语句子：字段齐、id 唯一、标点与学段合法、资产存在', () => {
+  const file = path.join(ROOT, 'src', 'data', 'enSentences.json')
+  const data = JSON.parse(fs.readFileSync(file, 'utf8'))
+  assert.ok(Array.isArray(data.sentences) && data.sentences.length > 0, '句子数据为空')
+  assert.equal(data.total, data.sentences.length)
+  const stages = new Set(catalog.lessons.map((l) => l.stage))
+  const ids = new Set()
+  for (const x of data.sentences) {
+    assert.match(x.id, /^[a-z0-9-]+$/, `id 非法: ${x.id}`)
+    assert.ok(!ids.has(x.id), `id 重复: ${x.id}`)
+    ids.add(x.id)
+    assert.ok(x.en && x.zh, `${x.id} 缺 en/zh`)
+    assert.match(x.en, /^[A-Z].*[.?!]$/, `英文句式异常: ${x.id} → ${x.en}`)
+    assert.match(x.zh, /[。？]$/, `中文句末标点异常: ${x.id} → ${x.zh}`)
+    assert.ok(stages.has(x.stage), `${x.id} 学段不在目录里: ${x.stage}`)
+    // 图 + 美音 + 英音 + 中文释义音四件套必须齐（缺一个孩子就会遇到无声或破图）
+    const paths = [x.image, x.audio, x.audio.replace('/audio/', '/audio-gb/'), x.zhAudio]
+    for (const p of paths) {
+      assert.ok(fs.existsSync(path.join(ROOT, 'src', p.replace(/^\//, ''))), `${x.id} 缺资产: ${p}`)
+    }
+  }
+  // 每张句子课卡都指向真实存在的数据
+  const cards = catalog.lessons.filter((l) => l.ref && l.ref.kind === 'en-sentences')
+  assert.ok(cards.length > 0, '目录里没有英语句子课卡')
+  for (const c of cards) {
+    assert.ok(data.sentences.some((x) => x.stage === c.ref.id), `课卡 ${c.id} 指向的学段没有句子`)
   }
 })

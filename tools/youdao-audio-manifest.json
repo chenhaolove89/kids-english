@@ -36000,6 +36000,366 @@
       "duration": 29.64,
       "peak": 0.6931560635566711,
       "rms": -18.14727022863458
+    },
+    "src/static/audio/es-like-apples.mp3": {
+      "key": "931cca3676b9315c7931356b76e545380260664dd80e3eb469405401587a4def",
+      "voice": "youyating",
+      "text": "I like apples.",
+      "sha256": "a42eaf1cd760106afc462b3ee9e88ee9c142ca808f38bb0602d407a4c5dd55f6",
+      "duration": 1.128,
+      "peak": 0.3217085599899292,
+      "rms": -23.87216453861098
+    },
+    "src/static/audio-gb/es-like-apples.mp3": {
+      "key": "b2656b7bdee1419dffa2b70f1301f0a3ff335dcd70dd751f26dfc42f7ce35c83",
+      "voice": "youxiaoying",
+      "text": "I like apples.",
+      "sha256": "230a548a3c829e64f277acdfbc48ea45874f3bf1d974d1076d7bc7bfecba835b",
+      "duration": 1.296,
+      "peak": 0.6228126883506775,
+      "rms": -16.267093261204714
+    },
+    "src/static/audio/es-my-book.mp3": {
+      "key": "051f2ab29fd69018145bc1c3281f3a627a275992926d236642c125d74a6bfb45",
+      "voice": "youyating",
+      "text": "This is my book.",
+      "sha256": "3ff7fb5cb11d1fa9b60cca88900f4b8bf27611c7e77bbdf21b768f6730d526ea",
+      "duration": 1.2,
+      "peak": 0.33677661418914795,
+      "rms": -23.4252109648229
+    },
+    "src/static/audio-gb/es-my-book.mp3": {
+      "key": "b2209bdced1a27739f1514d3ad9efe6b0b9c1b5796294b5a51acd53963f9d34f",
+      "voice": "youxiaoying",
+      "text": "This is my book.",
+      "sha256": "ef5e7ccf238642e78f4e2fd8546e2118b3b6f2bf3c5c18db37f6d8644608dd3b",
+      "duration": 1.32,
+      "peak": 0.7405052781105042,
+      "rms": -16.293806011862685
+    },
+    "src/static/audio/es-red-car.mp3": {
+      "key": "2e8f3a1709f592faa07423fb9cad57405c9c9f504bad05fa9a03d286da07c325",
+      "voice": "youyating",
+      "text": "It's a red car.",
+      "sha256": "065fa154bb217c7506bf4ccebb1a06e675114fc94118ac208645a6f8be29a288",
+      "duration": 1.224,
+      "peak": 0.35904163122177124,
+      "rms": -22.974535999676565
+    },
+    "src/static/audio-gb/es-red-car.mp3": {
+      "key": "23445c7516d7df4df0905b55c5359f4fd933672007b8f8c2818f58da5a59254e",
+      "voice": "youxiaoying",
+      "text": "It's a red car.",
+      "sha256": "1af60d4c423eee709b6b8f3f23f6682d1ca0e15952dc50b493e88871bbb9e36b",
+      "duration": 1.416,
+      "peak": 0.6443572640419006,
+      "rms": -17.864523491473793
+    },
+    "src/static/audio/es-can-swim.mp3": {
+      "key": "418f57309870b78ae20430b80cf88a55008d74743f515f1e8cfbf909c8452fa8",
+      "voice": "youyating",
+      "text": "I can swim.",
+      "sha256": "ae6b6e97ee748c796a55f939cf85f185620ad5f896eacbdaf16e538e73f7097f",
+      "duration": 0.936,
+      "peak": 0.3940995931625366,
+      "rms": -24.5208412405101
+    },
+    "src/static/audio-gb/es-can-swim.mp3": {
+      "key": "41d995b8f843bc71fab69039a05201b744d6a9702b2ddb0881a6a6d2e9265cd2",
+      "voice": "youxiaoying",
+      "text": "I can swim.",
+      "sha256": "4c3b18e345e33eb05d0ceac0c2f6cc36c03a94125c7eb142ada44b35b886ec66",
+      "duration": 1.104,
+      "peak": 0.6260700225830078,
+      "rms": -16.248022409073474
+    },
+    "src/static/audio/es-a-pencil.mp3": {
+      "key": "4b5775ddc1faac58169204d7b685dee33417bc05a7e6b87473c3f1afe188e37c",
+      "voice": "youyating",
+      "text": "I have a pencil.",
+      "sha256": "ccfccadd9bd7d5ab0f98670c4f72a4edb17457d57ce9a8f0609457af9fe7f300",
+      "duration": 1.2,
+      "peak": 0.40371325612068176,
+      "rms": -23.67236409927446
+    },
+    "src/static/audio-gb/es-a-pencil.mp3": {
+      "key": "6c5f6520a5758da28540b82232970d986aaf76cc013a2b9822a4522a63ec3caa",
+      "voice": "youxiaoying",
+      "text": "I have a pencil.",
+      "sha256": "ca7e291a427fbd83a93fa191e59912b70e62b8ea064fc81086290febadbc8840",
+      "duration": 1.656,
+      "peak": 0.5980602502822876,
+      "rms": -18.021203314159816
+    },
+    "src/static/audio/es-big-tree.mp3": {
+      "key": "c5ea7fa49932004d2e853127d72a079e34f4635cbe1729284857347add589c45",
+      "voice": "youyating",
+      "text": "I see a big tree.",
+      "sha256": "de8e10271dcaa72fea8afbe309f6f5bffd561315212dc47175cdc505db49333f",
+      "duration": 1.416,
+      "peak": 0.3336997926235199,
+      "rms": -23.397692254378093
+    },
+    "src/static/audio-gb/es-big-tree.mp3": {
+      "key": "5753f8aca31ff36ff065810d98ef925a764883ff516e4535a2f42436d502c8ee",
+      "voice": "youxiaoying",
+      "text": "I see a big tree.",
+      "sha256": "0dd51890dd68a43ec4f449a2d758aa8bda8e5cebd348651429f36ec7725b63f0",
+      "duration": 1.872,
+      "peak": 0.5780273079872131,
+      "rms": -17.63354559848348
+    },
+    "src/static/audio/es-time-for-bed.mp3": {
+      "key": "916b5e6cea91a3532e01fcfb3438d06ccef4a4592667e7d0f39fffa3f2667d49",
+      "voice": "youyating",
+      "text": "It's time for bed.",
+      "sha256": "17962583e39f479bc19d46c46654fd71da08a5ca7b54395e4a787f03b4203df0",
+      "duration": 1.32,
+      "peak": 0.37615591287612915,
+      "rms": -22.712402050328805
+    },
+    "src/static/audio-gb/es-time-for-bed.mp3": {
+      "key": "561091469aa6607ed552521a6fe303d831cfc194afc95d3fe5b92b194e7d894f",
+      "voice": "youxiaoying",
+      "text": "It's time for bed.",
+      "sha256": "c4d70d2c2a6c5b2a71d9ccf1b9ee3684465fd96bf8e38078c126173ef39a5fab",
+      "duration": 1.56,
+      "peak": 0.6510874629020691,
+      "rms": -17.498328045613288
+    },
+    "src/static/audio/es-want-water.mp3": {
+      "key": "cc0a370b3f0ccfcda8047c919e5275dba46f7a7f4451faa2958cbbdc5a36a82a",
+      "voice": "youyating",
+      "text": "I want some water.",
+      "sha256": "55bf479eb1d2a9ffac91b552c041ac05f708dbded08c68138ce7b52f310d6b3b",
+      "duration": 1.32,
+      "peak": 0.3286917507648468,
+      "rms": -22.69411341420447
+    },
+    "src/static/audio-gb/es-want-water.mp3": {
+      "key": "0dacbfd60cf03b88e36104097f4bc920020adb1098c4133a21476869c547c822",
+      "voice": "youxiaoying",
+      "text": "I want some water.",
+      "sha256": "4b1195c6ff4e094510b021748cfd1db1ca3de3eefc52a3ea9af16f12322b2ee6",
+      "duration": 1.56,
+      "peak": 0.6109413504600525,
+      "rms": -16.609471262996834
+    },
+    "src/static/audio/es-open-door.mp3": {
+      "key": "febf596e0aec06844d126e6c3c83e53f466248a39f3e20152d79ce4db192fbdf",
+      "voice": "youyating",
+      "text": "Please open the door.",
+      "sha256": "80913b8c211d4b256babcda0b55e83b7f31b6952def2b9028844b063a719a17e",
+      "duration": 1.464,
+      "peak": 0.3263179361820221,
+      "rms": -22.706561197814597
+    },
+    "src/static/audio-gb/es-open-door.mp3": {
+      "key": "36359af7fa8e6b8d4a0439ab6510e1e10e0a3b3031f4644036bfa6691b72c3b1",
+      "voice": "youxiaoying",
+      "text": "Please open the door.",
+      "sha256": "2d101d7d8457307173585bba861d5e65a10663496763974e3b8f4fdd7f6a9058",
+      "duration": 1.584,
+      "peak": 0.6288190484046936,
+      "rms": -16.20317529195698
+    },
+    "src/static/audio/es-thanks-help.mp3": {
+      "key": "b0ae0a56fb943bc0af9ff29782dcc9ef38bf2ac79c9e07d6dfc904fae19496ec",
+      "voice": "youyating",
+      "text": "Thank you for your help.",
+      "sha256": "6609f51fc794f0ab756c821b062e32f7d56cd770ec43ca4cde3ec41fbe7a84b1",
+      "duration": 1.464,
+      "peak": 0.3692720830440521,
+      "rms": -23.15295271687123
+    },
+    "src/static/audio-gb/es-thanks-help.mp3": {
+      "key": "0601c735fdaf538f15a1f9ef69a3cfb8e9d977ece84aa6f9028efa11547d4815",
+      "voice": "youxiaoying",
+      "text": "Thank you for your help.",
+      "sha256": "c0cba7068da0c494aeee9f29ba5ac2b36923de8739d29898e7f10a3b6a242bb2",
+      "duration": 1.872,
+      "peak": 0.5817434787750244,
+      "rms": -17.072744906068532
+    },
+    "src/static/audio/es-my-friend.mp3": {
+      "key": "c6ee5949b37a565b7f41badab99c11acb27a8f1eeea3a57845bb0b63ca76a8c7",
+      "voice": "youyating",
+      "text": "She is my friend.",
+      "sha256": "23aebf7f64f08aec5aa58c17bd6243fd42fce355660f4b3cc097a9b98a24fce9",
+      "duration": 1.224,
+      "peak": 0.3212868273258209,
+      "rms": -23.21839936711193
+    },
+    "src/static/audio-gb/es-my-friend.mp3": {
+      "key": "ab2db438f041931ed022e8d9f060ebfab9e18243ae94e284cb0f284f43964686",
+      "voice": "youxiaoying",
+      "text": "She is my friend.",
+      "sha256": "89a8a8697b7cc7435b65420eaa089a1180fe7c04e6925fde3e18af212a5d7ad3",
+      "duration": 1.56,
+      "peak": 0.6496258974075317,
+      "rms": -16.61142320274609
+    },
+    "src/static/audio/es-where-dog.mp3": {
+      "key": "44caa5a3224c84f4fd63d96b286f498e932f4d86f592eefa371342c450a7a749",
+      "voice": "youyating",
+      "text": "Where is the dog?",
+      "sha256": "a5c2320445d50a0e42fb3afc3541f3a0fceb1c6eaa44b00144c3c2ad5e11cce9",
+      "duration": 1.2,
+      "peak": 0.34292224049568176,
+      "rms": -22.468883182733013
+    },
+    "src/static/audio-gb/es-where-dog.mp3": {
+      "key": "2714ad36e4171d453b9d5747cb311b186a9724874f8b90e91ae0797def82b2a9",
+      "voice": "youxiaoying",
+      "text": "Where is the dog?",
+      "sha256": "0f87017a9072750c3344aad4d1c851002711f24bbd505022fb784c50bb1a986e",
+      "duration": 1.392,
+      "peak": 0.583766520023346,
+      "rms": -17.356891885526064
+    },
+    "src/static/audio/es-cat-sleeping.mp3": {
+      "key": "28e55cf9193bca76ad351a3b67205c62be62d1da286439dad911e63a9add0f08",
+      "voice": "youyating",
+      "text": "The cat is sleeping.",
+      "sha256": "c6944543a3f8db6958c6baa58ba016998172ba8ccd65d5861ba44d11754f2ef3",
+      "duration": 1.368,
+      "peak": 0.3577134907245636,
+      "rms": -25.259737585778865
+    },
+    "src/static/audio-gb/es-cat-sleeping.mp3": {
+      "key": "16d76845194d10aadc5e7a871cdea54801da64d856133eb27c2b085275c627dc",
+      "voice": "youxiaoying",
+      "text": "The cat is sleeping.",
+      "sha256": "9c5ddf4c00012435ab35f8163ac013df24b346e4e04aadea62ea55b661ddfa58",
+      "duration": 1.896,
+      "peak": 0.602713942527771,
+      "rms": -18.003757551890292
+    },
+    "src/static/audio/es-mother-reading.mp3": {
+      "key": "1b1e7e931357167975762803e28002070bf3e893ae1b76350053c1509f26e9fb",
+      "voice": "youyating",
+      "text": "My mother is reading.",
+      "sha256": "e1a725b568ea93f409dde460ec061b6431a1c503b45b93f80b746629e4f4c326",
+      "duration": 1.368,
+      "peak": 0.3158097267150879,
+      "rms": -22.184648647058797
+    },
+    "src/static/audio-gb/es-mother-reading.mp3": {
+      "key": "5dc7c78f5a1f3d864c13673815fa1ac3060f21ad969c2f25fed26e1acec88f0c",
+      "voice": "youxiaoying",
+      "text": "My mother is reading.",
+      "sha256": "c3078cb4ad5a01f4148af0fc774d56675d7a643ca09de069058981e49fcc3f3e",
+      "duration": 1.848,
+      "peak": 0.7090567350387573,
+      "rms": -15.920300887726961
+    },
+    "src/static/audio/es-drawing.mp3": {
+      "key": "9a5692bfcafe0387126fd2adead53e8f36cb65b87e6aa04f6ff993ea552901a2",
+      "voice": "youyating",
+      "text": "I'm drawing a picture.",
+      "sha256": "28a2ba5b492f9949bd1f22116e0d4c32224dbbd312d67ffad8f14ed7cacb157e",
+      "duration": 1.392,
+      "peak": 0.32845184206962585,
+      "rms": -23.94482158395312
+    },
+    "src/static/audio-gb/es-drawing.mp3": {
+      "key": "015268abb9115b34c1d3cd389899d4c24834299433fae9bfb9e99b7d12b8af4f",
+      "voice": "youxiaoying",
+      "text": "I'm drawing a picture.",
+      "sha256": "46c6705013eef46673a7a1ecaa013b53525877ad2ad108015880544422b57afc",
+      "duration": 1.752,
+      "peak": 0.674567461013794,
+      "rms": -17.399067931404016
+    },
+    "src/static/audio/es-play-with-ball.mp3": {
+      "key": "cd0277a9303bcf291fd7f5ba07de99ff3bd952933745a4ecd131bfde58ac606e",
+      "voice": "youyating",
+      "text": "Let's play with the ball.",
+      "sha256": "ef9f3d6c5fac55273f44e53b8cd0c2e3d769f7468c2bdd71dab6867d9979f69b",
+      "duration": 1.56,
+      "peak": 0.3400799334049225,
+      "rms": -22.086915626026823
+    },
+    "src/static/audio-gb/es-play-with-ball.mp3": {
+      "key": "65535acbe6575d261190568f1b4d01a5937f582b55fe6b207ebd4c18456ab986",
+      "voice": "youxiaoying",
+      "text": "Let's play with the ball.",
+      "sha256": "95dd1363793a420b67dd38ab0a0ebc81b0e8ea883dedf16033b2d1e0bf33e1f2",
+      "duration": 1.848,
+      "peak": 0.7208414077758789,
+      "rms": -16.006814544013352
+    },
+    "src/static/audio/es-cant-find-bag.mp3": {
+      "key": "8a2034254c480cc58e0e31b6cdbf5de40beac47376f518f8c6091a168edaacd0",
+      "voice": "youyating",
+      "text": "I can't find my bag.",
+      "sha256": "672c025fcd937b8d7370f3ecd7d18702cd035e4673ab6f3c36b6a2cfa855d428",
+      "duration": 1.56,
+      "peak": 0.3595174252986908,
+      "rms": -24.056385129993025
+    },
+    "src/static/audio-gb/es-cant-find-bag.mp3": {
+      "key": "a7b4caf20af575710b38e13f59dfcbd6e83644a92a7403e11ccbd9fbfe28e46d",
+      "voice": "youxiaoying",
+      "text": "I can't find my bag.",
+      "sha256": "ca80a97e102c2b60cdc6e6d06db3b8322eb0fbea95bddbeed5358aa448032576",
+      "duration": 1.848,
+      "peak": 0.6578747630119324,
+      "rms": -15.920844084697539
+    },
+    "src/static/audio/es-tall-giraffe.mp3": {
+      "key": "4e483d1a52517fe718047dc246176d65d376a1e9cc62bf71720f663ec8ca00ad",
+      "voice": "youyating",
+      "text": "The giraffe is very tall.",
+      "sha256": "748f322d1f92d92fba4ca55ee48675713e9366f09b9a3f457b38e6a801b0cbe5",
+      "duration": 1.656,
+      "peak": 0.3020608425140381,
+      "rms": -23.08979952888841
+    },
+    "src/static/audio-gb/es-tall-giraffe.mp3": {
+      "key": "08d763b9977359572679c82ea43e767c360f33eb5174f798a9c62b26a5ca12af",
+      "voice": "youxiaoying",
+      "text": "The giraffe is very tall.",
+      "sha256": "c67a7dc76c4516c5f77465300e5423393605b806001f549861f773d76ba152f0",
+      "duration": 2.256,
+      "peak": 0.5783306360244751,
+      "rms": -16.99141025137196
+    },
+    "src/static/audio/es-banana-yellow.mp3": {
+      "key": "c03390ee58c77eacea9fc1aae32a64d542bd954a21547e07e8d5d6624ae2de27",
+      "voice": "youyating",
+      "text": "The banana is yellow.",
+      "sha256": "52a0a55f7014bd94018ffe8d2b31dac01d6597bd058b8db58cc2516f0d5146fe",
+      "duration": 1.608,
+      "peak": 0.37134861946105957,
+      "rms": -21.61392593467465
+    },
+    "src/static/audio-gb/es-banana-yellow.mp3": {
+      "key": "96fc3e46ec29c8af801cae234ed658eac2a936f94bc11598e42ebd3a889ec4c9",
+      "voice": "youxiaoying",
+      "text": "The banana is yellow.",
+      "sha256": "270329d5085c3e23ae2525b2a6249da413110447f2bed44ab55de122d544c4ae",
+      "duration": 1.752,
+      "peak": 0.6464926600456238,
+      "rms": -16.318764436934806
+    },
+    "src/static/audio/es-school.mp3": {
+      "key": "d48fffba0e54b888774a639df582d31bd8ab7a4703d05f382dfeed757e2f71e9",
+      "voice": "youyating",
+      "text": "I go to school.",
+      "sha256": "b3842e34f81a7493660ac795af44b37767ddad2311e247ce93f600e0080bed31",
+      "duration": 1.104,
+      "peak": 0.38844525814056396,
+      "rms": -22.729780211032548
+    },
+    "src/static/audio-gb/es-school.mp3": {
+      "key": "4ae2278eec400d7b46d252ce0ff93ec5fb51878484eb5b0f13863a5b536b36c2",
+      "voice": "youxiaoying",
+      "text": "I go to school.",
+      "sha256": "e77c2b8a4c3878302312c9996604c837acbdd2982bdc43acb152ff5c924784dd",
+      "duration": 1.488,
+      "peak": 0.6885300874710083,
+      "rms": -16.833945845595736
     }
   }
 }

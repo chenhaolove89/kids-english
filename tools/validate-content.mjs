@@ -172,6 +172,39 @@ for (const lv of hanzi.levels) {
 // 语文小短句：只念例句、不混排字词的独立卡片。开放级别配置在 curriculum.zhSentences
 // （目前只开启蒙 level 1），数据源是 hanzi 每字的 sentence/sentenceAudio/sentenceEmoji
 // （tools/hanzi-sentences.csv + tools/hanzi-sentence-emoji.csv + Azure 音轨）。
+// 英语句子层（tools/en-sentences.csv → src/data/enSentences.json，由 npm run gen:assets 生成）。
+// 每个有句子的阶段一张「学一学」课卡；句音走主音频目录（美音 audio/、英音 audio-gb/），
+// 中文释义音走 audio-zh/，所以口音切换、音量表、资源审计都复用现有机制。
+const EN_SENTENCES_FILE = path.join(ROOT, 'src', 'data', 'enSentences.json')
+const enSentences = fs.existsSync(EN_SENTENCES_FILE) ? (readJson(EN_SENTENCES_FILE).sentences || []) : []
+const enSentenceStages = new Set(enSentences.map((x) => x.stage))
+for (const stage of enSentenceStages) {
+  const list = enSentences.filter((x) => x.stage === stage)
+  for (const x of list) {
+    const abs = (p2) => path.join(ROOT, 'src', p2.replace(/^\//, ''))
+    for (const [label, p2] of [['句图', x.image], ['句音(美)', x.audio], ['中文释义音', x.zhAudio]]) {
+      if (!fs.existsSync(abs(p2))) fail(`英语句子 ${x.id} ${label}不存在: ${p2}`)
+    }
+    const gb = x.audio.replace('/audio/', '/audio-gb/')
+    if (!fs.existsSync(abs(gb))) fail(`英语句子 ${x.id} 英式句音不存在: ${gb}`)
+  }
+  pushLesson({
+    id: `en-sentences-${stage}`,
+    subject: 'en',
+    stage,
+    kind: 'learn',
+    title: '英语小短句 · 句子',
+    subtitle: `${list.length} 个句子`,
+    icon: '/static/img/cat-sentences.png',
+    color: '#0CA678',
+    bg: '#E0F5EC',
+    // 排在同阶段分类课之后：词 → 句 的难度递进
+    sort: 'zz-en-sentences',
+    ref: { kind: 'en-sentences', id: stage },
+    skillIds: [`en-sentence-${stage}`],
+  })
+}
+
 const sentenceLevels = new Set((source.zhSentences?.levels || []).map(Number))
 for (const lv of hanzi.levels) {
   if (!sentenceLevels.has(Number(lv.id))) continue

@@ -1,0 +1,185 @@
+{
+ "total": 20,
+ "sentences": [
+  {
+   "id": "es-like-apples",
+   "stage": "g12",
+   "en": "I like apples.",
+   "zh": "我喜欢苹果。",
+   "image": "/static/img/es-like-apples.png",
+   "audio": "/static/audio/es-like-apples.mp3",
+   "zhAudio": "/static/audio-zh/es-like-apples.mp3"
+  },
+  {
+   "id": "es-my-book",
+   "stage": "g12",
+   "en": "This is my book.",
+   "zh": "这是我的书。",
+   "image": "/static/img/es-my-book.png",
+   "audio": "/static/audio/es-my-book.mp3",
+   "zhAudio": "/static/audio-zh/es-my-book.mp3"
+  },
+  {
+   "id": "es-red-car",
+   "stage": "g12",
+   "en": "It's a red car.",
+   "zh": "这是一辆红色的汽车。",
+   "image": "/static/img/es-red-car.png",
+   "audio": "/static/audio/es-red-car.mp3",
+   "zhAudio": "/static/audio-zh/es-red-car.mp3"
+  },
+  {
+   "id": "es-can-swim",
+   "stage": "g12",
+   "en": "I can swim.",
+   "zh": "我会游泳。",
+   "image": "/static/img/es-can-swim.png",
+   "audio": "/static/audio/es-can-swim.mp3",
+   "zhAudio": "/static/audio-zh/es-can-swim.mp3"
+  },
+  {
+   "id": "es-a-pencil",
+   "stage": "g12",
+   "en": "I have a pencil.",
+   "zh": "我有一支铅笔。",
+   "image": "/static/img/es-a-pencil.png",
+   "audio": "/static/audio/es-a-pencil.mp3",
+   "zhAudio": "/static/audio-zh/es-a-pencil.mp3"
+  },
+  {
+   "id": "es-big-tree",
+   "stage": "g12",
+   "en": "I see a big tree.",
+   "zh": "我看见一棵大树。",
+   "image": "/static/img/es-big-tree.png",
+   "audio": "/static/audio/es-big-tree.mp3",
+   "zhAudio": "/static/audio-zh/es-big-tree.mp3"
+  },
+  {
+   "id": "es-time-for-bed",
+   "stage": "g12",
+   "en": "It's time for bed.",
+   "zh": "该睡觉了。",
+   "image": "/static/img/es-time-for-bed.png",
+   "audio": "/static/audio/es-time-for-bed.mp3",
+   "zhAudio": "/static/audio-zh/es-time-for-bed.mp3"
+  },
+  {
+   "id": "es-want-water",
+   "stage": "g12",
+   "en": "I want some water.",
+   "zh": "我想喝水。",
+   "image": "/static/img/es-want-water.png",
+   "audio": "/static/audio/es-want-water.mp3",
+   "zhAudio": "/static/audio-zh/es-want-water.mp3"
+  },
+  {
+   "id": "es-open-door",
+   "stage": "g12",
+   "en": "Please open the door.",
+   "zh": "请开门。",
+   "image": "/static/img/es-open-door.png",
+   "audio": "/static/audio/es-open-door.mp3",
+   "zhAudio": "/static/audio-zh/es-open-door.mp3"
+  },
+  {
+   "id": "es-thanks-help",
+   "stage": "g12",
+   "en": "Thank you for your help.",
+   "zh": "谢谢你的帮助。",
+   "image": "/static/img/es-thanks-help.png",
+   "audio": "/static/audio/es-thanks-help.mp3",
+   "zhAudio": "/static/audio-zh/es-thanks-help.mp3"
+  },
+  {
+   "id": "es-my-friend",
+   "stage": "g12",
+   "en": "She is my friend.",
+   "zh": "她是我的朋友。",
+   "image": "/static/img/es-my-friend.png",
+   "audio": "/static/audio/es-my-friend.mp3",
+   "zhAudio": "/static/audio-zh/es-my-friend.mp3"
+  },
+  {
+   "id": "es-where-dog",
+   "stage": "g12",
+   "en": "Where is the dog?",
+   "zh": "小狗在哪里？",
+   "image": "/static/img/es-where-dog.png",
+   "audio": "/static/audio/es-where-dog.mp3",
+   "zhAudio": "/static/audio-zh/es-where-dog.mp3"
+  },
+  {
+   "id": "es-cat-sleeping",
+   "stage": "g12",
+   "en": "The cat is sleeping.",
+   "zh": "猫在睡觉。",
+   "image": "/static/img/es-cat-sleeping.png",
+   "audio": "/static/audio/es-cat-sleeping.mp3",
+   "zhAudio": "/static/audio-zh/es-cat-sleeping.mp3"
+  },
+  {
+   "id": "es-mother-reading",
+   "stage": "g12",
+   "en": "My mother is reading.",
+   "zh": "妈妈在看书。",
+   "image": "/static/img/es-mother-reading.png",
+   "audio": "/static/audio/es-mother-reading.mp3",
+   "zhAudio": "/static/audio-zh/es-mother-reading.mp3"
+  },
+  {
+   "id": "es-drawing",
+   "stage": "g12",
+   "en": "I'm drawing a picture.",
+   "zh": "我在画一幅画。",
+   "image": "/static/img/es-drawing.png",
+   "audio": "/static/audio/es-drawing.mp3",
+   "zhAudio": "/static/audio-zh/es-drawing.mp3"
+  },
+  {
+   "id": "es-play-with-ball",
+   "stage": "g12",
+   "en": "Let's play with the ball.",
+   "zh": "我们一起玩球吧。",
+   "image": "/static/img/es-play-with-ball.png",
+   "audio": "/static/audio/es-play-with-ball.mp3",
+   "zhAudio": "/static/audio-zh/es-play-with-ball.mp3"
+  },
+  {
+   "id": "es-cant-find-bag",
+   "stage": "g12",
+   "en": "I can't find my bag.",
+   "zh": "我找不到我的包。",
+   "image": "/static/img/es-cant-find-bag.png",
+   "audio": "/static/audio/es-cant-find-bag.mp3",
+   "zhAudio": "/static/audio-zh/es-cant-find-bag.mp3"
+  },
+  {
+   "id": "es-tall-giraffe",
+   "stage": "g12",
+   "en": "The giraffe is very tall.",
+   "zh": "长颈鹿很高。",
+   "image": "/static/img/es-tall-giraffe.png",
+   "audio": "/static/audio/es-tall-giraffe.mp3",
+   "zhAudio": "/static/audio-zh/es-tall-giraffe.mp3"
+  },
+  {
+   "id": "es-banana-yellow",
+   "stage": "g12",
+   "en": "The banana is yellow.",
+   "zh": "香蕉是黄色的。",
+   "image": "/static/img/es-banana-yellow.png",
+   "audio": "/static/audio/es-banana-yellow.mp3",
+   "zhAudio": "/static/audio-zh/es-banana-yellow.mp3"
+  },
+  {
+   "id": "es-school",
+   "stage": "g12",
+   "en": "I go to school.",
+   "zh": "我去上学。",
+   "image": "/static/img/es-school.png",
+   "audio": "/static/audio/es-school.mp3",
+   "zhAudio": "/static/audio-zh/es-school.mp3"
+  }
+ ]
+}

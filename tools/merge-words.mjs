@@ -23,7 +23,7 @@ export const LEVELS = {
 }
 
 const LEVEL_OF = {
-  colors: 1, numbers: 1, shapes: 1, body: 1, alphabet: 1, animals: 1, wild: 1, fruits: 1, toys: 1, family: 1,
+  colors: 1, numbers: 1, shapes: 1, body: 1, alphabet: 1, animals: 1, wild: 1, fruits: 1, toys: 1, family: 1, daily: 1,
   food: 2, vegetables: 2, desserts: 2, drinks: 2, clothes: 2, home: 2, kitchen: 2, school: 2, emotions: 2,
   wordfamilies: 2, digraphs: 2,
   vehicles: 3, nature: 3, ocean: 3, insects: 3, birds: 3, places: 3, time: 3, countries: 3, farm: 3, forest: 3, city: 3,
@@ -57,6 +57,14 @@ const MOVES = {
   otter: 'wild', skunk: 'wild', badger: 'wild', beaver: 'wild', raccoon: 'wild',
   bison: 'wild', llama: 'wild', flamingo: 'wild', penguin: 'wild', dolphin: 'wild',
   whale: 'wild', shark: 'wild', octopus: 'wild', crab: 'wild', seal: 'wild',
+  // 2026-09-17 英语句子阶梯（P1）：greetings 里最低难度的一批下移到启蒙「日常用语」。
+  // 判据：≤4 词、3-6 岁每天真能用、无抽象/习语（you're welcome / long time no see 这类留下）。
+  // 这些词的图片、美音、英音、中文音都按词 id 存放，迁移零新增资源（已逐条验证 20/20 齐备）。
+  'gr-hello': 'daily', 'gr-hi': 'daily', 'gr-goodbye': 'daily', 'gr-bye-bye': 'daily', 'gr-thankyou': 'daily',
+  'gr-sorry': 'daily', 'gr-goodmorning': 'daily', 'gr-goodnight': 'daily', 'gr-Iloveyou': 'daily',
+  'gr-letsgo': 'daily', 'gr-letsplay': 'daily', 'gr-bequiet': 'daily', 'gr-becareful': 'daily',
+  'gr-goodjob': 'daily', 'gr-welldone': 'daily', 'gr-washyourhands': 'daily', 'gr-brushyourteeth': 'daily',
+  'gr-timetoeat': 'daily', 'gr-Idontknow': 'daily', 'gr-comeinplease': 'daily',
 }
 
 function slug(id) {

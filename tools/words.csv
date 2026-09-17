@@ -1802,18 +1802,18 @@ st-magicspell,magic spell,魔法咒语,/ˈmædʒɪk spel/,story,,magic spell
 st-myth,myth,神话,/mɪθ/,story,,myth
 st-legend,legend,传说,/ˈledʒənd/,story,,legend
 st-fable,fable,寓言,/ˈfeɪbl/,story,,fable
-gr-hello,hello,你好,/həˈləʊ/,greetings,,hello
-gr-hi,hi,嗨,/haɪ/,greetings,,hi
-gr-goodbye,goodbye,再见,/ˌɡʊdˈbaɪ/,greetings,,goodbye
-gr-bye-bye,bye-bye,拜拜,/ˌbaɪˈbaɪ/,greetings,,bye-bye
-gr-thankyou,thank you,谢谢你,/ˈθæŋk juː/,greetings,,thank you
+gr-hello,hello,你好,/həˈləʊ/,daily,,hello
+gr-hi,hi,嗨,/haɪ/,daily,,hi
+gr-goodbye,goodbye,再见,/ˌɡʊdˈbaɪ/,daily,,goodbye
+gr-bye-bye,bye-bye,拜拜,/ˌbaɪˈbaɪ/,daily,,bye-bye
+gr-thankyou,thank you,谢谢你,/ˈθæŋk juː/,daily,,thank you
 gr-yourewelcome,you're welcome,不客气,/jʊə ˈwelkəm/,greetings,,you're welcome
-gr-sorry,sorry,对不起,/ˈsɒri/,greetings,,sorry
+gr-sorry,sorry,对不起,/ˈsɒri/,daily,,sorry
 gr-excuseme,excuse me,打扰一下,/ɪkˈskjuːz miː/,greetings,,excuse me
-gr-goodmorning,good morning,早上好,/ɡʊd ˈmɔːnɪŋ/,greetings,,good morning
+gr-goodmorning,good morning,早上好,/ɡʊd ˈmɔːnɪŋ/,daily,,good morning
 gr-goodafternoon,good afternoon,下午好,/ɡʊd ˌɑːftəˈnuːn/,greetings,,good afternoon
 gr-goodevening,good evening,晚上好,/ɡʊd ˈiːvnɪŋ/,greetings,,good evening
-gr-goodnight,good night,晚安,/ɡʊd naɪt/,greetings,,good night
+gr-goodnight,good night,晚安,/ɡʊd naɪt/,daily,,good night
 gr-seeyou,see you,回头见,/siː juː/,greetings,,see you
 gr-seeyoutomorrow,see you tomorrow,明天见,/siː juː təˈmɒrəʊ/,greetings,,see you tomorrow
 gr-seeyoulater,see you later,一会儿见,/siː juː ˈleɪtə/,greetings,,see you later
@@ -1831,22 +1831,22 @@ gr-merryChristmas,merry Christmas,圣诞快乐,/ˈmeri ˈkrɪsməs/,greetings,,m
 gr-happynewyear,happy new year,新年快乐,/ˈhæpi njuː jɪə/,greetings,,happy new year
 gr-goodluck,good luck,祝你好运,/ɡʊd lʌk/,greetings,,good luck
 gr-congratulations,congratulations,祝贺你,/kənˌɡrætʃʊˈleɪʃnz/,greetings,,congratulations
-gr-welldone,well done,做得好,/wel dʌn/,greetings,,well done
-gr-goodjob,good job,干得好,/ɡʊd dʒɒb/,greetings,,good job
-gr-letsgo,let's go,我们走吧,/lets ɡəʊ/,greetings,,let's go
-gr-letsplay,let's play,一起玩吧,/lets pleɪ/,greetings,,let's play
-gr-timetoeat,time to eat,吃饭时间到啦,/taɪm tuː iːt/,greetings,,time to eat
-gr-washyourhands,wash your hands,去洗手,/wɒʃ jɔː hændz/,greetings,,wash your hands
-gr-brushyourteeth,brush your teeth,去刷牙,/brʌʃ jɔː tiːθ/,greetings,,brush your teeth
+gr-welldone,well done,做得好,/wel dʌn/,daily,,well done
+gr-goodjob,good job,干得好,/ɡʊd dʒɒb/,daily,,good job
+gr-letsgo,let's go,我们走吧,/lets ɡəʊ/,daily,,let's go
+gr-letsplay,let's play,一起玩吧,/lets pleɪ/,daily,,let's play
+gr-timetoeat,time to eat,吃饭时间到啦,/taɪm tuː iːt/,daily,,time to eat
+gr-washyourhands,wash your hands,去洗手,/wɒʃ jɔː hændz/,daily,,wash your hands
+gr-brushyourteeth,brush your teeth,去刷牙,/brʌʃ jɔː tiːθ/,daily,,brush your teeth
 gr-tidyyourroom,tidy your room,收拾房间,/ˈtaɪdi jɔː ruːm/,greetings,,tidy your room
-gr-bequiet,be quiet,请安静,/biː ˈkwaɪət/,greetings,,be quiet
-gr-becareful,be careful,当心,/biː ˈkeəfl/,greetings,,be careful
+gr-bequiet,be quiet,请安静,/biː ˈkwaɪət/,daily,,be quiet
+gr-becareful,be careful,当心,/biː ˈkeəfl/,daily,,be careful
 gr-lineup,line up,排队,/laɪn ʌp/,greetings,,line up
 gr-raiseyourhand,raise your hand,举手,/reɪz jɔː hænd/,greetings,,raise your hand
 gr-mayIcomein,may I come in,我可以进来吗,/meɪ aɪ kʌm ɪn/,greetings,,may I come in
 gr-canyouhelpme,can you help me,你能帮我吗,/kæn juː help miː/,greetings,,can you help me
-gr-Idontknow,I don't know,我不知道,/aɪ dəʊnt nəʊ/,greetings,,I don't know
-gr-Iloveyou,I love you,我爱你,/aɪ lʌv juː/,greetings,,I love you
+gr-Idontknow,I don't know,我不知道,/aɪ dəʊnt nəʊ/,daily,,I don't know
+gr-Iloveyou,I love you,我爱你,/aɪ lʌv juː/,daily,,I love you
 gr-Imsorry,I'm sorry,我很抱歉,/aɪm ˈsɒri/,greetings,,I'm sorry
 gr-ofcourse,of course,当然,/əv kɔːs/,greetings,,of course
 gr-waitamoment,wait a moment,等一下,/weɪt ə ˈməʊmənt/,greetings,,wait a moment
@@ -1859,7 +1859,7 @@ gr-havefun,have fun,玩得开心,/hæv fʌn/,greetings,,have fun
 gr-sweetdreams,sweet dreams,做个好梦,/swiːt driːmz/,greetings,,sweet dreams
 gr-getwellsoon,get well soon,早日康复,/ɡet wel suːn/,greetings,,get well soon
 gr-welcomeback,welcome back,欢迎回来,/ˈwelkəm bæk/,greetings,,welcome back
-gr-comeinplease,come in please,请进,/kʌm ɪn pliːz/,greetings,,come in please
+gr-comeinplease,come in please,请进,/kʌm ɪn pliːz/,daily,,come in please
 cv-whatsthis,what's this,这是什么,/wɒts ðɪs/,conversation,,what's this
 cv-itsacat,it's a cat,它是一只猫,/ɪts ə kæt/,conversation,,it's a cat
 cv-whatcolorisit,what color is it,它是什么颜色,/wɒt ˈkʌlə ɪz ɪt/,conversation,,what color is it

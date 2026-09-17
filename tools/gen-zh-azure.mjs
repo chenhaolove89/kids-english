@@ -15,6 +15,7 @@
  *   node tools/gen-zh-azure.mjs --chars        # 只重生成字音+例词(audio/zh-*.mp3)
  *   node tools/gen-zh-azure.mjs --words        # 只重生成词语课(audio-zh/*.mp3,与现存文件取交集)
  *   node tools/gen-zh-azure.mjs --only zh-897fs   # 只重生成指定条目(改单条例句/字音时用,避免整批重写产生无关 diff)
+ *   node tools/gen-zh-azure.mjs --sentences    # 英语句子的中文释义音(audio-zh/)
  *   node tools/gen-zh-azure.mjs --poems        # 古诗音频(整首+逐句,src/data/poems.json,落到 static/audio-poem/)
  *   node tools/gen-zh-azure.mjs --labels       # 按钮指令朗读(工具内 BUTTON_LABELS 清单,落到 audio/zh-btn-*.mp3)
  *   node tools/gen-zh-azure.mjs --all          # 全部(默认)
@@ -47,6 +48,7 @@ const WORDS_ONLY = argv.has('--words')
 const POEMS_MODE = argv.has('--poems')
 const LABELS_MODE = argv.has('--labels')
 const MISC_MODE = argv.has('--misc')
+const SENTENCES_MODE = argv.has('--sentences')
 const FORCE = argv.has('--force')
 // 增量跳过（P3b）：目标文件已存在且 >1KB 视为有效，跑批不重写历史音频
 // （改单条用 --only <id> 精确重生成；全量重生成用 --force）。--poems 原有同款逻辑收编到这。
@@ -354,9 +356,57 @@ async function runMisc() {
   }
 }
 
+// 英语句子的中文释义音（src/data/enSentences.json 的数据源 tools/en-sentences.csv，只取 zh 列）。
+// 放 audio-zh/ 与「语文词语课复用英语词 id 的中文音」同一惯例；不加 phoneme（整句走语句模型）。
+function sentenceJobs() {
+  const file = path.join(ROOT, 'tools/en-sentences.csv')
+  if (!fs.existsSync(file)) return []
+  let raw = fs.readFileSync(file, 'utf8')
+  if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1)
+  const lines = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
+  if (lines[0].toLowerCase().startsWith('id,')) lines.shift()
+  const jobs = []
+  for (const l of lines) {
+    const [id, , , zh] = l.split(',')
+    const key = (id || '').trim()
+    const text = (zh || '').trim()
+    if (!key || !text) continue
+    jobs.push({ id: key, text, pinyin: null, out: path.join(AUDIO_ZH_DIR, `${key}.mp3`) })
+  }
+  return jobs.filter((j) => FRESH(j.out))
+}
+
+async function runSentences() {
+  const jobs = sentenceJobs()
+  console.log(`== 英语句子的中文释义: ${jobs.length} 条 ==`)
+  if (DRY_RUN) {
+    for (const j of jobs) console.log(`[${j.id}] ${j.text}`)
+    return
+  }
+  const creds = loadCreds()
+  if (!creds.key || !creds.region) {
+    console.error('缺少 AZURE_SPEECH_KEY / AZURE_SPEECH_REGION(环境变量或 .env.local)')
+    process.exit(1)
+  }
+  const worker = async (job) => fs.writeFileSync(job.out, await synth(buildSsml(job.text, job.pinyin), creds))
+  let failures = await pool('SENT', jobs, worker)
+  if (failures.length) {
+    console.log(`-- 串行重试 ${failures.length} 条 --`)
+    const retryIds = new Set(failures.map((f) => f.id))
+    failures = await pool('SENT-RETRY', jobs.filter((j) => retryIds.has(j.id)), worker)
+  }
+  console.log('')
+  console.log(`== 完成 == 成功 ${jobs.length - failures.length} / ${jobs.length} 条`)
+  if (failures.length) {
+    for (const f of failures.slice(0, 20)) console.log(`  ✗ ${f.id}: ${f.error}`)
+    process.exitCode = 1
+  }
+}
+
 async function main() {
   if (LABELS_MODE) return runLabels()
   if (MISC_MODE) return runMisc()
+  if (SENTENCES_MODE) return runSentences()
   if (POEMS_MODE) return runPoems()
   const { items } = JSON.parse(fs.readFileSync(PINYIN_FILE, 'utf8'))
   const charIds = Object.keys(items).filter((id) => /^zh-[0-9a-f]{4}[ws]?$/.test(id))

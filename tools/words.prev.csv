@@ -372,7 +372,7 @@ tangerine,tangerine,橘子,/ˈtændʒəriːn/,fruits,1f34a,
 plum,plum,李子,/plʌm/,fruits,,plum
 magicwand,magic wand,魔法棒,/ˈmædʒɪk wɒnd/,toys,1fa84,
 crystalball,crystal ball,水晶球,/ˈkrɪstl bɔːl/,toys,1f52e,
-puppet,puppet,套娃,/ˈpʌpɪt/,toys,1fa86,
+mahjong,mahjong,麻将,/mɑːˈdʒɒŋ/,toys,1f004,
 blocks,blocks,积木,/blɒks/,toys,,blocks
 slide,slide,滑梯,/slaɪd/,toys,1f6dd,slide
 swing,swing,秋千,/swɪŋ/,toys,,swing
@@ -1663,7 +1663,7 @@ act-toss,toss,抛,/tɒs/,actions,,toss
 act-bounce,bounce,拍球弹跳,/baʊns/,actions,,bounce
 act-roll,roll,滚动,/rəʊl/,actions,,roll
 act-spin,spin,旋转,/spɪn/,actions,,spin
-act-skip,skip,跳绳蹦跳,/skɪp/,actions,,skip
+act-skip,skip,蹦蹦跳跳,/skɪp/,actions,,skip
 act-march,march,齐步走,/mɑːtʃ/,actions,,march
 act-wiggle,wiggle,扭动,/ˈwɪɡl/,actions,,wiggle
 act-snap,snap,打响指,/snæp/,actions,,snap

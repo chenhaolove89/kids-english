@@ -133,6 +133,7 @@ const CATEGORIES = {
   subjects: { zh: '学科', en: 'Subjects', icon: '1f393', color: '#0CA678', bg: '#E6FCF5', level: 4 },
   mathwords: { zh: '数学词', en: 'Math Words', icon: '2795', color: '#5F3DC4', bg: '#EAE2FD', level: 4 },
   routine: { zh: '日常作息', en: 'Daily Routine', icon: '1f5d3_fe0f', color: '#E67700', bg: '#FFEEDD', level: 4 },
+  daily: { zh: '日常用语', en: 'Daily Phrases', icon: '1f64b', color: '#38B2AC', bg: '#E6FFFA', level: 1 },
   greetings: { zh: '礼貌用语', en: 'Greetings', icon: '1f44b', color: '#C2255C', bg: '#FDEEF4', level: 4 },
   conversation: { zh: '小会话', en: 'Conversation', icon: '1f4e3', color: '#1971C2', bg: '#E7F5FF', level: 4 },
 }
@@ -240,6 +241,22 @@ function readHanziSentenceEmoji() {
     if (char && emoji) map.set(char.trim(), emoji.trim())
   }
   return map
+}
+
+// 英语句子表（tools/en-sentences.csv）：id,stage,en,zh,NotoEmoji码点。
+// 句子层会先行引入一批基础动词（like/want/see/have/play/read/draw/can），它们在词表里排在 L3/L4，
+// 属于句子层的正常超前，不算超纲错误。
+function readEnSentences() {
+  const file = path.join(ROOT, 'tools/en-sentences.csv')
+  if (!fs.existsSync(file)) return []
+  let raw = fs.readFileSync(file, 'utf8')
+  if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1)
+  const rows = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
+  if (rows[0].toLowerCase().startsWith('id,')) rows.shift()
+  return rows.map((l) => {
+    const [id, stage, en, zh, emoji] = l.split(',')
+    return { id: (id || '').trim(), stage: (stage || '').trim(), en: (en || '').trim(), zh: (zh || '').trim(), emoji: (emoji || '').trim() }
+  })
 }
 
 // ---------- TTS ----------
@@ -508,6 +525,7 @@ async function main() {
   const hanzi = readHanzi()
   const hanziEmoji = readHanziEmoji()
   const hanziSentEmoji = readHanziSentenceEmoji()
+  const enSentences = readEnSentences()
   // 例句逐字必须齐且含目标字，缺一处就整体失败（内容零容错）
   const sentences = readHanziSentences()
   let sentenceBad = 0
@@ -526,7 +544,31 @@ async function main() {
     if (sentenceLevels.has(h.level)) { console.log(`✗ 小短句缺配图映射: ${h.char}（${h.sentence}）`); sentImgBad++ }
   }
   if (sentImgBad) { console.log(`小短句配图表问题 ${sentImgBad} 处，先修 tools/hanzi-sentence-emoji.csv`); process.exitCode = 1; return }
-  console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字\n`)
+  // 英语句子层：字段齐、id 唯一、stage 合法、首字母大写+句末标点、中文句末标点与句式匹配
+  {
+    const seen = new Set()
+    const bad = []
+    const stageOk = new Set((CURRICULUM.stages || []).map((x) => x.id))
+    for (const x of enSentences) {
+      if (!x.id || !/^[a-z0-9-]+$/.test(x.id)) bad.push(`id 非法: ${x.id}`)
+      if (seen.has(x.id)) bad.push(`id 重复: ${x.id}`)
+      seen.add(x.id)
+      if (!x.en || !x.zh) bad.push(`缺 en/zh: ${x.id}`)
+      if (stageOk.size && !stageOk.has(x.stage)) bad.push(`stage 非法: ${x.id} → ${x.stage}`)
+      if (x.en && !/^[A-Z]/.test(x.en)) bad.push(`句子首字母未大写: ${x.id}`)
+      if (x.en && !/[.?!]$/.test(x.en)) bad.push(`英文句末缺标点: ${x.id}`)
+      if (x.zh && !/[。？]$/.test(x.zh)) bad.push(`中文句末标点异常: ${x.id}`)
+      if (x.en && x.en.length > 60) bad.push(`句子过长: ${x.id}`)
+      if (!x.emoji) bad.push(`缺配图码点: ${x.id}`)
+    }
+    if (bad.length) {
+      console.log("英语句子表问题：")
+      for (const m of bad) console.log("  " + m)
+      process.exitCode = 1
+      return
+    }
+  }
+  console.log(`英语词表 ${words.length} 词，语文识字 ${hanzi.length} 字，英语句子 ${enSentences.length} 句`)
 
   // ---------- 自绘卡模式：只重画形状卡与金银心形卡，不跑 TTS、不改数据 ----------
   if (SHAPES_MODE) {
@@ -672,6 +714,15 @@ async function main() {
       if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`sent-${h.id}(${h.char},${h.sentenceEmoji})`)
     })
   }
+  // 英语句子配图（es-{id}.png，与词图/字图/句意图分开命名）
+  for (const x of enSentences) {
+    const out = path.join(IMG_DIR, `${x.id}.png`)
+    if (!FORCE && fs.existsSync(out)) { imgSkip++; continue }
+    needImg.push(async () => {
+      const buf = await fetchEmoji(x.emoji)
+      if (buf) { fs.writeFileSync(out, buf); imgNew++ } else missing.push(`${x.id}(${x.emoji})`)
+    })
+  }
   for (const [id, meta] of Object.entries(CATEGORIES)) {
     const out = path.join(IMG_DIR, `cat-${id}.png`)
     if (!FORCE && fs.existsSync(out)) continue
@@ -772,6 +823,17 @@ async function main() {
   }))
 
   // 两个数据负载都在各自结构建好之后再序列化：写在前面会踩 hanziLevels 的 TDZ
+  // 英语句子层：句音走主音频目录（美音 audio/、英音 audio-gb/），中文释义音走 audio-zh/，
+  // 与「语文词语课复用英语词 id 的中文音」同一惯例 —— 所以口音切换、音量表、资源审计零改动。
+  const enSentencesPayload = JSON.stringify({
+    total: enSentences.length,
+    sentences: enSentences.map((x) => ({
+      id: x.id, stage: x.stage, en: x.en, zh: x.zh,
+      image: `/static/img/${x.id}.png`,
+      audio: `/static/audio/${x.id}.mp3`,
+      zhAudio: `/static/audio-zh/${x.id}.mp3`,
+    })),
+  }, null, 1)
   const wordsPayload = JSON.stringify({ levels: levelList, categories }, null, 1)
   const hanziPayload = JSON.stringify({ total: hanzi.length, levels: hanziLevels }, null, 1)
 
@@ -805,6 +867,12 @@ async function main() {
     if (!usableAudio(path.join(AUDIO_DIR, `${f.id}.mp3`))) { console.log(`✗ 缺反馈音频或截断: ${f.id}`); bad++ }
   }
 
+  for (const x of enSentences) {
+    if (!usableImage(path.join(IMG_DIR, `${x.id}.png`))) { console.log(`✗ 缺句图或损坏: ${x.id}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_DIR, `${x.id}.mp3`))) { console.log(`✗ 缺句音(美)或截断: ${x.id}`); bad++ }
+    if (!usableAudio(path.join(STATIC_DIR, "audio-gb", `${x.id}.mp3`))) { console.log(`✗ 缺句音(英)或截断: ${x.id}`); bad++ }
+    if (!usableAudio(path.join(AUDIO_ZH_DIR, `${x.id}.mp3`))) { console.log(`✗ 缺句中文音或截断: ${x.id}`); bad++ }
+  }
   console.log('\n========== 汇总 ==========')
   for (const lv of levelList) {
     const n = categories.filter((c) => c.level === lv.id).reduce((s, c) => s + c.words.length, 0)
@@ -819,8 +887,9 @@ async function main() {
     process.exitCode = 1
   } else {
     writeFileAtomic(path.join(DATA_DIR, 'words.json'), wordsPayload)
+    writeFileAtomic(path.join(DATA_DIR, 'enSentences.json'), enSentencesPayload)
     writeFileAtomic(path.join(DATA_DIR, 'hanzi.json'), hanziPayload)
-    console.log('数据: src/data/words.json, src/data/hanzi.json（原子写入）')
+    console.log('数据: src/data/words.json, src/data/hanzi.json, src/data/enSentences.json（原子写入）')
     console.log('✓ 全部资源就绪')
   }
 }

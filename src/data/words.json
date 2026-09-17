@@ -19076,13 +19076,13 @@
    ]
   },
   {
-   "id": "greetings",
-   "zh": "礼貌用语",
-   "en": "Greetings",
-   "color": "#C2255C",
-   "bg": "#FDEEF4",
-   "level": 4,
-   "icon": "/static/img/cat-greetings.png",
+   "id": "daily",
+   "zh": "日常用语",
+   "en": "Daily Phrases",
+   "color": "#38B2AC",
+   "bg": "#E6FFFA",
+   "level": 1,
+   "icon": "/static/img/cat-daily.png",
    "words": [
     {
      "id": "gr-hello",
@@ -19135,16 +19135,6 @@
      "card": "word"
     },
     {
-     "id": "gr-yourewelcome",
-     "en": "you're welcome",
-     "zh": "不客气",
-     "phonetic": "/jʊə ˈwelkəm/",
-     "image": "/static/img/gr-yourewelcome.svg",
-     "audio": "/static/audio/gr-yourewelcome.mp3",
-     "zhAudio": "/static/audio-zh/gr-yourewelcome.mp3",
-     "card": "word"
-    },
-    {
      "id": "gr-sorry",
      "en": "sorry",
      "zh": "对不起",
@@ -19155,16 +19145,6 @@
      "card": "word"
     },
     {
-     "id": "gr-excuseme",
-     "en": "excuse me",
-     "zh": "打扰一下",
-     "phonetic": "/ɪkˈskjuːz miː/",
-     "image": "/static/img/gr-excuseme.svg",
-     "audio": "/static/audio/gr-excuseme.mp3",
-     "zhAudio": "/static/audio-zh/gr-excuseme.mp3",
-     "card": "word"
-    },
-    {
      "id": "gr-goodmorning",
      "en": "good morning",
      "zh": "早上好",
@@ -19172,6 +19152,167 @@
      "image": "/static/img/gr-goodmorning.svg",
      "audio": "/static/audio/gr-goodmorning.mp3",
      "zhAudio": "/static/audio-zh/gr-goodmorning.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-goodnight",
+     "en": "good night",
+     "zh": "晚安",
+     "phonetic": "/ɡʊd naɪt/",
+     "image": "/static/img/gr-goodnight.svg",
+     "audio": "/static/audio/gr-goodnight.mp3",
+     "zhAudio": "/static/audio-zh/gr-goodnight.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-welldone",
+     "en": "well done",
+     "zh": "做得好",
+     "phonetic": "/wel dʌn/",
+     "image": "/static/img/gr-welldone.svg",
+     "audio": "/static/audio/gr-welldone.mp3",
+     "zhAudio": "/static/audio-zh/gr-welldone.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-goodjob",
+     "en": "good job",
+     "zh": "干得好",
+     "phonetic": "/ɡʊd dʒɒb/",
+     "image": "/static/img/gr-goodjob.svg",
+     "audio": "/static/audio/gr-goodjob.mp3",
+     "zhAudio": "/static/audio-zh/gr-goodjob.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-letsgo",
+     "en": "let's go",
+     "zh": "我们走吧",
+     "phonetic": "/lets ɡəʊ/",
+     "image": "/static/img/gr-letsgo.svg",
+     "audio": "/static/audio/gr-letsgo.mp3",
+     "zhAudio": "/static/audio-zh/gr-letsgo.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-letsplay",
+     "en": "let's play",
+     "zh": "一起玩吧",
+     "phonetic": "/lets pleɪ/",
+     "image": "/static/img/gr-letsplay.svg",
+     "audio": "/static/audio/gr-letsplay.mp3",
+     "zhAudio": "/static/audio-zh/gr-letsplay.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-timetoeat",
+     "en": "time to eat",
+     "zh": "吃饭时间到啦",
+     "phonetic": "/taɪm tuː iːt/",
+     "image": "/static/img/gr-timetoeat.svg",
+     "audio": "/static/audio/gr-timetoeat.mp3",
+     "zhAudio": "/static/audio-zh/gr-timetoeat.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-washyourhands",
+     "en": "wash your hands",
+     "zh": "去洗手",
+     "phonetic": "/wɒʃ jɔː hændz/",
+     "image": "/static/img/gr-washyourhands.svg",
+     "audio": "/static/audio/gr-washyourhands.mp3",
+     "zhAudio": "/static/audio-zh/gr-washyourhands.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-brushyourteeth",
+     "en": "brush your teeth",
+     "zh": "去刷牙",
+     "phonetic": "/brʌʃ jɔː tiːθ/",
+     "image": "/static/img/gr-brushyourteeth.svg",
+     "audio": "/static/audio/gr-brushyourteeth.mp3",
+     "zhAudio": "/static/audio-zh/gr-brushyourteeth.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-bequiet",
+     "en": "be quiet",
+     "zh": "请安静",
+     "phonetic": "/biː ˈkwaɪət/",
+     "image": "/static/img/gr-bequiet.svg",
+     "audio": "/static/audio/gr-bequiet.mp3",
+     "zhAudio": "/static/audio-zh/gr-bequiet.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-becareful",
+     "en": "be careful",
+     "zh": "当心",
+     "phonetic": "/biː ˈkeəfl/",
+     "image": "/static/img/gr-becareful.svg",
+     "audio": "/static/audio/gr-becareful.mp3",
+     "zhAudio": "/static/audio-zh/gr-becareful.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-Idontknow",
+     "en": "I don't know",
+     "zh": "我不知道",
+     "phonetic": "/aɪ dəʊnt nəʊ/",
+     "image": "/static/img/gr-Idontknow.svg",
+     "audio": "/static/audio/gr-Idontknow.mp3",
+     "zhAudio": "/static/audio-zh/gr-Idontknow.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-Iloveyou",
+     "en": "I love you",
+     "zh": "我爱你",
+     "phonetic": "/aɪ lʌv juː/",
+     "image": "/static/img/gr-Iloveyou.svg",
+     "audio": "/static/audio/gr-Iloveyou.mp3",
+     "zhAudio": "/static/audio-zh/gr-Iloveyou.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-comeinplease",
+     "en": "come in please",
+     "zh": "请进",
+     "phonetic": "/kʌm ɪn pliːz/",
+     "image": "/static/img/gr-comeinplease.svg",
+     "audio": "/static/audio/gr-comeinplease.mp3",
+     "zhAudio": "/static/audio-zh/gr-comeinplease.mp3",
+     "card": "word"
+    }
+   ]
+  },
+  {
+   "id": "greetings",
+   "zh": "礼貌用语",
+   "en": "Greetings",
+   "color": "#C2255C",
+   "bg": "#FDEEF4",
+   "level": 4,
+   "icon": "/static/img/cat-greetings.png",
+   "words": [
+    {
+     "id": "gr-yourewelcome",
+     "en": "you're welcome",
+     "zh": "不客气",
+     "phonetic": "/jʊə ˈwelkəm/",
+     "image": "/static/img/gr-yourewelcome.svg",
+     "audio": "/static/audio/gr-yourewelcome.mp3",
+     "zhAudio": "/static/audio-zh/gr-yourewelcome.mp3",
+     "card": "word"
+    },
+    {
+     "id": "gr-excuseme",
+     "en": "excuse me",
+     "zh": "打扰一下",
+     "phonetic": "/ɪkˈskjuːz miː/",
+     "image": "/static/img/gr-excuseme.svg",
+     "audio": "/static/audio/gr-excuseme.mp3",
+     "zhAudio": "/static/audio-zh/gr-excuseme.mp3",
      "card": "word"
     },
     {
@@ -19192,16 +19333,6 @@
      "image": "/static/img/gr-goodevening.svg",
      "audio": "/static/audio/gr-goodevening.mp3",
      "zhAudio": "/static/audio-zh/gr-goodevening.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-goodnight",
-     "en": "good night",
-     "zh": "晚安",
-     "phonetic": "/ɡʊd naɪt/",
-     "image": "/static/img/gr-goodnight.svg",
-     "audio": "/static/audio/gr-goodnight.mp3",
-     "zhAudio": "/static/audio-zh/gr-goodnight.mp3",
      "card": "word"
     },
     {
@@ -19375,76 +19506,6 @@
      "card": "word"
     },
     {
-     "id": "gr-welldone",
-     "en": "well done",
-     "zh": "做得好",
-     "phonetic": "/wel dʌn/",
-     "image": "/static/img/gr-welldone.svg",
-     "audio": "/static/audio/gr-welldone.mp3",
-     "zhAudio": "/static/audio-zh/gr-welldone.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-goodjob",
-     "en": "good job",
-     "zh": "干得好",
-     "phonetic": "/ɡʊd dʒɒb/",
-     "image": "/static/img/gr-goodjob.svg",
-     "audio": "/static/audio/gr-goodjob.mp3",
-     "zhAudio": "/static/audio-zh/gr-goodjob.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-letsgo",
-     "en": "let's go",
-     "zh": "我们走吧",
-     "phonetic": "/lets ɡəʊ/",
-     "image": "/static/img/gr-letsgo.svg",
-     "audio": "/static/audio/gr-letsgo.mp3",
-     "zhAudio": "/static/audio-zh/gr-letsgo.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-letsplay",
-     "en": "let's play",
-     "zh": "一起玩吧",
-     "phonetic": "/lets pleɪ/",
-     "image": "/static/img/gr-letsplay.svg",
-     "audio": "/static/audio/gr-letsplay.mp3",
-     "zhAudio": "/static/audio-zh/gr-letsplay.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-timetoeat",
-     "en": "time to eat",
-     "zh": "吃饭时间到啦",
-     "phonetic": "/taɪm tuː iːt/",
-     "image": "/static/img/gr-timetoeat.svg",
-     "audio": "/static/audio/gr-timetoeat.mp3",
-     "zhAudio": "/static/audio-zh/gr-timetoeat.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-washyourhands",
-     "en": "wash your hands",
-     "zh": "去洗手",
-     "phonetic": "/wɒʃ jɔː hændz/",
-     "image": "/static/img/gr-washyourhands.svg",
-     "audio": "/static/audio/gr-washyourhands.mp3",
-     "zhAudio": "/static/audio-zh/gr-washyourhands.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-brushyourteeth",
-     "en": "brush your teeth",
-     "zh": "去刷牙",
-     "phonetic": "/brʌʃ jɔː tiːθ/",
-     "image": "/static/img/gr-brushyourteeth.svg",
-     "audio": "/static/audio/gr-brushyourteeth.mp3",
-     "zhAudio": "/static/audio-zh/gr-brushyourteeth.mp3",
-     "card": "word"
-    },
-    {
      "id": "gr-tidyyourroom",
      "en": "tidy your room",
      "zh": "收拾房间",
@@ -19452,26 +19513,6 @@
      "image": "/static/img/gr-tidyyourroom.svg",
      "audio": "/static/audio/gr-tidyyourroom.mp3",
      "zhAudio": "/static/audio-zh/gr-tidyyourroom.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-bequiet",
-     "en": "be quiet",
-     "zh": "请安静",
-     "phonetic": "/biː ˈkwaɪət/",
-     "image": "/static/img/gr-bequiet.svg",
-     "audio": "/static/audio/gr-bequiet.mp3",
-     "zhAudio": "/static/audio-zh/gr-bequiet.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-becareful",
-     "en": "be careful",
-     "zh": "当心",
-     "phonetic": "/biː ˈkeəfl/",
-     "image": "/static/img/gr-becareful.svg",
-     "audio": "/static/audio/gr-becareful.mp3",
-     "zhAudio": "/static/audio-zh/gr-becareful.mp3",
      "card": "word"
     },
     {
@@ -19512,26 +19553,6 @@
      "image": "/static/img/gr-canyouhelpme.svg",
      "audio": "/static/audio/gr-canyouhelpme.mp3",
      "zhAudio": "/static/audio-zh/gr-canyouhelpme.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-Idontknow",
-     "en": "I don't know",
-     "zh": "我不知道",
-     "phonetic": "/aɪ dəʊnt nəʊ/",
-     "image": "/static/img/gr-Idontknow.svg",
-     "audio": "/static/audio/gr-Idontknow.mp3",
-     "zhAudio": "/static/audio-zh/gr-Idontknow.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-Iloveyou",
-     "en": "I love you",
-     "zh": "我爱你",
-     "phonetic": "/aɪ lʌv juː/",
-     "image": "/static/img/gr-Iloveyou.svg",
-     "audio": "/static/audio/gr-Iloveyou.mp3",
-     "zhAudio": "/static/audio-zh/gr-Iloveyou.mp3",
      "card": "word"
     },
     {
@@ -19652,16 +19673,6 @@
      "image": "/static/img/gr-welcomeback.svg",
      "audio": "/static/audio/gr-welcomeback.mp3",
      "zhAudio": "/static/audio-zh/gr-welcomeback.mp3",
-     "card": "word"
-    },
-    {
-     "id": "gr-comeinplease",
-     "en": "come in please",
-     "zh": "请进",
-     "phonetic": "/kʌm ɪn pliːz/",
-     "image": "/static/img/gr-comeinplease.svg",
-     "audio": "/static/audio/gr-comeinplease.mp3",
-     "zhAudio": "/static/audio-zh/gr-comeinplease.mp3",
      "card": "word"
     }
    ]

@@ -1,5 +1,5 @@
 {
-  "contentVersion": "ef2fffeb01",
+  "contentVersion": "81792a4c18",
   "stages": [
     {
       "id": "qimeng",
@@ -135,6 +135,26 @@
       },
       "skillIds": [
         "en-word-colors"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-learn-daily",
+      "subject": "en",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "日常用语 · Daily Phrases",
+      "subtitle": "20 个单词",
+      "icon": "/static/img/cat-daily.png",
+      "color": "#38B2AC",
+      "bg": "#E6FFFA",
+      "sort": "daily",
+      "ref": {
+        "kind": "en-category",
+        "id": "daily"
+      },
+      "skillIds": [
+        "en-word-daily"
       ]
     },
     {
@@ -399,6 +419,26 @@
     },
     {
       "status": "available",
+      "id": "zh-words-daily",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "learn",
+      "title": "词语 · 日常用语",
+      "subtitle": "20 个词语",
+      "icon": "/static/img/cat-daily.png",
+      "color": "#38B2AC",
+      "bg": "#E6FFFA",
+      "sort": "zw-daily",
+      "ref": {
+        "kind": "en-category",
+        "id": "daily"
+      },
+      "skillIds": [
+        "zh-word-daily"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-words-family",
       "subject": "zh",
       "stage": "qimeng",
@@ -635,6 +675,26 @@
       },
       "skillIds": [
         "zh-word-colors"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-words-quiz-daily",
+      "subject": "zh",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "日常用语词语挑战",
+      "subtitle": "听音识图 · 10 题",
+      "icon": "/static/img/cat-daily.png",
+      "color": "#38B2AC",
+      "bg": "#E6FFFA",
+      "sort": "zw-daily",
+      "ref": {
+        "kind": "en-category",
+        "id": "daily"
+      },
+      "skillIds": [
+        "zh-word-daily"
       ]
     },
     {
@@ -975,6 +1035,26 @@
       },
       "skillIds": [
         "en-word-wordfamilies"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-sentences-g12",
+      "subject": "en",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "英语小短句 · 句子",
+      "subtitle": "20 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#0CA678",
+      "bg": "#E0F5EC",
+      "sort": "zz-en-sentences",
+      "ref": {
+        "kind": "en-sentences",
+        "id": "g12"
+      },
+      "skillIds": [
+        "en-sentence-g12"
       ]
     },
     {
@@ -2424,7 +2504,7 @@
       "stage": "g56",
       "kind": "learn",
       "title": "礼貌用语 · Greetings",
-      "subtitle": "58 个单词",
+      "subtitle": "38 个单词",
       "icon": "/static/img/cat-greetings.png",
       "color": "#C2255C",
       "bg": "#FDEEF4",
@@ -2904,7 +2984,7 @@
       "stage": "g56",
       "kind": "learn",
       "title": "词语 · 礼貌用语",
-      "subtitle": "58 个词语",
+      "subtitle": "38 个词语",
       "icon": "/static/img/cat-greetings.png",
       "color": "#C2255C",
       "bg": "#FDEEF4",

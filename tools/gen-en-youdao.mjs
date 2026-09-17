@@ -20,6 +20,24 @@ export function collectJobs(root = ROOT, data = readJson(path.join(root, 'src/da
     texts.set(dest, w.en.trim())
   }
   texts.set('audio/great_job.mp3', 'Great job!')
+  // 英语句子层（tools/en-sentences.csv）：句音与单词同目录（美音 audio/、英音 audio-gb/），
+  // 这样口音切换、音量表、资源审计全都零改动。
+  const sentFile = path.join(root, 'tools/en-sentences.csv')
+  if (fs.existsSync(sentFile)) {
+    let raw = fs.readFileSync(sentFile, 'utf8')
+    if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1)
+    const rows = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
+    if (rows[0].toLowerCase().startsWith('id,')) rows.shift()
+    for (const row of rows) {
+      const [id, , en] = row.split(',')
+      const key = (id || '').trim()
+      const text = (en || '').trim()
+      if (!key || !text) continue
+      const dest = `audio/${key}.mp3`
+      if (texts.has(dest) && texts.get(dest) !== text) throw new Error(`同名音频文本冲突：${key}`)
+      texts.set(dest, text)
+    }
+  }
   return [...texts].flatMap(([dest, text]) => Object.entries(VOICES).map(([accent, voice]) => ({
     text, voice, accent, id: path.basename(dest, '.mp3'),
     dest: 'src/static/' + (accent === 'gb' ? dest.replace(/^audio\//, 'audio-gb/') : dest),

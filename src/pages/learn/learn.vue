@@ -23,9 +23,13 @@
             <view class="img-wrap">
               <image class="word-img" :src="it.image" mode="aspectFit" />
             </view>
-            <text class="word-en" :style="{ color: theme.color, fontSize: enSize(it.main) }">{{ it.main }}</text>
+            <text class="word-en" :style="{ color: theme.color, fontSize: enSentencesMode ? enSentSize(it.main) : enSize(it.main) }">{{ it.main }}</text>
             <text class="word-phonetic">{{ it.phon }}</text>
-            <text class="word-zh">{{ it.sub }}</text>
+            <view v-if="enSentencesMode && it.extraAudio" class="word-row" @tap.stop="speakExtra(idx)">
+              <text class="word-zh word-sub">{{ it.sub }}</text>
+              <text class="word-speaker">🔊</text>
+            </view>
+            <text v-else class="word-zh">{{ it.sub }}</text>
             <view class="tap-hint">
               <text class="tap-hint-text" :class="{ 'hint-loading': audioLoading }">{{ cardHint }}</text>
             </view>
@@ -103,6 +107,7 @@ import { createThrottle, goBackOrHome, isTabletDevice } from '@/platform/nav.js'
 import { LESSONS, getLesson, catalog } from '@/content/catalog.js'
 import { getQimengAudioOrder } from '@/content/lowAge.js'
 import { resolveEnCategory, resolveZhLevel } from '@/content/adapters.js'
+import enSentencesData from '@/data/enSentences.json'
 import { nextLessonAfter, lessonUrl } from '@/services/curriculum-app.js'
 import { nextPraiseSrc, praiseSrcs } from '@/services/encourage-app.js'
 import { getSessionService } from '@/services/session.js'
@@ -122,6 +127,8 @@ const boardUrl = ref('')
 const wordsMode = ref(false)
 // 语文小短句模式（subject=zh 且带 sentences）：只念例句，不混排字词
 const sentencesMode = ref(false)
+// 英语小短句模式（subject=en 且带 sentences）：看图 + 英文整句；点中文听中文释义（g12 起按学段递进）
+const enSentencesMode = ref(false)
 // 声音预加载进度：进页面后并行下载本课音频，慢网下让孩子看到「声音在来的路上」
 const audioDone = ref(0)
 const audioTotal = ref(0)
@@ -165,7 +172,8 @@ function preloadWindow(center) {
   const srcs = []
   for (let i = lo; i <= hi; i++) {
     const it = list[i]
-    if (subject.value === 'en') srcs.push(accentEnSrc(it.audio), it.zhAudio)
+    if (enSentencesMode.value) srcs.push(accentEnSrc(it.audio), it.extraAudio)
+    else if (subject.value === 'en') srcs.push(accentEnSrc(it.audio), it.zhAudio)
     else if (wordsMode.value) srcs.push(it.audio)
     else if (sentencesMode.value) srcs.push(it.audio)
     else srcs.push(it.audio, it.extraAudio)
@@ -197,6 +205,7 @@ watch(current, (idx) => {
 
 const cardHint = computed(() => {
   if (audioLoading.value) return '🔊 声音加载中…'
+  if (enSentencesMode.value) return '点句子听英文，点中文听中文 🔊'
   if (subject.value === 'en') return '点一点卡片再听一次 🔊'
   if (wordsMode.value) return '点卡片听中文，点小喇叭听英文'
   if (sentencesMode.value) return '点一点卡片，再听一遍句子 🔊'
@@ -221,6 +230,28 @@ onLoad((query) => {
   }
   let resolvedCatId = null
   if (subject.value === 'en') {
+    // 英语小短句（subject=en & sentences=1）：看图猜意 → 听英文整句 → 点中文听释义。
+    // 必须先于词卡分支判断：英语请求默认都会落到词卡，漏了这里就会显示默认分类的单词卡。
+    if (query.sentences) {
+      const stage = String(query.stage || 'g12')
+      const list = (enSentencesData.sentences || []).filter((x) => x.stage === stage)
+      if (!list.length) {
+        uni.showToast({ title: '内容准备中', icon: 'none' })
+        setTimeout(() => uni.reLaunch({ url: '/pages/map/map' }), 600)
+        return
+      }
+      entryRef = { kind: 'en-sentences', id: stage }
+      enSentencesMode.value = true
+      theme.value = { bg: '#E0F5EC', color: '#0CA678' }
+      title.value = '英语小短句'
+      // audio 留美音原路径，播放时走 accentEnSrc 按家长所选口音解析；
+      // 中文释义音放 extraAudio（不设 zhAudio，避免走双语卡的「先中后英」序列）
+      items.value = list.map((x) => ({
+        id: x.id, main: x.en, phon: '', sub: x.zh, image: x.image,
+        audio: x.audio, extraAudio: x.zhAudio,
+      }))
+      return
+    }
     // 走适配器：低龄模式隐藏的分类深链会回退到第一个可见分类
     const c = resolveEnCategory(query.cat) || resolveEnCategory(enData.categories[0]?.id)
     if (!c) {
@@ -354,6 +385,15 @@ function enSize(text) {
   if (len <= 14) return '56rpx'
   if (len <= 17) return '46rpx'
   return '40rpx'
+}
+// 英语句子比单词长得多（最长 25 字符），缩到 40rpx 会看不清：改为允许折行的中等字号，
+// 靠 .word-en 的自然换行排成 1~2 行
+function enSentSize(text) {
+  const len = (text || '').length
+  if (len <= 14) return '68rpx'
+  if (len <= 20) return '58rpx'
+  if (len <= 26) return '50rpx'
+  return '44rpx'
 }
 // 中文词语长短不一：两字词大号，长词（最长「巴布亚新几内亚」7 字）逐步缩号
 function zhWordSize(text) {
