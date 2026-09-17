@@ -1,6 +1,6 @@
 /**
  * 快乐学园 PWA service worker（由 publish-github-pages.mjs 写入产物根目录，
- * kx-ef2fffeb01-164d0ec4 替换为 kx-<contentVersion>-<静态资源树指纹>）。GitHub Pages 子路径部署 + 国内访问慢，
+ * kx-81792a4c18-78b6f85e 替换为 kx-<contentVersion>-<静态资源树指纹>）。GitHub Pages 子路径部署 + 国内访问慢，
  * 二次访问不再重拉音频/图片；更新策略：
  *  - /assets/：Vite 哈希块，内容不可变 → 缓存优先；
  *  - /static/：音频/图片/笔顺数据，文件名稳定但字节会随内容批次变 → **缓存优先**，
@@ -14,7 +14,7 @@
  * 立刻被浏览器回收，写入被丢弃——实测「第一次访问后断网打开」会拿到网络错误页，
  * 要第二次在线访问才真的能离线。
  */
-const VERSION = 'kx-ef2fffeb01-164d0ec4'
+const VERSION = 'kx-81792a4c18-78b6f85e'
 const ASSET_CACHE = 'kx-assets-' + VERSION
 const STATIC_CACHE = 'kx-static-' + VERSION
 const PAGE_CACHE = 'kx-pages-' + VERSION
