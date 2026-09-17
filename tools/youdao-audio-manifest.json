@@ -36360,6 +36360,726 @@
       "duration": 1.488,
       "peak": 0.6885300874710083,
       "rms": -16.833945845595736
+    },
+    "src/static/audio/es34-there-books.mp3": {
+      "key": "f2f9edf3aa6d597c765958437e54dbba086f3e18fb8fe90151553d956a8c8a74",
+      "voice": "youyating",
+      "text": "There are three books on the desk.",
+      "sha256": "54b35f922adf1a2ee035018597f0fb1d4762f4e4f002a97c2cb84597827b17cc",
+      "duration": 2.088,
+      "peak": 0.35843580961227417,
+      "rms": -23.213738240929715
+    },
+    "src/static/audio-gb/es34-there-books.mp3": {
+      "key": "52cc8013393d43fd275b74cfc9a9d609581ea826341bf7bff2ac19db728b6e15",
+      "voice": "youxiaoying",
+      "text": "There are three books on the desk.",
+      "sha256": "fa5969a50c0e9f4c7c1ed08d1f9b9dc87e47e2e1fb5de8c42986a71ed647d1c7",
+      "duration": 2.544,
+      "peak": 0.6176028847694397,
+      "rms": -17.75279457382105
+    },
+    "src/static/audio/es34-goes-by-bus.mp3": {
+      "key": "49809b55f8e1780286ee439e4dd541d239f450d2858cff50f11f0765ab417ed6",
+      "voice": "youyating",
+      "text": "My mother goes to work by bus.",
+      "sha256": "cc298d37530a0b0afa903e21854272a5a3e0160df12c70571e908c4828fb55d3",
+      "duration": 2.16,
+      "peak": 0.3363303542137146,
+      "rms": -22.838809056357945
+    },
+    "src/static/audio-gb/es34-goes-by-bus.mp3": {
+      "key": "24382eb2e1171c2aa8cd93c1c8adc2a3b38fef8d51bb20d0d0d312e4a73dcd86",
+      "voice": "youxiaoying",
+      "text": "My mother goes to work by bus.",
+      "sha256": "aa1ba78e3d734a30b7d0c0c39c95b20e8684ec8361f6e9079c412ae8e33923d1",
+      "duration": 2.808,
+      "peak": 0.6914319396018982,
+      "rms": -16.562963342419273
+    },
+    "src/static/audio/es34-get-up-seven.mp3": {
+      "key": "02c414a4dae0c7774d56fe0e76ef4ca7420e735c1978de2bb288672eed590fdb",
+      "voice": "youyating",
+      "text": "I usually get up at seven.",
+      "sha256": "e70e38afd867fd144e28f4384344d6fd68c190c6821f3c6db7374c83808dc5ea",
+      "duration": 1.992,
+      "peak": 0.35269176959991455,
+      "rms": -23.650619341882827
+    },
+    "src/static/audio-gb/es34-get-up-seven.mp3": {
+      "key": "5fc06c1e45e117d236262c41aa8d2f06197232e08694141ce0ebf0609a661779",
+      "voice": "youxiaoying",
+      "text": "I usually get up at seven.",
+      "sha256": "67ac8923a0713ea39cf7f6ce75507913a4874c25acc9968add50301d69225349",
+      "duration": 2.328,
+      "peak": 0.6126665472984314,
+      "rms": -17.02864034954959
+    },
+    "src/static/audio/es34-boy-football.mp3": {
+      "key": "fc3eaf45e15ddaa2c1c9dca14fcf1962a0ed9eb2c7909e58a66e65cdc0741a63",
+      "voice": "youyating",
+      "text": "The boy is playing football in the park.",
+      "sha256": "3b68e9a9ca97f0a261c468544230e1159ddb2ee348a6c39c6d4e051a6e9b7589",
+      "duration": 2.616,
+      "peak": 0.37032410502433777,
+      "rms": -24.0866627695493
+    },
+    "src/static/audio-gb/es34-boy-football.mp3": {
+      "key": "90fcf5eabd71b8962b91051c191ba9ca8b8db312920dd1723a1322cc17c3c754",
+      "voice": "youxiaoying",
+      "text": "The boy is playing football in the park.",
+      "sha256": "6ce2207504d4a2ff68fff571431051fa75a37b3c4e284bea4c2856ba1f7131bc",
+      "duration": 3.288,
+      "peak": 0.6450790166854858,
+      "rms": -17.56666428954386
+    },
+    "src/static/audio/es34-music-monday.mp3": {
+      "key": "9336e080e7ac89764c379b9980563d16585f889db573e187be1dfccd4a903e89",
+      "voice": "youyating",
+      "text": "We have music class on Mondays.",
+      "sha256": "74fc5743039c590e4fefd9b85b6eed39f27bc604e23150e7b81565a7f42c823b",
+      "duration": 2.256,
+      "peak": 0.36595427989959717,
+      "rms": -23.011670986530383
+    },
+    "src/static/audio-gb/es34-music-monday.mp3": {
+      "key": "ab26c508d0ab3088b356fcaa06335e40937d1346bc5aa5fb8f8c2a2a3c993c41",
+      "voice": "youxiaoying",
+      "text": "We have music class on Mondays.",
+      "sha256": "1abc20b5b89f4cfc306d48168d9ec9c373a99c3185c595e15f8d59faeef260cf",
+      "duration": 2.736,
+      "peak": 0.5348890423774719,
+      "rms": -16.8457416125827
+    },
+    "src/static/audio/es34-likes-story-books.mp3": {
+      "key": "f77ec2fee9164d027d0d2de406e6879a48fb39483ec370b824333033a60cb122",
+      "voice": "youyating",
+      "text": "She likes reading story books after school.",
+      "sha256": "8cd66a27815e95d151d1eef855bc2f7ba0a4aedfd560e92d74be49df57080676",
+      "duration": 2.76,
+      "peak": 0.33637282252311707,
+      "rms": -25.091028199536108
+    },
+    "src/static/audio-gb/es34-likes-story-books.mp3": {
+      "key": "6dbd36edcf4367a49f07436debda436a5eb32f1ad6a1fa35aa060b0971884c48",
+      "voice": "youxiaoying",
+      "text": "She likes reading story books after school.",
+      "sha256": "2225c7f9cb8c485da2a020782e0504b8a31a0e201c82903bdc6b5c1c986c12ad",
+      "duration": 3.576,
+      "peak": 0.6299999356269836,
+      "rms": -17.547304339549783
+    },
+    "src/static/audio/es34-close-window.mp3": {
+      "key": "fcc80671d2b74be1d9e83a987772f808945fafb4ebcf2ebd8d02a26624747d85",
+      "voice": "youyating",
+      "text": "Please close the window before you go out.",
+      "sha256": "33e02c363b579b89f84b0b3d4bdccefd1d886eba89ba7926e108036edbf6f779",
+      "duration": 2.76,
+      "peak": 0.3288879096508026,
+      "rms": -23.397277497324115
+    },
+    "src/static/audio-gb/es34-close-window.mp3": {
+      "key": "150b24fe14ef84efb4684596dfea9580195c9d5d9e51f33871fec122d525ea23",
+      "voice": "youxiaoying",
+      "text": "Please close the window before you go out.",
+      "sha256": "7923a092e0200eb03e4abb8917036aa10589f9a3d5da69da7c3aa63cb4ab6b86",
+      "duration": 3.288,
+      "peak": 0.6413881182670593,
+      "rms": -16.316311313025302
+    },
+    "src/static/audio/es34-father-cooking.mp3": {
+      "key": "600314baaf069da981a41359b27580ba9004c9d6702a4759ae149ce3f9595d5e",
+      "voice": "youyating",
+      "text": "My father is cooking dinner in the kitchen.",
+      "sha256": "a396d59fcdedd890b0fd7ffea0da58e98d076ede744dd3c217d680aecafa2ede",
+      "duration": 2.568,
+      "peak": 0.2948273718357086,
+      "rms": -24.443838565169322
+    },
+    "src/static/audio-gb/es34-father-cooking.mp3": {
+      "key": "8a22b3c0739b7bb9acec432f3e33598ec569e3f9d0cbd4e05fd3c9b18f155635",
+      "voice": "youxiaoying",
+      "text": "My father is cooking dinner in the kitchen.",
+      "sha256": "8a61277f5a2ebe307bff1b52c2e058344b81f2d2041840920e5132d4a1494fba",
+      "duration": 3.48,
+      "peak": 0.604076087474823,
+      "rms": -18.0875431852355
+    },
+    "src/static/audio/es34-ride-bike.mp3": {
+      "key": "9532cdaf05af90f3b37dea809488cb9361891160dd1c8b7c6720efc495e43edc",
+      "voice": "youyating",
+      "text": "I can ride a bike very well.",
+      "sha256": "97bccf26a949d0e6a0a214d1b370e632e3b54e3e1171a462def11fe400974c00",
+      "duration": 1.944,
+      "peak": 0.3458038568496704,
+      "rms": -23.303300429637325
+    },
+    "src/static/audio-gb/es34-ride-bike.mp3": {
+      "key": "0fe2e6415bc9b9a08ab5468436481613ceddea704fc6ab40aa6f522c85d76082",
+      "voice": "youxiaoying",
+      "text": "I can ride a bike very well.",
+      "sha256": "32f1b3bf223da433bc44353acf62c4f5f64b5469d40678418eee4c424c59c670",
+      "duration": 2.352,
+      "peak": 0.6608192324638367,
+      "rms": -17.085182760932966
+    },
+    "src/static/audio/es34-tree-behind-house.mp3": {
+      "key": "dad01a67d0eeec77b2fe6a27672fbd9301db3744926a24096e81a6caa3058500",
+      "voice": "youyating",
+      "text": "There is a big tree behind our house.",
+      "sha256": "f821222898ab49b8f17b7d65a39fdfb1f56dd8269aa13ae02a8ae46a471552df",
+      "duration": 2.424,
+      "peak": 0.37492847442626953,
+      "rms": -24.32274807467291
+    },
+    "src/static/audio-gb/es34-tree-behind-house.mp3": {
+      "key": "27e18d306f76c6655f891d3a7b2494c0732d475bf1dd5e5be35628fa643a10c2",
+      "voice": "youxiaoying",
+      "text": "There is a big tree behind our house.",
+      "sha256": "071582d83256b8c0973ea76badf719d9b0766c25bcfa5f01967a95800abca643",
+      "duration": 3.144,
+      "peak": 0.6072523593902588,
+      "rms": -16.606690779819157
+    },
+    "src/static/audio/es34-bird-sky.mp3": {
+      "key": "ebf06749adb557f1f67d3213fd89b83d535236c756d119ff5cb5875df3071cd6",
+      "voice": "youyating",
+      "text": "The bird is flying in the sky.",
+      "sha256": "3f4719ca1f21f1ec61ac8ca3e5239cea3cfd9444d1fbd998564d93e980441792",
+      "duration": 2.232,
+      "peak": 0.317801296710968,
+      "rms": -23.271321013484403
+    },
+    "src/static/audio-gb/es34-bird-sky.mp3": {
+      "key": "eb76fe6079d223e9e52cdd1a49c30fdf383274c4caab6b438c8da198992a83d5",
+      "voice": "youxiaoying",
+      "text": "The bird is flying in the sky.",
+      "sha256": "54a9c954ce56eb3f78b5a49f073fbb3c7aee93370d9448b63e8a3c453146d23b",
+      "duration": 2.616,
+      "peak": 0.7770980596542358,
+      "rms": -15.964853981246556
+    },
+    "src/static/audio/es34-zoo-sunday.mp3": {
+      "key": "976a235d2b5403af9068d087b46fb65a6b83ebfbe6f3bc10354cd454945c388d",
+      "voice": "youyating",
+      "text": "We will go to the zoo this Sunday.",
+      "sha256": "658e75cebd95747cffef8d04c8b7cd4494fa18ec3ea97415f3fd96159d55c7f3",
+      "duration": 2.184,
+      "peak": 0.30085986852645874,
+      "rms": -22.460265691880494
+    },
+    "src/static/audio-gb/es34-zoo-sunday.mp3": {
+      "key": "f9448451426ffcb84819c9d28fc7ba5ed84dd9879a41692b3d32f0d46eeee044",
+      "voice": "youxiaoying",
+      "text": "We will go to the zoo this Sunday.",
+      "sha256": "302683e1489dc6a357b98de4c644eb5a186d136256e28f0687e67ef96f7a3a2c",
+      "duration": 2.544,
+      "peak": 0.6993087530136108,
+      "rms": -16.247557693927014
+    },
+    "src/static/audio/es34-taller-brother.mp3": {
+      "key": "934f487c28d12d21cce4fe12e244bb5242d7c52785cd78f325406c9a5af1604e",
+      "voice": "youyating",
+      "text": "He is taller than his little brother.",
+      "sha256": "1cad5c6b591294afe0cbde30b8a7851f06ab99d3bfb55fe4f48c8bd7dd6a4639",
+      "duration": 2.136,
+      "peak": 0.326961874961853,
+      "rms": -23.20820753153238
+    },
+    "src/static/audio-gb/es34-taller-brother.mp3": {
+      "key": "e6df7dec96ade1b26f2c2713ef3908069a7fbd7f77f0a343922d6b2a233076a8",
+      "voice": "youxiaoying",
+      "text": "He is taller than his little brother.",
+      "sha256": "a537ef384ad3e3c03d2df242c4ff3a90bdb1bf19757d0160ba7e7dcf53dfd1dc",
+      "duration": 2.472,
+      "peak": 0.6842057704925537,
+      "rms": -16.6421147326947
+    },
+    "src/static/audio/es34-homework-after-dinner.mp3": {
+      "key": "f6b69a1dd09d6e8ee9f9bb8e1be342b7e010f79587dd3b77de12bacc341246e7",
+      "voice": "youyating",
+      "text": "I finished my homework after dinner.",
+      "sha256": "afebeb5c145c9bfec1a707681daec3d3f0176b5d9f191451e22f2e2694659ec0",
+      "duration": 2.28,
+      "peak": 0.3363519310951233,
+      "rms": -24.714540709473404
+    },
+    "src/static/audio-gb/es34-homework-after-dinner.mp3": {
+      "key": "907c0f06288a3282d03e1aac71ee66d3a24167a491c3cbf577a8e949ac92b8a1",
+      "voice": "youxiaoying",
+      "text": "I finished my homework after dinner.",
+      "sha256": "84dae01a332e44d13d11cbdb9e93252d3649805dbf51a55b6f0344d62edb9000",
+      "duration": 2.904,
+      "peak": 0.7295187711715698,
+      "rms": -17.192964132478593
+    },
+    "src/static/audio/es34-play-basketball.mp3": {
+      "key": "38b47aa78a5478c833ac4ed665c9811cac9ca05236db702809dec54ee696b385",
+      "voice": "youyating",
+      "text": "Do you want to play basketball with us?",
+      "sha256": "d30ef69c626b6d7331158cdcc160c82da1626b84ecbb52a1f36b09d8bc286b5d",
+      "duration": 2.448,
+      "peak": 0.3072706162929535,
+      "rms": -23.651157466980845
+    },
+    "src/static/audio-gb/es34-play-basketball.mp3": {
+      "key": "91014c9198fca5cc543338eebcd677ba7fcaca5f475488f3c5b8f2a63997c42a",
+      "voice": "youxiaoying",
+      "text": "Do you want to play basketball with us?",
+      "sha256": "0a698dac6613e2c01938f59192e46d662d18232d3f83da6fe7ea3d6c825664c3",
+      "duration": 2.928,
+      "peak": 0.662146270275116,
+      "rms": -17.282680478694882
+    },
+    "src/static/audio/es34-school-not-far.mp3": {
+      "key": "3d133d2dc3bac675a4c3e3cef28d6016f4ce06efb22e176583a0658f9d82f1dd",
+      "voice": "youyating",
+      "text": "My school is not far from my home.",
+      "sha256": "2381393fb388cd0f4318bbbb50c1c59323293597a1240db78fa8a91cbed045e5",
+      "duration": 2.448,
+      "peak": 0.29629912972450256,
+      "rms": -23.627712908003
+    },
+    "src/static/audio-gb/es34-school-not-far.mp3": {
+      "key": "a4005af53ae8692c49825b813c7705a5ad7f2e052b98fb0f3320287832704332",
+      "voice": "youxiaoying",
+      "text": "My school is not far from my home.",
+      "sha256": "87aabd3c1219f7ace40b1324723a4dd00531c0ff4a113ddfab3afe6ab3f7e2ed",
+      "duration": 3.216,
+      "peak": 0.650098443031311,
+      "rms": -16.355218307226252
+    },
+    "src/static/audio/es34-help-mother.mp3": {
+      "key": "47711a20c39d48d7b0435c6c786eb5faf4c3669a72550bccc843ee0268e5e48d",
+      "voice": "youyating",
+      "text": "I often help my mother clean the room.",
+      "sha256": "ba271523171196ebd9e25daf6b3afcdfd1298976b3454fd959d40c8110f849ce",
+      "duration": 2.616,
+      "peak": 0.3299035131931305,
+      "rms": -23.452882224817024
+    },
+    "src/static/audio-gb/es34-help-mother.mp3": {
+      "key": "99730f8ca8e96c18133789e860acf2748650f8c143f72af9b1c2384b66b6ac97",
+      "voice": "youxiaoying",
+      "text": "I often help my mother clean the room.",
+      "sha256": "2d6ae9859e990c3ff7f46a942c5a1a5d8a1b615b7cf61a1855458cdca24fb911",
+      "duration": 2.904,
+      "peak": 0.6028998494148254,
+      "rms": -16.27741609670992
+    },
+    "src/static/audio/es34-keep-clean.mp3": {
+      "key": "9b6a6bbd335fa54a07e2400ce29cb6921dd2c19b13be08333ee4850562c2c7ff",
+      "voice": "youyating",
+      "text": "We should keep the classroom clean.",
+      "sha256": "69c3732959ff8b035964c7b0e3671990cc10ae42bd59ff365653dd6c6cf349ae",
+      "duration": 2.16,
+      "peak": 0.3094581961631775,
+      "rms": -24.252470717887885
+    },
+    "src/static/audio-gb/es34-keep-clean.mp3": {
+      "key": "2122c1f7d59da74eedb0dc815132ca5dff718ab54b1a75beb0a83d6b19390a37",
+      "voice": "youxiaoying",
+      "text": "We should keep the classroom clean.",
+      "sha256": "0c0f5b0f933bccac09797de725f81e20c848b234ce5bdcfad4ea5c79898ae2f9",
+      "duration": 2.544,
+      "peak": 0.627312421798706,
+      "rms": -17.152774160522664
+    },
+    "src/static/audio/es34-birthday-party.mp3": {
+      "key": "43fcfc49af66b9e248e34f192506b6e5e70a99d451dcd40a860f458347d064d4",
+      "voice": "youyating",
+      "text": "We had a birthday party for my little sister.",
+      "sha256": "6920ab45883c6b494f895cda7fdc5fa2f518b036ca1f95c5296196a98a9b3c66",
+      "duration": 3,
+      "peak": 0.34429383277893066,
+      "rms": -24.163345010319738
+    },
+    "src/static/audio-gb/es34-birthday-party.mp3": {
+      "key": "6d4531605209470c77ef0d039ef669dab26fc44e3651a7513c3a57b5920d8253",
+      "voice": "youxiaoying",
+      "text": "We had a birthday party for my little sister.",
+      "sha256": "d95db34f5488d8b9a33c840126a562f1236eb9e7f60563d75568b589c0483c1b",
+      "duration": 3.504,
+      "peak": 0.6486042737960815,
+      "rms": -16.83388140878058
+    },
+    "src/static/audio/es34-eat-breakfast.mp3": {
+      "key": "66e0258c85051c0284570781b0ec62fb618c99db074341be86486bb85b3dd7d5",
+      "voice": "youyating",
+      "text": "It is important to eat breakfast every day.",
+      "sha256": "aa7f7748a7b76a734c9b050a95677225159d913de9c5e331f3e57f5cb7650e1b",
+      "duration": 2.904,
+      "peak": 0.3039923310279846,
+      "rms": -24.31761386369475
+    },
+    "src/static/audio-gb/es34-eat-breakfast.mp3": {
+      "key": "98dc584d652acf5c12ab812e67deb0e371b11891100be22740efb7b9f254806c",
+      "voice": "youxiaoying",
+      "text": "It is important to eat breakfast every day.",
+      "sha256": "3a3fa37d31af6833d07022c4742960c81534df76361b5d457de119acc06a5bd9",
+      "duration": 3.408,
+      "peak": 0.6416924595832825,
+      "rms": -17.72151463172651
+    },
+    "src/static/audio/es56-doctor.mp3": {
+      "key": "7e47577ff3cf9ebb892473adbf4b9825d85d9546984dd7fefac7486a6aa3c034",
+      "voice": "youyating",
+      "text": "When I grow up, I want to be a doctor.",
+      "sha256": "e6481849de5916cd2c8107e4ff5ecea1f20a2c45e894876beff163f6d23c5369",
+      "duration": 2.808,
+      "peak": 0.3604676127433777,
+      "rms": -23.589070668664288
+    },
+    "src/static/audio-gb/es56-doctor.mp3": {
+      "key": "50d205417292d3c9c61b05fe749c8794beaff081c9fb51711815cddf2ba91396",
+      "voice": "youxiaoying",
+      "text": "When I grow up, I want to be a doctor.",
+      "sha256": "1abaacfd6790f65889b923d942a9d28d5e6d6552c35ae82ca09d09772619aa39",
+      "duration": 3.504,
+      "peak": 0.7135976552963257,
+      "rms": -16.929477709971266
+    },
+    "src/static/audio/es56-reading-places.mp3": {
+      "key": "1b06b178c10f68130362048fce7f2be86ef2382b77a63efc16f845b92b35da47",
+      "voice": "youyating",
+      "text": "I like reading books because they take me to different places.",
+      "sha256": "8c20776fd3a1d7dfc13803c734b79611cd75e83679125bee4596d765abc73e3b",
+      "duration": 3.816,
+      "peak": 0.3398313522338867,
+      "rms": -25.557039033667582
+    },
+    "src/static/audio-gb/es56-reading-places.mp3": {
+      "key": "119985b500cfc6d7b582dbfbc6267a418fdb9140eaaddd384df03cc7b643ee6d",
+      "voice": "youxiaoying",
+      "text": "I like reading books because they take me to different places.",
+      "sha256": "c02907e3545c8f3e2b84460f3297256e841574d5acc0b69059e976c24b8b4a8d",
+      "duration": 5.136,
+      "peak": 0.7161245346069336,
+      "rms": -17.56705466071019
+    },
+    "src/static/audio/es56-rain-movie.mp3": {
+      "key": "70d03f29c356302e074970bfd77ca8a0840dafc8c482e02bf5e52827251a182d",
+      "voice": "youyating",
+      "text": "If it rains tomorrow, we will stay at home and watch a movie.",
+      "sha256": "60c206aca890df59a9497d558b037827116154e9486ed5b32f3d7bcd456cc85f",
+      "duration": 4.104,
+      "peak": 0.34367477893829346,
+      "rms": -23.641044469762317
+    },
+    "src/static/audio-gb/es56-rain-movie.mp3": {
+      "key": "2158ae36a2f0345b8c6b45f7ffddd9cdf81b23535c4036b808247ea51438200d",
+      "voice": "youxiaoying",
+      "text": "If it rains tomorrow, we will stay at home and watch a movie.",
+      "sha256": "548f8320166452fedec6b9ce152284eda6bdd0e4c1b54e960592026fb7978597",
+      "duration": 5.04,
+      "peak": 0.7288163304328918,
+      "rms": -17.063608161597763
+    },
+    "src/static/audio/es56-math-english.mp3": {
+      "key": "4c71dfe778fdad486ac2058b81297049386a05260315ea7ca1432cdf30ee5d27",
+      "voice": "youyating",
+      "text": "My best friend is good at math, but I am better at English.",
+      "sha256": "a18f0e39904c6a68af5410448b51b68b5023bdba83d509c731629e2b9dd4064c",
+      "duration": 4.08,
+      "peak": 0.3359348177909851,
+      "rms": -24.019938784604648
+    },
+    "src/static/audio-gb/es56-math-english.mp3": {
+      "key": "e9b73c9268ab1c24803ebb7d4cce1cc2aaff8e4bb9316634dbb1d464e1889725",
+      "voice": "youxiaoying",
+      "text": "My best friend is good at math, but I am better at English.",
+      "sha256": "c304e390e8e9cd782ba1cd900e44169c935d436d004543b91ca7a407c3462751",
+      "duration": 5.136,
+      "peak": 0.672813892364502,
+      "rms": -17.408503967247412
+    },
+    "src/static/audio/es56-city.mp3": {
+      "key": "930fdb11ab8daea24ba45a4c8d3173f556a269affb72a106e8ab8b4e3d81217f",
+      "voice": "youyating",
+      "text": "There are many tall buildings and busy streets in the city.",
+      "sha256": "0ad69a96f1d8459ffd8d6c286e5e2fc4d1da97444ede931c7055cc68a3dcc421",
+      "duration": 3.576,
+      "peak": 0.31268638372421265,
+      "rms": -23.402751945709966
+    },
+    "src/static/audio-gb/es56-city.mp3": {
+      "key": "bf94eb7ea140db07a2fd5a11ef16c8d39af38778c8222eef17710fcfb1476a94",
+      "voice": "youxiaoying",
+      "text": "There are many tall buildings and busy streets in the city.",
+      "sha256": "868cc9cbfe2e505e5905a334dcb8448c9a48b14d09d9775ee3a4454721151119",
+      "duration": 4.344,
+      "peak": 0.5720170736312866,
+      "rms": -17.69459691305441
+    },
+    "src/static/audio/es56-homework-first.mp3": {
+      "key": "b194d7e3da90e010d20407ed7c58ad45123aa4a2e0639fc8e3edd00763429316",
+      "voice": "youyating",
+      "text": "I have to finish my homework before I can play games.",
+      "sha256": "e11e3836da5713002bd2a792679485684cf4cadf2f8dcde9d201b68c1a6004d0",
+      "duration": 3.48,
+      "peak": 0.3510265052318573,
+      "rms": -24.96986270563251
+    },
+    "src/static/audio-gb/es56-homework-first.mp3": {
+      "key": "d077f7382408e4e903a3b50120a8ec696a8aca79a1e5e09a95e924d281d4a795",
+      "voice": "youxiaoying",
+      "text": "I have to finish my homework before I can play games.",
+      "sha256": "7014e5a9e82668faff4ba19ea831375b8b3768bb2538c365b4196d1b9b6284a2",
+      "duration": 4.272,
+      "peak": 0.6296368837356567,
+      "rms": -16.83483313760091
+    },
+    "src/static/audio/es56-earth.mp3": {
+      "key": "db08d0fe075c12cf41f1f424814c5a04c12f88605d7f057770abb1fec8de9f55",
+      "voice": "youyating",
+      "text": "The Earth is our home, so we must keep it clean.",
+      "sha256": "5e989603424bbf872ab764bcb0311748a423c939ee1d9651ceb1e7e84c3afe00",
+      "duration": 3.312,
+      "peak": 0.3467947542667389,
+      "rms": -24.018965930528303
+    },
+    "src/static/audio-gb/es56-earth.mp3": {
+      "key": "95df7b1105893c79a95f4dc9b1261ec91f2e5fef408d724278a4e9d56fdfa17e",
+      "voice": "youxiaoying",
+      "text": "The Earth is our home, so we must keep it clean.",
+      "sha256": "f844c06a12392a7c6c2e6d091b33bae17c1958bcd0f7ca2cd4db121cd5a0bdee",
+      "duration": 4.176,
+      "peak": 0.6699446439743042,
+      "rms": -16.57850092972277
+    },
+    "src/static/audio/es56-rain-school.mp3": {
+      "key": "9dfef637a372ff458b0e5e17efb3e919b7504df459e933985b382dd586dd9215",
+      "voice": "youyating",
+      "text": "It was raining, but we still went to school on time.",
+      "sha256": "f841cacc6098104421e0c622b8e9adf1a30e23be67b704b722ddd1c7bf6d754a",
+      "duration": 3.576,
+      "peak": 0.28871971368789673,
+      "rms": -24.790219160818992
+    },
+    "src/static/audio-gb/es56-rain-school.mp3": {
+      "key": "34428cb556e6f8fe4644f2b494d41310da02d721bb914c0e33e883acfd9e7990",
+      "voice": "youxiaoying",
+      "text": "It was raining, but we still went to school on time.",
+      "sha256": "943102195a2a04c47874523f431175e93a72bc3426a0cd57471eec966a194ff1",
+      "duration": 4.08,
+      "peak": 0.7470022439956665,
+      "rms": -16.994504172155175
+    },
+    "src/static/audio/es56-reading-good.mp3": {
+      "key": "a39ffc5f328afd3a07a6d89624983a025ac52d940442987b2d2aac76bcdb5806",
+      "voice": "youyating",
+      "text": "Reading is good for us, and it helps us learn new things.",
+      "sha256": "0b064c62c29d5ad2cff2eaf8c09b03505ea4cfd122c95f9cb363193572bf53ff",
+      "duration": 3.696,
+      "peak": 0.33254650235176086,
+      "rms": -24.19096281309891
+    },
+    "src/static/audio-gb/es56-reading-good.mp3": {
+      "key": "7b40f15c4eae1db859467996057cf78cbe15bb7e2c06613803dadb416d6519bd",
+      "voice": "youxiaoying",
+      "text": "Reading is good for us, and it helps us learn new things.",
+      "sha256": "ba62fd0ac033e0afe7e1274a1cbbed17fa25ffbc97493f5cde925e3925e0d88b",
+      "duration": 4.728,
+      "peak": 0.6390326023101807,
+      "rms": -17.045886080158713
+    },
+    "src/static/audio/es56-planted-trees.mp3": {
+      "key": "87700705fc7a4cfcf6fcd9ec34924092cfde1ce76d849bfa8b6d9342da0c8742",
+      "voice": "youyating",
+      "text": "We planted some young trees in the park last spring.",
+      "sha256": "e61a7ae5c419432e5babfa50526e6f79764efc4effe68a96cbbf9a77ffa88bb0",
+      "duration": 3.384,
+      "peak": 0.28448379039764404,
+      "rms": -24.701036864787138
+    },
+    "src/static/audio-gb/es56-planted-trees.mp3": {
+      "key": "08cbf4c046358f38318aa91e93a328b9f462fef800366390a2d324297b0ecbd5",
+      "voice": "youxiaoying",
+      "text": "We planted some young trees in the park last spring.",
+      "sha256": "f680576ea57434d1aed78fd383f7532d28733f372a26e19970567573326c6b7c",
+      "duration": 4.2,
+      "peak": 0.5750265717506409,
+      "rms": -17.089504196669317
+    },
+    "src/static/audio/es56-english-future.mp3": {
+      "key": "b13fd4d1d6913574a2ed0a874bab5bf8bf75a0cd01be36da78f3cb551064299d",
+      "voice": "youyating",
+      "text": "I think learning English well is important for my future.",
+      "sha256": "33348b2fcc7988657affbd71011078874d35d16dfa58e1b0c5bf48764e188380",
+      "duration": 3.624,
+      "peak": 0.29150983691215515,
+      "rms": -24.348899249134853
+    },
+    "src/static/audio-gb/es56-english-future.mp3": {
+      "key": "e5b48fb956f63f18020d20b50edc9fb26512c1b4c020da170bd610042d6d295e",
+      "voice": "youxiaoying",
+      "text": "I think learning English well is important for my future.",
+      "sha256": "bd835c905847a84f5d554564a92e9522511bd2ed9ca76adee06f2e4eb1646107",
+      "duration": 4.488,
+      "peak": 0.6733053922653198,
+      "rms": -17.127748028180886
+    },
+    "src/static/audio/es56-tired-sleep.mp3": {
+      "key": "404874e9404a531ce6e4ad75da89c478c665eda7bff0386cf6b4b4867f250865",
+      "voice": "youyating",
+      "text": "The little boy was so tired that he went to sleep at once.",
+      "sha256": "459e6e7e989582b978615303ccdc2a248a51d29f8e21c309eed25ac17a302bf8",
+      "duration": 3.912,
+      "peak": 0.37354040145874023,
+      "rms": -24.48900910991806
+    },
+    "src/static/audio-gb/es56-tired-sleep.mp3": {
+      "key": "7b5fea36c13ff4fad7b3785df09af89adb4de629043052412fc09cdebf02a802",
+      "voice": "youxiaoying",
+      "text": "The little boy was so tired that he went to sleep at once.",
+      "sha256": "2a0c5ef56670e692bdaeb30a5e0bc85bbbede396ba2f26c9f0ac711a7252f22d",
+      "duration": 5.04,
+      "peak": 0.7257276773452759,
+      "rms": -17.69626799509507
+    },
+    "src/static/audio/es56-my-city.mp3": {
+      "key": "f5ab2224602c69e60fa73095f6745f3ab9116ae5baf3dcbaa11172577d438c21",
+      "voice": "youyating",
+      "text": "My city has changed a lot in the past ten years.",
+      "sha256": "2b669ecb2bc5b89e3e7f0bc4e77de6e3203cc2b3b881efdbe0b464bf3d91c2a9",
+      "duration": 3.384,
+      "peak": 0.30383065342903137,
+      "rms": -24.713273508761247
+    },
+    "src/static/audio-gb/es56-my-city.mp3": {
+      "key": "be795a043269f42c97e4dd5186f929c28e93ae1d7d165f3135d9a98c95dd12e8",
+      "voice": "youxiaoying",
+      "text": "My city has changed a lot in the past ten years.",
+      "sha256": "fb40e18e7db9ef9869053f5a0442b6bbfd71fd0cc1fc1eef268417790f6ce665",
+      "duration": 4.152,
+      "peak": 0.5626068711280823,
+      "rms": -17.369414473816526
+    },
+    "src/static/audio/es56-train-station.mp3": {
+      "key": "aa92a66e814d10ab92fba8a29a5ca74fdcb93775041a3a4d753281775789783d",
+      "voice": "youyating",
+      "text": "Could you tell me how to get to the train station?",
+      "sha256": "023c3438005d64755ee797f977e24b4e227b12bcb5a16c89cbacc21c0fae0fec",
+      "duration": 2.904,
+      "peak": 0.36409488320350647,
+      "rms": -23.87725982820767
+    },
+    "src/static/audio-gb/es56-train-station.mp3": {
+      "key": "7b1dd10ffaee062fb951f3198c092dc31356d0e261adbb0aae3193f3a846b81f",
+      "voice": "youxiaoying",
+      "text": "Could you tell me how to get to the train station?",
+      "sha256": "68259bf01693e7a4e3d998d31384b94d97d6bc3a4d16c7a58e98a12dff494876",
+      "duration": 3.48,
+      "peak": 0.5756028890609741,
+      "rms": -17.648646579024575
+    },
+    "src/static/audio/es56-sports-healthy.mp3": {
+      "key": "c146c34fdf93be288537ee08eec55884dc9dbf8aba3bf71ce83ca1830af75878",
+      "voice": "youyating",
+      "text": "Playing sports every day can keep us healthy and happy.",
+      "sha256": "9db3c1616a8ce6145ceb69668b91e110378e290b9fe355a4133ed2390877cd6c",
+      "duration": 3.696,
+      "peak": 0.2971591353416443,
+      "rms": -25.588775940576358
+    },
+    "src/static/audio-gb/es56-sports-healthy.mp3": {
+      "key": "9ccfaf3f32002eccf569436a9c7d4f873e400e648557fe0f0116d0add002ad74",
+      "voice": "youxiaoying",
+      "text": "Playing sports every day can keep us healthy and happy.",
+      "sha256": "7699f0d3c0239314e27ac65bc6d741032ad089bee0f1bea4984c115d2bde3581",
+      "duration": 4.392,
+      "peak": 0.6262941360473633,
+      "rms": -17.751677419227924
+    },
+    "src/static/audio/es56-summer-holiday.mp3": {
+      "key": "2a8f2fa052e162d5c1db7d4ee32c9237b9f23aa4bc55ac4177338a84aa887e76",
+      "voice": "youyating",
+      "text": "I am looking forward to the summer holiday this year.",
+      "sha256": "1e99abd64a50cfa83b0c26a3e20e16b350f954dba71205c405a5bc7cbade0cb5",
+      "duration": 3.12,
+      "peak": 0.3305545151233673,
+      "rms": -23.924443256056126
+    },
+    "src/static/audio-gb/es56-summer-holiday.mp3": {
+      "key": "fe59140d1c456296315fecdb164718ea51c65d40c932a8ef946a7c8025e6e39c",
+      "voice": "youxiaoying",
+      "text": "I am looking forward to the summer holiday this year.",
+      "sha256": "ae513bcfe99ba2bd76fbf2325914bf54c71486938a3cf240b95386c5c331aee7",
+      "duration": 3.888,
+      "peak": 0.6365166902542114,
+      "rms": -16.777816897982444
+    },
+    "src/static/audio/es56-friendly.mp3": {
+      "key": "b8895dc3f059d5633982042f69c30eefda3322e3474e79d8c689c7f979fdc81d",
+      "voice": "youyating",
+      "text": "We should always be friendly to the people around us.",
+      "sha256": "fbf986fb7ce39345e2a14b4ecc8f57c25dbc7cb859180063db525af1a769b757",
+      "duration": 3.384,
+      "peak": 0.29850518703460693,
+      "rms": -23.72462906378275
+    },
+    "src/static/audio-gb/es56-friendly.mp3": {
+      "key": "ace122739105852b190e367ae1fd600678ef48165c3bbe09a3d161d1a7153f6a",
+      "voice": "youxiaoying",
+      "text": "We should always be friendly to the people around us.",
+      "sha256": "8688d263a35a9d825cdb10ae720ece7569e6086cc84f707641a1d2ed45272a51",
+      "duration": 3.72,
+      "peak": 0.6666591167449951,
+      "rms": -16.462012772733274
+    },
+    "src/static/audio/es56-book-mine.mp3": {
+      "key": "c1b1bb0e26c3c83d2cbf007c628ed1ee64e914231c3da4a46f8f38de2fedd22c",
+      "voice": "youyating",
+      "text": "The book on the desk is mine, and that one is hers.",
+      "sha256": "51fcb5faa4f62f56b2d67c2b96415177455b4e8337c84a281e95b697a319db98",
+      "duration": 3.528,
+      "peak": 0.346937358379364,
+      "rms": -24.341124282522664
+    },
+    "src/static/audio-gb/es56-book-mine.mp3": {
+      "key": "29f9e288a2e3be2330e8a77159961314f21e9d74d286f4a0b43077af1787eb0b",
+      "voice": "youxiaoying",
+      "text": "The book on the desk is mine, and that one is hers.",
+      "sha256": "32c6d27bfb8d5f071d546dd9a704a5442764e43fd6147e4f87278489792b7466",
+      "duration": 4.344,
+      "peak": 0.6997367143630981,
+      "rms": -17.260934550132504
+    },
+    "src/static/audio/es56-hurry-late.mp3": {
+      "key": "b3ba2e332ca4f99ea964b1e775fc2428e7cff6d21a9d8e20a5d5af71f4ba27fa",
+      "voice": "youyating",
+      "text": "If you don't hurry, you will be late for school.",
+      "sha256": "1a1d65ea5b1f5c2c23964b00dc9db1247b9c0aa91783e6f6c339703f0379d813",
+      "duration": 3.144,
+      "peak": 0.34470242261886597,
+      "rms": -23.85878276011127
+    },
+    "src/static/audio-gb/es56-hurry-late.mp3": {
+      "key": "88ea087f4eac320b09ac58af30a0867b1d70a8aae03ae700b4e94f570ad69e4f",
+      "voice": "youxiaoying",
+      "text": "If you don't hurry, you will be late for school.",
+      "sha256": "d5776d59594c0ec455acbe258b5d11d732e8e078b618ba6eab35bfd9272290a3",
+      "duration": 3.792,
+      "peak": 0.6621300578117371,
+      "rms": -16.45027685347344
+    },
+    "src/static/audio/es56-cross-road.mp3": {
+      "key": "8a95a2a8b4ad3fd4d44eba5cb56e19cf8c4cb9ec41b0ea778397a981fbd44cae",
+      "voice": "youyating",
+      "text": "When you cross the road, you must be very careful.",
+      "sha256": "1f4de1692b3f93a34785a908f16ba383bce64d0cafb60627cf38b43110a364c0",
+      "duration": 3.408,
+      "peak": 0.4226595163345337,
+      "rms": -21.86329836044431
+    },
+    "src/static/audio-gb/es56-cross-road.mp3": {
+      "key": "3555b76cd98841d1811057b963dc5abe2660fb80dc3e919559218084ffda962a",
+      "voice": "youxiaoying",
+      "text": "When you cross the road, you must be very careful.",
+      "sha256": "295e6df285cd714e9248d856cc4de0be64f0f44a89b828122db4b3b3d6904dd2",
+      "duration": 3.984,
+      "peak": 0.6413593888282776,
+      "rms": -17.175448176914582
     }
   }
 }

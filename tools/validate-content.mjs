@@ -193,7 +193,8 @@ for (const stage of enSentenceStages) {
     subject: 'en',
     stage,
     kind: 'learn',
-    title: '英语小短句 · 句子',
+    // 标题按学段区分，和用户定的阶梯一致（一二=小短句 / 三四=稍长句 / 五六=长句）
+    title: `英语${stage === 'g12' ? '小短句' : stage === 'g34' ? '稍长句' : '长句'}`,
     subtitle: `${list.length} 个句子`,
     icon: '/static/img/cat-sentences.png',
     color: '#0CA678',

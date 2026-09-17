@@ -26,6 +26,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parseCsvLine } from './lib/csv.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIO_DIR = path.join(ROOT, 'src/static/audio')
@@ -367,7 +368,7 @@ function sentenceJobs() {
   if (lines[0].toLowerCase().startsWith('id,')) lines.shift()
   const jobs = []
   for (const l of lines) {
-    const [id, , , zh] = l.split(',')
+    const [id, , , zh] = parseCsvLine(l)
     const key = (id || '').trim()
     const text = (zh || '').trim()
     if (!key || !text) continue

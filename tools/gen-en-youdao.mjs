@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
 import { VOICES, sha256, fingerprint, credentials, inspectAudio, synthesize } from './lib/youdao-tts.mjs'
 import { writeFileAtomic } from './lib/fs-atomic.mjs'
+import { parseCsvLine } from './lib/csv.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const readJson = (p, fallback) => fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : fallback
@@ -29,7 +30,7 @@ export function collectJobs(root = ROOT, data = readJson(path.join(root, 'src/da
     const rows = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
     if (rows[0].toLowerCase().startsWith('id,')) rows.shift()
     for (const row of rows) {
-      const [id, , en] = row.split(',')
+      const [id, , en] = parseCsvLine(row)
       const key = (id || '').trim()
       const text = (en || '').trim()
       if (!key || !text) continue

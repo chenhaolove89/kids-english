@@ -243,7 +243,7 @@ onLoad((query) => {
       entryRef = { kind: 'en-sentences', id: stage }
       enSentencesMode.value = true
       theme.value = { bg: '#E0F5EC', color: '#0CA678' }
-      title.value = '英语小短句'
+      title.value = stage === 'g12' ? '英语小短句' : stage === 'g34' ? '英语稍长句' : '英语长句'
       // audio 留美音原路径，播放时走 accentEnSrc 按家长所选口音解析；
       // 中文释义音放 extraAudio（不设 zhAudio，避免走双语卡的「先中后英」序列）
       items.value = list.map((x) => ({

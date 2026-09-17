@@ -20,6 +20,7 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 import { ICONS, ICON_CATEGORY } from './icons/index.mjs'
 import { isUsableAsset } from './lib/asset-check.mjs'
 import { writeFileAtomic } from './lib/fs-atomic.mjs'
+import { parseCsvLine } from './lib/csv.mjs'
 import { main as generateYoudao } from './gen-en-youdao.mjs'
 import { execFileSync } from 'node:child_process'
 
@@ -253,8 +254,9 @@ function readEnSentences() {
   if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1)
   const rows = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
   if (rows[0].toLowerCase().startsWith('id,')) rows.shift()
+  // 用 CSV 解析器而不是 split(',' )：句子本身常含逗号（「When I grow up, I want to be...」）
   return rows.map((l) => {
-    const [id, stage, en, zh, emoji] = l.split(',')
+    const [id, stage, en, zh, emoji] = parseCsvLine(l)
     return { id: (id || '').trim(), stage: (stage || '').trim(), en: (en || '').trim(), zh: (zh || '').trim(), emoji: (emoji || '').trim() }
   })
 }
@@ -558,7 +560,8 @@ async function main() {
       if (x.en && !/^[A-Z]/.test(x.en)) bad.push(`句子首字母未大写: ${x.id}`)
       if (x.en && !/[.?!]$/.test(x.en)) bad.push(`英文句末缺标点: ${x.id}`)
       if (x.zh && !/[。？]$/.test(x.zh)) bad.push(`中文句末标点异常: ${x.id}`)
-      if (x.en && x.en.length > 60) bad.push(`句子过长: ${x.id}`)
+      // 上限按 g56 长句规格放宽：16 词含空格约 80 字符；再长说明写飘了
+      if (x.en && x.en.length > 90) bad.push(`句子过长: ${x.id}`)
       if (!x.emoji) bad.push(`缺配图码点: ${x.id}`)
     }
     if (bad.length) {

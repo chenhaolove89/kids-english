@@ -10,6 +10,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { MPEGDecoder } from 'mpg123-decoder'
 import { writeFileAtomic } from './lib/fs-atomic.mjs'
+import { parseCsvLine } from './lib/csv.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIO_DIR = path.join(ROOT, 'src/static/audio')
@@ -76,7 +77,7 @@ async function main() {
     const rows = raw.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter((l) => l.trim())
     if (rows[0].toLowerCase().startsWith('id,')) rows.shift()
     for (const row of rows) {
-      const key = (row.split(',')[0] || '').trim()
+      const key = (parseCsvLine(row)[0] || '').trim()
       if (key) englishFiles.add(`${key}.mp3`)
     }
   }

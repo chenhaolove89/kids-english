@@ -1,5 +1,5 @@
 {
-  "contentVersion": "81792a4c18",
+  "contentVersion": "701b1e308c",
   "stages": [
     {
       "id": "qimeng",
@@ -1043,7 +1043,7 @@
       "subject": "en",
       "stage": "g12",
       "kind": "learn",
-      "title": "英语小短句 · 句子",
+      "title": "英语小短句",
       "subtitle": "20 个句子",
       "icon": "/static/img/cat-sentences.png",
       "color": "#0CA678",
@@ -1775,6 +1775,26 @@
       },
       "skillIds": [
         "en-word-vehicles"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-sentences-g34",
+      "subject": "en",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "英语稍长句",
+      "subtitle": "20 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#0CA678",
+      "bg": "#E0F5EC",
+      "sort": "zz-en-sentences",
+      "ref": {
+        "kind": "en-sentences",
+        "id": "g34"
+      },
+      "skillIds": [
+        "en-sentence-g34"
       ]
     },
     {
@@ -2795,6 +2815,26 @@
       },
       "skillIds": [
         "en-word-tools"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "en-sentences-g56",
+      "subject": "en",
+      "stage": "g56",
+      "kind": "learn",
+      "title": "英语长句",
+      "subtitle": "20 个句子",
+      "icon": "/static/img/cat-sentences.png",
+      "color": "#0CA678",
+      "bg": "#E0F5EC",
+      "sort": "zz-en-sentences",
+      "ref": {
+        "kind": "en-sentences",
+        "id": "g56"
+      },
+      "skillIds": [
+        "en-sentence-g56"
       ]
     },
     {
