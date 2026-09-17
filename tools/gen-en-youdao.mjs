@@ -84,6 +84,28 @@ export async function main(args = process.argv.slice(2), { data, root = ROOT, fe
     }
     const progressFile = path.join(cache, 'progress.json')
     const progress = readJson(progressFile, { completed: {}, lastRequestAt: 0 })
+    // 开工前余额预检：有道的 TTS 接口既不返回剩余额度、也没有查余额的 API（余额只能在
+    // 智云控制台看），欠费时会在批量中途抛 errorCode=401。所以先用一段一次性短文本试打一次：
+    // 能出声=账号可用；401=余额不足，这里直接中止，不留下「生成一半」的批次（已成功的项有缓存，不白花）。
+    {
+      const needSynth = unique.some((j) => {
+        const f = path.join(cache, j.key + '.mp3')
+        const c = progress.completed[j.key]
+        return !(c && fs.existsSync(f) && sha256(fs.readFileSync(f)) === c.sha256)
+      })
+      if (needSynth) {
+        auth = credentials(root)
+        await pause(Math.max(0, 1250 - (Date.now() - progress.lastRequestAt)))
+        progress.lastRequestAt = Date.now()
+        writeFileAtomic(progressFile, JSON.stringify(progress))
+        try {
+          await synthesize(`probe ${Date.now()}`, VOICES.us, auth, fetcher)
+          console.log('余额预检：接口可用（该接口不返回剩余额度，欠费时返回 errorCode=401）')
+        } catch (e) {
+          throw new Error(`余额预检失败，已中止（尚未开始批量）：${e.message}`)
+        }
+      }
+    }
     let generated = 0, reused = 0, lastLog = 0
     for (const j of unique) {
       const file = path.join(cache, j.key + '.mp3')
