@@ -49,7 +49,116 @@
       "entry_removal_count": 25,
       "entry_removal_percent": 25
     },
-    "rules": []
+    "rules": [
+      {
+        "rule_id": "static-audio-en",
+        "action": "exclude",
+        "pattern": "src/static/audio",
+        "pattern_kind": "directory",
+        "reason": "英语美式发音音频（3090 个 mp3，有道 TTS 生成）。可复用认知在生成器 tools/gen-en-youdao.mjs、词句源 tools/words.csv 与 tools/en-sentences.csv、音量增益表，音频本体不承载语义，且随语音源批量重生成。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 100,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-audio-gb",
+        "action": "exclude",
+        "pattern": "src/static/audio-gb",
+        "pattern_kind": "directory",
+        "reason": "英语英式发音音频（2059 个 mp3，同一个有道 TTS 管线的第二口音）。生成源与美式共用，认知同上，本体无语义。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 101,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-audio-zh",
+        "action": "exclude",
+        "pattern": "src/static/audio-zh",
+        "pattern_kind": "directory",
+        "reason": "中文词句与古诗释义音频（1506 个 mp3，Azure Speech 生成，含多音字 SAPI 音素标注）。可复用认知在 tools/gen-zh-azure.mjs 与音素标注表，音频本体仅是可重生成产物。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 102,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-audio-poem",
+        "action": "exclude",
+        "pattern": "src/static/audio-poem",
+        "pattern_kind": "directory",
+        "reason": "古诗逐行朗读音频（153 个 mp3）。认知在 tools/gen-poems 管线与 poems.json 的 ttsPinyin 音素槽位，音频本体可整批重生成。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 103,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-img",
+        "action": "exclude",
+        "pattern": "src/static/img",
+        "pattern_kind": "directory",
+        "reason": "表情/插图素材（2686 个 png，Noto emoji 派生）。语义是「词条-图片」映射，由 tools/gen-assets.mjs 与 CSV 决定，单张图不承载可复用认知。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 104,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-hanzi-data",
+        "action": "exclude",
+        "pattern": "src/static/hanzi-data",
+        "pattern_kind": "directory",
+        "reason": "hanzi-writer 笔顺数据（297 个 json，第三方自带数据）。属 vendor 数据体，认知边界在引用它的 domain 源码，不在数据本体。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 105,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-tab",
+        "action": "exclude",
+        "pattern": "src/static/tab",
+        "pattern_kind": "directory",
+        "reason": "底部导航图标（7 个 png）。纯展示素材，认知在 tab-bar 组件与页面路由，图标本体无语义。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 106,
+        "enabled": true
+      },
+      {
+        "rule_id": "static-icons",
+        "action": "exclude",
+        "pattern": "src/static/icons",
+        "pattern_kind": "directory",
+        "reason": "应用图标（1 个 png）。纯展示素材，PWA 元数据在 src/static/manifest.webmanifest，图标本体无语义。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 107,
+        "enabled": true
+      },
+      {
+        "rule_id": "manifest-audio-youdao",
+        "action": "exclude",
+        "pattern": "tools/youdao-audio-manifest.json",
+        "pattern_kind": "file",
+        "reason": "英语音频合成台账（1.47MiB，gen-en-youdao.mjs 每次合成后整体重写）。已按 curation 裁决为 exclude；因 curation 派生的排除依赖 baseline 指纹、而 exclude 角色不保留指纹，故用配置规则落地角色，保证策略身份稳定。认知由生成器条目与 README 承担。",
+        "decision_basis": "generated_asset",
+        "source": "user",
+        "created_by": "host_model",
+        "order": 108,
+        "enabled": true
+      }
+    ]
   },
   "cognition_budget": {
     "version": "cognition-budget-policy/v1",

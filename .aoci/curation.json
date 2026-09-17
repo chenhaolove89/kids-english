@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "decisions": [
+    {
+      "path": "tools/youdao-audio-manifest.json",
+      "decision": "exclude",
+      "role": "英语音频合成台账（生成物，非源码）：按音频路径记录 voice/text/sha256 与 duration/peak/rms 实测",
+      "reason": "1.47MiB 生成物，由 tools/gen-en-youdao.mjs 在每次合成后整体重写，超过 AOCI 1MiB 自动读取上限；它是合成结果快照而非系统语义，变更不改变理解。其认知（谁写、谁读、为何用于跳过已合成文件以省重复合成费）由生成器 tools/gen-en-youdao.mjs 的条目与 README 承担，建文件级条目只会随每次音频批次反复失效。",
+      "confidence": 95,
+      "source_sha256": "00beeee55686a3ed26559ccfb5662a2844da2299b15b07504df2214dcac90caa",
+      "agent": "zcode",
+      "model": "deepseek-flash (ZCode host)",
+      "updated_at": "2026-09-17T07:03:19Z"
+    }
+  ]
+}
