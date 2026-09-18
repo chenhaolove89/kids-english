@@ -23,7 +23,14 @@ test('mathgen sig：每个关卡所有题型都有 sig，且以题型名开头',
   }
   assert.deepEqual(
     [...seenKinds].sort(),
-    ['add', 'add20', 'addBig', 'addDec', 'addFrac', 'compare', 'compareNum', 'count', 'div', 'listen', 'missing', 'missingBig', 'mixed2', 'mul', 'pattern', 'sequence', 'sub', 'sub20', 'subBig', 'subDec', 'wordAdd', 'wordMul', 'wordSub'],
+    [
+      'add', 'add20', 'addBig', 'addDec', 'addFrac', 'area', 'average', 'clockRead', 'clockSet',
+      'compare', 'compareNum', 'count', 'dataRead', 'div', 'fracOf', 'fracSubSame', 'listen',
+      'missing', 'missingBig', 'mixed2', 'mul', 'pattern', 'percent', 'perimeter', 'ratioShare',
+      'sequence', 'shapeOdd', 'shapeSame', 'sub', 'sub20', 'subBig', 'subDec', 'unitConv',
+      'unitPick', 'wordAdd', 'wordMul', 'wordSub',
+    ],
+    '题型清单变化时，这里要与 README 的数据规模、冒烟的分支断言一起更新',
   )
 })
 

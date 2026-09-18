@@ -27,6 +27,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseCsvLine } from './lib/csv.mjs'
+import { buildSsml as buildSsmlWith, poemFullSlots, pinyinSlots } from './lib/pinyin-slots.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIO_DIR = path.join(ROOT, 'src/static/audio')
@@ -80,28 +81,9 @@ function loadCreds() {
 }
 
 // ---- 拼音 -> SAPI 音素(ü→v,轻声=5;声调与音节之间必须有空格,实测 200/400 分界) ----
-const TONE_MARKS = { '\u0304': '1', '\u0301': '2', '\u030c': '3', '\u0300': '4' }
-function toSapi(py) {
-  const nfd = py.normalize('NFD')
-  let tone = '5'
-  let base = ''
-  for (const ch of nfd) {
-    if (TONE_MARKS[ch]) tone = TONE_MARKS[ch]
-    else if (ch === '\u0308') base = base.replace(/u$/, 'v') // ü 的分音符:替换前面的 u(ǜ U+01DC 分解为 u+0308+声调)
-    else base += ch
-  }
-  if (!/^[a-zv]+$/.test(base)) throw new Error(`异常拼音: ${py}`)
-  return base + ' ' + tone
-}
-
-function buildSsml(text, pinyin) {
-  const chars = [...text]
-  // pinyin 槽位可为 null:非 null 注 phoneme,null 走默认读音(例句只注目标字,保韵律)
-  const body = (pinyin && pinyin.length === chars.length)
-    ? chars.map((ch, i) => (pinyin[i] ? `<phoneme alphabet="sapi" ph="${toSapi(pinyin[i])}">${ch}</phoneme>` : ch)).join('')
-    : text
-  return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN"><voice name="${VOICE}">${body}</voice></speak>`
-}
+// toSapi / pinyinSlots / poemFullSlots / SSML 组装都在 lib/pinyin-slots.mjs（纯函数，可单测）；
+// 本文件顶层会直接 main()，所以逻辑留在这里就永远进不了测试。
+const buildSsml = (text, pinyin) => buildSsmlWith(text, pinyin, VOICE)
 
 // ---- Azure REST ----
 // 单条合成的超时：正常几百毫秒到几秒，长诗整首也就几秒；60s 足够宽松，
@@ -158,12 +140,6 @@ async function pool(label, jobs, worker) {
 // ---- 古诗音频（--poems）：整首 + 逐句两套轨，phoneme 槽位来自 poems.json ttsPinyin ----
 const POEMS_OUT_DIR = path.join(ROOT, 'src', 'static', 'audio-poem')
 
-function pinyinSlots(line, marks) {
-  if (!marks) return null
-  const slots = [...line].map((ch) => (marks[ch] ? marks[ch] : null))
-  return slots.some((s) => s) ? slots : null
-}
-
 function poemJobs() {
   const { poems } = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'poems.json'), 'utf8'))
   fs.mkdirSync(POEMS_OUT_DIR, { recursive: true })
@@ -171,12 +147,9 @@ function poemJobs() {
   for (const p of poems) {
     const slots = p.lines.map((line) => pinyinSlots(line, (p.ttsPinyin || {})[line]))
     const fullText = p.lines.join('')
-    // 整首槽位必须逐字符展开拼接（null 行按句长占位），否则长度校验不过会整首退化成默认读音
-    const fullSlots = []
-    p.lines.forEach((line, i) => {
-      const marks = (p.ttsPinyin || {})[line]
-      for (const ch of [...line]) fullSlots.push(marks && marks[ch] ? marks[ch] : null)
-    })
+    // 整首槽位必须逐字符展开拼接（lib/pinyin-slots.mjs 的 poemFullSlots 就是为此而抽出的，
+    // 用 flat() 会把「整行未注音」的行算成长度 1，整首长度校验不过、退化成默认读音）
+    const fullSlots = poemFullSlots(p.lines, p.ttsPinyin)
     // 增量：已有且非空的轨跳过（--force 全量重生成），后续批次跑批不重写历史音频
     const fresh = (out) => FRESH(out)
     const fullOut = path.join(POEMS_OUT_DIR, `${p.id}-full.mp3`)
@@ -184,7 +157,7 @@ function poemJobs() {
       jobs.push({
         id: `poem-${p.id}-full`,
         text: fullText,
-        pinyin: fullSlots.some(Boolean) ? fullSlots : null,
+        pinyin: fullSlots,
         out: fullOut,
       })
     }

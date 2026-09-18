@@ -24,6 +24,8 @@ const EQUATION_LEAD = {
   addDec: '小数点对齐：',
   subDec: '小数点对齐：',
   addFrac: '分母不变、分子相加：',
+  fracSubSame: '分母不变、分子相减：',
+  unitConv: '1 米 = 100 厘米：',
   sequence: '找规律：',
   pattern: '找规律：',
 }
@@ -41,6 +43,10 @@ export function mathExplain(q) {
   if (!q || !q.kind) return ''
   const kind = q.kind
   const ans = q.answer === undefined || q.answer === null ? '' : String(q.answer)
+
+  // 0) 图形辨别（启蒙）：题干是图形不是算式，必须先处理，否则会落进下面"算式是 ⭕ ⭕"的通用分支
+  if (kind === 'shapeSame') return `和它一样的形状是 ${ans}`
+  if (kind === 'shapeOdd') return `其他都是 ${q.common || '同一个形状'}，只有 ${ans} 不一样`
 
   // 1) 带算式的题型：把 ? 填上（sequence/pattern 的 display 也是"…  ?"）
   if (ans && typeof q.display === 'string' && q.display.includes('?')) {
@@ -94,8 +100,72 @@ export function mathExplain(q) {
     const op = kind === 'wordAdd' ? '+' : kind === 'wordSub' ? '−' : '×'
     return `算式是 ${a} ${op} ${b} = ${ans}`
   }
+
+  // 3) 长句题（时间/测量/周长面积/分数/百分数/统计）：题干没有 ?，逐类给一句算式或道理
+  if (kind === 'clockRead' || kind === 'clockSet') {
+    // 讲怎么看钟，而不是把答案再念一遍：整点看分针指 12，半点看分针指 6（时针夹在两格之间）
+    const label = kind === 'clockRead' ? ans : String(q.display || '').replace(' 是哪个钟？', '')
+    const [h, mm] = label.split(':').map(Number)
+    if (!h || Number.isNaN(mm)) return ''
+    const nextHour = (h % 12) + 1
+    if (mm === 30) return `分针指 6，时针在 ${h} 和 ${nextHour} 之间，就是 ${label}`
+    return `分针指 12、时针指 ${h}，就是 ${label}`
+  }
+  if (kind === 'unitPick') {
+    if (!q.display || !ans) return ''
+    const sentence = q.display.replace('（  ）', '')
+    return ans === '厘米'
+      ? `比 1 米短的东西用厘米：${sentence} ${ans}`
+      : `比 1 米长的东西用米：${sentence} ${ans}`
+  }
+  if (kind === 'perimeter') {
+    const nums = String(q.display || '').match(/\d+/g) || []
+    if (q.display.includes('正方形')) return nums.length < 1 ? '' : `边长 × 4 = ${nums[0]} × 4 = ${ans}`
+    if (nums.length < 2) return ''
+    return `（长 + 宽）× 2 =（${nums[0]} + ${nums[1]}）× 2 = ${ans}`
+  }
+  if (kind === 'area') {
+    const nums = String(q.display || '').match(/\d+/g) || []
+    if (nums.length < 1) return ''
+    if (q.display.includes('正方形')) return `边长 × 边长 = ${nums[0]} × ${nums[0]} = ${ans}`
+    if (nums.length < 2) return ''
+    return `长 × 宽 = ${nums[0]} × ${nums[1]} = ${ans}`
+  }
+  if (kind === 'fracOf') {
+    const nums = String(q.display || '').match(/\d+/g) || []
+    if (nums.length < 2) return ''
+    return `平均分成 ${nums[0]} 份，取其中 ${nums[1]} 份，就是 ${ans}`
+  }
+  if (kind === 'percent') {
+    const nums = String(q.display || '').match(/\d+/g) || []
+    if (nums.length < 2) return ''
+    return `${nums[0]} × ${nums[1]} ÷ 100 = ${ans}`
+  }
+  if (kind === 'ratioShare') {
+    // 参数从 sig 取（题干里的数字顺序会随问法变，取错就会讲错）
+    const [, total, a, b, which] = String(q.sig || '').split(':')
+    const parts = Number(a) + Number(b)
+    if (!total || !parts || Number(total) % parts !== 0) return ''
+    const per = Number(total) / parts
+    const shares = which === 'big' ? Number(a) : Number(b)
+    return `${total} ÷ ${parts} = ${per}，${shares} 份就是 ${ans}`
+  }
+  if (kind === 'average') {
+    const nums = String(q.display || '').match(/\d+/g) || []
+    if (nums.length < 4) return ''
+    const sum = nums.reduce((x, y) => x + Number(y), 0)
+    return `总数 ÷ 个数：${sum} ÷ ${nums.length} = ${ans}`
+  }
+  if (kind === 'dataRead') {
+    const nums = String(q.display || '').match(/\d+/g) || []
+    if (nums.length < 3) return ''
+    const more = q.display.includes('最多')
+    const extreme = more ? Math.max(...nums.map(Number)) : Math.min(...nums.map(Number))
+    return `比一比：${ans} ${extreme} ${q.unit || '个'}，是最${more ? '多' : '少'}的`
+  }
   return ''
 }
+
 
 /**
  * 挑战题（语文/英语）讲解。round 形如 { kind, answer, prompt }（见 domain/rounds.js）。

@@ -349,6 +349,8 @@ for (const c of words.categories) {
 }
 
 // 数学：每个级别一条「练习」课（生成器型，运行时按参数出题）
+// name/color/bg 必须与 src/domain/mathgen.js 的 MATH_LEVELS 逐字一致（tests/content.test.js 钉住这份契约）；
+// 这里另外给出课程卡片的副标题与关卡图标。
 const MATH_LEVELS = {
   1: { name: '认识数字', desc: '点数、听音认数、找规律', color: '#3BB273', bg: '#E3F6E8', icon: '/static/img/level-1.png' },
   2: { name: '十以内加减', desc: '看图数一数，算一算', color: '#4D96FF', bg: '#E3EEFF', icon: '/static/img/level-2.png' },
@@ -359,7 +361,15 @@ const MATH_LEVELS = {
   7: { name: '图形规律', desc: '看图找规律，接下一个', color: '#E8A33D', bg: '#FCF1DD', icon: '/static/img/level-7.png' },
   8: { name: '应用题', desc: '读一读小故事，算一算', color: '#5C7CFA', bg: '#E8EDFF', icon: '/static/img/level-8.png' },
   9: { name: '四则混合', desc: '先乘除，有括号先算', color: '#0CA678', bg: '#E0F5EC', icon: '/static/img/level-9.png' },
+  10: { name: '认识形状', desc: '找一样的、找不同', color: '#845EF7', bg: '#EFE9FE', icon: '/static/img/level-10.png' },
+  11: { name: '认识时间', desc: '看钟面说时间、按时间找钟面', color: '#F76707', bg: '#FFEDE0', icon: '/static/img/level-11.png' },
+  12: { name: '长度与测量', desc: '填对长度单位、米和厘米换一换', color: '#0B7285', bg: '#E0F3F6', icon: '/static/img/level-12.png' },
+  13: { name: '周长与面积', desc: '长方形和正方形的周长、面积', color: '#C2255C', bg: '#FCE4EE', icon: '/static/img/level-13.png' },
+  14: { name: '分数初步', desc: '几分之几、同分母减法', color: '#E8590C', bg: '#FDEBE0', icon: '/static/img/level-14.png' },
+  15: { name: '百分数与比例', desc: '求百分之几、按比分一分', color: '#5F3DC4', bg: '#EBE6FB', icon: '/static/img/level-15.png' },
+  16: { name: '统计与数据', desc: '算平均数、比一比谁最多', color: '#087F5B', bg: '#DFF3EC', icon: '/static/img/level-16.png' },
 }
+const MATH_LEVEL_IDS = Object.keys(MATH_LEVELS).map(Number)
 for (const [lv, meta] of Object.entries(MATH_LEVELS)) {
   const stage = mapping.math.levelStage[String(lv)]
   if (!stage) { fail(`数学级别 ${lv} 无 stage 映射`); continue }
@@ -373,7 +383,8 @@ for (const [lv, meta] of Object.entries(MATH_LEVELS)) {
     icon: meta.icon,
     color: meta.color,
     bg: meta.bg,
-    sort: `l${lv}`,
+    // 两位补零：'l10' 按字典序会排到 'l2' 前面，数学关卡顺序（= 解锁路径）会整体错位
+    sort: `l${String(lv).padStart(2, '0')}`,
     ref: { kind: 'math-level', id: Number(lv) },
     skillIds: [`math-l${lv}`],
   })
@@ -387,7 +398,7 @@ for (const l of lessons) {
   if (r.kind === 'zh-level' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-sentences' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-poem' && !poemStageIds.has(r.id)) fail(`课程 ${l.id} 引用不存在的古诗阶段 ${r.id}`)
-  if (r.kind === 'math-level' && ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
+  if (r.kind === 'math-level' && !MATH_LEVEL_IDS.includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
 }
 
 for (const id of Object.keys(configuredStatuses)) {

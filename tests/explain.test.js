@@ -10,6 +10,16 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mathExplain, roundExplain } from '../src/domain/explain.js'
+import { MATH_LEVELS, buildQuestions } from '../src/domain/mathgen.js'
+
+/** 确定性 rng（与 mathgen.test.js 同款），让每个种子抽到的题可复现 */
+function seededRng(seed = 42) {
+  let s = seed
+  return () => {
+    s = (s * 1103515245 + 12345) % 2147483648
+    return s / 2147483648
+  }
+}
 
 /* ---------------- 数学：算式类 ---------------- */
 test('算式题把 ? 填成答案（讲解的核心：让孩子看到完整算式）', () => {
@@ -111,6 +121,33 @@ test('所有生成的讲解都够短（揭晓区是一行小字）且不含否�
     assert.ok(text.length <= 40, `太长（${text.length} 字）：${text}`)
     assert.ok(!/错|笨|又错|不对/.test(text), `含否定词：${text}`)
   }
+})
+
+test('真实出题驱动：每个关卡的每种题型都必须讲得出话，且都够短', () => {
+  // 上面的样本是手写的，新增题型很容易漏进列表（漏了也不报错）。
+  // 这里改成从每个关卡真实抽题，按题型聚合断言——
+  // 以后再加题型，忘了写讲解就会在这里红，而不是等孩子在揭晓区看到一句空话。
+  const seenKinds = new Set()
+  const longest = { text: '', len: 0 }
+  for (const lv of Object.keys(MATH_LEVELS)) {
+    for (let seed = 1; seed <= 12; seed++) {
+      for (const q of buildQuestions(Number(lv), { rng: seededRng(seed * 97 + Number(lv)) })) {
+        const text = mathExplain(q)
+        assert.ok(text.length > 0, `L${lv} ${q.kind} 没有讲解（题干：${q.display}）`)
+        assert.ok(text.length <= 40, `L${lv} ${q.kind} 讲解太长（${text.length} 字）：${text}`)
+        assert.ok(!/错|笨|又错|不对/.test(text), `L${lv} ${q.kind} 含否定词：${text}`)
+        // 揭晓区是一行小字：首尾不能有空白，也不该出现 3 个以上连续空格（拼接残留）
+        // （数列题的 display 本身用两个空格隔开数字，那是排版，不算问题）
+        assert.equal(text, text.trim(), `L${lv} ${q.kind} 首尾有空白：${JSON.stringify(text)}`)
+        assert.ok(!/\s{3,}/.test(text), `L${lv} ${q.kind} 连续空白过多：${JSON.stringify(text)}`)
+        seenKinds.add(q.kind)
+        if (text.length > longest.len) { longest.text = text; longest.len = text.length }
+      }
+    }
+  }
+  // 关卡池里的题型必须都被这次抽样覆盖到（否则"没讲过话"的题型可能刚好没抽到）
+  assert.ok(seenKinds.size >= 37, `抽样只覆盖到 ${seenKinds.size} 种题型，应覆盖全部 37 种`)
+  assert.ok(longest.len <= 40, `最长讲解 ${longest.len} 字：${longest.text}`)
 })
 
 /* ---------------- 挑战题（语文/英语） ---------------- */

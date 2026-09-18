@@ -1202,11 +1202,13 @@ async function main() {
     check('非法级别深链不白屏且能出题（回退到默认级别）', badLevel.opts > 0 && !badLevel.blank, `${badLevel.round}，选项 ${badLevel.opts} 个`)
 
     // ---------- 12c. 数学已开放关卡：每个题型分支都要能渲染并作答（规则文件记录过 compareNum 崩页事故） ----------
-    // 2026-09-17 draft 复核后 9 关全部开放（L6 小数与分数、L9 四则混合转正）。
-    // 模板里只有 count/add/sub/compare/compareNum/wordX/listen/sequence 有专属分支，
-    // 其余走通用算式分支。这里逐关抽样作答，逐题校验"要么 4 个选项、要么 2 张比大小卡"
+    // 2026-09-17 数学从 9 关扩到 16 关（L10 形状 / L11 时间 / L12 长度 / L13 周长面积 /
+    // L14 分数初步 / L15 百分数比例 / L16 统计），全部关卡开放。
+    // 模板里只有 count/add/sub/compare/compareNum/listen/sequence 有专属分支，
+    // 长句题走 q.longText 标记的 word 分支，其余走通用算式分支。
+    // 这里逐关抽样作答，逐题校验"要么 4 个选项、要么 2 张比大小卡"
     // 且题干非空、作答后不白屏——这正是"新增题型只修一处 v-if 就继续崩页"的防线。
-    const MATH_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    const MATH_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     // 每关的题型池 → 期望渲染分支（与 domain/mathgen 的 KINDS_BY_LEVEL 对应）
     const EXPECTED_FAMILIES = {
       1: ['tiles', 'listen', 'equation'],
@@ -1218,6 +1220,13 @@ async function main() {
       7: ['equation'],
       8: ['word'],
       9: ['equation'],
+      10: ['equation'], // 找一样 / 找不同：图形题干 + 图形选项，走通用算式分支
+      11: ['equation'], // 读钟面 / 拨钟面：钟面 emoji 也是文字
+      12: ['word', 'equation'], // 填单位是句子，换算是算式
+      13: ['word'], // 周长与面积：长句
+      14: ['equation', 'word'], // 同分母减法是算式，几分之几是长句
+      15: ['word'], // 百分数与按比分配：长句
+      16: ['word'], // 平均数与读数据：长句
     }
     const families = new Set()
     const mathProblems = []
@@ -1297,11 +1306,11 @@ async function main() {
       if (unexpected.length) mathProblems.push(`L${level} 出现该关不该有的分支：${unexpected.join(',')}`)
     }
     // 发布状态门禁本身（draft 课不放出、直链不绕行）由 tests/curriculum.test.js 用合成目录覆盖；
-    // 这里只验用户可见结果：9 关都能进、都能出题。
+    // 这里只验用户可见结果：16 关都能进、都能出题。
     check(
-      `数学 9 关全部开放：形态合法、有内容、作答有反馈、无白屏（共 ${MATH_LEVELS.length * 6} 题）`,
+      `数学 16 关全部开放：形态合法、有内容、作答有反馈、无白屏（共 ${MATH_LEVELS.length * 6} 题）`,
       mathProblems.length === 0,
-      mathProblems.length ? mathProblems.slice(0, 4).join(' | ') : `L1~L9 各 6 题，全部通过`,
+      mathProblems.length ? mathProblems.slice(0, 4).join(' | ') : `L1~L16 各 6 题，全部通过`,
     )
 
     /**
@@ -1381,7 +1390,9 @@ async function main() {
     // 现在按题型生成讲解（domain/explain.js）。
     // 数学不在这里另起一段去"碰运气点错"（受负载影响不稳定），
     // 而是复用上面 42 题循环里已经出现的揭晓文案（答错必有揭晓）。
-    const mathExplainFamily = /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是|小数点对齐|分母不变|有括号先算括号|先算乘法再[加减])/
+    // 讲解文案的"讲理"特征词：每种题型至少命中一个（新增题型必须在这里补特征词，
+    // 否则它的揭晓文案会被当成"只报答案"而判不合格）
+    const mathExplainFamily = /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是|小数点对齐|分母不变|有括号先算括号|先算乘法再[加减]|一样的形状|不一样|分针指|用厘米|用米|1 米 = 100 厘米|（长 \+ 宽）|边长 ×|长 × 宽|平均分成|÷ 100|÷ 个数|比一比)/
     const badMathReveal = mathReveals.filter((r) => !mathExplainFamily.test(r.text) || r.text.length > 40)
     check(
       `数学答错讲解覆盖到位（${mathReveals.length} 条揭晓文案，全部是"讲为什么"且 ≤40 字）`,

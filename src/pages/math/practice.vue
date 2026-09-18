@@ -72,8 +72,9 @@
           </view>
         </view>
 
-        <!-- 应用题：读一句小故事再选答案（长句用小字可换行） -->
-        <view v-else-if="q.kind === 'wordAdd' || q.kind === 'wordSub' || q.kind === 'wordMul'" class="equation-wrap">
+        <!-- 应用题与长句题（时间测量/周长面积/分数/百分数/统计）：读一句题再选答案（长句用小字可换行）。
+             长句题由生成器打 q.longText 标记，页面不维护题型清单——新增题型漏改一处 v-if 就会掉进下面的算式分支挤成一团。 -->
+        <view v-else-if="q.longText || q.kind === 'wordAdd' || q.kind === 'wordSub' || q.kind === 'wordMul'" class="equation-wrap">
           <text class="word-problem">{{ q.display }}</text>
         </view>
 

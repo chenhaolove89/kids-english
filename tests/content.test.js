@@ -7,12 +7,14 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MATH_LEVELS } from '../src/domain/mathgen.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'content', 'catalog.json'), 'utf8'))
 const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'words.json'), 'utf8'))
 const hanzi = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'hanzi.json'), 'utf8'))
 const source = JSON.parse(fs.readFileSync(path.join(ROOT, 'content-packages', 'curriculum.json'), 'utf8'))
+const MATH_LEVEL_IDS = Object.keys(MATH_LEVELS).map(Number).sort((a, b) => a - b)
 
 test('目录结构完整：stages/subjects/lessons 与源一致', () => {
   assert.deepEqual(catalog.stages, source.stages)
@@ -55,7 +57,40 @@ test('课程引用可解析：ref 都能落到真实数据', () => {
     if (r.kind === 'en-category') assert.ok(enCats.has(r.id), `${l.id} 引用分类 ${r.id} 不存在`)
     if (r.kind === 'en-level') assert.ok([1, 2, 3, 4].includes(Number(r.id)), `${l.id} 引用级别非法`)
     if (r.kind === 'zh-level') assert.ok(zhLevels.has(Number(r.id)), `${l.id} 引用级别非法`)
-    if (r.kind === 'math-level') assert.ok([1, 2, 3, 4, 5, 6, 7, 8, 9].includes(Number(r.id)), `${l.id} 引用级别非法`)
+    if (r.kind === 'math-level') assert.ok(MATH_LEVEL_IDS.includes(Number(r.id)), `${l.id} 引用级别非法`)
+  }
+})
+
+test('数学关卡元信息单一口径：mathgen 与课程源表逐字一致，且每个关卡恰好一门课', () => {
+  // 关卡名与配色在 src/domain/mathgen.js（页面用）和 tools/validate-content.mjs（目录用）各写一份。
+  // 历史上这份手抄副本漂移到过 L7-9 两套说法，所以把「同一份」钉成契约：
+  // 只改一处会让页面标题与课程卡标题不一致，或者关卡在页面上没有对应课程（显示 🚧）。
+  const lessons = catalog.lessons.filter((l) => l.ref?.kind === 'math-level')
+  const ids = lessons.map((l) => Number(l.ref.id)).sort((a, b) => a - b)
+  assert.deepEqual(ids, MATH_LEVEL_IDS, '每个数学关卡都要有且只有一门课')
+  for (const l of lessons) {
+    const lv = Number(l.ref.id)
+    assert.equal(l.title, MATH_LEVELS[lv].name, `L${lv} 关卡名两处不一致`)
+    assert.equal(l.color, MATH_LEVELS[lv].color, `L${lv} 配色两处不一致`)
+    assert.equal(l.bg, MATH_LEVELS[lv].bg, `L${lv} 背景色两处不一致`)
+    assert.equal(l.kind, 'challenge', `L${lv} 数学关卡是路径课（kind=challenge）`)
+    assert.ok(l.subtitle && l.icon, `L${lv} 课程卡要有副标题与图标`)
+  }
+})
+
+test('数学关卡顺序按两位补零排序（l10 不能排到 l2 前面）', () => {
+  // 数学关卡顺序就是解锁路径（lessonLocks 按目录顺序推 frontier）。
+  // 目录整体按「学段 → 科目 → 类型 → sort」排，所以断言的是**每个学段内**关卡号递增——
+  // sort 写成 'l'+lv 时 'l10' 会挤到 'l2' 前面，同一学段内立刻乱序。
+  const lessons = catalog.lessons.filter((l) => l.ref?.kind === 'math-level')
+  const byStage = new Map()
+  for (const l of lessons) {
+    if (!byStage.has(l.stage)) byStage.set(l.stage, [])
+    byStage.get(l.stage).push(Number(l.ref.id))
+  }
+  assert.ok(byStage.size > 1, '数学关卡分布在多个学段（按学段分路径解锁）')
+  for (const [stage, ids] of byStage) {
+    assert.deepEqual(ids, [...ids].sort((a, b) => a - b), `${stage} 学段内的数学关卡必须按关卡号递增`)
   }
 })
 

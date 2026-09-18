@@ -1,5 +1,5 @@
 {
-  "contentVersion": "701b1e308c",
+  "contentVersion": "ecf111d853",
   "stages": [
     {
       "id": "qimeng",
@@ -308,7 +308,7 @@
       "icon": "/static/img/level-1.png",
       "color": "#3BB273",
       "bg": "#E3F6E8",
-      "sort": "l1",
+      "sort": "l01",
       "ref": {
         "kind": "math-level",
         "id": 1
@@ -328,13 +328,33 @@
       "icon": "/static/img/level-7.png",
       "color": "#E8A33D",
       "bg": "#FCF1DD",
-      "sort": "l7",
+      "sort": "l07",
       "ref": {
         "kind": "math-level",
         "id": 7
       },
       "skillIds": [
         "math-l7"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l10",
+      "subject": "math",
+      "stage": "qimeng",
+      "kind": "challenge",
+      "title": "认识形状",
+      "subtitle": "找一样的、找不同",
+      "icon": "/static/img/level-10.png",
+      "color": "#845EF7",
+      "bg": "#EFE9FE",
+      "sort": "l10",
+      "ref": {
+        "kind": "math-level",
+        "id": 10
+      },
+      "skillIds": [
+        "math-l10"
       ]
     },
     {
@@ -1088,7 +1108,7 @@
       "icon": "/static/img/level-2.png",
       "color": "#4D96FF",
       "bg": "#E3EEFF",
-      "sort": "l2",
+      "sort": "l02",
       "ref": {
         "kind": "math-level",
         "id": 2
@@ -1108,13 +1128,53 @@
       "icon": "/static/img/level-3.png",
       "color": "#FF8C42",
       "bg": "#FFEDD9",
-      "sort": "l3",
+      "sort": "l03",
       "ref": {
         "kind": "math-level",
         "id": 3
       },
       "skillIds": [
         "math-l3"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l11",
+      "subject": "math",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "认识时间",
+      "subtitle": "看钟面说时间、按时间找钟面",
+      "icon": "/static/img/level-11.png",
+      "color": "#F76707",
+      "bg": "#FFEDE0",
+      "sort": "l11",
+      "ref": {
+        "kind": "math-level",
+        "id": 11
+      },
+      "skillIds": [
+        "math-l11"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l12",
+      "subject": "math",
+      "stage": "g12",
+      "kind": "challenge",
+      "title": "长度与测量",
+      "subtitle": "填对长度单位、米和厘米换一换",
+      "icon": "/static/img/level-12.png",
+      "color": "#0B7285",
+      "bg": "#E0F3F6",
+      "sort": "l12",
+      "ref": {
+        "kind": "math-level",
+        "id": 12
+      },
+      "skillIds": [
+        "math-l12"
       ]
     },
     {
@@ -1828,7 +1888,7 @@
       "icon": "/static/img/level-4.png",
       "color": "#9B5DE5",
       "bg": "#F0E6FB",
-      "sort": "l4",
+      "sort": "l04",
       "ref": {
         "kind": "math-level",
         "id": 4
@@ -1848,7 +1908,7 @@
       "icon": "/static/img/level-5.png",
       "color": "#12B886",
       "bg": "#E2F6EF",
-      "sort": "l5",
+      "sort": "l05",
       "ref": {
         "kind": "math-level",
         "id": 5
@@ -1868,13 +1928,53 @@
       "icon": "/static/img/level-8.png",
       "color": "#5C7CFA",
       "bg": "#E8EDFF",
-      "sort": "l8",
+      "sort": "l08",
       "ref": {
         "kind": "math-level",
         "id": 8
       },
       "skillIds": [
         "math-l8"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l13",
+      "subject": "math",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "周长与面积",
+      "subtitle": "长方形和正方形的周长、面积",
+      "icon": "/static/img/level-13.png",
+      "color": "#C2255C",
+      "bg": "#FCE4EE",
+      "sort": "l13",
+      "ref": {
+        "kind": "math-level",
+        "id": 13
+      },
+      "skillIds": [
+        "math-l13"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l14",
+      "subject": "math",
+      "stage": "g34",
+      "kind": "challenge",
+      "title": "分数初步",
+      "subtitle": "几分之几、同分母减法",
+      "icon": "/static/img/level-14.png",
+      "color": "#E8590C",
+      "bg": "#FDEBE0",
+      "sort": "l14",
+      "ref": {
+        "kind": "math-level",
+        "id": 14
+      },
+      "skillIds": [
+        "math-l14"
       ]
     },
     {
@@ -2868,7 +2968,7 @@
       "icon": "/static/img/level-6.png",
       "color": "#D6336C",
       "bg": "#FBE3EC",
-      "sort": "l6",
+      "sort": "l06",
       "ref": {
         "kind": "math-level",
         "id": 6
@@ -2888,13 +2988,53 @@
       "icon": "/static/img/level-9.png",
       "color": "#0CA678",
       "bg": "#E0F5EC",
-      "sort": "l9",
+      "sort": "l09",
       "ref": {
         "kind": "math-level",
         "id": 9
       },
       "skillIds": [
         "math-l9"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l15",
+      "subject": "math",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "百分数与比例",
+      "subtitle": "求百分之几、按比分一分",
+      "icon": "/static/img/level-15.png",
+      "color": "#5F3DC4",
+      "bg": "#EBE6FB",
+      "sort": "l15",
+      "ref": {
+        "kind": "math-level",
+        "id": 15
+      },
+      "skillIds": [
+        "math-l15"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "math-practice-l16",
+      "subject": "math",
+      "stage": "g56",
+      "kind": "challenge",
+      "title": "统计与数据",
+      "subtitle": "算平均数、比一比谁最多",
+      "icon": "/static/img/level-16.png",
+      "color": "#087F5B",
+      "bg": "#DFF3EC",
+      "sort": "l16",
+      "ref": {
+        "kind": "math-level",
+        "id": 16
+      },
+      "skillIds": [
+        "math-l16"
       ]
     },
     {

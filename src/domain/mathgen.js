@@ -15,6 +15,15 @@ export const MATH_LEVELS = {
   7: { id: 7, name: '图形规律', color: '#E8A33D', bg: '#FCF1DD' },
   8: { id: 8, name: '应用题', color: '#5C7CFA', bg: '#E8EDFF' },
   9: { id: 9, name: '四则混合', color: '#0CA678', bg: '#E0F5EC' },
+  // 10-16 为按学段补铺的关卡（时间测量、周长面积、分数初步、百分数比例、统计，以及启蒙的形状识别）。
+  // 名称与 tools/validate-content.mjs 的 MATH_LEVELS 表必须逐字一致（tests/content.test.js 钉住这份契约）。
+  10: { id: 10, name: '认识形状', color: '#845EF7', bg: '#EFE9FE' },
+  11: { id: 11, name: '认识时间', color: '#F76707', bg: '#FFEDE0' },
+  12: { id: 12, name: '长度与测量', color: '#0B7285', bg: '#E0F3F6' },
+  13: { id: 13, name: '周长与面积', color: '#C2255C', bg: '#FCE4EE' },
+  14: { id: 14, name: '分数初步', color: '#E8590C', bg: '#FDEBE0' },
+  15: { id: 15, name: '百分数与比例', color: '#5F3DC4', bg: '#EBE6FB' },
+  16: { id: 16, name: '统计与数据', color: '#087F5B', bg: '#DFF3EC' },
 }
 
 const KINDS_BY_LEVEL = {
@@ -29,6 +38,17 @@ const KINDS_BY_LEVEL = {
   7: ['pattern'],
   8: ['wordAdd', 'wordSub', 'wordMul'],
   9: ['mixed2'],
+  // 10 启蒙：纯图形辨别（配图选形状），3-6 岁不依赖识字
+  10: ['shapeSame', 'shapeOdd'],
+  // 11-12 一二年级：认识钟面 + 长度单位（都走长句/算式分支，无逐条音轨）
+  11: ['clockRead', 'clockSet'],
+  12: ['unitPick', 'unitConv'],
+  // 13-14 三四年级：周长面积（长方形/正方形）、分数初步（几分之几、同分母减法）
+  13: ['perimeter', 'area'],
+  14: ['fracOf', 'fracSubSame'],
+  // 15-16 五六年级：百分数与按比分配、平均数与表格读数据
+  15: ['percent', 'ratioShare'],
+  16: ['average', 'dataRead'],
 }
 
 // 点数/加减的物品池：挑孩子一眼就喜欢的（水果零食、玩具、动物、交通工具），
@@ -122,6 +142,32 @@ function fracOptions(sum, den, count, rng) {
   }
   return shuffle(list, rng)
 }
+
+// ---- 10 关「认识形状」：纯图形，3-6 岁不依赖识字 ----
+// 只用单码点图形（带变体选择符的 emoji 在不同系统上可能渲染成两个字符，槽位会错）
+const SHAPES = ['⭕', '🔺', '🟦', '⭐', '🔷', '🟨']
+
+// ---- 11 关「认识时间」：Noto 的钟面 emoji 覆盖 12 个整点与 12 个半点 ----
+// 1F550 起是 1:00..12:00，再往后 12 个是 1:30..12:30
+function clockEmoji(hour, half) {
+  return String.fromCodePoint(0x1f550 + (hour - 1) + (half ? 12 : 0))
+}
+const clockLabel = (hour, half) => `${hour}:${half ? '30' : '00'}`
+
+// ---- 12 关「长度与测量」：都是教材原话里的量感例子（厘米/米），千米只当干扰项 ----
+const LENGTH_ITEMS = [
+  ['铅笔长约 15', '厘米'],
+  ['课桌高约 70', '厘米'],
+  ['数学书宽约 18', '厘米'],
+  ['一块橡皮长约 4', '厘米'],
+  ['爸爸身高约 175', '厘米'],
+  ['教室的长约 8', '米'],
+  ['教室的门高约 2', '米'],
+  ['一层楼高约 3', '米'],
+  ['一棵大树高约 10', '米'],
+  ['操场跑道一圈约 400', '米'],
+]
+const LENGTH_UNITS = ['厘米', '米', '千米']
 
 export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/audio' } = {}) {
   const level = normalizeMathLevel(lvId)
@@ -363,6 +409,209 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.seq = [A('zh-choose.mp3')]
     qz.options = bigOptions(ans, 4, rng)
     qz.sig = `mixed2:${form}:${qz.display}`
+  } else if (kind === 'shapeSame') {
+    // 找一样的形状（启蒙）：目标图形 + 3 个不同图形，纯视觉配对，选项就是图形本身
+    const target = pickOne(SHAPES, rng)
+    const others = shuffle(SHAPES.filter((s) => s !== target), rng).slice(0, 3)
+    qz.display = `${target}  ?`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = target
+    qz.options = shuffle([target, ...others], rng).map((s) => ({ id: s, label: s }))
+    // 签名带干扰项集合：只按目标图形签名时 6 种图形凑不满一关 10 题（去重会截短）
+    qz.sig = `shapeSame:${target}:${others.join('')}`
+  } else if (kind === 'shapeOdd') {
+    // 找不同（启蒙）：3 个一样 + 1 个不一样，问哪个不一样，选项里含正确项
+    const [common, odd, extra] = shuffle(SHAPES, rng).slice(0, 3)
+    const shown = shuffle([common, common, common, odd], rng)
+    qz.display = `${shown.join(' ')}  ?`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = odd
+    qz.common = common
+    qz.options = shuffle([odd, common, extra], rng).map((s) => ({ id: s, label: s }))
+    qz.sig = `shapeOdd:${common}:${odd}`
+  } else if (kind === 'clockRead') {
+    // 读钟面（一二年级）：给钟面选时间，干扰项是孩子最常犯的两种错（整点/半点混、看错一格）
+    const hour = 1 + rnd(rng, 12)
+    const half = rng() < 0.5
+    const label = clockLabel(hour, half)
+    const nextHour = (hour % 12) + 1
+    const prevHour = ((hour + 10) % 12) + 1
+    const wrong = [clockLabel(hour, !half), clockLabel(nextHour, half), clockLabel(prevHour, half)]
+    qz.display = `${clockEmoji(hour, half)} 是几点？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = label
+    qz.options = shuffle([label, ...new Set(wrong)]).map((t) => ({ id: t, label: t }))
+    qz.sig = `clockRead:${label}`
+  } else if (kind === 'clockSet') {
+    // 拨钟面（一二年级）：给时间选钟面，与读钟面互为反向练习
+    const hour = 1 + rnd(rng, 12)
+    const half = rng() < 0.5
+    const label = clockLabel(hour, half)
+    const nextHour = (hour % 12) + 1
+    const prevHour = ((hour + 10) % 12) + 1
+    const clocks = [
+      clockEmoji(hour, half),
+      clockEmoji(hour, !half),
+      clockEmoji(nextHour, half),
+      clockEmoji(prevHour, half),
+    ]
+    qz.display = `${label} 是哪个钟？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = clockEmoji(hour, half)
+    qz.options = shuffle([...new Set(clocks)]).map((c) => ({ id: c, label: c }))
+    qz.sig = `clockSet:${label}`
+  } else if (kind === 'unitPick') {
+    // 填长度单位（一二年级）：教材里的量感例句，千米只作干扰项、从不作答案
+    const [sentence, unit] = pickOne(LENGTH_ITEMS, rng)
+    qz.display = `${sentence}（  ）`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = unit
+    qz.options = shuffle([...LENGTH_UNITS]).map((u) => ({ id: u, label: u }))
+    qz.longText = true
+    qz.sig = `unitPick:${sentence}`
+  } else if (kind === 'unitConv') {
+    // 米与厘米换算（一二年级）：1 米 = 100 厘米，两个方向随机
+    const meters = 1 + rnd(rng, 9)
+    const forward = rng() < 0.5
+    qz.answer = forward ? String(meters * 100) : String(meters)
+    qz.display = forward ? `${meters} 米 = ? 厘米` : `${meters * 100} 厘米 = ? 米`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.options = bigOptions(Number(qz.answer), 4, rng)
+    qz.sig = `unitConv:${forward ? 'm2cm' : 'cm2m'}:${meters}`
+  } else if (kind === 'perimeter') {
+    // 周长（三四年级）：长方形 (长+宽)×2、正方形 边长×4
+    const square = rng() < 0.4
+    let a, b
+    if (square) {
+      a = 2 + rnd(rng, 14)
+      qz.display = `边长 ${a} 厘米的正方形，周长是多少厘米？`
+      qz.answer = String(a * 4)
+    } else {
+      a = 2 + rnd(rng, 19)
+      // 长方形不能出成长宽相等（那是正方形，说法就错了）
+      do { b = 2 + rnd(rng, 19) } while (b === a)
+      qz.display = `长 ${a} 厘米、宽 ${b} 厘米的长方形，周长是多少厘米？`
+      qz.answer = String((a + b) * 2)
+    }
+    qz.seq = [A('zh-choose.mp3')]
+    qz.options = bigOptions(Number(qz.answer), 4, rng)
+    qz.longText = true
+    qz.sig = `perimeter:${square ? 'sq' : 'rect'}:${a}:${b || ''}`
+  } else if (kind === 'area') {
+    // 面积（三四年级）：长方形 长×宽、正方形 边长×边长
+    const square = rng() < 0.4
+    let a, b
+    if (square) {
+      a = 2 + rnd(rng, 12)
+      qz.display = `边长 ${a} 厘米的正方形，面积是多少平方厘米？`
+      qz.answer = String(a * a)
+    } else {
+      a = 2 + rnd(rng, 12)
+      do { b = 2 + rnd(rng, 12) } while (b === a)
+      qz.display = `长 ${a} 厘米、宽 ${b} 厘米的长方形，面积是多少平方厘米？`
+      qz.answer = String(a * b)
+    }
+    qz.seq = [A('zh-choose.mp3')]
+    qz.options = bigOptions(Number(qz.answer), 4, rng)
+    qz.longText = true
+    qz.sig = `area:${square ? 'sq' : 'rect'}:${a}:${b || ''}`
+  } else if (kind === 'fracOf') {
+    // 几分之几（三四年级）：平均分成几份、取了几份。干扰项覆盖典型错法——
+    // 分子分母颠倒（6/1）、写成"剩下的那份"（(den-n)/den）、分子 ±1
+    const den = 3 + rnd(rng, 6)
+    const n = 1 + rnd(rng, den - 1)
+    const answer = `${n}/${den}`
+    const opts = []
+    for (const c of [answer, `${den}/${n}`, `${den - n}/${den}`, `${n + 1}/${den}`, `${n - 1}/${den}`]) {
+      if (!opts.includes(c) && Number(c.split('/')[0]) >= 1) opts.push(c)
+      if (opts.length === 4) break
+    }
+    // 分母小（den=3）时候选可能不足 4 个，用同分母真分数补齐，保证选项数达标
+    for (let k = 1; opts.length < 4 && k < den; k++) {
+      const c = `${k}/${den}`
+      if (!opts.includes(c)) opts.push(c)
+    }
+    qz.display = `把一个蛋糕平均分成 ${den} 份，吃了 ${n} 份，吃了几分之几？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = answer
+    qz.options = shuffle(opts, rng).map((c) => ({ id: c, label: c }))
+    qz.longText = true
+    qz.sig = `fracOf:${n}:${den}`
+  } else if (kind === 'fracSubSame') {
+    // 同分母分数减法（三四年级）：分母不变、分子相减，结果保持真分数
+    const den = 5 + rnd(rng, 8)
+    const n1 = 2 + rnd(rng, den - 2)
+    const n2 = 1 + rnd(rng, n1 - 1)
+    qz.answer = `${n1 - n2}/${den}`
+    qz.display = `${n1}/${den} − ${n2}/${den} = ?`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.options = fracOptions(n1 - n2, den, 4, rng)
+    qz.sig = `fracSubSame:${n1}:${n2}:${den}`
+  } else if (kind === 'percent') {
+    // 求一个数的百分之几（五六年级）：取值保证结果是整数，答案不出现 0
+    const p = pickOne([10, 20, 25, 50, 75], rng)
+    const n = pickOne([20, 40, 60, 80, 100, 120, 200, 240], rng)
+    const ans = (n * p) / 100
+    qz.display = `${n} 的 ${p}% 是多少？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = String(ans)
+    qz.options = numOptions(ans, 4, rng)
+    qz.longText = true
+    qz.sig = `percent:${n}:${p}`
+  } else if (kind === 'ratioShare') {
+    // 按比分配（五六年级）：总数按 a : b 分成几份，问其中一份是多少
+    const big = 2 + rnd(rng, 3)
+    const small = 1 + rnd(rng, big - 1)
+    const parts = big + small
+    const per = 2 + rnd(rng, 9)
+    const total = parts * per
+    const askBig = rng() < 0.5
+    const ans = (askBig ? big : small) * per
+    qz.display = `${total} 颗糖按 ${big} : ${small} 分给两人，${askBig ? '多' : '少'}的一份是多少颗？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = String(ans)
+    qz.options = numOptions(ans, 4, rng)
+    qz.longText = true
+    qz.sig = `ratioShare:${total}:${big}:${small}:${askBig ? 'big' : 'small'}`
+  } else if (kind === 'average') {
+    // 平均数（五六年级）：偏移量成对相消，保证平均数是整数、不出小数
+    const base = 10 + rnd(rng, 80)
+    const offs = pickOne([[5, -5, 2, -2], [4, -4, 1, -1], [6, -6, 3, -3], [8, -8, 2, -2]], rng)
+    const nums = shuffle([base + offs[0], base + offs[1], base + offs[2], base + offs[3]], rng)
+    const sum = nums.reduce((a, b) => a + b, 0)
+    qz.display = `四次成绩是 ${nums.join('、')}，平均分是多少？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = String(sum / 4)
+    qz.options = numOptions(sum / 4, 4, rng)
+    qz.longText = true
+    qz.sig = `average:${nums.join('-')}`
+  } else if (kind === 'dataRead') {
+    // 读数据（五六年级）：三个数量各不相同，问最多或最少的那一项。
+    // 量词与问法随对象表一起给（「小猫 3 只」不是「3 个」，「哪个班最少」不是「哪种」）——
+    // 给孩子的题面用错量词就是错的，不能拿"能看懂"当理由放过。
+    const [names, unit, ask] = pickOne(
+      [
+        [['苹果', '香蕉', '梨'], '个', '哪种'],
+        [['小猫', '小狗', '小兔'], '只', '哪种'],
+        [['红球', '黄球', '蓝球'], '个', '哪种'],
+        [['一班', '二班', '三班'], '人', '哪个班'],
+      ],
+      rng
+    )
+    // 不放回地取三个数：必须两两不同，"最多/最少"才有唯一答案（相等就有两个正确答案）
+    const pool = shuffle(Array.from({ length: 12 }, (_, i) => i + 1), rng)
+    const vals = pool.slice(0, 3)
+    const askMax = rng() < 0.5
+    const target = askMax ? Math.max(...vals) : Math.min(...vals)
+    const idx = vals.indexOf(target)
+    const table = names.map((nm, i) => `${nm} ${vals[i]} ${unit}`).join('，')
+    qz.display = `${table}，${ask}${askMax ? '最多' : '最少'}？`
+    qz.seq = [A('zh-choose.mp3')]
+    qz.answer = names[idx]
+    qz.unit = unit
+    qz.options = names.map((nm) => ({ id: nm, label: nm }))
+    qz.longText = true
+    qz.sig = `dataRead:${askMax ? 'max' : 'min'}:${table}`
   }
   return qz
 }
@@ -387,6 +636,11 @@ export function mathText(q) {
     return `比大小：哪个数${ask}（${g1?.n ?? '?'} 和 ${g2?.n ?? '?'}）`
   }
   if (kind === 'pattern') return `图形规律：下一个是 ${q.answer}`
+  // 图形辨别与钟面题的 display 是图形，直接进错题本等于没说，给人话描述
+  if (kind === 'shapeSame') return `认形状：和 ${String(q.display || '').split(/\s+/)[0]} 一样的是 ${q.answer}`
+  if (kind === 'shapeOdd') return `找不同：${q.common || ''} 里不一样的是 ${q.answer}`
+  if (kind === 'clockRead') return `读钟面：${q.answer}`
+  if (kind === 'clockSet') return `拨钟面：${String(q.display || '').replace(' 是哪个钟？', '')}`
   return q.sig || kind
 }
 

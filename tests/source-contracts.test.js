@@ -288,8 +288,8 @@ test('数学题型集合自洽：分派链实现的 kind 与关卡池一一对�
   assert.deepEqual(dispatch.filter((k) => !pool.includes(k)), [], '实现了但任何关卡都选不到的题型（死题型）')
   assert.equal(
     pool.length,
-    23,
-    `题型数变成 ${pool.length}：请同步 README「数据规模」里的「9 个关卡 / N 个题型」与冒烟的题型分支断言`,
+    37,
+    `题型数变成 ${pool.length}：请同步 README「数据规模」里的「16 个关卡 / N 个题型」与冒烟的题型分支断言`,
   )
 })
 
