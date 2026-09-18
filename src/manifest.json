@@ -2,8 +2,8 @@
     "name" : "快乐学园",
     "appid" : "__UNI__230600A",
     "description" : "小朋友的快乐学习园地：英语、语文、数学一起学",
-    "versionName" : "1.7.2",
-    "versionCode" : "172",
+    "versionName" : "1.7.3",
+    "versionCode" : "173",
     "vueVersion" : "3",
     "uniStatistics" : {
         "enable" : false
