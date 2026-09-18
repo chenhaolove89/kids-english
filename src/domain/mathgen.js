@@ -124,28 +124,43 @@ function decOptions(answerTenths, count, rng) {
 }
 
 // 同分母分数选项：干扰项覆盖典型错法——分子 ±1，以及「分母也相加」（1/5+2/5 写成 3/10）
+// 去重必须按**分数值**而不是字符串：sum=2 时「分母翻倍」的 2/(2den) 与 (sum-1)/den 是同一个值
+// （实测 3/8−1/8 会给出 2/16 与 1/8 两个等价选项），按字符串去重抓不到。
+function fracValueKey(n, d) {
+  const g = (x, y) => (y ? g(y, x % y) : x)
+  const k = g(n, d) || 1
+  return `${n / k}/${d / k}`
+}
 function fracOptions(sum, den, count, rng) {
   const mk = (n, d) => ({ id: `${n}/${d}`, label: `${n}/${d}` })
   const cands = [mk(sum, den), mk(sum + 1, den), mk(sum - 1, den), mk(sum, den + den)]
   const seen = new Set()
   const list = []
   for (const c of cands) {
-    if (Number(c.id.split('/')[0]) < 1 || seen.has(c.id)) continue
-    seen.add(c.id)
+    const [n, d] = c.id.split('/').map(Number)
+    // n >= d 一律不要：sum 到顶时 sum+1 = den 会给出 5/5（值 = 1）这种假分数干扰项——
+    // 这一批题型的结果一律保持真分数，假分数是五年级下册内容（L6 的 addFrac 与 L14 共用这个 helper，
+    // 实测 addFrac 曾有 29.5% 的题带 9/9 这类选项）
+    if (n < 1 || n >= d || seen.has(fracValueKey(n, d))) continue
+    seen.add(fracValueKey(n, d))
     list.push(c)
     if (list.length === count) break
   }
   // 分子靠边时上面的候选不够，用 1..den-1 兜底补足（保证选项数达标且不重复）
   for (let k = 1; list.length < count && k < den; k++) {
-    const c = mk(k, den)
-    if (!seen.has(c.id)) { seen.add(c.id); list.push(c) }
+    if (seen.has(fracValueKey(k, den))) continue
+    seen.add(fracValueKey(k, den))
+    list.push(mk(k, den))
   }
   return shuffle(list, rng)
 }
 
 // ---- 10 关「认识形状」：纯图形，3-6 岁不依赖识字 ----
-// 只用单码点图形（带变体选择符的 emoji 在不同系统上可能渲染成两个字符，槽位会错）
-const SHAPES = ['⭕', '🔺', '🟦', '⭐', '🔷', '🟨']
+// 只用单码点图形（带变体选择符的 emoji 在不同系统上可能渲染成两个字符，槽位会错）。
+// **同一形状只能出现一次**：曾经同时放了 🟦(蓝方块) 与 🟨(黄方块)，按「形状」本义都是正方形
+// → 「找一样的形状」出现双答案（实测 20% 的题选项里同时有这两种方块），「找不同」实际在考颜色。
+// 也没有长方形的 emoji（这是后续改用自绘图形的原因之一），现在这一关不含长方形。
+const SHAPES = ['⭕', '🔺', '🟦', '🔷', '⭐']
 
 // ---- 11 关「认识时间」：Noto 的钟面 emoji 覆盖 12 个整点与 12 个半点 ----
 // 1F550 起是 1:00..12:00，再往后 12 个是 1:30..12:30
@@ -410,24 +425,28 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.options = bigOptions(ans, 4, rng)
     qz.sig = `mixed2:${form}:${qz.display}`
   } else if (kind === 'shapeSame') {
-    // 找一样的形状（启蒙）：目标图形 + 3 个不同图形，纯视觉配对，选项就是图形本身
+    // 找一样的形状（启蒙）：目标图形 + 3 个不同图形，纯视觉配对，选项就是图形本身。
+    // 题面不写「?」：L7 图形规律也用「… ?」且同为启蒙学段，孩子会把「找一样」读成「下一个是什么」。
     const target = pickOne(SHAPES, rng)
     const others = shuffle(SHAPES.filter((s) => s !== target), rng).slice(0, 3)
-    qz.display = `${target}  ?`
+    qz.display = target
     qz.seq = [A('zh-choose.mp3')]
     qz.answer = target
     qz.options = shuffle([target, ...others], rng).map((s) => ({ id: s, label: s }))
-    // 签名带干扰项集合：只按目标图形签名时 6 种图形凑不满一关 10 题（去重会截短）
-    qz.sig = `shapeSame:${target}:${others.join('')}`
+    // 签名带干扰项集合：只按目标图形签名时图形种类凑不满一关 10 题（去重会截短）。
+    // 干扰项必须先排序再拼，否则同一局会出现两道题面与选项集合完全一样的题（实测 17.3% 的局）。
+    qz.sig = `shapeSame:${target}:${[...others].sort().join('')}`
   } else if (kind === 'shapeOdd') {
-    // 找不同（启蒙）：3 个一样 + 1 个不一样，问哪个不一样，选项里含正确项
-    const [common, odd, extra] = shuffle(SHAPES, rng).slice(0, 3)
+    // 找不同（启蒙）：3 个一样 + 1 个不一样。
+    // 选项只给「题面里出现过的那两个」（不一样的那个 + 一样的那个）：多放一个题面里没有的图形，
+    // 按字面它也「和谁都不一样」，与「哪一个不一样」的问法打架。两个大按钮对 3-6 岁也更好点。
+    const [common, odd] = shuffle(SHAPES, rng).slice(0, 2)
     const shown = shuffle([common, common, common, odd], rng)
-    qz.display = `${shown.join(' ')}  ?`
+    qz.display = shown.join(' ')
     qz.seq = [A('zh-choose.mp3')]
     qz.answer = odd
     qz.common = common
-    qz.options = shuffle([odd, common, extra], rng).map((s) => ({ id: s, label: s }))
+    qz.options = shuffle([odd, common], rng).map((s) => ({ id: s, label: s }))
     qz.sig = `shapeOdd:${common}:${odd}`
   } else if (kind === 'clockRead') {
     // 读钟面（一二年级）：给钟面选时间，干扰项是孩子最常犯的两种错（整点/半点混、看错一格）
@@ -476,20 +495,33 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.answer = forward ? String(meters * 100) : String(meters)
     qz.display = forward ? `${meters} 米 = ? 厘米` : `${meters * 100} 厘米 = ? 米`
     qz.seq = [A('zh-choose.mp3')]
-    qz.options = bigOptions(Number(qz.answer), 4, rng)
+    // 反向（厘米→米）答案是一位数，bigOptions 的 ±100 位值会给出「100 厘米 = ? 米」的
+    // 101 / 11 / 2 这种数量级离谱的选项（不像真实错法，还把题变简单）。
+    // 改用孩子真会犯的错：忘除（×100）、除以 10，以及 +1（meters=1 时 -1 为 0 会被过滤掉，
+    // 其余时候排在第 5 位被 slice 丢弃，所以实际只会出现 +1）
+    qz.options = forward
+      ? bigOptions(Number(qz.answer), 4, rng)
+      : shuffle(
+          [...new Set([meters, meters * 100, meters * 10, meters + 1, meters - 1].filter((v) => v > 0))].slice(0, 4),
+          rng
+        ).map((v) => ({ id: String(v), label: String(v) }))
     qz.sig = `unitConv:${forward ? 'm2cm' : 'cm2m'}:${meters}`
   } else if (kind === 'perimeter') {
     // 周长（三四年级）：长方形 (长+宽)×2、正方形 边长×4
     const square = rng() < 0.4
     let a, b
     if (square) {
-      a = 2 + rnd(rng, 14)
+      // 排除边长 4：边长 4 的正方形周长与面积都是 16，孩子分不清这两个概念在算什么
+      do { a = 2 + rnd(rng, 14) } while (a === 4)
       qz.display = `边长 ${a} 厘米的正方形，周长是多少厘米？`
       qz.answer = String(a * 4)
     } else {
-      a = 2 + rnd(rng, 19)
-      // 长方形不能出成长宽相等（那是正方形，说法就错了）
-      do { b = 2 + rnd(rng, 19) } while (b === a)
+      // 长方形的「长」必须不短于「宽」（教材定义），且不能相等（那是正方形）；
+      // 再排除周长与面积数值相同的情形（长 6 宽 3 都是 18），否则两个概念无法区分
+      do {
+        a = 2 + rnd(rng, 19)
+        b = 2 + rnd(rng, 19)
+      } while (a <= b || (a + b) * 2 === a * b)
       qz.display = `长 ${a} 厘米、宽 ${b} 厘米的长方形，周长是多少厘米？`
       qz.answer = String((a + b) * 2)
     }
@@ -502,12 +534,14 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     const square = rng() < 0.4
     let a, b
     if (square) {
-      a = 2 + rnd(rng, 12)
+      do { a = 2 + rnd(rng, 12) } while (a === 4) // 边长 4 周长=面积=16，见上
       qz.display = `边长 ${a} 厘米的正方形，面积是多少平方厘米？`
       qz.answer = String(a * a)
     } else {
-      a = 2 + rnd(rng, 12)
-      do { b = 2 + rnd(rng, 12) } while (b === a)
+      do {
+        a = 2 + rnd(rng, 12)
+        b = 2 + rnd(rng, 12)
+      } while (a <= b || (a + b) * 2 === a * b)
       qz.display = `长 ${a} 厘米、宽 ${b} 厘米的长方形，面积是多少平方厘米？`
       qz.answer = String(a * b)
     }
@@ -516,20 +550,20 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.longText = true
     qz.sig = `area:${square ? 'sq' : 'rect'}:${a}:${b || ''}`
   } else if (kind === 'fracOf') {
-    // 几分之几（三四年级）：平均分成几份、取了几份。干扰项覆盖典型错法——
-    // 分子分母颠倒（6/1）、写成"剩下的那份"（(den-n)/den）、分子 ±1
-    const den = 3 + rnd(rng, 6)
+    // 几分之几（三四年级）：平均分成几份、取了几份。
+    // 干扰项只用**同分母真分数**（分子 ±1、以及"剩下的那份"）：
+    // 「分子分母颠倒」会给出 7/6 这类假分数，那是五年级下册内容，而且「平均分成 6 份取 7 份」本身不可能。
+    // 分母下限取 5：真分数只有 1/den..(den-1)/den 这些，den=3 时凑不满 4 个选项（会排版成 2+1）。
+    const den = 5 + rnd(rng, 5)
     const n = 1 + rnd(rng, den - 1)
     const answer = `${n}/${den}`
-    const opts = []
-    for (const c of [answer, `${den}/${n}`, `${den - n}/${den}`, `${n + 1}/${den}`, `${n - 1}/${den}`]) {
-      if (!opts.includes(c) && Number(c.split('/')[0]) >= 1) opts.push(c)
+    const opts = [answer]
+    for (const k of [n + 1, n - 1, den - n]) {
+      if (k >= 1 && k < den && k !== n && !opts.includes(`${k}/${den}`)) opts.push(`${k}/${den}`)
       if (opts.length === 4) break
     }
-    // 分母小（den=3）时候选可能不足 4 个，用同分母真分数补齐，保证选项数达标
     for (let k = 1; opts.length < 4 && k < den; k++) {
-      const c = `${k}/${den}`
-      if (!opts.includes(c)) opts.push(c)
+      if (!opts.includes(`${k}/${den}`)) opts.push(`${k}/${den}`)
     }
     qz.display = `把一个蛋糕平均分成 ${den} 份，吃了 ${n} 份，吃了几分之几？`
     qz.seq = [A('zh-choose.mp3')]
@@ -537,6 +571,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.options = shuffle(opts, rng).map((c) => ({ id: c, label: c }))
     qz.longText = true
     qz.sig = `fracOf:${n}:${den}`
+
   } else if (kind === 'fracSubSame') {
     // 同分母分数减法（三四年级）：分母不变、分子相减，结果保持真分数
     const den = 5 + rnd(rng, 8)
@@ -548,9 +583,11 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     qz.options = fracOptions(n1 - n2, den, 4, rng)
     qz.sig = `fracSubSame:${n1}:${n2}:${den}`
   } else if (kind === 'percent') {
-    // 求一个数的百分之几（五六年级）：取值保证结果是整数，答案不出现 0
+    // 求一个数的百分之几（五六年级）：取值保证结果是整数，答案不出现 0。
+    // 基数的池子里**不能有 100**：100 的 p% 就等于 p，孩子可以照抄题面里的数直接得分（实测占 12.4%）。
+    // 基数必须都能被 4 整除（p=25/75 时要除得尽）：30 的 25% = 7.5，会把小数题混进来。
     const p = pickOne([10, 20, 25, 50, 75], rng)
-    const n = pickOne([20, 40, 60, 80, 100, 120, 200, 240], rng)
+    const n = pickOne([20, 40, 60, 80, 120, 160, 200, 240, 300, 400], rng)
     const ans = (n * p) / 100
     qz.display = `${n} 的 ${p}% 是多少？`
     qz.seq = [A('zh-choose.mp3')]
@@ -563,7 +600,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     const big = 2 + rnd(rng, 3)
     const small = 1 + rnd(rng, big - 1)
     const parts = big + small
-    const per = 2 + rnd(rng, 9)
+    const per = 2 + rnd(rng, 12)
     const total = parts * per
     const askBig = rng() < 0.5
     const ans = (askBig ? big : small) * per
@@ -591,7 +628,7 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
     // 给孩子的题面用错量词就是错的，不能拿"能看懂"当理由放过。
     const [names, unit, ask] = pickOne(
       [
-        [['苹果', '香蕉', '梨'], '个', '哪种'],
+        [['苹果', '桃子', '梨'], '个', '哪种'],
         [['小猫', '小狗', '小兔'], '只', '哪种'],
         [['红球', '黄球', '蓝球'], '个', '哪种'],
         [['一班', '二班', '三班'], '人', '哪个班'],
@@ -619,7 +656,6 @@ export function makeQuestion(lvId, { rng = Math.random, audioBase = '/static/aud
 /** 错题本展示文本：优先算式原样，图形/听音题给人话描述（家长周报「最常错」用） */
 export function mathText(q) {
   if (!q) return ''
-  if (q.display) return q.display
   const kind = q.kind
   if (kind === 'count') return `数一数：一共 ${q.answer} 个`
   if (kind === 'listen') return `听音识数：${q.answer}`
@@ -635,12 +671,17 @@ export function mathText(q) {
     const ask = (q.seq?.[0] || '').includes('bigger') ? '大' : '小'
     return `比大小：哪个数${ask}（${g1?.n ?? '?'} 和 ${g2?.n ?? '?'}）`
   }
+  // 图形/钟面题：display 本身是图形或"几点"这种半句话，直接丢给家长等于没说，给人话描述。
+  // **这些分支必须排在下面 `if (q.display)` 之前**——它们都有 display，落在通用兜底后面就永远走不到
+  // （一开始就是这么写的，第二轮复核实测发现四处改写全是死代码）。
   if (kind === 'pattern') return `图形规律：下一个是 ${q.answer}`
-  // 图形辨别与钟面题的 display 是图形，直接进错题本等于没说，给人话描述
-  if (kind === 'shapeSame') return `认形状：和 ${String(q.display || '').split(/\s+/)[0]} 一样的是 ${q.answer}`
-  if (kind === 'shapeOdd') return `找不同：${q.common || ''} 里不一样的是 ${q.answer}`
-  if (kind === 'clockRead') return `读钟面：${q.answer}`
-  if (kind === 'clockSet') return `拨钟面：${String(q.display || '').replace(' 是哪个钟？', '')}`
+  if (kind === 'shapeSame') return `认形状：找出和 ${q.display} 一样的图形`
+  if (kind === 'shapeOdd') return `找不同：${q.display} 里不一样的是 ${q.answer}`
+  if (kind === 'clockRead') return `读钟面：${q.display.replace(' 是几点？', '')} 是 ${q.answer}`
+  if (kind === 'clockSet') return `拨钟面：${q.display.replace(' 是哪个钟？', '')} 是哪个钟`
+  if (kind === 'unitPick') return `填单位：${q.display.replace('（  ）', `（${q.answer}）`)}`
+  // 其余题型（算式、应用题、长句题）显示 display 原文最准确
+  if (q.display) return q.display
   return q.sig || kind
 }
 

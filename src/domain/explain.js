@@ -103,20 +103,21 @@ export function mathExplain(q) {
 
   // 3) 长句题（时间/测量/周长面积/分数/百分数/统计）：题干没有 ?，逐类给一句算式或道理
   if (kind === 'clockRead' || kind === 'clockSet') {
-    // 讲怎么看钟，而不是把答案再念一遍：整点看分针指 12，半点看分针指 6（时针夹在两格之间）
+    // 讲怎么看钟，而不是把答案再念一遍。同时用括号点出「分针长、时针短」——
+    // 「分针/时针」这两个名称对一二年级是新词，只说名字等于假设孩子已经会了。
     const label = kind === 'clockRead' ? ans : String(q.display || '').replace(' 是哪个钟？', '')
     const [h, mm] = label.split(':').map(Number)
     if (!h || Number.isNaN(mm)) return ''
     const nextHour = (h % 12) + 1
-    if (mm === 30) return `分针指 6，时针在 ${h} 和 ${nextHour} 之间，就是 ${label}`
-    return `分针指 12、时针指 ${h}，就是 ${label}`
+    if (mm === 30) return `分针（长）指 6，时针（短）在 ${h} 和 ${nextHour} 之间，就是 ${label}`
+    return `分针（长）指 12、时针（短）指 ${h}，就是 ${label}`
   }
   if (kind === 'unitPick') {
     if (!q.display || !ans) return ''
+    // 规则不能说「比 1 米短的东西用厘米」——爸爸身高 175 厘米就比 1 米长，等于自相矛盾地教错。
+    // 规则还必须覆盖全部例句：只写「房子和操场用米」时「一棵大树高约 10 米」推不出来，所以补上大树。
     const sentence = q.display.replace('（  ）', '')
-    return ans === '厘米'
-      ? `比 1 米短的东西用厘米：${sentence} ${ans}`
-      : `比 1 米长的东西用米：${sentence} ${ans}`
+    return `小东西和身高用厘米，房子、大树、操场用米：${sentence} ${ans}`
   }
   if (kind === 'perimeter') {
     const nums = String(q.display || '').match(/\d+/g) || []
@@ -142,13 +143,15 @@ export function mathExplain(q) {
     return `${nums[0]} × ${nums[1]} ÷ 100 = ${ans}`
   }
   if (kind === 'ratioShare') {
-    // 参数从 sig 取（题干里的数字顺序会随问法变，取错就会讲错）
+    // 参数从 sig 取（题干里的数字顺序会随问法变，取错就会讲错）；
+    // 每份算出来之后必须把「乘份数」那一步补上，否则孩子看着 7 直接蹦到 14，中间少一环。
     const [, total, a, b, which] = String(q.sig || '').split(':')
     const parts = Number(a) + Number(b)
     if (!total || !parts || Number(total) % parts !== 0) return ''
     const per = Number(total) / parts
     const shares = which === 'big' ? Number(a) : Number(b)
-    return `${total} ÷ ${parts} = ${per}，${shares} 份就是 ${ans}`
+    // 揭晓区只有一行（冒烟卡 40 字），所以「每份多少」不单独成句，直接进算式里
+    return `${total} ÷ ${parts} = ${per}，${shares} 份是 ${per} × ${shares} = ${ans}`
   }
   if (kind === 'average') {
     const nums = String(q.display || '').match(/\d+/g) || []

@@ -650,6 +650,7 @@ function goBack() {
   flex-wrap: wrap;
   gap: min(26rpx, 2.6vh);
 }
+.options.opts-2 .opt,
 .options.opts-3 .opt,
 .options.opts-4 .opt {
   width: calc(50% - 13rpx);

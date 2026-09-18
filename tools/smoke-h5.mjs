@@ -1264,9 +1264,9 @@ async function main() {
         }
         seenHere.add(q.fam)
         families.add(q.fam)
-        // 比大小两种题型直接点卡片（无数字选项，固定 2 张）；其余是 3 或 4 个选项
-        // （generator 里 numOptions(n, 3) 用于低关，numOptions(n, 4) 用于其它关）
-        const valid = q.cards === 2 ? q.opts === 0 : (q.opts === 3 || q.opts === 4) && q.cards === 0
+        // 比大小两种题型直接点卡片（无数字选项，固定 2 张）；其余是 2~4 个选项
+        // （2 个是 L10「找不同」：只给题面里出现过的那两个图形，两个大按钮对 3-6 岁更好点）
+        const valid = q.cards === 2 ? q.opts === 0 : (q.opts >= 2 && q.opts <= 4) && q.cards === 0
         if (!valid) mathProblems.push(`L${level} 第${i + 1}题形态异常：选项 ${q.opts} / 卡片 ${q.cards}`)
         // 题干可以是文字（算式/应用题），也可以是纯图形（点数、看图加减、比大小）
         if (!q.hasText && q.visual === 0) mathProblems.push(`L${level} 第${i + 1}题既无文字也无图形（fam=${q.fam}）`)
@@ -1392,7 +1392,7 @@ async function main() {
     // 而是复用上面 42 题循环里已经出现的揭晓文案（答错必有揭晓）。
     // 讲解文案的"讲理"特征词：每种题型至少命中一个（新增题型必须在这里补特征词，
     // 否则它的揭晓文案会被当成"只报答案"而判不合格）
-    const mathExplainFamily = /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是|小数点对齐|分母不变|有括号先算括号|先算乘法再[加减]|一样的形状|不一样|分针指|用厘米|用米|1 米 = 100 厘米|（长 \+ 宽）|边长 ×|长 × 宽|平均分成|÷ 100|÷ 个数|比一比)/
+    const mathExplainFamily = /(算式是|补上缺的数|找规律|那边是答案|数一数|听到的是|小数点对齐|分母不变|有括号先算括号|先算乘法再[加减]|一样的形状|不一样|分针|用厘米|用米|1 米 = 100 厘米|（长 \+ 宽）|边长 ×|长 × 宽|平均分成|份是|÷ 100|÷ 个数|比一比)/
     const badMathReveal = mathReveals.filter((r) => !mathExplainFamily.test(r.text) || r.text.length > 40)
     check(
       `数学答错讲解覆盖到位（${mathReveals.length} 条揭晓文案，全部是"讲为什么"且 ≤40 字）`,

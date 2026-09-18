@@ -55,6 +55,16 @@ test('mathText：算式原样，图形/听音/比一比给人话', () => {
     mathText({ kind: 'compareNum', answer: '1', groups: [{ n: 5 }, { n: 9 }], seq: ['/static/audio/zh-smaller.mp3'] }),
     '比大小：哪个数小（5 和 9）',
   )
+  // 有 display 但 display 本身讲不清的题型必须走专属分支——这些分支如果排在通用兜底
+  // `if (q.display) return q.display` 之后就是死代码（曾经真的这样：家长页只看到「🔷」「🕒 是几点？」）
+  assert.equal(mathText({ kind: 'shapeSame', display: '🔷', answer: '🔷' }), '认形状：找出和 🔷 一样的图形')
+  assert.equal(mathText({ kind: 'shapeOdd', display: '🟦 ⭕ 🟦 🟦', answer: '⭕' }), '找不同：🟦 ⭕ 🟦 🟦 里不一样的是 ⭕')
+  assert.equal(mathText({ kind: 'clockRead', display: '🕒 是几点？', answer: '3:00' }), '读钟面：🕒 是 3:00')
+  assert.equal(mathText({ kind: 'clockSet', display: '3:30 是哪个钟？', answer: '🕞' }), '拨钟面：3:30 是哪个钟')
+  assert.equal(mathText({ kind: 'unitPick', display: '铅笔长约 15（  ）', answer: '厘米' }), '填单位：铅笔长约 15（厘米）')
+  assert.equal(mathText({ kind: 'pattern', display: '● ▲ ● ▲  ?', answer: '●' }), '图形规律：下一个是 ●')
+  // 长句题与算式题仍显示原文（display 最准确）
+  assert.equal(mathText({ kind: 'perimeter', display: '长 6 厘米、宽 4 厘米的长方形，周长是多少厘米？', answer: '20' }), '长 6 厘米、宽 4 厘米的长方形，周长是多少厘米？')
   assert.equal(mathText(null), '')
 })
 

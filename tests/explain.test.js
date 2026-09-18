@@ -12,12 +12,16 @@ import assert from 'node:assert/strict'
 import { mathExplain, roundExplain } from '../src/domain/explain.js'
 import { MATH_LEVELS, buildQuestions } from '../src/domain/mathgen.js'
 
-/** 确定性 rng（与 mathgen.test.js 同款），让每个种子抽到的题可复现 */
+/** 确定性 rng：mulberry32（不用 LCG——s*1103515245 在 2^53 处丢精度，会出现短周期，
+ *  实测某个种子下 buildQuestions(15) 只出 5 题，让抽样断言变得不可靠） */
 function seededRng(seed = 42) {
-  let s = seed
+  let s = seed >>> 0
   return () => {
-    s = (s * 1103515245 + 12345) % 2147483648
-    return s / 2147483648
+    s = (s + 0x6d2b79f5) >>> 0
+    let t = s
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
 

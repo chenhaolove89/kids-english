@@ -1,14 +1,19 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import { buildQuestions, makeQuestion, normalizeMathLevel, MATH_LEVELS } from '../src/domain/mathgen.js'
 import { isPickCorrect } from '../src/domain/judge.js'
 
-// 确定性 rng：可复现的伪随机（测试用）
+// 确定性 rng：mulberry32（不用 LCG——s*1103515245 在 2^53 处丢精度，会出现短周期，
+// 实测某个种子下 buildQuestions(15) 只出 5 题，抽样断言会因此变得不可靠）
 function seededRng(seed = 42) {
-  let s = seed
+  let s = seed >>> 0
   return () => {
-    s = (s * 1103515245 + 12345) % 2147483648
-    return s / 2147483648
+    s = (s + 0x6d2b79f5) >>> 0
+    let t = s
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
 
@@ -157,6 +162,18 @@ test('L6 小数与分数：小数一位、分数同分母且结果为真分数',
         assert.equal(d1, d2, '同分母')
         assert.equal(q.answer, `${n1 + n2}/${d1}`, '答案分子相加')
         assert.ok(n1 + n2 < d1, '结果保持真分数（不用约分）')
+        // 选项也只能是同分母真分数：sum 到顶时 sum+1 = den 会给出 5/5（值 = 1）这种假分数干扰项，
+        // 与「结果保持真分数」的口径冲突（实测这个 helper 曾有 29.5% 的 addFrac 带此类选项）
+        for (const o of q.options) {
+          const [a, b] = o.id.split('/').map(Number)
+          assert.ok(a >= 1 && a < b, `选项必须是真分数: ${o.id}（${q.display}）`)
+          assert.ok(b === d1 || b === d1 * 2, `选项分母只能是 den 或 2den（后者是「分母也相加」的典型错法）: ${o.id}`)
+        }
+        const vals = q.options.map((o) => {
+          const [a, b] = o.id.split('/').map(Number)
+          return (a / b).toFixed(6)
+        })
+        assert.equal(new Set(vals).size, vals.length, `选项出现等值分数: ${q.options.map((o) => o.id).join(' ')}`)
       } else {
         assert.match(q.answer, /^\d+\.\d$/, `一位小数: ${q.answer}`)
         assert.ok(Number(q.answer) > 0, `结果为正（0.0 说明出了两个相同操作数的退化题）: ${q.display}`)
@@ -207,8 +224,15 @@ test('新关卡 7/8/9：关卡可解析、出题结构完整、选项含答案',
 
 test('L10 认识形状：答案就在展示的图形里、选项都是图形且不重复', () => {
   // 形状清单在测试里再写一遍（契约）：emoji 多在辅助平面，正则字符类不加 u 标志会被
-  // 拆成代理对而匹配不上，所以这里用数组比较，不用 /^[⭕🔺…]$/ 这类写法
-  const SHAPES = ['⭕', '🔺', '🟦', '⭐', '🔷', '🟨']
+  // 拆成代理对而匹配不上，所以这里用数组比较，不用 /^[⭕🔺…]$/ 这类写法。
+  // **每种形状只能出现一次**：放两个方块（🟦/🟨）时「找一样的形状」会出现双答案、「找不同」变成考颜色。
+  const SHAPES = ['⭕', '🔺', '🟦', '🔷', '⭐']
+  const SHAPE_NAMES = { '⭕': '圆', '🔺': '三角', '🟦': '方块', '🔷': '菱形', '⭐': '星' }
+  assert.equal(new Set(Object.values(SHAPE_NAMES)).size, SHAPES.length, '每个图形必须代表不同的形状（不能两个方块）')
+  // 源码里的清单必须与这份契约逐字一致：加回第二个方块时上面的语义断言抓不到，这条能抓到
+  const src = fs.readFileSync(new URL('../src/domain/mathgen.js', import.meta.url), 'utf8')
+  const literal = src.match(/const SHAPES = \[([^\]]+)\]/)[1].replace(/['\s,]/g, '')
+  assert.equal(literal, SHAPES.join(''), '源码 SHAPES 与契约不一致（加图形前先想清楚是否同形不同色）')
   for (const lv of [10]) {
     for (let seed = 1; seed <= 30; seed++) {
       for (const q of buildQuestions(lv, { rng: seededRng(seed * 53 + lv) })) {
@@ -222,6 +246,9 @@ test('L10 认识形状：答案就在展示的图形里、选项都是图形且�
           assert.equal(shown.length, 1, `找一样的形状只展示一个目标图形: ${q.display}`)
           assert.equal(q.answer, shown[0], '答案必须与展示的图形一致')
           assert.ok(q.options.some((o) => o.id === shown[0]), '选项里要有同一个图形')
+          assert.equal(q.options.length, 4, '4 个选项')
+          // 题面不能带「?」：L7 图形规律也用「… ?」且同为启蒙，孩子会读成「下一个是什么」
+          assert.ok(!q.display.includes('?'), `找一样的形状不该出现问号（与图形规律混淆）: ${q.display}`)
         } else {
           // 找不同：展示 4 个图形，3 个相同 + 1 个不同，答案就是那一个
           assert.equal(shown.length, 4, `找不同展示 4 个图形: ${q.display}`)
@@ -231,9 +258,22 @@ test('L10 认识形状：答案就在展示的图形里、选项都是图形且�
           assert.equal(odd.length, 1, `只能有一个不一样的图形: ${q.display}`)
           assert.equal(q.answer, odd[0], '答案就是那个不一样的图形')
           assert.equal(counts[q.common], 3, '其余三个必须同形')
+          // 选项只能是题面里出现过的那两个：多放一个没出现过的图形，按字面它也「和谁都不一样」
+          assert.equal(q.options.length, 2, '选项为题面里的两个图形')
+          for (const o of q.options) assert.ok(shown.includes(o.label), `选项必须出现在题面里: ${o.label} / ${q.display}`)
+          assert.ok(!q.display.includes('?'), `找不同不该出现问号: ${q.display}`)
         }
       }
     }
+  }
+})
+
+test('L10 认识形状：同一局里不出现两道题面与选项都一样的题', () => {
+  // 签名先拼干扰项、没排序时同一局会出现外观完全相同的两道题（实测 17.3% 的局）
+  for (let seed = 1; seed <= 120; seed++) {
+    const qs = buildQuestions(10, { rng: seededRng(seed * 91) })
+    const looks = qs.map((q) => q.kind + '|' + q.display + '|' + q.options.map((o) => o.label).sort().join(''))
+    assert.equal(new Set(looks).size, looks.length, `第 ${seed} 局有重复题面：${looks.filter((v, i) => looks.indexOf(v) !== i)}`)
   }
 })
 
@@ -263,7 +303,11 @@ test('L11 认识时间：钟面 emoji 与答案时间必须对应（读钟面/�
         const label = q.display.replace(' 是哪个钟？', '')
         assert.match(label, /^\d{1,2}:(00|30)$/, `拨钟面题干格式: ${q.display}`)
         assert.equal(labelOf(q.answer.codePointAt(0)), label, '答案钟面必须等于题干时间')
-        for (const o of q.options) assert.equal(labelOf(o.id.codePointAt(0)) !== undefined, true)
+        // 选项也要逐个解码验（原来这条写成 `labelOf(...) !== undefined`，恒真等于没查）
+        for (const o of q.options) {
+          const t = labelOf(o.id.codePointAt(0))
+          assert.ok(t !== label || o.id === q.answer, `同时间的钟面只应是答案那一个: ${t} / ${q.answer}`)
+        }
       }
     }
   }
@@ -280,6 +324,14 @@ test('L12 长度与测量：单位题答案只可能是厘米或米，换算题�
         assert.ok(['厘米', '米'].includes(q.answer), `单位题答案只能是厘米或米: ${q.answer}`)
         assert.deepEqual([...ids].sort(), [...['厘米', '米', '千米']].sort(), '三个长度单位都要出现')
         assert.match(q.display, /（  ）$/, `题面留了填空位: ${q.display}`)
+        // 句子 ↔ 单位必须是常识配对（这里逐句钉住，防止以后换例子时配错）
+        const UNIT_BY_SENTENCE = {
+          铅笔: '厘米', 课桌: '厘米', 数学书: '厘米', 橡皮: '厘米', 爸爸: '厘米',
+          教室的长: '米', 教室的门: '米', 一层楼: '米', 大树: '米', 操场: '米',
+        }
+        const key = Object.keys(UNIT_BY_SENTENCE).find((k) => q.display.includes(k))
+        assert.ok(key, `未知量感例句: ${q.display}`)
+        assert.equal(q.answer, UNIT_BY_SENTENCE[key], `单位与句子不匹配: ${q.display}`)
       } else {
         assert.equal(q.kind, 'unitConv')
         const m = q.display.match(/^(\d+) (米|厘米) = \? (米|厘米)$/)
@@ -293,8 +345,16 @@ test('L12 长度与测量：单位题答案只可能是厘米或米，换算题�
           assert.equal(m[3], '米')
           assert.ok(n % 100 === 0, `厘米数是整百米: ${n}`)
           assert.equal(q.answer, String(n / 100), '厘米 → 米 除以 100')
+          // 反向题答案是一位数：干扰项必须是「忘除 100 / 除以 10 / ±1」这类真错法，
+          // 而不是 bigOptions 的 ±100 位值（会给出「100 厘米 = ? 米」的 101、11 这种离谱选项）
+          for (const o of q.options) {
+            const v = Number(o.id)
+            assert.ok(v > 0, `选项应为正数: ${o.id}`)
+            assert.ok(v <= n, `反向题干扰项不该大于被换算的厘米数（${o.id} > ${n}）`)
+          }
         }
         for (const o of q.options) assert.ok(Number(o.id) > 0, `选项应为正数: ${o.id}`)
+        assert.equal(q.options.length, 4, '四个选项')
       }
     }
   }
@@ -313,19 +373,24 @@ test('L13 周长与面积：按公式求值、长方形两邻边不相等、单�
         if (q.display.includes('正方形')) {
           assert.equal(nums.length, 1, `正方形只给一个边长: ${q.display}`)
           assert.equal(ans, nums[0] * 4, '正方形周长 = 边长 × 4')
+          assert.notEqual(nums[0], 4, '边长 4 时周长与面积都是 16，孩子分不清在算什么')
         } else {
           assert.equal(nums.length, 2, `长方形给长和宽: ${q.display}`)
-          assert.notEqual(nums[0], nums[1], `长方形的长宽不能相等（那是正方形）: ${q.display}`)
+          // 「长」不能比「宽」短，也不能相等（那是正方形）——教材定义，反着写就是教错
+          assert.ok(nums[0] > nums[1], `长必须不短于宽: ${q.display}`)
           assert.equal(ans, (nums[0] + nums[1]) * 2, '长方形周长 = (长 + 宽) × 2')
+          assert.notEqual(ans, nums[0] * nums[1], `周长不能与面积数值相同（长 ${nums[0]} 宽 ${nums[1]}）`)
         }
       } else {
         assert.equal(q.kind, 'area')
         assert.match(q.display, /面积是多少平方厘米？$/, `面积题问法: ${q.display}`)
         if (q.display.includes('正方形')) {
           assert.equal(ans, nums[0] * nums[0], '正方形面积 = 边长 × 边长')
+          assert.notEqual(nums[0], 4, '边长 4 时周长与面积都是 16')
         } else {
-          assert.notEqual(nums[0], nums[1], `长方形的长宽不能相等（那是正方形）: ${q.display}`)
+          assert.ok(nums[0] > nums[1], `长必须不短于宽: ${q.display}`)
           assert.equal(ans, nums[0] * nums[1], '长方形面积 = 长 × 宽')
+          assert.notEqual(ans, (nums[0] + nums[1]) * 2, `面积不能与周长数值相同（长 ${nums[0]} 宽 ${nums[1]}）`)
         }
       }
       for (const o of q.options) assert.ok(Number(o.id) > 0, `选项应为正数: ${o.id}`)
@@ -342,11 +407,24 @@ test('L14 分数初步：几分之几是真分数、同分母减法符合分子�
       assert.ok(ids.length >= 3, '选项数足够')
       const [n, d] = q.answer.split('/').map(Number)
       assert.ok(n >= 1 && n < d, `答案是真分数: ${q.answer}`)
+      // 两个选项算出同一个值（2/16 与 1/8）等于把题变成双答案，按分数值去重才算数
+      const values = q.options.map((o) => {
+        const [a, b] = o.id.split('/').map(Number)
+        return (a / b).toFixed(6)
+      })
+      assert.equal(new Set(values).size, values.length, `选项出现等值分数: ${q.options.map((o) => o.id).join(' ')}`)
       if (q.kind === 'fracOf') {
         const m = q.display.match(/平均分成 (\d+) 份，吃了 (\d+) 份/)
         assert.ok(m, `几分之几题干格式: ${q.display}`)
         assert.equal(q.answer, `${m[2]}/${m[1]}`, '吃了几份就是几分之几')
         assert.ok(Number(m[2]) < Number(m[1]), '取的份数必须少于总份数')
+        // 干扰项只能是同分母真分数：假分数（7/6）是五年级下册内容，而且「平均分成 6 份取 7 份」不可能
+        for (const o of q.options) {
+          const [a, b] = o.id.split('/').map(Number)
+          assert.ok(a >= 1 && a < b, `选项必须是真分数: ${o.id}`)
+          assert.equal(b, Number(m[1]), `选项必须同分母: ${o.id}`)
+        }
+        assert.equal(q.options.length, 4, '四个选项（den≥5 才凑得齐）')
       } else {
         assert.equal(q.kind, 'fracSubSame')
         const m = q.display.match(/^(\d+)\/(\d+) − (\d+)\/(\d+) = \?$/)
@@ -354,6 +432,12 @@ test('L14 分数初步：几分之几是真分数、同分母减法符合分子�
         assert.equal(m[2], m[4], '同分母')
         assert.equal(q.answer, `${Number(m[1]) - Number(m[3])}/${m[2]}`, '分母不变、分子相减')
         assert.ok(Number(m[1]) > Number(m[3]), '被减数分子更大（不出负数）')
+        // 选项同样只能同分母真分数（与 addFrac 共用 fracOptions）
+        for (const o of q.options) {
+          const [a, b] = o.id.split('/').map(Number)
+          assert.ok(a >= 1 && a < b, `选项必须是真分数: ${o.id}（${q.display}）`)
+          assert.ok(b === Number(m[2]) || b === Number(m[2]) * 2, `选项分母只能是 den 或 2den: ${o.id}`)
+        }
       }
     }
   }
@@ -372,6 +456,9 @@ test('L15 百分数与比例：结果都是整数，比例题按份数整除', (
         const [base, p] = [Number(m[1]), Number(m[2])]
         assert.equal((base * p) / 100, ans, `算式必须精确: ${q.display}`)
         assert.ok(Number.isInteger((base * p) / 100), `结果必须是整数（不能出小数）: ${q.display}`)
+        // 基数不能是 100：100 的 p% 就是 p，孩子照抄题面里的数就能得分
+        assert.notEqual(base, 100, `基数不该是 100（答案等于百分数本身，可以直接抄）: ${q.display}`)
+        assert.notEqual(String(ans), String(p), '答案不该等于题面里的百分数')
       } else {
         assert.equal(q.kind, 'ratioShare')
         const m = q.display.match(/^(\d+) 颗糖按 (\d+) : (\d+) 分给两人，(多|少)的一份是多少颗？$/)
@@ -410,13 +497,15 @@ test('L16 统计与数据：平均数必为整数，读数据题最多/最少唯
         const names = q.display.split('，').slice(0, 3).map((s) => s.split(' ')[0])
         assert.equal(q.answer, names[nums.indexOf(expect)], '答案必须是最多/最少那一项')
         assert.equal(q.options.length, 3, '三项各一个选项')
-        // 量词与问法必须配对：小猫论「只」、班级论「人」且问「哪个班」，用错量词就是在教错话
-        const UNIT_BY_NAME = { 苹果: '个', 小猫: '只', 红球: '个', 一班: '人' }
-        const unit = UNIT_BY_NAME[names[0]]
-        assert.ok(unit, `未知的对象表: ${names.join('/')}`)
-        assert.equal(q.unit, unit, `量词用错: ${q.display}`)
-        assert.ok(q.display.includes(` ${unit}`), `题面必须带正确量词: ${q.display}`)
-        assert.ok(q.display.includes(unit === '人' ? '哪个班' : '哪种'), `问法要与对象配对: ${q.display}`)
+        // 量词与问法必须配对：小猫论「只」、班级论「人」且问「哪个班」，用错量词就是在教错话。
+        // 逐项查（不只查第一项）：香蕉论「根」而不是「个」，只验 names[0] 会漏掉它。
+        const UNIT_BY_NAME = { 苹果: '个', 桃子: '个', 香蕉: '根', 梨: '个', 小猫: '只', 小狗: '只', 小兔: '只', 红球: '个', 黄球: '个', 蓝球: '个', 一班: '人', 二班: '人', 三班: '人' }
+        assert.ok(q.unit, `题目要带量词: ${q.display}`)
+        for (const nm of names) {
+          assert.equal(q.unit, UNIT_BY_NAME[nm], `「${nm}」的量词用错了（现用「${q.unit}」）: ${q.display}`)
+        }
+        assert.ok(q.display.includes(` ${q.unit}`), `题面必须带正确量词: ${q.display}`)
+        assert.ok(q.display.includes(q.unit === '人' ? '哪个班' : '哪种'), `问法要与对象配对: ${q.display}`)
       }
     }
   }
