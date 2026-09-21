@@ -17,6 +17,7 @@
  *   node tools/gen-zh-azure.mjs --only zh-897fs   # 只重生成指定条目(改单条例句/字音时用,避免整批重写产生无关 diff)
  *   node tools/gen-zh-azure.mjs --sentences    # 英语句子的中文释义音(audio-zh/)
  *   node tools/gen-zh-azure.mjs --poems        # 古诗音频(整首+逐句,src/data/poems.json,落到 static/audio-poem/)
+ *   node tools/gen-zh-azure.mjs --passages     # 阅读理解篇章朗读(整篇,content-packages/zh-passages.json,落到 static/audio-zh/)
  *   node tools/gen-zh-azure.mjs --labels       # 按钮指令朗读(工具内 BUTTON_LABELS 清单,落到 audio/zh-btn-*.mp3)
  *   node tools/gen-zh-azure.mjs --all          # 全部(默认)
  *
@@ -51,6 +52,7 @@ const POEMS_MODE = argv.has('--poems')
 const LABELS_MODE = argv.has('--labels')
 const MISC_MODE = argv.has('--misc')
 const SENTENCES_MODE = argv.has('--sentences')
+const PASSAGES_MODE = argv.has('--passages')
 const FORCE = argv.has('--force')
 // 增量跳过（P3b）：目标文件已存在且 >1KB 视为有效，跑批不重写历史音频
 // （改单条用 --only <id> 精确重生成；全量重生成用 --force）。--poems 原有同款逻辑收编到这。
@@ -350,6 +352,64 @@ function sentenceJobs() {
   return jobs.filter((j) => FRESH(j.out))
 }
 
+// ---- 阅读理解篇章（--passages）：每篇一条整篇朗读，phoneme 槽位来自 tools/zh-passage-pinyin.json ----
+// 注音表由 tools/zh_passage_annotate.py 生成并人工校订（多音字全覆盖，一/不 按项目口径不注）。
+// 整篇用 poemFullSlots 逐字符展开拼接：槽位长度必须等于整篇字符数，对不上就整条退回默认读音。
+function passageJobs() {
+  const src = JSON.parse(fs.readFileSync(path.join(ROOT, 'content-packages', 'zh-passages.json'), 'utf8'))
+  const pinyin = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools', 'zh-passage-pinyin.json'), 'utf8'))
+  const jobs = []
+  for (const p of src.passages) {
+    const out = path.join(AUDIO_ZH_DIR, `${p.id}.mp3`)
+    if (!FRESH(out)) continue
+    const text = p.lines.join('')
+    const slots = poemFullSlots(p.lines, pinyin[p.id] || {})
+    jobs.push({ id: p.id, text, pinyin: slots, out })
+  }
+  return jobs
+}
+
+async function runPassages() {
+  const jobs = passageJobs()
+  console.log(`== 阅读理解篇章朗读: ${jobs.length} 条 ==`)
+  if (DRY_RUN) {
+    for (const j of jobs) {
+      const ssml = buildSsml(j.text, j.pinyin)
+      const phonemes = (ssml.match(/<phoneme /g) || []).length
+      console.log(`[${j.id}] ${[...j.text].length} 字、${phonemes} 处注音`)
+      console.log('   ' + ssml.slice(0, 260))
+    }
+    return
+  }
+  const creds = loadCreds()
+  if (!creds.key || !creds.region) {
+    console.error('缺少 AZURE_SPEECH_KEY / AZURE_SPEECH_REGION(环境变量或 .env.local)')
+    process.exit(1)
+  }
+  const worker = async (job) => {
+    let buf
+    try {
+      buf = await synth(buildSsml(job.text, job.pinyin), creds)
+    } catch (e) {
+      if (!job.pinyin) throw e
+      buf = await synth(buildSsml(job.text, null), creds)
+      console.warn(`  ↻ ${job.id} phoneme 被拒,已退回默认读音: ${e.message}`)
+    }
+    fs.writeFileSync(job.out, buf)
+  }
+  let failures = await pool('PASSAGE', jobs, worker)
+  if (failures.length) {
+    console.log(`-- 串行重试 ${failures.length} 条 --`)
+    const retryIds = new Set(failures.map((f) => f.id))
+    failures = await pool('PASSAGE-RETRY', jobs.filter((j) => retryIds.has(j.id)), worker)
+  }
+  console.log(`\n== 完成 == 成功 ${jobs.length - failures.length} / ${jobs.length} 条`)
+  if (failures.length) {
+    for (const f of failures) console.log(`  ✗ ${f.id}: ${f.error}`)
+    process.exitCode = 1
+  }
+}
+
 async function runSentences() {
   const jobs = sentenceJobs()
   console.log(`== 英语句子的中文释义: ${jobs.length} 条 ==`)
@@ -380,6 +440,7 @@ async function runSentences() {
 async function main() {
   if (LABELS_MODE) return runLabels()
   if (MISC_MODE) return runMisc()
+  if (PASSAGES_MODE) return runPassages()
   if (SENTENCES_MODE) return runSentences()
   if (POEMS_MODE) return runPoems()
   const { items } = JSON.parse(fs.readFileSync(PINYIN_FILE, 'utf8'))

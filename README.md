@@ -45,6 +45,7 @@ src/pages/       页面壳（布局、导航），业务逻辑逐步下沉
 
 ```
 content-packages/curriculum.json  ★ 课程源（阶段/科目/级别映射，人工维护）
+content-packages/zh-passages.json ★ 阅读理解短文源（正文+题目，人工维护；逐字注音在 tools/zh-passage-pinyin.json）
 tools/validate-content.mjs        课程校验 + 目录打包（npm run build:content / validate:content）
 tests/                            Node 内置测试（npm run test：出题/判题/会话/存储/收集/错题本/路由/目录/分层门禁/源码契约）
 src/domain/                       纯函数层（见上）
@@ -104,7 +105,8 @@ npm run gen:assets           # 生成音频/图片/数据（英语走有道缓�
 npm run gen:en-youdao        # 增量生成并替换两套英语音频，自动更新音量表
 node tools/gen-audio-volumes.mjs   # 音频变动后重算增益
 npm run build:content        # 课程源变更后：校验 + 重新生成 src/content/catalog.json
-npm run test                 # Node 测试（276 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
+npm run gen:zh-passage       # 阅读理解短文注音（python + pypinyin）：多音字全覆盖 + 表与源一致性自检
+npm run test                 # Node 测试（304 个：出题/判题/星级/会话/存储迁移/目录/错题本/图鉴/偏好核心/分层门禁/源码契约）
 npm run smoke:h5             # 真实 Chrome 冒烟测试 172 项（约 8~10 分钟；需先 build:h5 并另开终端跑 node tools/serve.mjs）
 npm run check:layering       # 分层门禁：domain 纯净、无反向依赖、存储已收口
 npm run validate:content     # 只校验（CI 用；目录与源不一致则失败）

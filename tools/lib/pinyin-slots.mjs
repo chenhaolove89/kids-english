@@ -41,21 +41,31 @@ export function pinyinSlots(line, marks) {
 }
 
 /**
- * 整首诗的槽位：必须**逐字符**展开后拼接，null 行按该行字符数占位。
+ * 整首/整篇的槽位：必须**逐字符**展开后拼接，null 行按该行字符数占位。
  *
  * 这里是 2026-09-10 那个缺陷的正身：改用 `lines.map(pinyinSlots).flat()` 会让
  * 「整行没注音」的行只贡献 1 个元素（flat 只摊平数组，不补 null），拼接结果比整首
  * 少几十个字符 → buildSsml 的长度校验不过 → 整首退回默认读音，多音字全错。
  *
+ * 一行注音支持两种形态：
+ *  - `{字: 拼音}`：古诗用的紧凑写法（同一行同一个字只能有一个读音）
+ *  - 槽位数组：与 `[...line]` 等长，元素为拼音或 null。篇章用它——
+ *    「它背上背着一个壳」同一行里两个「背」读音不同（bèi / bēi），字表表达不了。
+ *
  * @param {string[]} lines 逐行文本
- * @param {Record<string, Record<string,string>>} ttsPinyin 行 → 字 → 拼音
+ * @param {Record<string, Record<string,string>|Array<string|null>>} marksByLine 行 → 注音
  */
-export function poemFullSlots(lines, ttsPinyin) {
-  const marks = ttsPinyin || {}
+export function poemFullSlots(lines, marksByLine) {
+  const marks = marksByLine || {}
   const full = []
   for (const line of lines) {
     const lineMarks = marks[line]
-    for (const ch of [...line]) full.push(lineMarks && lineMarks[ch] ? lineMarks[ch] : null)
+    const chars = [...line]
+    if (Array.isArray(lineMarks)) {
+      for (let i = 0; i < chars.length; i++) full.push(lineMarks[i] || null)
+      continue
+    }
+    for (const ch of chars) full.push(lineMarks && lineMarks[ch] ? lineMarks[ch] : null)
   }
   return full.some(Boolean) ? full : null
 }
