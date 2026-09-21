@@ -22,5 +22,8 @@
   },
   "zhSentences": {
     "levels": [1, 2, 3, 4]
+  },
+  "zhPassages": {
+    "stages": ["g12", "g34"]
   }
 }

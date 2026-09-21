@@ -7,10 +7,17 @@
  *     zh: { seen: [charCodePoint], mastered: [charCodePoint] },
  *     zhWords: { seen: [wordId], mastered: [wordId] },
  *     zhSentences: { seen: [charCodePoint], mastered: [charCodePoint] },
+ *     zhPassages: { seen: [passageId], mastered: [passageId] },
  *     math: { done: [lessonId] } }
  * 两级点亮：学一学完成 → seen（认识）；挑战首答答对 → mastered（掌握）。
  * 集合只增不减（attempts 有裁剪上限，点亮结果必须持久化）。
+ *
+ * zhPassages 的「一格」是**一篇短文**而不是一道题（题目的 itemId 带题号，见 domain/passage.js）：
+ *   - seen（认识）：这一篇的挑战做完了（3 题都作答过）；
+ *   - mastered（读懂）：这一篇的题**每一条都是首答答对**。
+ * 只有读完不算数——「读懂」必须靠作答证明，与「点读一首古诗不点亮图鉴」同一口径。
  */
+import { passageLightsFromAttempts } from './passage.js'
 
 export function createEmpty() {
   return {
@@ -18,6 +25,7 @@ export function createEmpty() {
     zh: { seen: [], mastered: [] },
     zhWords: { seen: [], mastered: [] },
     zhSentences: { seen: [], mastered: [] },
+    zhPassages: { seen: [], mastered: [] },
     math: { done: [] },
   }
 }
@@ -26,7 +34,7 @@ export function createEmpty() {
 export function normalizeColl(coll) {
   const base = createEmpty()
   if (!coll || typeof coll !== 'object') return base
-  for (const s of ['en', 'zh', 'zhWords', 'zhSentences']) {
+  for (const s of ['en', 'zh', 'zhWords', 'zhSentences', 'zhPassages']) {
     if (coll[s] && Array.isArray(coll[s].seen)) base[s].seen = [...new Set(coll[s].seen)]
     if (coll[s] && Array.isArray(coll[s].mastered)) base[s].mastered = [...new Set(coll[s].mastered)]
   }
@@ -104,6 +112,7 @@ export function litIds(coll) {
     zh: union('zh'),
     zhWords: union('zhWords'),
     zhSentences: union('zhSentences'),
+    zhPassages: union('zhPassages'),
     math: [...new Set(c.math?.done || [])],
   }
 }
@@ -118,7 +127,7 @@ export function litIds(coll) {
  */
 export function celebration(prevLit, curLit) {
   let total = 0
-  for (const bucket of ['en', 'zh', 'zhWords', 'zhSentences', 'math']) {
+  for (const bucket of ['en', 'zh', 'zhWords', 'zhSentences', 'zhPassages', 'math']) {
     const prev = new Set(prevLit?.[bucket] || [])
     for (const id of curLit?.[bucket] || []) if (!prev.has(id)) total++
   }
@@ -128,8 +137,9 @@ export function celebration(prevLit, curLit) {
 /**
  * 历史回填（纯函数，可注入解析器以便 Node 单测）：
  * 从已完成会话推导初始点亮集合。
- * lessonResolver(lessonId) → { subject, kind, itemIds }（itemIds 仅学一学需要；
- * 隐藏分类/无词表返回 itemIds:null）。挑战的掌握条目一律从 attempts 派生。
+ * lessonResolver(lessonId) → { subject, kind, itemIds, passageLevel }（itemIds 仅学一学需要；
+ * 隐藏分类/无词表返回 itemIds:null）。挑战的掌握条目一律从 attempts 派生；
+ * passageLevel=true 的课（阅读理解短文）按「篇」聚合，见 domain/passage.js。
  */
 export function deriveFromHistory(sessions, attempts, lessonResolver) {
   let coll = createEmpty()
@@ -141,7 +151,14 @@ export function deriveFromHistory(sessions, attempts, lessonResolver) {
       if (lesson.kind === 'challenge') coll = addIds(coll, 'math', 'done', [s.lessonId])
       continue
     }
-    if (lesson.kind === 'learn') {
+    // 篇章课必须排在 learn 之前：短文课卡在目录里就是 kind=learn（要出现在课程地图上），
+    // 而它记的是 challenge 会话。先判 learn 会让回填永远走不到这一支（老用户答过的短文不点亮）。
+    if (lesson.passageLevel) {
+      // 篇章课：itemId 是题目 id，图鉴的一格是一篇 —— 必须按篇聚合，不能直接用题目 id 点亮
+      const { seen, mastered } = passageLightsFromAttempts(attempts, s.sessionId)
+      coll = addIds(coll, lesson.subject, 'seen', seen)
+      coll = addIds(coll, lesson.subject, 'mastered', mastered)
+    } else if (lesson.kind === 'learn') {
       if (lesson.itemIds) coll = addIds(coll, lesson.subject, 'seen', lesson.itemIds)
     } else {
       const masters = deriveMastersFromAttempts(attempts, s.sessionId)

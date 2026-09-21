@@ -52,12 +52,27 @@ test('课程发布状态：源配置与生成目录一致，draft 不会被静�
 test('课程引用可解析：ref 都能落到真实数据', () => {
   const enCats = new Set(words.categories.map((c) => c.id))
   const zhLevels = new Set(hanzi.levels.map((l) => Number(l.id)))
+  const passageStages = new Set(JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/zhPassages.json'), 'utf8')).passages.map((p) => p.stage))
   for (const l of catalog.lessons) {
     const r = l.ref
     if (r.kind === 'en-category') assert.ok(enCats.has(r.id), `${l.id} 引用分类 ${r.id} 不存在`)
     if (r.kind === 'en-level') assert.ok([1, 2, 3, 4].includes(Number(r.id)), `${l.id} 引用级别非法`)
     if (r.kind === 'zh-level') assert.ok(zhLevels.has(Number(r.id)), `${l.id} 引用级别非法`)
+    if (r.kind === 'zh-passage') assert.ok(passageStages.has(r.id), `${l.id} 引用学段 ${r.id} 没有短文`)
     if (r.kind === 'math-level') assert.ok(MATH_LEVEL_IDS.includes(Number(r.id)), `${l.id} 引用级别非法`)
+  }
+})
+
+test('语文阅读理解课：开放学段一张课卡，学段由 curriculum.zhPassages 配置且真有短文', () => {
+  const cards = catalog.lessons.filter((l) => l.ref?.kind === 'zh-passage')
+  const configured = (source.zhPassages?.stages || []).map(String)
+  assert.deepEqual(cards.map((l) => String(l.ref.id)).sort(), [...configured].sort(), '课卡数=配置的开放学段数')
+  // 启蒙/五六年级没有短文：不该出现点不开（或空）的课卡
+  for (const st of ['qimeng', 'g56']) assert.ok(!configured.includes(st), `${st} 不该开放短文课`)
+  for (const l of cards) {
+    assert.equal(l.subject, 'zh')
+    assert.equal(l.kind, 'learn')
+    assert.ok(l.ref.id !== 'qimeng' && l.ref.id !== 'g56')
   }
 })
 

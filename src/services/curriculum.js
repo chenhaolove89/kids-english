@@ -46,7 +46,9 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       if (!ls.length) return { subject: subj, challenge: null, units: [], empty: true, draftCount, challengeLocked: false }
       const challenges = ls.filter((l) => l.kind === 'challenge')
       // 古诗课不入锁路径：读诗只记 practice 会话（不算完成），放进路径会把 frontier 永久
-      // 卡在古诗上；它像「自由内容」一样始终开放（页内的填字挑战才记课时）
+      // 卡在古诗上；它像「自由内容」一样始终开放（页内的填字挑战才记课时）。
+      // 阅读理解（zh-passage）**要**入路径：它的作答记的是 challenge 会话，算课时完成、
+      // 给星，frontier 能正常走过它（与古诗的关键差别就在这）。
       const inPath = (l) => l.ref?.kind !== 'zh-poem'
       let units
       if (subj.id === 'en') {
@@ -78,7 +80,7 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
       for (const subj of SUBJECTS) {
         const ls = available.filter((l) => l.subject === subj.id)
         const units = subj.id === 'math' ? ls.filter((l) => l.kind === 'challenge') : ls.filter((l) => l.kind === 'learn')
-        // 与 stageBlocks 同口径：古诗课不入锁路径、始终开放
+        // 与 stageBlocks 同口径：古诗课不入锁路径、始终开放（阅读理解入路径）
         const inPath = (l) => l.ref?.kind !== 'zh-poem'
         const { lockedIds, nextId } = markPathLocks(units.filter(inPath), progressOf, { freeUnlock: fu })
         for (const l of units) out.set(l.id, { locked: inPath(l) && lockedIds.has(l.id), isNext: inPath(l) && l.id === nextId })
@@ -113,6 +115,8 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
     if (r.kind === 'en-sentences') return `/pages/learn/learn?subject=en&sentences=1&stage=${encodeURIComponent(r.id)}&lessonId=${lid}`
     // 古诗点读：独立书单+点读页；填字挑战从页内进入，课时记在本课
     if (r.kind === 'zh-poem') return `/pages/poem/poem?stage=${encodeURIComponent(r.id)}&lessonId=${lid}`
+    // 阅读理解：独立书单+读短文+逐题作答页；作答记 challenge 会话（计课时、按首答给星）
+    if (r.kind === 'zh-passage') return `/pages/reading/reading?stage=${encodeURIComponent(r.id)}&lessonId=${lid}`
     if (r.kind === 'zh-level' && lesson.kind === 'learn')
       return `/pages/learn/learn?subject=zh&level=${r.id}&lessonId=${lid}`
     if (r.kind === 'zh-level') return `/pages/quiz/quiz?subject=zh&level=${r.id}&lessonId=${lid}`
@@ -134,6 +138,7 @@ export function createCurriculum({ catalog, isCategoryHidden, store, getProgress
     const st = normalizeStage(stageId)
     const available = lessonsForStage(st, subjectId).filter(isVisible)
     // 古诗课与锁路径同口径排除：读诗只记 practice 不算完成，放进随机池会被锁态判定卡出
+    // （阅读理解记的是 challenge，算完成，留在池里）
     const inPath = (l) => l.ref?.kind !== 'zh-poem'
     const units = subjectId === 'math' ? available.filter((l) => l.kind === 'challenge') : available.filter((l) => l.kind === 'learn' && inPath(l))
     const { lockedIds } = markPathLocks(units, progressOf, { freeUnlock: freeUnlock() })

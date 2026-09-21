@@ -17,6 +17,7 @@
  * 之前完全测不到。
  */
 import { normalizeColl, addIds, deriveMastersFromAttempts, deriveFromHistory } from '../domain/collection.js'
+import { passageLightsFromAttempts } from '../domain/passage.js'
 
 const KEY = 'collection'
 
@@ -43,15 +44,19 @@ export function createCollectionService(store, resolvers) {
       const lv = resolveZhLevel(r.id)
       return lv ? lv.chars.filter((h) => h.sentenceAudio).map((h) => h.id) : null
     }
+    // 阅读理解（zh-passage）也返回 null：图鉴的一格是一篇，不能按"整课"点亮
+    // （一个阶段 5 篇，读完一篇就把整课算学会会虚高）。它的点亮走 recordChallengeDone 的按篇聚合。
     return null
   }
 
   /** 语文的点亮桶：识字课进 zh（字码点），词语课（ref=en-category）进 zhWords（词 id），
-   *  小短句（ref=zh-sentences）进 zhSentences，三者分开统计不互混 */
+   *  小短句（ref=zh-sentences）进 zhSentences，阅读理解（ref=zh-passage）进 zhPassages，
+   *  各自分开统计不互混 */
   function collectionBucket(lesson) {
     if (lesson.subject !== 'zh') return lesson.subject
     if (lesson.ref?.kind === 'en-category') return 'zhWords'
     if (lesson.ref?.kind === 'zh-sentences') return 'zhSentences'
+    if (lesson.ref?.kind === 'zh-passage') return 'zhPassages'
     return 'zh'
   }
 
@@ -59,7 +64,13 @@ export function createCollectionService(store, resolvers) {
   function lessonResolver(lessonId) {
     const lesson = getLesson(lessonId)
     if (!lesson) return null
-    return { subject: collectionBucket(lesson), kind: lesson.kind, itemIds: lessonItemIds(lesson) }
+    return {
+      subject: collectionBucket(lesson),
+      kind: lesson.kind,
+      itemIds: lessonItemIds(lesson),
+      // 篇章课要按「篇」聚合（itemId 是题目 id），见 domain/passage.js
+      passageLevel: lesson.ref?.kind === 'zh-passage',
+    }
   }
 
   let migrated = false
@@ -112,7 +123,19 @@ export function createCollectionService(store, resolvers) {
   /** 挑战完成：英语/语文首答答对条目进 mastered；数学点亮徽章 */
   function recordChallengeDone(session) {
     const lesson = getLesson(session?.lessonId)
-    if (!lesson || lesson.kind !== 'challenge') return
+    if (!lesson) return
+    // 阅读理解：课卡在目录里是 learn（要作为学一学卡出现在课程地图上、进软解锁路径），
+    // 但页面的作答记的是 challenge 会话——所以这一支必须排在下面的 kind 守卫**之前**，
+    // 否则完成事件会被静默丢掉（孩子答完了图鉴不亮，不报错、没人发现）。
+    // 一格是一篇短文：作答事件的 itemId 是题目 id（`篇id-q序号`），先按篇聚合再入桶。
+    if (lesson.ref?.kind === 'zh-passage') {
+      if (session.kind !== 'challenge') return
+      const { seen, mastered } = passageLightsFromAttempts(store.get('attempts', []), session.sessionId)
+      if (!seen.length) return
+      save(addIds(addIds(load(), 'zhPassages', 'seen', seen), 'zhPassages', 'mastered', mastered))
+      return
+    }
+    if (lesson.kind !== 'challenge') return
     if (lesson.subject === 'math') {
       save(addIds(load(), 'math', 'done', [lesson.id]))
       return
@@ -134,6 +157,8 @@ export function createCollectionService(store, resolvers) {
       zhWordsMastered: c.zhWords.mastered.length,
       zhSentencesSeen: c.zhSentences.seen.length,
       zhSentencesMastered: c.zhSentences.mastered.length,
+      zhPassagesSeen: c.zhPassages.seen.length,
+      zhPassagesMastered: c.zhPassages.mastered.length,
       mathDone: c.math.done.length,
     }
   }

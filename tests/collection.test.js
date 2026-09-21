@@ -25,6 +25,7 @@ test('createEmpty：各科结构完整且互不共享引用', () => {
   assert.deepEqual(a.zh.seen, [])
   assert.deepEqual(a.zhWords.seen, [])
   assert.deepEqual(a.zhSentences.seen, [])
+  assert.deepEqual(a.zhPassages.seen, [])
   assert.deepEqual(a.math.done, [])
 })
 
@@ -35,8 +36,18 @@ test('normalizeColl：脏数据/缺键归一化，数组去重', () => {
     zh: { seen: [], mastered: [] },
     zhWords: { seen: [], mastered: [] },
     zhSentences: { seen: [], mastered: [] },
+    zhPassages: { seen: [], mastered: [] },
     math: { done: [] },
   })
+})
+
+test('addIds：短文桶独立（篇 id 与字码点/词 id 同形也不互混）', () => {
+  let c = addIds(createEmpty(), 'zhPassages', 'mastered', ['ps-g12-1'])
+  assert.deepEqual(c.zhPassages.mastered, ['ps-g12-1'])
+  assert.deepEqual(c.zhPassages.seen, ['ps-g12-1'], '掌握必是认识')
+  assert.deepEqual(c.zh.mastered, [], '短文点亮不得进汉字桶')
+  c = addIds(c, 'zh', 'mastered', ['4e00'])
+  assert.deepEqual(c.zhPassages.mastered, ['ps-g12-1'])
 })
 
 test('addIds：小短句桶与汉字桶互不混（同是字码点，靠桶隔离）', () => {
@@ -166,4 +177,31 @@ test('deriveFromHistory：隐藏分类（itemIds=null）不点亮', () => {
   const sessions = [{ sessionId: 'h', lessonId: 'en-learn-story', kind: 'learn', status: 'completed' }]
   const c = deriveFromHistory(sessions, [], () => ({ subject: 'en', kind: 'learn', itemIds: null }))
   assert.deepEqual(c.en.seen, [])
+})
+
+test('deriveFromHistory：篇章课按「篇」聚合，题目 id 不得直接写进短文桶', () => {
+  // 阅读理解课：itemId 是题目 id（ps-g12-1-q0），图鉴的一格是一篇（ps-g12-1）。
+  // 课卡在目录里是 kind=learn、会话是 challenge——回填必须先认 passageLevel，
+  // 否则会掉进 learn 分支（itemIds 为 null）而整段静默跳过。
+  const sessions = [{ sessionId: 'p1', lessonId: 'zh-passage-g12', kind: 'challenge', status: 'completed' }]
+  const resolver = () => ({ subject: 'zhPassages', kind: 'learn', itemIds: null, passageLevel: true })
+  const full = [
+    { sessionId: 'p1', itemId: 'ps-g12-1-q0', firstTry: true, correct: true },
+    { sessionId: 'p1', itemId: 'ps-g12-1-q1', firstTry: true, correct: true },
+    { sessionId: 'p1', itemId: 'ps-g12-1-q2', firstTry: true, correct: true },
+  ]
+  const c = deriveFromHistory(sessions, full, resolver)
+  assert.deepEqual(c.zhPassages.mastered, ['ps-g12-1'])
+  assert.deepEqual(c.zhPassages.seen, ['ps-g12-1'])
+  assert.deepEqual(c.zh.mastered, [], '不得串进汉字桶')
+
+  // 有一题首答答错：做过（认识）但不算读懂
+  const partial = [
+    { sessionId: 'p1', itemId: 'ps-g12-1-q0', firstTry: true, correct: false },
+    { sessionId: 'p1', itemId: 'ps-g12-1-q1', firstTry: true, correct: true },
+    { sessionId: 'p1', itemId: 'ps-g12-1-q2', firstTry: true, correct: true },
+  ]
+  const c2 = deriveFromHistory(sessions, partial, resolver)
+  assert.deepEqual(c2.zhPassages.seen, ['ps-g12-1'])
+  assert.deepEqual(c2.zhPassages.mastered, [])
 })

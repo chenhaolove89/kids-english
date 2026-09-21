@@ -1,5 +1,5 @@
 {
-  "contentVersion": "62372c4191",
+  "contentVersion": "fc9e333b5e",
   "stages": [
     {
       "id": "qimeng",
@@ -1419,6 +1419,26 @@
     },
     {
       "status": "available",
+      "id": "zh-passage-g12",
+      "subject": "zh",
+      "stage": "g12",
+      "kind": "learn",
+      "title": "阅读理解 · 读短文",
+      "subtitle": "5 篇短文",
+      "icon": "/static/img/hz-8bfb.png",
+      "color": "#2F8F5B",
+      "bg": "#E3F6E8",
+      "sort": "zzz-passage",
+      "ref": {
+        "kind": "zh-passage",
+        "id": "g12"
+      },
+      "skillIds": [
+        "zh-passage-g12"
+      ]
+    },
+    {
+      "status": "available",
       "id": "zh-quiz-l2",
       "subject": "zh",
       "stage": "g12",
@@ -2255,6 +2275,26 @@
       },
       "skillIds": [
         "zh-sentence-l3"
+      ]
+    },
+    {
+      "status": "available",
+      "id": "zh-passage-g34",
+      "subject": "zh",
+      "stage": "g34",
+      "kind": "learn",
+      "title": "阅读理解 · 读短文",
+      "subtitle": "5 篇短文",
+      "icon": "/static/img/hz-8bfb.png",
+      "color": "#2F8F5B",
+      "bg": "#E3F6E8",
+      "sort": "zzz-passage",
+      "ref": {
+        "kind": "zh-passage",
+        "id": "g34"
+      },
+      "skillIds": [
+        "zh-passage-g34"
       ]
     },
     {

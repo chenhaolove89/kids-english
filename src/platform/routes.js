@@ -16,6 +16,7 @@ export const KNOWN_ROUTES = [
   '/pages/quiz/quiz',
   '/pages/write/write',
   '/pages/poem/poem',
+  '/pages/reading/reading',
   '/pages/board/board',
 ]
 

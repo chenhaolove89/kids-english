@@ -18,6 +18,7 @@
  *   4) 错题重练入口与重练模式
  *   5) 口音切换真的去取 audio-gb 音轨（线上 404 风险点）
  *   6) 家长页新区块、收集页可读性、320px 窄屏不横向溢出、零控制台报错
+ *   7) 阅读理解短文：课程卡 → 读短文 → 3 题作答 → 星级结算 → 图鉴按篇点亮
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -607,7 +608,9 @@ async function main() {
       }
     `)
     check('收集页统计标签字号 ≥ 11px（原来 20rpx≈8.5px）', parseFloat(coll.size) >= 11, `${coll.label} = ${coll.size}`)
-    check('收集页 6 格统计在窄屏折成 3×2（不再挤一行）', coll.count === 6 && coll.wrapped, `items=${coll.count} wrapped=${coll.wrapped}`)
+    // 7 格 = 小星星 + 英语掌握 + 汉字掌握 + 词语掌握 + 句子认识 + 短文读懂 + 数学徽章
+    // （阅读理解接入后从 6 格变 7 格；「折行」这条不变式照旧：第 4 格必须换到第二行）
+    check('收集页 7 格统计在窄屏折成 3 列（不再挤一行）', coll.count === 7 && coll.wrapped, `items=${coll.count} wrapped=${coll.wrapped}`)
 
     // ---------- 10. 笔顺描红：画布必须跟住田字格实际尺寸 ----------
     // 原来画布写死 300px：320px 窄屏上面板只有 277px（画布比面板宽 → 外圈被裁），
@@ -1079,6 +1082,186 @@ async function main() {
       fill34.title.includes('古诗填字') && fill34.opts === 4 && fill34.stem.includes('□') && !fill34.home,
       `${fill34.round}｜题干「${fill34.stem}」选项 ${fill34.opts}`,
     )
+
+    // ---------- 11d. 阅读理解短文：课程卡 → 读短文 → 3 题作答 → 星级结算 → 图鉴按篇点亮 ----------
+    // 这 10 篇短文与整篇朗读此前只被音频生成器引用，产品里完全没接（页面上看不到、点了没反应）。
+    // 这一段把「课程地图能进去、题能答、进度与图鉴真的落库」钉成可执行断言。
+    await cdp.setViewport(390, 844)
+    await cdp.eval(`localStorage.setItem('kx:prefs', JSON.stringify({ v: 1, d: { freeUnlock: true, stage: 'g34' } })); return 1`)
+    cdp.requests.length = 0
+    await cdp.freshNavigate(`${BASE}/#/pages/map/map`)
+    await sleep(1300)
+    const readCard = await cdp.eval(`
+      const cards = [...document.querySelectorAll('.unit-card')]
+      const c = cards.find((x) => (x.innerText || '').includes('阅读理解'))
+      if (!c) return { ok: false, texts: cards.map((x) => x.innerText.split('\\n')[0]).slice(0, 12) }
+      const title = c.innerText.replace(/\\n/g, ' ').slice(0, 40)
+      c.click()
+      return { ok: true, title }
+    `)
+    await sleep(2200)
+    const readList = await cdp.eval(`
+      return {
+        hash: location.hash,
+        cards: document.querySelectorAll('.passage-card').length,
+        firstTitle: (document.querySelector('.card-title') || {}).innerText || '',
+        firstLine: (document.querySelector('.card-first') || {}).innerText || '',
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      }
+    `)
+    check(
+      '三四年级课程地图有「阅读理解」课卡，点进去渲染 5 篇短文',
+      readCard.ok && readList.cards === 5 && readList.hash.includes('stage=g34') && readList.hash.includes('lessonId=zh-passage-g34') && readList.overflow <= 2,
+      `卡片「${readCard.title || safeJson(readCard.texts)}」→ ${readList.cards} 篇，首篇《${readList.firstTitle}》：${String(readList.firstLine).slice(0, 16)}…（横向溢出 ${readList.overflow}px）`,
+    )
+    // 整篇朗读音轨要真的去取（路径手拼、assetUrl 漏包、发布改写漏掉都会在这里露出来）
+    const passAudio = cdp.requests.filter((u) => u.includes('/static/audio-zh/ps-'))
+    check('进入短文页会预载本学段的整篇朗读音轨', passAudio.length >= 5, `${passAudio.length} 条，例：${(passAudio[0] || '').split('/').pop()}`)
+
+    // 打开第一篇 → 读短文（正文分行 + 听全文/开始答题）
+    await tap(cdp, '.passage-card', 0)
+    await sleep(900)
+    const readOpen = await cdp.eval(`
+      return {
+        lines: document.querySelectorAll('.line').length,
+        actions: [...document.querySelectorAll('.action')].map((a) => a.innerText.replace(/\\n/g, '')).join('|'),
+      }
+    `)
+    check(
+      '点开一篇进入读短文（正文分行 + 听全文/开始答题）',
+      readOpen.lines >= 5 && readOpen.actions.includes('听全文') && readOpen.actions.includes('开始答题'),
+      `${readOpen.lines} 行，动作「${readOpen.actions}」`,
+    )
+    await tap(cdp, '.action', 0)
+    await sleep(900)
+    const playingLabel = await cdp.eval(`return [...document.querySelectorAll('.action')].map((a) => a.innerText.replace(/\\n/g, '')).join('|')`)
+    check('「听全文」进入播放态（按钮变 🎵）', playingLabel.includes('🎵'), `动作「${playingLabel}」`)
+
+    // 开始答题 → 逐题作答（每题答完必须揭晓正确答案，再等孩子点「下一题」）
+    await tap(cdp, '.action', 1)
+    await sleep(900)
+    const q1 = await cdp.eval(`
+      return {
+        idx: (document.querySelector('.q-index') || {}).innerText || '',
+        q: (document.querySelector('.q-text') || {}).innerText || '',
+        point: (document.querySelector('.q-point') || {}).innerText || '',
+        opts: document.querySelectorAll('.option').length,
+      }
+    `)
+    check(
+      '开始答题出第 1 题（题干 + 考点 + 选项）',
+      q1.idx.includes('1 / 3') && q1.q.length > 4 && q1.opts >= 3 && q1.point.includes('考点'),
+      `${q1.idx}｜「${q1.q}」｜${q1.point}｜选项 ${q1.opts}`,
+    )
+
+    const revealedAll = []
+    for (let i = 0; i < 3; i++) {
+      await tap(cdp, '.option', 0)
+      let revealed = false
+      for (let t = 0; t < 12; t++) {
+        await sleep(250)
+        revealed = await cdp.eval(`return !!document.querySelector('.reveal-bar') && !!document.querySelector('.option.reveal')`)
+        if (revealed) break
+      }
+      revealedAll.push(revealed)
+      if (i === 0) {
+        // 答题时还能把短文翻出来回看（真实阅读理解本来就该能回看）
+        const peekBtn = await cdp.eval(`
+          const p = document.querySelector('.peek')
+          if (p) p.click()
+          return { ok: !!p, label: p ? p.innerText.trim() : '' }
+        `)
+        await sleep(500)
+        const peekLines = await cdp.eval(`return document.querySelectorAll('.peek-line').length`)
+        check('答题时能「看短文」回看正文', peekBtn.ok && peekLines >= 5, `按钮「${peekBtn.label}」→ ${peekLines} 行`)
+        await cdp.eval(`const p = document.querySelector('.peek'); if (p) p.click(); return 1`)
+        await sleep(300)
+      }
+      await tap(cdp, '.next-btn')
+      await sleep(800)
+    }
+    check('每题答完都揭晓正确答案（绿框 + 对勾）并等孩子点下一题', revealedAll.every(Boolean), `3 题揭晓：${revealedAll.join(',')}`)
+
+    const passResult = await cdp.eval(`
+      const txt = (s) => { const e = document.querySelector(s); return e ? e.innerText.trim() : '' }
+      return { result: !!document.querySelector('.result'), score: txt('.result-score'), stars: txt('.result-stars'), note: txt('.result-note') }
+    `)
+    check(
+      '答完 3 题进入星级结算（首答正确率口径）',
+      passResult.result && /一次答对 \d \/ 3 题/.test(passResult.score) && passResult.stars.includes('⭐'),
+      `${passResult.score}｜${passResult.stars}｜${passResult.note}`,
+    )
+
+    // 落库：challenge 会话（计课时）+ 题目级 itemId + 图鉴按篇点亮
+    const passageRec = await cdp.eval(`
+      const read = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null') } catch (e) { return null } }
+      const unwrap = (k) => { const w = read(k); return w && w.d !== undefined ? w.d : w }
+      const sessions = unwrap('kx:sessions') || []
+      const atts = (unwrap('kx:attempts') || []).filter((a) => a.lessonId === 'zh-passage-g34')
+      const bucket = (unwrap('kx:collection') || {}).zhPassages || { seen: [], mastered: [] }
+      const pids = [...new Set(atts.map((a) => String(a.itemId || '').replace(/-q\\d+$/, '')))]
+      return {
+        mine: sessions.filter((s) => s.lessonId === 'zh-passage-g34'),
+        atts, pids, bucket,
+        allFirstTryCorrect: atts.length > 0 && atts.every((a) => a.firstTry && a.correct),
+      }
+    `)
+    check(
+      '短文作答记 challenge 会话（计课时完成、可给星）',
+      passageRec.mine.length === 1 &&
+        passageRec.mine[0].kind === 'challenge' &&
+        passageRec.mine[0].status === 'completed' &&
+        passageRec.mine[0].totals &&
+        passageRec.mine[0].totals.questions === 3,
+      safeJson(passageRec.mine.map((s) => ({ kind: s.kind, status: s.status, totals: s.totals }))),
+    )
+    check(
+      '作答带题目稳定 id（篇id-q题号），三题同属一个会话',
+      passageRec.atts.length === 3 &&
+        passageRec.pids.length === 1 &&
+        /^ps-g34-\d+$/.test(passageRec.pids[0]) &&
+        passageRec.atts.every((a) => a.activityId === 'passage-question' && a.order >= 0 && a.order <= 2),
+      `篇=${passageRec.pids.join(',')}，作答 ${passageRec.atts.length} 条`,
+    )
+    check(
+      '图鉴按「篇」点亮：桶里是篇 id，读懂只在 3 题首答全对时出现',
+      passageRec.pids.length === 1 &&
+        passageRec.bucket.seen.includes(passageRec.pids[0]) &&
+        passageRec.bucket.mastered.includes(passageRec.pids[0]) === passageRec.allFirstTryCorrect &&
+        passageRec.bucket.seen.every((id) => !/-q\\d+$/.test(id)),
+      `seen=${safeJson(passageRec.bucket.seen)} mastered=${safeJson(passageRec.bucket.mastered)} 全对=${passageRec.allFirstTryCorrect}`,
+    )
+
+    // 收集页：新增「短文图鉴」段 + 「短文读懂」统计格；6 段切换在 320px 窄屏也不能溢出
+    await cdp.setViewport(320, 640)
+    await cdp.freshNavigate(`${BASE}/#/pages/collection/collection`)
+    await sleep(1300)
+    const passTab = await cdp.eval(`
+      const chips = [...document.querySelectorAll('.seg-chip')]
+      const c = chips.find((x) => (x.innerText || '').includes('短文'))
+      if (!c) return { ok: false, names: chips.map((x) => x.innerText.replace(/\\n/g, '')) }
+      c.click()
+      return { ok: true, count: chips.length }
+    `)
+    await sleep(800)
+    const passBucket = await cdp.eval(`
+      const cards = [...document.querySelectorAll('.cat-card')]
+      const c = cards.find((x) => (x.innerText || '').includes('短文'))
+      const labels = [...document.querySelectorAll('.stat-label')].map((e) => e.innerText.trim())
+      const nums = [...document.querySelectorAll('.stat-num')].map((e) => e.innerText.trim())
+      return {
+        card: c ? c.innerText.replace(/\\n/g, ' ') : '',
+        labels, nums,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      }
+    `)
+    check(
+      '收集页有「短文图鉴」段与学段卡（进度 N/5）',
+      passTab.ok && passTab.count === 6 && /短文/.test(passBucket.card) && /\/5/.test(passBucket.card),
+      `段数 ${passTab.count}，卡「${passBucket.card || safeJson(passTab.names)}」`,
+    )
+    check('收集页有「短文读懂」统计格', passBucket.labels.includes('短文读懂'), safeJson(passBucket.nums))
+    check('320px 窄屏不横向溢出：短文图鉴', passBucket.overflow <= 2, `overflow=${passBucket.overflow}px`)
 
     // ---------- 12. 收集页：图鉴三态渲染 + 庆祝条（改动过统计布局，明细页从未验证） ----------
     await cdp.setViewport(390, 844)

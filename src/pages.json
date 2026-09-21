@@ -45,6 +45,10 @@
       "style": { "navigationStyle": "custom" }
     },
     {
+      "path": "pages/reading/reading",
+      "style": { "navigationStyle": "custom" }
+    },
+    {
       "path": "pages/board/board",
       "style": { "navigationStyle": "custom" }
     }

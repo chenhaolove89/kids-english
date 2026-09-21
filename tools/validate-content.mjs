@@ -3,14 +3,16 @@
  * 课程内容校验 + 目录打包
  *
  * 源：content-packages/curriculum.json（人工维护的阶段/科目/映射配置）
+ *     content-packages/zh-passages.json（人工维护的阅读理解短文源）
  *     src/data/words.json、hanzi.json（gen-assets 工具链生成，禁止手改）
  * 出：src/content/catalog.json（展开后的课程目录，运行时唯一消费入口）
+ *     src/data/zhPassages.json（短文的运行时数据，页面 import 这一份）
  *
  * 用法：
- *   node tools/validate-content.mjs           校验并重新生成 catalog.json
- *   node tools/validate-content.mjs --check   只校验；catalog 与源不一致则退出码 1
+ *   node tools/validate-content.mjs           校验并重新生成上面两个产物
+ *   node tools/validate-content.mjs --check   只校验；任一产物与源不一致则退出码 1
  *
- * 校验不过任何一条都不写文件、退出码 1。生成的 catalog.json 提交进仓库。
+ * 校验不过任何一条都不写文件、退出码 1。生成的两个 JSON 提交进仓库。
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -303,6 +305,93 @@ if (fs.existsSync(POEMS_FILE)) {
   }
 }
 
+// ---------- 语文阅读理解短文 ----------
+// 源：content-packages/zh-passages.json（人工维护的唯一真源），逐字注音在
+// tools/zh-passage-pinyin.json，整篇朗读音轨按命名约定落到 static/audio-zh/<id>.mp3。
+// 这批内容此前只被音频生成器引用，没有任何门禁看着它：改了源忘重生成音轨、
+// 答案不在选项里（机器判题只比 id，会变成没有正确答案的死题）都会静默上线。
+// 课卡照古诗的做法：每个开放学段一张（开放哪些学段配在 curriculum.zhPassages.stages），
+// 启蒙/五六年级没有短文就不建课卡——免得课程地图上出现点不开的卡。
+const PASSAGES = path.join(ROOT, 'content-packages', 'zh-passages.json')
+const PASSAGE_PINYIN = path.join(ROOT, 'tools', 'zh-passage-pinyin.json')
+const PASSAGES_OUT = path.join(ROOT, 'src', 'data', 'zhPassages.json')
+const passagesSrc = readJson(PASSAGES)
+const passagePinyin = readJson(PASSAGE_PINYIN)
+const passageIds = new Set()
+const passageByStage = new Map()
+for (const p of passagesSrc.passages || []) {
+  const tag = `短文 ${p.id}`
+  if (!p.id || passageIds.has(p.id)) fail(`${tag} id 缺失或重复`)
+  passageIds.add(p.id)
+  if (!stageIds.has(p.stage)) fail(`${tag} stage 非法: ${p.stage}`)
+  if (!p.title || !p.kind) fail(`${tag} 缺 title/kind`)
+  if (!p.lines?.length) fail(`${tag} 正文为空`)
+  const qs = p.questions || []
+  if (qs.length !== 3) fail(`${tag} 必须恰好 3 道题（现 ${qs.length}）`)
+  qs.forEach((q, i) => {
+    const qt = `${tag} 第 ${i + 1} 题`
+    if (!q.q) fail(`${qt} 缺题干`)
+    const opts = q.options || []
+    if (opts.length < 2) fail(`${qt} 选项少于 2 个`)
+    if (new Set(opts).size !== opts.length) fail(`${qt} 选项有重复`)
+    // answer 是 0 基下标，不是选项文本：越界等于这道题没有正确答案，孩子怎么点都错
+    if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= opts.length) {
+      fail(`${qt} answer 越界或不是下标: ${JSON.stringify(q.answer)}（选项 ${opts.length} 个）`)
+    }
+    if (!q.point) fail(`${qt} 缺考点标注`)
+  })
+  // 整篇朗读音轨：由 gen-zh-azure --passages 产出；缺了孩子只能干读
+  const audio = path.join(ROOT, 'src', 'static', 'audio-zh', `${p.id}.mp3`)
+  if (!fs.existsSync(audio)) fail(`${tag} 缺整篇朗读音轨: static/audio-zh/${p.id}.mp3`)
+  else if (!isUsableAsset(audio, 'audio')) fail(`${tag} 音轨不可用（空文件或合成中断的半截）: ${p.id}.mp3`)
+  // 注音表按行给槽位数组，长度必须等于该行字符数：对不上整条退回默认读音，多音字全错
+  const table = passagePinyin[p.id]
+  if (!table) fail(`${tag} 注音表里没有这一篇（跑 npm run gen:zh-passage）`)
+  else {
+    for (const line of p.lines) {
+      const slots = table[line]
+      if (!Array.isArray(slots)) {
+        fail(`${tag} 注音表缺行或不是槽位数组: ${line.slice(0, 12)}…`)
+        continue
+      }
+      if (slots.length !== [...line].length) {
+        fail(`${tag} 注音槽位数与行字符数不符: ${slots.length} vs ${[...line].length}（${line.slice(0, 12)}…）`)
+      }
+    }
+  }
+  if (!passageByStage.has(p.stage)) passageByStage.set(p.stage, [])
+  passageByStage.get(p.stage).push(p)
+}
+
+const passageStageIds = new Set()
+for (const stage of (source.zhPassages?.stages || []).map(String)) {
+  if (!stageIds.has(stage)) {
+    fail(`zhPassages.stages 里有未知学段: ${stage}`)
+    continue
+  }
+  const list = passageByStage.get(stage) || []
+  if (!list.length) {
+    fail(`zhPassages.stages 声明了 ${stage}，但这一学段一篇短文都没有`)
+    continue
+  }
+  passageStageIds.add(stage)
+  pushLesson({
+    id: `zh-passage-${stage}`,
+    subject: 'zh',
+    stage,
+    kind: 'learn',
+    title: '阅读理解 · 读短文',
+    subtitle: `${list.length} 篇短文`,
+    icon: '/static/img/hz-8bfb.png',
+    color: '#2F8F5B',
+    bg: '#E3F6E8',
+    // 排序落在识字/词语/小短句之后：字 → 词 → 句 → 篇 的难度递进
+    sort: 'zzz-passage',
+    ref: { kind: 'zh-passage', id: stage },
+    skillIds: [`zh-passage-${stage}`],
+  })
+}
+
 // 语文词语课：复用英语分类的图片与中文释义做「看图识词」。
 // 英语教学构词类（字母/Sight words/词族/拼读/介词/会话）不进中文课，取舍配置在 curriculum.zhWords
 const zhSkip = new Set(source.zhWords?.skipCategories || [])
@@ -399,6 +488,7 @@ for (const l of lessons) {
   if (r.kind === 'zh-level' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-sentences' && !zhLevelById.has(Number(r.id))) fail(`课程 ${l.id} 引用不存在的语文级别 ${r.id}`)
   if (r.kind === 'zh-poem' && !poemStageIds.has(r.id)) fail(`课程 ${l.id} 引用不存在的古诗阶段 ${r.id}`)
+  if (r.kind === 'zh-passage' && !passageStageIds.has(r.id)) fail(`课程 ${l.id} 引用不存在（或未开放）的短文阶段 ${r.id}`)
   if (r.kind === 'math-level' && !MATH_LEVEL_IDS.includes(Number(r.id))) fail(`课程 ${l.id} 引用不存在的数学级别 ${r.id}`)
 }
 
@@ -413,54 +503,7 @@ for (const st of source.stages) {
 }
 
 // ---------- 语文阅读理解短文 ----------
-// 这批内容此前只被音频生成器引用，没有任何门禁看着它：改了源忘重生成音轨、
-// 答案不在选项里（机器判题只比 id，会变成没有正确答案的死题）都会静默上线。
-const PASSAGES = path.join(ROOT, 'content-packages', 'zh-passages.json')
-const PASSAGE_PINYIN = path.join(ROOT, 'tools', 'zh-passage-pinyin.json')
-const passagesSrc = readJson(PASSAGES)
-const passagePinyin = readJson(PASSAGE_PINYIN)
-const passageIds = new Set()
-for (const p of passagesSrc.passages || []) {
-  const tag = `短文 ${p.id}`
-  if (!p.id || passageIds.has(p.id)) fail(`${tag} id 缺失或重复`)
-  passageIds.add(p.id)
-  if (!stageIds.has(p.stage)) fail(`${tag} stage 非法: ${p.stage}`)
-  if (!p.title || !p.kind) fail(`${tag} 缺 title/kind`)
-  if (!p.lines?.length) fail(`${tag} 正文为空`)
-  const qs = p.questions || []
-  if (qs.length !== 3) fail(`${tag} 必须恰好 3 道题（现 ${qs.length}）`)
-  qs.forEach((q, i) => {
-    const qt = `${tag} 第 ${i + 1} 题`
-    if (!q.q) fail(`${qt} 缺题干`)
-    const opts = q.options || []
-    if (opts.length < 2) fail(`${qt} 选项少于 2 个`)
-    if (new Set(opts).size !== opts.length) fail(`${qt} 选项有重复`)
-    // answer 是 0 基下标，不是选项文本：越界等于这道题没有正确答案，孩子怎么点都错
-    if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= opts.length) {
-      fail(`${qt} answer 越界或不是下标: ${JSON.stringify(q.answer)}（选项 ${opts.length} 个）`)
-    }
-    if (!q.point) fail(`${qt} 缺考点标注`)
-  })
-  // 整篇朗读音轨：由 gen-zh-azure --passages 产出；缺了孩子只能干读
-  const audio = path.join(ROOT, 'src', 'static', 'audio-zh', `${p.id}.mp3`)
-  if (!fs.existsSync(audio)) fail(`${tag} 缺整篇朗读音轨: static/audio-zh/${p.id}.mp3`)
-  else if (!isUsableAsset(audio, 'audio')) fail(`${tag} 音轨不可用（空文件或合成中断的半截）: ${p.id}.mp3`)
-  // 注音表按行给槽位数组，长度必须等于该行字符数：对不上整条退回默认读音，多音字全错
-  const table = passagePinyin[p.id]
-  if (!table) fail(`${tag} 注音表里没有这一篇（跑 npm run gen:zh-passage）`)
-  else {
-    for (const line of p.lines) {
-      const slots = table[line]
-      if (!Array.isArray(slots)) {
-        fail(`${tag} 注音表缺行或不是槽位数组: ${line.slice(0, 12)}…`)
-        continue
-      }
-      if (slots.length !== [...line].length) {
-        fail(`${tag} 注音槽位数与行字符数不符: ${slots.length} vs ${[...line].length}（${line.slice(0, 12)}…）`)
-      }
-    }
-  }
-}
+// （校验与课卡生成见上方「语文阅读理解短文」段：课卡要在引用完整性检查之前进 lessons）
 
 if (errors.length) {
   console.error(`✗ 课程内容校验失败（${errors.length} 处）：`)
@@ -518,11 +561,26 @@ const catalog = {
 
 const emitted = JSON.stringify(catalog, null, 2) + '\n'
 
+/**
+ * 短文运行时数据：页面只 import 这一份（与 poems.json 同构，双引号字符串，
+ * 发布脚本改 /static/ 时能命中）。真源仍是 content-packages/zh-passages.json——
+ * 页面直接 import 源文件会让「改了源忘了重新校验」无法被发现。
+ * note/stages 是给维护者看的，不进产物。
+ */
+const passagesEmitted = JSON.stringify({ version: passagesSrc.version || 1, passages: passagesSrc.passages }, null, 2) + '\n'
+
+/** 读已有产物并归一化行尾：Windows 下 core.autocrlf=true 检出会把 LF 转成 CRLF */
+function readNormalized(p) {
+  return fs.existsSync(p) ? fs.readFileSync(p, 'utf8').replace(/\r\n/g, '\n') : ''
+}
+
 if (process.argv.includes('--check')) {
-  // Windows 下 core.autocrlf=true 检出会把 LF 转成 CRLF，比对前必须归一化，否则门禁假阳性
-  const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8').replace(/\r\n/g, '\n') : ''
-  if (existing !== emitted) {
+  if (readNormalized(OUT) !== emitted) {
     console.error('✗ src/content/catalog.json 与课程源不一致，请运行 npm run build:content')
+    process.exit(1)
+  }
+  if (readNormalized(PASSAGES_OUT) !== passagesEmitted) {
+    console.error('✗ src/data/zhPassages.json 与短文源不一致，请运行 npm run build:content')
     process.exit(1)
   }
   console.log(`✓ 内容校验通过（check）：${lessons.length} 门课，contentVersion ${contentVersion}`)
@@ -530,6 +588,8 @@ if (process.argv.includes('--check')) {
 }
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true })
+fs.mkdirSync(path.dirname(PASSAGES_OUT), { recursive: true })
 // 原子写入：中途失败不留半截 JSON（半截目录会让运行时的课程数据整体 fallback 为空）
 writeFileAtomic(OUT, emitted)
+writeFileAtomic(PASSAGES_OUT, passagesEmitted)
 console.log(`✓ 内容校验通过，已生成 src/content/catalog.json：${lessons.length} 门课，contentVersion ${contentVersion}`)

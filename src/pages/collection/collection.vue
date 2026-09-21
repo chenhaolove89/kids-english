@@ -38,6 +38,10 @@
         <text class="stat-label">句子认识</text>
       </view>
       <view class="stat-item">
+        <text class="stat-num">{{ counts.zhPassagesMastered }}/{{ zhTotalPassages }}</text>
+        <text class="stat-label">短文读懂</text>
+      </view>
+      <view class="stat-item">
         <text class="stat-num">{{ counts.mathDone }}/{{ mathLessons.length }}</text>
         <text class="stat-label">数学徽章</text>
       </view>
@@ -55,7 +59,7 @@
 
     <template v-else>
       <!-- 三段切换 -->
-      <view class="seg-row">
+      <view class="seg-row" :class="{ 'seg-row-many': tabs.length > 5 }">
         <view v-for="t in tabs" :key="t.id" class="seg-chip" :class="{ active: tab === t.id }" @tap="tab = t.id">
           <text class="seg-emoji">{{ t.emoji }}</text>
           <text class="seg-name">{{ t.name }}</text>
@@ -150,6 +154,25 @@
         </view>
       </scroll-view>
 
+      <!-- 短文图鉴：按学段（阅读理解短文只在开放学段出现） -->
+      <scroll-view v-if="tab === 'zhPassages'" class="list" scroll-y>
+        <view class="cat-grid cat-grid-zh">
+          <view
+            v-for="g in passageGroups"
+            :key="g.id"
+            class="cat-card"
+            :class="{ dim: g.progress.mastered === 0 && g.progress.seen === 0, done: g.progressComplete }"
+            :style="{ background: g.bg }"
+            @tap="openDetail('zhPassages', g)"
+          >
+            <text v-if="g.progressComplete" class="cat-trophy">🏆</text>
+            <image class="cat-icon" :src="g.icon" mode="aspectFit" />
+            <text class="cat-name">短文 · {{ g.stageName }}</text>
+            <text class="cat-prog" :style="{ color: g.color }">{{ g.progress.mastered }}/{{ g.progress.total }}</text>
+          </view>
+        </view>
+      </scroll-view>
+
       <!-- 数学徽章 -->
       <scroll-view v-if="tab === 'math'" class="list" scroll-y>
         <view class="badge-grid">
@@ -182,8 +205,8 @@
           <text v-else class="sheet-prog">⭐ {{ detail.progress.mastered }}/{{ detail.progress.total }}</text>
         </view>
         <scroll-view class="sheet-body" scroll-y>
-          <!-- 句子图鉴：句子长，用竖排列表（格子会截断），未学的只显示 ? -->
-          <view v-if="detail.kind === 'zhSentences'" class="sent-list">
+          <!-- 句子/短文图鉴：正文长，用竖排列表（格子会截断），未学的只显示 ? -->
+          <view v-if="detail.kind === 'zhSentences' || detail.kind === 'zhPassages'" class="sent-list">
             <view
               v-for="t in detail.tiles"
               :key="t.id"
@@ -232,7 +255,8 @@ import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import enData from '@/data/words.json'
 import zhData from '@/data/hanzi.json'
-import { LESSONS, getLesson } from '@/content/catalog.js'
+import passagesData from '@/data/zhPassages.json'
+import { LESSONS, STAGES, getLesson } from '@/content/catalog.js'
 import { isVisibleLesson } from '@/services/curriculum-app.js'
 import { isCategoryHidden, updatePrefs } from '@/content/lowAge.js'
 import { getStorage } from '@/platform/storage.js'
@@ -245,15 +269,19 @@ import { progressOf, isCategoryComplete, isMathTrophy, celebration, litIds } fro
 import { getCollectionService } from '@/services/collection-app.js'
 import { getProgressService } from '@/services/progress.js'
 
+// 短文图鉴的图标：用「读」字的字图，与课程卡（catalog 里 zh-passage 课的 icon）同一张
+const PASSAGE_ICON = assetUrl('/static/img/hz-8bfb.png')
+
 const tabs = [
   { id: 'en', name: '英语图鉴', emoji: '🔤' },
   { id: 'zh', name: '汉字图鉴', emoji: '✍️' },
   { id: 'zhWords', name: '词语图鉴', emoji: '📖' },
   { id: 'zhSentences', name: '句子图鉴', emoji: '💬' },
+  { id: 'zhPassages', name: '短文图鉴', emoji: '📄' },
   { id: 'math', name: '数学徽章', emoji: '🔢' },
 ]
 const tab = ref('en')
-const counts = ref({ enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, zhWordsSeen: 0, zhWordsMastered: 0, zhSentencesSeen: 0, zhSentencesMastered: 0, mathDone: 0 })
+const counts = ref({ enSeen: 0, enMastered: 0, zhSeen: 0, zhMastered: 0, zhWordsSeen: 0, zhWordsMastered: 0, zhSentencesSeen: 0, zhSentencesMastered: 0, zhPassagesSeen: 0, zhPassagesMastered: 0, mathDone: 0 })
 const celebrate = ref(null)
 const totalStars = ref(0)
 const detail = ref(null)
@@ -263,6 +291,7 @@ const coll = ref({
   zh: { seen: [], mastered: [] },
   zhWords: { seen: [], mastered: [] },
   zhSentences: { seen: [], mastered: [] },
+  zhPassages: { seen: [], mastered: [] },
   math: { done: [] },
 })
 
@@ -289,17 +318,24 @@ const zhTotalSentences = computed(() =>
     .reduce((n, l) => n + l.chars.filter((h) => h.sentenceAudio).length, 0),
 )
 
+// 阅读理解短文：只统计已开放短文课的学段（启蒙/五六年级没有短文 → 不进分母）
+const passageStageIds = new Set(
+  LESSONS.filter((l) => l.subject === 'zh' && l.ref?.kind === 'zh-passage').map((l) => String(l.ref.id)),
+)
+const zhTotalPassages = computed(() => passagesData.passages.filter((p) => passageStageIds.has(String(p.stage))).length)
+
 const isEmpty = computed(
   () =>
     counts.value.enSeen === 0 &&
     counts.value.zhSeen === 0 &&
     counts.value.zhWordsSeen === 0 &&
     counts.value.zhSentencesSeen === 0 &&
+    counts.value.zhPassagesSeen === 0 &&
     counts.value.mathDone === 0,
 )
 
 const bubbleText = computed(() => {
-  const lit = counts.value.enSeen + counts.value.zhSeen + counts.value.zhWordsSeen + counts.value.zhSentencesSeen
+  const lit = counts.value.enSeen + counts.value.zhSeen + counts.value.zhWordsSeen + counts.value.zhSentencesSeen + counts.value.zhPassagesSeen
   if (lit === 0) return '先去学一课，点亮第一张卡片吧！'
   if (lit < 20) return '哇，已经开始收集啦，继续加油！'
   if (lit < 100) return '收集得不错，星星都变成图鉴啦！'
@@ -366,6 +402,32 @@ const sentenceGroups = computed(() => {
     })
 })
 
+/**
+ * 阅读理解短文：一个开放学段一张卡（启蒙/五六年级没有短文，不出现）。
+ * 点亮口径见 domain/collection.js：一格 = **一篇短文**；
+ * 认识 = 这一篇的挑战做完了，读懂（掌握）= 这一篇 3 题首答全对。
+ */
+const passageGroups = computed(() => {
+  const seen = new Set(coll.value.zhPassages.seen)
+  const mastered = new Set(coll.value.zhPassages.mastered)
+  return STAGES.filter((s) => passageStageIds.has(String(s.id)))
+    .map((s) => {
+      const list = passagesData.passages.filter((p) => String(p.stage) === String(s.id))
+      const p = progressOf(list.map((x) => x.id), seen, mastered)
+      return {
+        id: s.id,
+        stageName: s.name,
+        icon: PASSAGE_ICON,
+        color: '#2F8F5B',
+        bg: '#E3F6E8',
+        passages: list,
+        progress: p,
+        progressComplete: isCategoryComplete(p),
+      }
+    })
+    .filter((g) => g.passages.length)
+})
+
 const mathBadges = computed(() => {
   const doneSet = new Set(coll.value.math.done)
   const progMap = getProgressService().lessonProgressMap()
@@ -412,6 +474,25 @@ function openDetail(kind, group) {
         sub: '',
         image: h.sentenceEmoji || h.emoji || group.level.icon,
         audio: h.sentenceAudio,
+      })),
+    }
+    return
+  }
+  if (kind === 'zhPassages') {
+    // 短文卡：主字段标题，点击播整篇朗读（听不算读懂，但复习时能听）
+    const seen = new Set(coll.value.zhPassages.seen)
+    const mastered = new Set(coll.value.zhPassages.mastered)
+    detail.value = {
+      kind,
+      title: `短文 · ${group.stageName}`,
+      progress: group.progress,
+      tiles: group.passages.map((p) => ({
+        id: p.id,
+        state: seen.has(p.id) ? (mastered.has(p.id) ? 'mastered' : 'seen') : 'locked',
+        main: p.title,
+        sub: p.kind,
+        image: PASSAGE_ICON,
+        audio: assetUrl('/static/audio-zh/' + p.id + '.mp3'),
       })),
     }
     return
@@ -667,6 +748,14 @@ function goLearn() {
   font-weight: 800;
   color: #4a3f35;
   white-space: nowrap;
+}
+/* 6 段（短文图鉴加进来之后）在 320px 窄屏每枚只剩约 42px，4 字标签 24rpx≈10px 会顶出
+   视口（冒烟的「不横向溢出」断言会红）→ 收到 20rpx 并收紧间距。 */
+.seg-row-many {
+  gap: 10rpx;
+}
+.seg-row-many .seg-name {
+  font-size: 20rpx;
 }
 
 .list {
