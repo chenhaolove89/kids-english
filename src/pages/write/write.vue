@@ -101,7 +101,9 @@ async function loadStrokeData(code) {
 onLoad((query) => {
   char.value = decodeURIComponent(query.char || '')
   pinyin.value = decodeURIComponent(query.pinyin || '')
-  audioPath = decodeURIComponent(query.audio || '')
+  // 字音是从识字卡经 query 传过来的裸路径，不走 adapters，这里补一次收口
+  // （assetUrl 幂等：learn 传过来的若已是收口后的完整地址，原样返回）
+  audioPath = assetUrl(decodeURIComponent(query.audio || ''))
   cp = query.cp || ''
   if (!char.value || !cp) {
     uni.showToast({ title: '内容准备中', icon: 'none' })

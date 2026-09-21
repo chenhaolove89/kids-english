@@ -15,6 +15,9 @@
  * 要第二次在线访问才真的能离线。
  */
 const VERSION = '__VERSION__'
+// 资源源（抢先版把音频图片放服务器）：由发布脚本按目标替换，正式站/电脑版为空串。
+// 为空时本文件行为与改造前完全一致。
+const REMOTE_BASE = '__REMOTE_BASE__'
 const ASSET_CACHE = 'kx-assets-' + VERSION
 const STATIC_CACHE = 'kx-static-' + VERSION
 const PAGE_CACHE = 'kx-pages-' + VERSION
@@ -167,7 +170,11 @@ self.addEventListener('fetch', function (event) {
   } catch (err) {
     return
   }
-  if (url.origin !== self.location.origin) return
+  // 资源在服务器上时（抢先版）跨域请求同样要纳入缓存优先：
+  // 不这样它们会绕过 SW，离线时听过看过的内容还要重新下载，等于把离线能力砍掉一半。
+  // 跨域读得到字节的前提是服务器给了 CORS 头（见 nginx 配置里的 Access-Control-Allow-Origin）。
+  const isRemote = REMOTE_BASE && request.url.indexOf(REMOTE_BASE + '/') === 0
+  if (!isRemote && url.origin !== self.location.origin) return
 
   const hasRange = request.headers.has('range')
   if (isAsset(url)) {

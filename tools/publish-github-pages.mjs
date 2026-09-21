@@ -8,7 +8,12 @@
  *   默认 preview —— 抢先版：源码仓 kids-english 的 gh-pages 分支，日常都发这里；
  *   --target release —— 正式发布仓 kids-english-web，仅在用户明确要求同步时使用。
  * 两种产物都自动携带 LICENSE 与 LICENSE-CONTENT.md，两仓开源策略保持一致。
+ *
+ * 资源源（2026-09-20 起）：抢先版把 platform/asset-source.js 里的占位符替换成甲骨文
+ * 服务器地址，运行时就近取音频/图片，服务器不可达自动回退到包内那份；正式站与电脑版
+ * 留空（纯本地）。产物根另写 asset-source.json 作为显式标记，供离线验证读取。
  * 用法：npm run build:h5 之后 → node tools/publish-github-pages.mjs [--target release]
+ *       [--remote-base <url>|none]
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -23,6 +28,15 @@ if (!['preview', 'release'].includes(target)) {
   process.exit(1)
 }
 const OUT = path.join(ROOT, target === 'release' ? 'tmp/gh-publish' : 'tmp/gh-preview')
+
+// 资源源：抢先版默认挂甲骨文服务器上的资源（国内直连 GitHub Pages 慢），
+// 正式站与电脑版分享包一律纯本地（服务器同源打开本来就不必绕，分享包还要能断网用）。
+// --remote-base <url> 显式指定（供测试用本地桩），--remote-base none 强制纯本地。
+const PREVIEW_ASSET_BASE = 'https://cinaka.com/kids-english'
+const ASSET_BASE_PLACEHOLDER = '__KX_ASSET_REMOTE_BASE__'
+const baseArgIdx = process.argv.indexOf('--remote-base')
+const baseArg = baseArgIdx === -1 ? null : process.argv[baseArgIdx + 1]
+const remoteBase = baseArg === 'none' ? '' : baseArg != null ? baseArg : target === 'preview' ? PREVIEW_ASSET_BASE : ''
 
 if (!fs.existsSync(path.join(SRC, 'index.html'))) {
   console.error('未找到 dist/build/h5/index.html，请先 npm run build:h5')
@@ -51,11 +65,17 @@ const files = []
 })(OUT)
 
 let changed = 0
+let baseHits = 0
 for (const f of files) {
   const ext = path.extname(f).toLowerCase()
   if (!['.html', '.js', '.css', '.json', '.webmanifest'].includes(ext)) continue
   let text = fs.readFileSync(f, 'utf8')
   const before = text
+  // 资源源占位符（platform/asset-source.js 里的常量）只在 .js 里出现
+  if (ext === '.js' && text.includes(ASSET_BASE_PLACEHOLDER)) {
+    baseHits += text.split(ASSET_BASE_PLACEHOLDER).length - 1
+    text = text.replaceAll(ASSET_BASE_PLACEHOLDER, remoteBase)
+  }
   // 三种引号形态都要改写：双引号（JSON/压缩后的 JS 字符串）、反引号（页面里模板字符串
   // 拼的运行时路径，如 /static/audio-zh/${id}.mp3——漏掉就是线上 404）、单引号兜底
   text = text.replaceAll('"/static/', '"./static/')
@@ -67,6 +87,16 @@ for (const f of files) {
   }
   if (text !== before) { fs.writeFileSync(f, text); changed++ }
 }
+
+// 占位符必须命中：命中 0 说明 asset-source.js 的常量被改名或被打包折掉了，
+// 这时产物里会留着一个当字面量的假地址，探测永远失败且不报错——宁可让发布失败。
+if (baseHits === 0) {
+  console.error(`未找到资源源占位符 ${ASSET_BASE_PLACEHOLDER}（asset-source.js 的常量是否改名或被折掉了？）`)
+  process.exit(1)
+}
+console.log(`✓ 资源源: ${remoteBase || '（未配置，纯本地兜底）'}`)
+// 给离线验证与 SW 用的显式标记，省得去 JS 里正则捞地址
+fs.writeFileSync(path.join(OUT, 'asset-source.json'), JSON.stringify({ remoteBase }) + '\n')
 
 // GitHub Pages 默认跑 Jekyll，会跳过下划线开头的文件（如 _plugin-*.js）→ 404。
 // 加空 .nojekyll 禁用 Jekyll。
@@ -110,7 +140,10 @@ function staticTreeHash(dir) {
 const staticDir = path.join(OUT, 'static')
 const treeHash = fs.existsSync(staticDir) ? staticTreeHash(staticDir) : 'nostatic'
 const cacheVersion = `kx-${catalog.contentVersion}-${treeHash}`
-fs.writeFileSync(path.join(OUT, 'sw.js'), swTemplate.replaceAll('__VERSION__', cacheVersion))
+fs.writeFileSync(
+  path.join(OUT, 'sw.js'),
+  swTemplate.replaceAll('__VERSION__', cacheVersion).replaceAll('__REMOTE_BASE__', remoteBase),
+)
 console.log(`✓ SW 缓存代次: ${cacheVersion}（contentVersion + 静态树指纹）`)
 const indexPath = path.join(OUT, 'index.html')
 let indexHtml = fs.readFileSync(indexPath, 'utf8')

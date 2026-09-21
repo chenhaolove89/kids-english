@@ -132,6 +132,17 @@ async function main() {
     await cdp.send('Network.enable')
     await cdp.send('Page.enable')
 
+    // 产物声明了远程资源源（抢先版）：验证时必须屏蔽它。
+    // 不屏蔽的话应用会真的去外网取音频图片——测到的就不是本地产物，还平白依赖外网可用。
+    // 屏蔽之后跑的正是要保证的那条路径：服务器不联通 → 自动回退包内资源 → 离线照常可用。
+    let remoteBase = ''
+    try {
+      remoteBase = JSON.parse(fs.readFileSync(path.join(PUBLISH_DIR, 'asset-source.json'), 'utf8')).remoteBase || ''
+    } catch {
+      // 没有标记文件 = 该产物没配远程资源源（正式站 / 电脑版 / 本地开发）
+    }
+    if (remoteBase) await cdp.send('Network.setBlockedURLs', { urls: [`${remoteBase}/*`] })
+
     // ---------- 1. 首次在线访问：注册并接管 ----------
     await cdp.setViewport(390, 844)
     await cdp.navigate(`${BASE}/#/pages/map/map`)
@@ -148,6 +159,28 @@ async function main() {
         return rs.length ? JSON.stringify({ scope: rs[0].scope, active: !!rs[0].active, installing: !!rs[0].installing, waiting: !!rs[0].waiting }) : 'no registration'
       `)
       check('SW 注册状态诊断', false, String(reg))
+    }
+
+    // 配了远程资源源时，首屏资源必须全部落回本地（远程源已被屏蔽）：
+    // 这是"服务器不联通 → 自动回退包内资源"的实测证据，不是靠代码推断。
+    if (remoteBase) {
+      // 探测那一条本来就该打远程源（它就是用来发现服务器不可达的），要排除掉；
+      // 除此之外任何一条落到远程源的资源请求都说明回退没生效。
+      const probeUrl = `${remoteBase}/asset-source.json`
+      const res = await cdp.eval(`
+        const all = performance.getEntriesByType('resource').map((e) => e.name)
+        const remote = all.filter((n) => n.indexOf(${JSON.stringify(remoteBase)}) === 0)
+        return {
+          total: all.length,
+          remote: remote.length,
+          remoteAssets: remote.filter((n) => n !== ${JSON.stringify(probeUrl)}).length,
+        }
+      `)
+      check(
+        `远程资源源不可达时首屏自动回退本地（屏蔽 ${remoteBase}）`,
+        res && res.total > 0 && res.remoteAssets === 0,
+        `资源请求 ${res && res.total} 条，远程源 ${res && res.remote} 条（含 1 条探测），探测之外的远程资源请求 ${res && res.remoteAssets} 条`,
+      )
     }
 
     // ---------- 2. 缓存代次与外壳 ----------

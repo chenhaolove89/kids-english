@@ -9,7 +9,7 @@
 import { Howl, Howler } from 'howler'
 import volumes from '../data/audio-volumes.json'
 import volumesGb from '../data/audio-volumes-gb.json'
-import { withAccent } from './assets.js'
+import { withAccent, toLocalAsset } from './assets.js'
 import { getStorage } from './storage.js'
 
 // 解码后的音频常驻内存：缓存必须有上限并主动 unload。
@@ -102,6 +102,20 @@ function getHowl(src) {
   howl.once('loaderror', () => {
     console.error('[player] 音频加载失败，将在下次点击时重试:', src)
     cache.delete(src)
+    // 资源在服务器上时（抢先版）：服务器不可达就换回包内同名音轨。
+    // 不做这层的话孩子会静默没声音——比慢更糟，而且不报错、没人会发现。
+    const localSrc = toLocalAsset(src)
+    if (localSrc) {
+      console.warn('[player] 服务器资源不可达，回退包内音轨:', localSrc)
+      try {
+        if (!cache.has(localSrc)) getHowl(localSrc)
+        const local = cache.get(localSrc)
+        if (local) cache.set(src, local)
+      } catch (e) {
+        /* 下次点击再试 */
+      }
+      return
+    }
     // 英式缺轨时回退美音同名文件。
     if (isGb) {
       const usSrc = src.replace('/audio-gb/', '/audio/')
