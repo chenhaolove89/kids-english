@@ -17,6 +17,7 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { writeFileAtomic } from './lib/fs-atomic.mjs'
+import { isUsableAsset } from './lib/asset-check.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = path.join(ROOT, 'content-packages', 'curriculum.json')
@@ -411,6 +412,56 @@ for (const st of source.stages) {
   if (n === 0) fail(`stage ${st.id} 没有任何可用课程`)
 }
 
+// ---------- 语文阅读理解短文 ----------
+// 这批内容此前只被音频生成器引用，没有任何门禁看着它：改了源忘重生成音轨、
+// 答案不在选项里（机器判题只比 id，会变成没有正确答案的死题）都会静默上线。
+const PASSAGES = path.join(ROOT, 'content-packages', 'zh-passages.json')
+const PASSAGE_PINYIN = path.join(ROOT, 'tools', 'zh-passage-pinyin.json')
+const passagesSrc = readJson(PASSAGES)
+const passagePinyin = readJson(PASSAGE_PINYIN)
+const passageIds = new Set()
+for (const p of passagesSrc.passages || []) {
+  const tag = `短文 ${p.id}`
+  if (!p.id || passageIds.has(p.id)) fail(`${tag} id 缺失或重复`)
+  passageIds.add(p.id)
+  if (!stageIds.has(p.stage)) fail(`${tag} stage 非法: ${p.stage}`)
+  if (!p.title || !p.kind) fail(`${tag} 缺 title/kind`)
+  if (!p.lines?.length) fail(`${tag} 正文为空`)
+  const qs = p.questions || []
+  if (qs.length !== 3) fail(`${tag} 必须恰好 3 道题（现 ${qs.length}）`)
+  qs.forEach((q, i) => {
+    const qt = `${tag} 第 ${i + 1} 题`
+    if (!q.q) fail(`${qt} 缺题干`)
+    const opts = q.options || []
+    if (opts.length < 2) fail(`${qt} 选项少于 2 个`)
+    if (new Set(opts).size !== opts.length) fail(`${qt} 选项有重复`)
+    // answer 是 0 基下标，不是选项文本：越界等于这道题没有正确答案，孩子怎么点都错
+    if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= opts.length) {
+      fail(`${qt} answer 越界或不是下标: ${JSON.stringify(q.answer)}（选项 ${opts.length} 个）`)
+    }
+    if (!q.point) fail(`${qt} 缺考点标注`)
+  })
+  // 整篇朗读音轨：由 gen-zh-azure --passages 产出；缺了孩子只能干读
+  const audio = path.join(ROOT, 'src', 'static', 'audio-zh', `${p.id}.mp3`)
+  if (!fs.existsSync(audio)) fail(`${tag} 缺整篇朗读音轨: static/audio-zh/${p.id}.mp3`)
+  else if (!isUsableAsset(audio, 'audio')) fail(`${tag} 音轨不可用（空文件或合成中断的半截）: ${p.id}.mp3`)
+  // 注音表按行给槽位数组，长度必须等于该行字符数：对不上整条退回默认读音，多音字全错
+  const table = passagePinyin[p.id]
+  if (!table) fail(`${tag} 注音表里没有这一篇（跑 npm run gen:zh-passage）`)
+  else {
+    for (const line of p.lines) {
+      const slots = table[line]
+      if (!Array.isArray(slots)) {
+        fail(`${tag} 注音表缺行或不是槽位数组: ${line.slice(0, 12)}…`)
+        continue
+      }
+      if (slots.length !== [...line].length) {
+        fail(`${tag} 注音槽位数与行字符数不符: ${slots.length} vs ${[...line].length}（${line.slice(0, 12)}…）`)
+      }
+    }
+  }
+}
+
 if (errors.length) {
   console.error(`✗ 课程内容校验失败（${errors.length} 处）：`)
   errors.forEach((e) => console.error('  - ' + e))
@@ -438,7 +489,7 @@ function canonicalJson(v) {
  */
 const contentVersion = crypto
   .createHash('sha1')
-  .update(`${canonicalJson(words)}|${canonicalJson(hanzi)}|${canonicalJson(source)}|${canonicalJson(lessons)}`)
+  .update(`${canonicalJson(words)}|${canonicalJson(hanzi)}|${canonicalJson(source)}|${canonicalJson(lessons)}|${canonicalJson(passagesSrc)}`)
   .digest('hex')
   .slice(0, 10)
 
