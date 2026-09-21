@@ -189,6 +189,13 @@ for (const p of (JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/poems.json
 for (const k of (JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/encourage.json'), 'utf8')).praise) || []) {
   referenced.add(`/static/audio/${k}.mp3`)
 }
+// 阅读理解篇章：reading.vue 按篇 id 拼出 /static/audio-zh/{id}.mp3
+// （同样不是字面量——不登记的话每次审计都会报 10 条假孤儿，把真孤儿淹掉）
+{
+  const zhp = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data', 'zhPassages.json'), 'utf8'))
+  for (const p of zhp.passages || zhp || []) referenced.add(`/static/audio-zh/${p.id}.mp3`)
+
+}
 /**
  * 已知「已生成但暂未接入」的资源：不算真孤儿，单独列出来。
  * 存在的意义：孤儿检查是防"该接的没接上/纯死重量"的安全网，
